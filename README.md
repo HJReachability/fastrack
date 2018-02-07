@@ -1,5 +1,5 @@
-# Meta-FaSTrack
-Meta-planning + Fast and Safe Tracking (FaSTrack): effectively blending fast planning methods with slower, reacbability-based safety guarantees for online safe trajectory planning.
+# FaSTrack
+Fast and Safe Tracking (FaSTrack): fast planning methods with slower, reacbability-based safety guarantees for online safe trajectory planning.
 
 ## Repository organization
 All code in this repository is written in the Robot Operating System (ROS) framework, and as such is broken up into atomic packages that implement specific functionality. The `ros/` directory is the root workspace, and individual packages live inside the `ros/src/` directory.
@@ -7,7 +7,7 @@ All code in this repository is written in the Robot Operating System (ROS) frame
 ## Usage
 First, make sure you have ROS installed on your system. The project was developed in Jade, but it should be compatible with anything past Hydro. Please let us know if you have any compatibility issues.
 
-`Meta-FaSTrack` currently depends upon the [crazyflie_clean](https://github.com/dfridovi/crazyflie_clean) repository, which contains drivers and utilities for the HSL's Crazyflie 2.0 testbed. We intend to remove this build dependency in the future so that `Tracking` can be used more easily in other contexts. This will be part of a larger code reorganization/refactor.
+The core `fastrack`, `fastrack_msgs`, and `fastrack_srvs` have no significant external dependencies other than those listed below. However, the `fastrack_crazyflie_demos` package depends upon the [crazyflie_clean](https://github.com/dfridovi/crazyflie_clean) repository, which contains drivers and utilities for the HSL's Crazyflie 2.0 testbed.
 
 Other dependencies:
 * [Gtest](https://github.com/google/googletest) -- Google's C++ unit testing library
@@ -16,9 +16,14 @@ Other dependencies:
 * [MATIO](https://github.com/tbeu/matio) -- an open C library for MATLAB MAT file I/O
 * [FLANN](http://www.cs.ubc.ca/research/flann/) -- an open source library for fast (approximate) nearest neighbors
 
-You must begin by building and sourcing the `crazyflie_clean` repository. Instructions may be found in that project's README. To build `Meta-FaSTrack`, open a terminal window and navigate to the `ros/` directory. Then run:
+To build the entire workspace, you must begin by building and sourcing the `crazyflie_clean` repository. Instructions may be found in that project's README. Once you have done that, open a terminal window and navigate to the `ros/` directory. Then run:
 ```
 catkin_make
+```
+
+If you only wish to build the `fastrack` core packages (_not_ `fastrack_crazyflie_demos`) then you may instead run:
+```
+catkin_make --pkg=fastrack
 ```
 
 Every time you open a new terminal, you'll have to tell ROS how to find this package. Do this by running the following command from the `ros/` directory:
@@ -26,11 +31,6 @@ Every time you open a new terminal, you'll have to tell ROS how to find this pac
 source devel/setup.bash
 ```
 
-`Tracking` includes two demos, one software and one hardware. To run the hardware demo, you will need physical hardware access. For instructions on how to set that up, please contact us. The software demo may be launched as follows. Note that these commands must be run in different terminal windows.
-```
-roslaunch meta_planner rviz.launch
-roslaunch meta_planner software_demo.launch
-```
 
 To run unit tests, type:
 ```
