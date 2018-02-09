@@ -43,6 +43,11 @@
 #ifndef FASTRACK_UTILS_TYPES_H
 #define FASTRACK_UTILS_TYPES_H
 
+// ------------------------------- INCLUDES -------------------------------- //
+
+#include <vector>
+#include <algorithm>
+#include <iostream>
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 

@@ -108,16 +108,24 @@ public:
     return lhs;
   }
 
-  friend PositionVelocity operator*(PositionVelocity lhs,
-                                    const PositionVelocity& rhs) {
-    lhs *= rhs;
+  friend PositionVelocity operator*(PositionVelocity lhs, double s) {
+    lhs *= s;
     return lhs;
   }
 
-  friend PositionVelocity operator/(PositionVelocity lhs,
-                                    const PositionVelocity& rhs) {
-    lhs /= rhs;
+  friend PositionVelocity operator*(double s, PositionVelocity rhs) {
+    rhs *= s;
+    return rhs;
+  }
+
+  friend PositionVelocity operator/(PositionVelocity lhs, double s) {
+    lhs /= s;
     return lhs;
+  }
+
+  friend PositionVelocity operator/(double s, PositionVelocity rhs) {
+    rhs /= s;
+    return rhs;
   }
 
 private:

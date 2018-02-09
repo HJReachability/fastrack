@@ -41,10 +41,11 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_SPACE_POSITION_VELOCITY_H
-#define FASTRACK_SPACE_POSITION_VELOCITY_H
+#ifndef FASTRACK_PLANNING_TRAJECTORY_H
+#define FASTRACK_PLANNING_TRAJECTORY_H
 
 #include <fastrack/space/state.h>
+#include <fastrack/utils/types.h>
 
 #include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
@@ -68,6 +69,10 @@ public:
   void Visualize(const ros::Publisher& pub, const std::string& frame) const;
 
 private:
+  // Custom colormap for the given time.
+  std_msgs::ColorRGBA Colormap(double t) const;
+
+  // Lists of states and times.
   const std::vector<S> states_;
   const std::vector<double> times_;
 }; //\class Trajectory
