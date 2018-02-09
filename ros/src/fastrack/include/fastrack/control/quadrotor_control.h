@@ -36,41 +36,37 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Custom types.
+// 4D quadrotor controls as a demo control type. All controls must support
+// functions like min and max of different control variables.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_UTILS_TYPES_H
-#define FASTRACK_UTILS_TYPES_H
+#ifndef FASTRACK_CONTROL_CONTROL_H
+#define FASTRACK_CONTROL_CONTROL_H
 
-// ------------------------------- INCLUDES -------------------------------- //
-
-#include <memory>
-#include <limits>
-#include <vector>
-#include <algorithm>
-#include <random>
-#include <iostream>
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
-
-// ------------------------------- CONSTANTS -------------------------------- //
+#include <fastrack/utils/types.h>
 
 namespace fastrack {
-  namespace constants {
-    // Acceleration due to gravity.
-    const double G = 9.81;
-  } //\namespace constants
+namespace control {
 
-// ------------------------ THIRD PARTY TYPEDEFS ---------------------------- //
+struct QuadrotorControl {
+  // Pitch, roll, yaw rate, thrust.
+  double pitch;
+  double roll;
+  double yaw_rate;
+  double thrust;
 
-using Eigen::Matrix3d;
-using Eigen::Vector3d;
-using Eigen::Matrix4d;
-using Eigen::VectorXd;
-using Eigen::MatrixXd;
-using Eigen::Quaterniond;
+  // Constructors and destructor.
+  ~QuadrotorControl() {}
+  explicit QuadrotorControl() {}
+  explicit QuadrotorControl(double p, double r, double yr, double t)
+    : pitch(p),
+      roll(r),
+      yaw_rate(yr),
+      thrust(t) {}
+}; //\struct QuadrotorControl
 
+} //\namespace control
 } //\namespace fastrack
 
 #endif

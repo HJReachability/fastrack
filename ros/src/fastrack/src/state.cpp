@@ -36,41 +36,19 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Custom types.
+// Base class for all state types. The key feature of all states is that they
+// have (x, y, z) coordinates which may be accessed.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_UTILS_TYPES_H
-#define FASTRACK_UTILS_TYPES_H
-
-// ------------------------------- INCLUDES -------------------------------- //
-
-#include <memory>
-#include <limits>
-#include <vector>
-#include <algorithm>
-#include <random>
-#include <iostream>
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
-
-// ------------------------------- CONSTANTS -------------------------------- //
+#include <fastrack/state/state.h>
 
 namespace fastrack {
-  namespace constants {
-    // Acceleration due to gravity.
-    const double G = 9.81;
-  } //\namespace constants
+namespace state {
 
-// ------------------------ THIRD PARTY TYPEDEFS ---------------------------- //
+// Random number generator shared across all instances of states.
+State::rd_ = std::random_device();
+State::rng_ = std::default_random_engine(State::rd_());
 
-using Eigen::Matrix3d;
-using Eigen::Vector3d;
-using Eigen::Matrix4d;
-using Eigen::VectorXd;
-using Eigen::MatrixXd;
-using Eigen::Quaterniond;
-
+} //\namespace state
 } //\namespace fastrack
-
-#endif

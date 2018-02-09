@@ -36,41 +36,49 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Custom types.
+// Defines the Dynamics class. Templated on the state type and control type.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_UTILS_TYPES_H
-#define FASTRACK_UTILS_TYPES_H
+#ifndef FASTRACK_DYNAMICS_DYNAMICS_H
+#define FASTRACK_DYNAMICS_DYNAMICS_H
 
-// ------------------------------- INCLUDES -------------------------------- //
+#include <fastrack/utils/types.h>
 
-#include <memory>
-#include <limits>
-#include <vector>
-#include <algorithm>
-#include <random>
-#include <iostream>
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
-
-// ------------------------------- CONSTANTS -------------------------------- //
+#include <ros/ros.h>
 
 namespace fastrack {
-  namespace constants {
-    // Acceleration due to gravity.
-    const double G = 9.81;
-  } //\namespace constants
+namespace dynamics {
 
-// ------------------------ THIRD PARTY TYPEDEFS ---------------------------- //
+template<typename S, typename C>
+class Dynamics {
+public:
+  // Destructor.
+  virtual ~Dynamics() {}
 
-using Eigen::Matrix3d;
-using Eigen::Vector3d;
-using Eigen::Matrix4d;
-using Eigen::VectorXd;
-using Eigen::MatrixXd;
-using Eigen::Quaterniond;
+  // Derived classes must be able to give the time derivative of state
+  // as a function of current state and control.
+  virtual VectorXd Evaluate(const S& x, const VectorXd& u) const = 0;
 
-} //\namespace fastrack
+  // Derived classes must be able to compute an optimal control given
+  // the gradient of the value function at the specified state.
+  virtual VectorXd OptimalControl(const S& x,
+                                  const VectorXd& value_gradient) const = 0;
+
+  // Get the min and max controls.
+  inline const C& MinControl() const { return u_lower_; }
+  inline const C& MaxControl() const { return u_upper_; }
+
+protected:
+  explicit Dynamics(const C& u_lower, const C& u_upper)
+    : u_lower_(u_lower),
+      u_upper_(u_upper) {}
+
+  // Lower and upper bounds for control variable.
+  const C u_lower_;
+  const C u_upper_;
+};
+
+} //\namespace meta
 
 #endif

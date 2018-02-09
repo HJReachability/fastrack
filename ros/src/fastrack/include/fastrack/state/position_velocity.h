@@ -40,27 +40,21 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_SPACE_POSITION_VELOCITY_H
-#define FASTRACK_SPACE_POSITION_VELOCITY_H
+#ifndef FASTRACK_STATE_POSITION_VELOCITY_H
+#define FASTRACK_STATE_POSITION_VELOCITY_H
 
-#include <fastrack/space/state.h>
+#include <fastrack/state/state.h>
 
 namespace fastrack {
-namespace space {
+namespace state {
 
 class PositionVelocity : public State {
 public:
   ~PositionVelocity() {}
   explicit PositionVelocity(double x, double y, double z,
-                            double vx, double vy, double vz)
-    : State(),
-      position_(Vector3d(x, y, z)),
-      velocity_(Vector3d(vx, vy, vz)) {}
+                            double vx, double vy, double vz);
   explicit PositionVelocity(const Vector3d& position,
-                            const Vector3d& velocity)
-    : State(),
-      position_(position),
-      velocity_(velocity) {}
+                            const Vector3d& velocity);
 
   // Accessors.
   inline double X() const { return position_(0); }
@@ -70,70 +64,33 @@ public:
   inline Vector3d Position() const { return position_; }
   inline Vector3d Velocity() const { return velocity_; }
 
+  // Static function to sample from the configuration space associated
+  // with this state space. Pass in the lower and upper bounds from
+  // which to sample.
+  static VectorXd Sample(const VectorXd& lower, const VectorXd& upper);
+
   // Compound assignment operators.
-  PositionVelocity& operator+=(const PositionVelocity& rhs) {
-    position_ += rhs.position_;
-    velocity_ += rhs.velocity_;
-    return *this;
-  }
-
-  PositionVelocity& operator-=(const PositionVelocity& rhs) {
-    position_ -= rhs.position_;
-    velocity_ -= rhs.velocity_;
-    return *this;
-  }
-
-  PositionVelocity& operator*=(double s) {
-    position_ *= s;
-    velocity_ *= s;
-    return *this;
-  }
-
-  PositionVelocity& operator/=(double s) {
-    position_ /= s;
-    velocity_ /= s;
-    return *this;
-  }
+  PositionVelocity& operator+=(const PositionVelocity& rhs);
+  PositionVelocity& operator-=(const PositionVelocity& rhs);
+  PositionVelocity& operator*=(double s);
+  PositionVelocity& operator/=(double s);
 
   // Binary operators.
   friend PositionVelocity operator+(PositionVelocity lhs,
-                                    const PositionVelocity& rhs) {
-    lhs += rhs;
-    return lhs;
-  }
-
+                                    const PositionVelocity& rhs);
   friend PositionVelocity operator-(PositionVelocity lhs,
-                                    const PositionVelocity& rhs) {
-    lhs -= rhs;
-    return lhs;
-  }
-
-  friend PositionVelocity operator*(PositionVelocity lhs, double s) {
-    lhs *= s;
-    return lhs;
-  }
-
-  friend PositionVelocity operator*(double s, PositionVelocity rhs) {
-    rhs *= s;
-    return rhs;
-  }
-
-  friend PositionVelocity operator/(PositionVelocity lhs, double s) {
-    lhs /= s;
-    return lhs;
-  }
-
-  friend PositionVelocity operator/(double s, PositionVelocity rhs) {
-    rhs /= s;
-    return rhs;
-  }
+                                    const PositionVelocity& rhs);
+  friend PositionVelocity operator*(PositionVelocity lhs, double s);
+  friend PositionVelocity operator*(double s, PositionVelocity rhs);
+  friend PositionVelocity operator/(PositionVelocity lhs, double s);
+  friend PositionVelocity operator/(double s, PositionVelocity rhs);
 
 private:
   Vector3d position_;
   Vector3d velocity_;
 }; //\class PositionVelocity
 
-} //\namespace space
+} //\namespace state
 } //\namespace fastrack
 
 #endif

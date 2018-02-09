@@ -36,41 +36,46 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Custom types.
+// Base class for all environment models, providing separate collision check
+// functions for each type of tracking error bound. All environments are
+// boxes in 3D space.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_UTILS_TYPES_H
-#define FASTRACK_UTILS_TYPES_H
+#ifndef FASTRACK_ENVIRONMENT_ENVIRONMENT_H
+#define FASTRACK_ENVIRONMENT_ENVIRONMENT_H
 
-// ------------------------------- INCLUDES -------------------------------- //
-
-#include <memory>
-#include <limits>
-#include <vector>
-#include <algorithm>
-#include <random>
-#include <iostream>
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
-
-// ------------------------------- CONSTANTS -------------------------------- //
+#include <fastrack/bound/box.h>
+#include <fastrack/utils/types.h>
 
 namespace fastrack {
-  namespace constants {
-    // Acceleration due to gravity.
-    const double G = 9.81;
-  } //\namespace constants
+namespace environment {
 
-// ------------------------ THIRD PARTY TYPEDEFS ---------------------------- //
+class Environment {
+public:
+  virtual ~Environment() {}
 
-using Eigen::Matrix3d;
-using Eigen::Vector3d;
-using Eigen::Matrix4d;
-using Eigen::VectorXd;
-using Eigen::MatrixXd;
-using Eigen::Quaterniond;
+  // Derived classes must provide a collision checker which returns true if
+  // and only if the provided position is a valid collision-free configuration.
+  // Provide a separate collision check for each type of tracking error bound.
+  virtual bool IsValid(const Vector3d& position,
+                       const bound::Box& bound) const = 0;
 
+  // Derived classes must have some sort of visualization through RViz.
+  virtual void Visualize(const ros::Publisher& pub,
+                         const std::string& frame) const = 0;
+
+protected:
+  explicit Environment(const Vector3d& lower, const Vector3d& upper)
+    : lower_(lower),
+      upper_(upper) {}
+
+  // Upper and lower bounds.
+  const Vector3d lower_;
+  const Vector3d upper_;
+}; //\class Environment
+
+} //\namespace environment
 } //\namespace fastrack
 
 #endif

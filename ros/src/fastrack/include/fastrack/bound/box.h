@@ -36,34 +36,35 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base class for all state types. The key feature of all states is that they
-// have (x, y, z) coordinates which may be accessed.
+// Box for tracking error bound. This will arise when dynamics decouple into
+// 1D subsystems. Boxes are defined only by their size in each dimension.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_SPACE_STATE_H
-#define FASTRACK_SPACE_STATE_H
+#ifndef FASTRACK_BOUND_BOX_H
+#define FASTRACK_BOUND_BOX_H
 
 #include <fastrack/utils/types.h>
 
 namespace fastrack {
-namespace space {
+namespace bound {
 
-class State {
-public:
-  virtual ~State() {}
+struct Box {
+  // Size in each dimension.
+  double x_size;
+  double y_size;
+  double z_size;
 
-  // Accessors.
-  virtual double X() const = 0;
-  virtual double Y() const = 0;
-  virtual double Z() const = 0;
-  virtual Vector3d Position() const = 0;
+  // Constructors and destructor.
+  ~Box() {}
+  explicit Box() {}
+  explicit Box(double xsize, double ysize, double zsize)
+    : x_size(xsize),
+      y_size(ysize),
+      z_size(zsize) {}
+}; //\struct Box
 
-protected:
-  explicit State() {}
-}; //\class State
-
-} //\namespace space
+} //\namespace bound
 } //\namespace fastrack
 
 #endif

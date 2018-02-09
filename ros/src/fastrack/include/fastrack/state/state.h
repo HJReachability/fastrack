@@ -36,41 +36,41 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Custom types.
+// Base class for all state types. The key feature of all states is that they
+// have (x, y, z) coordinates which may be accessed.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_UTILS_TYPES_H
-#define FASTRACK_UTILS_TYPES_H
+#ifndef FASTRACK_STATE_STATE_H
+#define FASTRACK_STATE_STATE_H
 
-// ------------------------------- INCLUDES -------------------------------- //
-
-#include <memory>
-#include <limits>
-#include <vector>
-#include <algorithm>
-#include <random>
-#include <iostream>
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
-
-// ------------------------------- CONSTANTS -------------------------------- //
+#include <fastrack/utils/types.h>
 
 namespace fastrack {
-  namespace constants {
-    // Acceleration due to gravity.
-    const double G = 9.81;
-  } //\namespace constants
+namespace state {
 
-// ------------------------ THIRD PARTY TYPEDEFS ---------------------------- //
+class State {
+public:
+  virtual ~State() {}
 
-using Eigen::Matrix3d;
-using Eigen::Vector3d;
-using Eigen::Matrix4d;
-using Eigen::VectorXd;
-using Eigen::MatrixXd;
-using Eigen::Quaterniond;
+  // Accessors.
+  virtual double X() const = 0;
+  virtual double Y() const = 0;
+  virtual double Z() const = 0;
+  virtual Vector3d Position() const = 0;
 
+  // Re-seed the random engine.
+  static inline void Seed(unsigned int seed) const { rng_.seed(seed); }
+
+protected:
+  explicit State() {}
+
+  // Random number generator shared across all instances of states.
+  static std::random_device rd_;
+  static std::default_random_engine rng_;
+}; //\class State
+
+} //\namespace state
 } //\namespace fastrack
 
 #endif
