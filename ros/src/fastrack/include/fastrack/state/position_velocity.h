@@ -60,6 +60,9 @@ public:
   inline double X() const { return position_(0); }
   inline double Y() const { return position_(1); }
   inline double Z() const { return position_(2); }
+  inline double Vx() const { return velocity_(0); }
+  inline double Vy() const { return velocity_(1); }
+  inline double Vz() const { return velocity_(2); }
 
   inline Vector3d Position() const { return position_; }
   inline Vector3d Velocity() const { return velocity_; }

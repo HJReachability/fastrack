@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, The Regents of the University of California (Regents).
+ * Copyright (c) 2017, The Regents of the University of California (Regents).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,45 +36,69 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Defines the Dynamics class. Templated on the state type and control type.
+// Defines the Quadrotor6D class, which uses PositionVelocity as the state
+// and QuadrotorControl as the control.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_DYNAMICS_DYNAMICS_H
-#define FASTRACK_DYNAMICS_DYNAMICS_H
+#ifndef FASTRACK_DYNAMICS_QUADROTOR_6D_H
+#define FASTRACK_DYNAMICS_QUADROTOR_6D_H
 
-#include <fastrack/utils/types.h>
+#include <fastrack/dynamics/dynamics.h>
+#include <fastrack/state/position_velocity.h>
+#include <fastrack/control/quadrotor_control.h>
+
+#include <math.h>
 
 namespace fastrack {
 namespace dynamics {
 
-template<typename S, typename C>
-class Dynamics {
+using state::PositionVelocity;
+using control::QuadrotorControl;
+
+class Quadrotor6D : public Dynamics<PositionVelocity, QuadrotorControl> {
 public:
-  // Destructor.
-  virtual ~Dynamics() {}
+  ~Quadrotor6D() {}
+  explicit Quadrotor6D(const QuadrotorControl& u_lower,
+                       const QuadrotorControl& u_upper)
+    : Dynamics(u_lower, u_upper) {}
 
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
-  virtual S Evaluate(const S& x, const C& u) const = 0;
+  inline PositionVelocity Evaluate(
+    const PositionVelocity& x, const QuadrotorControl& u) const {
+    // Position derivatives are just velocity.
+    const Vector3d position_dot(x.Velocity());
+
+    // Velocity derivatives are given by simple trigonometric functions
+    // of the pitch/roll, scaled by G since we assume that thrust is
+    // approximately equal to G.
+    const Vector3d velocity_dot(constants::G * std::tan(u.pitch),
+                                -constants::G * std::tan(u.roll),
+                                u.thrust - constants::G);
+
+    return PositionVelocity(position_dot, velocity_dot);
+  }
 
   // Derived classes must be able to compute an optimal control given
   // the gradient of the value function at the specified state.
-  virtual C OptimalControl(const S& x, const S& value_gradient) const = 0;
+  // In this case (linear dynamics), the state is irrelevant given the
+  // gradient of the value function at that state.
+  inline QuadrotorControl OptimalControl(
+    const PositionVelocity& x, const PositionVelocity& value_gradient) const {
+    // Set each dimension of optimal control to upper/lower bound depending
+    // on the sign of the gradient in that dimension. We want to minimize the
+    // inner product between the projected gradient and control.
+    // If the gradient is 0, then sets control to zero by default.
+    QuadrotorControl c;
+    c.yaw_rate = 0.0;
+    c.pitch = (value_gradient.Vx() < 0.0) ? u_upper_.pitch : u_lower_.pitch;
+    c.roll = (value_gradient.Vy() > 0.0) ? u_upper_.roll : u_lower_.roll;
+    c.thrust = (value_gradient.Vz() < 0.0) ? u_upper_.thrust : u_lower_.thrust;
 
-  // Get the min and max controls.
-  inline const C& MinControl() const { return u_lower_; }
-  inline const C& MaxControl() const { return u_upper_; }
-
-protected:
-  explicit Dynamics(const C& u_lower, const C& u_upper)
-    : u_lower_(u_lower),
-      u_upper_(u_upper) {}
-
-  // Lower and upper bounds for control variable.
-  const C u_lower_;
-  const C u_upper_;
-}; //\class Dynamics
+    return c;
+  }
+}; //\class Quadrotor6D
 
 } //\namespace dynamics
 } //\namespace fastrack
