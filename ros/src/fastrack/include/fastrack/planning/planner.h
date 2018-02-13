@@ -36,32 +36,43 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base class for all planners.
+// Base class for all planners. Planners are templated on state and dynamics
+// types **of the planner** NOT **of the tracker,** as well as the tracking
+// error bound type. Planners take in start and goal states, environment, and
+// start time, and output a trajectory of planner states.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef FASTRACK_PLANNING_PLANNER_H
 #define FASTRACK_PLANNING_PLANNER_H
 
+#include <fastrack/environment/environment.h>
+#include <fastrack/planning/trajectory.h>
 #include <fastrack/utils/types.h>
 
 namespace fastrack {
 namespace planning {
 
-template<typename S>
+template< typename S, typename D<S, typename C>, typename B >
 class Planner {
 public:
   virtual ~Planner() {}
 
-  // Plan from a
+  // Plan a trajectory from the given start to goal states starting
+  // at the given time.
+  virtual Trajectory<S> Plan(
+    const S& start, const S& goal, const Environment& env,
+    double start_time=0.0) const = 0;
 
 protected:
-  explicit State() {}
+  explicit Planner(const D<S, C>& dynamics, const B& bound)
+    : dynamics_(dynamics),
+      bound_(bound) {}
 
-  // Random number generator shared across all instances of states.
-  static std::random_device rd_;
-  static std::default_random_engine rng_;
-}; //\class State
+  // Keep a copy of the dynamics and the tracking bound.
+  const D<S, C> dynamics_;
+  const B bound_;
+}; //\class Planner
 
 } //\namespace planning
 } //\namespace fastrack

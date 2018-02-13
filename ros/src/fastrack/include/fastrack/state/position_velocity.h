@@ -55,6 +55,7 @@ public:
                             double vx, double vy, double vz);
   explicit PositionVelocity(const Vector3d& position,
                             const Vector3d& velocity);
+  explicit State(const VectorXd& config);
 
   // Accessors.
   inline double X() const { return position_(0); }
@@ -66,11 +67,31 @@ public:
 
   inline Vector3d Position() const { return position_; }
   inline Vector3d Velocity() const { return velocity_; }
+  inline VectorXd Configuration() const {
+    VectorXd config(3);
+    config(0) = position_(0);
+    config(1) = position_(1);
+    config(2) = position_(2);
 
-  // Static function to sample from the configuration space associated
-  // with this state space. Pass in the lower and upper bounds from
-  // which to sample.
-  static VectorXd Sample(const VectorXd& lower, const VectorXd& upper);
+    return config;
+  }
+
+  // Dimension of the configuration space.
+  constexpr size_t ConfigurationDimension() const { return 3; }
+
+  // Set/get bounds of the configuration space.
+  static void SetConfigurationBounds(
+    const VectorXd& lower, const VectorXd& upper);
+  static VectorXd GetConfigurationLower();
+  static VectorXd GetConfigurationUpper();
+
+  // What are the positions that the system occupies at the current state.
+  // NOTE! For simplicity, this is a finite set. In future, this could
+  // be generalized to a collection of generic obstacles.
+  std::vector<Vector3d> OccupiedPositions() const;
+
+  // Sample from the configuration space associated with this state space.
+  static VectorXd Sample() const;
 
   // Compound assignment operators.
   PositionVelocity& operator+=(const PositionVelocity& rhs);
@@ -91,6 +112,10 @@ public:
 private:
   Vector3d position_;
   Vector3d velocity_;
+
+  // Static configuration space bounds for this state space.
+  static VectorXd lower_;
+  static VectorXd upper_;
 }; //\class PositionVelocity
 
 } //\namespace state

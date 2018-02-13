@@ -36,8 +36,9 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base class for all state types. The key feature of all states is that they
-// have (x, y, z) coordinates which may be accessed.
+// Base class for all state types. All states must be able to output a position
+// in 3D space and an arbitrary-dimensional configuration. This configuration
+// will be used for geometric planning.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -53,17 +54,29 @@ class State {
 public:
   virtual ~State() {}
 
-  // Accessors.
+  // Accessors. All states must be able to output a position in 3D space
+  // and an arbitrary-dimensional configuration. This configuration will
+  // be used for geometric planning.
   virtual double X() const = 0;
   virtual double Y() const = 0;
   virtual double Z() const = 0;
   virtual Vector3d Position() const = 0;
+  virtual VectorXd Configuration() const = 0;
+
+  // Dimension of the configuration space.
+  virtual size_t ConfigurationDimension() const = 0;
+
+  // What are the positions that the system occupies at the current state.
+  // NOTE! For simplicity, this is a finite set. In future, this could
+  // be generalized to a collection of generic obstacles.
+  virtual std::vector<Vector3d> OccupiedPositions() const = 0;
 
   // Re-seed the random engine.
   static inline void Seed(unsigned int seed) const { rng_.seed(seed); }
 
 protected:
   explicit State() {}
+  explicit virtual State(const VectorXd& config) = 0;
 
   // Random number generator shared across all instances of states.
   static std::random_device rd_;

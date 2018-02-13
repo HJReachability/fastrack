@@ -36,57 +36,40 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base class for all environment models, providing separate collision check
-// functions for each type of tracking error bound. All environments are
-// boxes in 3D space.
+// Base class for all kinematic planners. Geometric planners are planners that
+// operate directly in the configuration space and use only kinematics instead
+// of dynamics.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_ENVIRONMENT_ENVIRONMENT_H
-#define FASTRACK_ENVIRONMENT_ENVIRONMENT_H
+#ifndef FASTRACK_PLANNING_KINEMATIC_PLANNER_H
+#define FASTRACK_PLANNING_KINEMATIC_PLANNER_H
 
-#include <fastrack/bound/box.h>
-#include <fastrack/utils/types.h>
+#include <fastrack/planning/planner.h>
+#include <fastrack/dynamics/kinematics.h>
 
 namespace fastrack {
-namespace environment {
+namespace planning {
 
-using bound::Box;
+using dynamics::Kinematics;
 
-class Environment {
+template<typename S, typename B>
+class KinematicPlanner : public Planner< S, Kinematics<S>, B > {
 public:
-  virtual ~Environment() {}
+  virtual ~KinematicPlanner() {}
 
-  // Derived classes must provide a collision checker which returns true if
-  // and only if the provided position is a valid collision-free configuration.
-  // Provide a separate collision check for each type of tracking error bound.
-  virtual bool IsValid(const Vector3d& position, const Box& bound) const = 0;
-
-  // Provide auxiliary validity checkers for sets of positions.
-  bool IsValid(const std::vector<Vector3d>& positions, const Box& bound) const {
-    for (const auto& p : positions) {
-      if (!IsValid(p, bound))
-        return false;
-    }
-
-    return true;
-  }
-
-  // Derived classes must have some sort of visualization through RViz.
-  virtual void Visualize(const ros::Publisher& pub,
-                         const std::string& frame) const = 0;
+  // Plan a trajectory from the given start to goal states starting
+  // at the given time.
+  virtual Trajectory<S> Plan(
+    const S& start, const S& goal, const Environment& env,
+    double start_time=0.0) const = 0;
 
 protected:
-  explicit Environment(const Vector3d& lower, const Vector3d& upper)
-    : lower_(lower),
-      upper_(upper) {}
+  explicit KinematicPlanner(const Kinematics<S>& dynamics, const B& bound)
+    : Planner(dynamics, bound) {}
+}; //\class KinematicPlanner
 
-  // Upper and lower bounds.
-  const Vector3d lower_;
-  const Vector3d upper_;
-}; //\class Environment
-
-} //\namespace environment
+} //\namespace planning
 } //\namespace fastrack
 
 #endif

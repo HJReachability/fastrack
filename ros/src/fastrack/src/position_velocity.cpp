@@ -42,9 +42,16 @@
 
 #include <fastrack/state/position_velocity.h>
 
+#include <exception>
+
 namespace fastrack {
 namespace state {
 
+// Initialize static configuration space bounds.
+VectorXd PositionVelocity::lower_ = VectorXd::Zero(ConfigurationDimension());
+VectorXd PositionVelocity::upper_ = VectorXd::Ones(ConfigurationDimension());
+
+// Constructors.
 PositionVelocity::PositionVelocity(double x, double y, double z,
                                    double vx, double vy, double vz)
   : State(),
@@ -55,16 +62,28 @@ PositionVelocity::PositionVelocity(const Vector3d& position,
   : State(),
     position_(position),
     velocity_(velocity) {}
+PositionVelocity::PositionVelocity(const VectorXd& config)
+  : State(),
+    position_(Vector3d::Zero()),
+    velocity_(Vector3d::Zero()) {
+  // Check dimensions.
+  if (config.size() != 3)
+    throw std::runtime_error("PositionVelocity: config dimension was not 3.");
+
+  position_(0) = config(0);
+  position_(1) = config(1);
+  position_(2) = config(2);
+}
 
 // Static function to sample from the configuration space associated
 // with this state space. Pass in the lower and upper bounds from
 // which to sample.
-VectorXd PositionVelocity::Sample(const VectorXd& lower, const VectorXd& upper) {
+VectorXd PositionVelocity::Sample() {
   const size_t kConfigurationSpaceDimension = 3;
 
   // Make sure bounds are of the right size.
-  if (lower.size() != kConfigurationSpaceDimension ||
-      upper.size() != kConfigurationSpaceDimension) {
+  if (lower_.size() != kConfigurationSpaceDimension ||
+      upper_.size() != kConfigurationSpaceDimension) {
     ROS_ERROR("PositionVelocity: lower/upper bounds not of size %zu.",
               kConfigurationSpaceDimension);
     return VectorXd::Zero(kConfigurationSpaceDimension);
@@ -76,10 +95,34 @@ VectorXd PositionVelocity::Sample(const VectorXd& lower, const VectorXd& upper) 
   // Generate random sample.
   VectorXd sample(kConfigurationSpaceDimension);
   for (size_t ii = 0; ii < kConfigurationSpaceDimension; ii++)
-    sample(ii) = lower(ii) + (upper(ii) - lower(ii)) * unif(rng_);
+    sample(ii) = lower_(ii) + (upper_(ii) - lower_(ii)) * unif(rng_);
 
   return sample;
 }
+
+// For a given configuration, what are the corresponding positions in
+// position space that the system occupies.
+// NOTE! For simplicity, this is a finite set. In future, this could
+// be generalized to a collection of generic obstacles.
+std::vector<Vector3d> PositionVelocity::OccupiedPositions() const {
+  return std::vector<Vector3d>({ position_ });
+}
+
+// Set bounds of the configuration space.
+void PositionVelocity::SetConfigurationBounds(
+  const VectorXd& lower, const VectorXd& upper) {
+  // Catch incorrect dimensions.
+  if (lower.size() != ConfigurationDimension() ||
+      upper.size() != ConfigurationDimension())
+    throw std::runtime_error("PositionVelocity: incorrect bound dimensions.");
+
+  lower_ = lower;
+  upper_ = upper;
+}
+
+// Get bounds of configuration space.
+VectorXd PositionVelocity::GetConfigurationLower() { return lower_; }
+VectorXd PositionVelocity::GetConfigurationUpper() { return upper_; }
 
 // Compound assignment operators.
 PositionVelocity& PositionVelocity::operator+=(const PositionVelocity& rhs) {
