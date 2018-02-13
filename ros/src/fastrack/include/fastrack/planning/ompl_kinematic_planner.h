@@ -159,33 +159,33 @@ Plan(const S& start, const S& goal, const Environment& env,
   // Solve. Parameter is the amount of time (in seconds) used by the solver.
   const ob::PlannerStatus solved = ompl_setup.solve(budget);
 
-  if (solved) {
-    const og::PathGeometric& solution = ompl_setup.getSolutionPath();
-
-    // Populate the Trajectory with states and time stamps.
-    std::vector<S> states;
-    std::vector<double> times;
-
-    double time = start_time;
-    for (size_t ii = 0; ii < solution.getStateCount(); ii++) {
-      const S state = FromOmplState(solution.getState(ii));
-
-      // Increment time by the duration it takes us to get from the previous
-      // configuration to this one.
-      if (ii > 0)
-        time += dynamics_.BestPossibleTime(states.back(), state);
-
-      times.push_back(time);
-      states.push_back(state);
-    }
-
-    return Trajectory(states, times);
+  if (!solved) {
+    ROS_WARN("OMPL Planner could not compute a solution.");
+    return nullptr;
   }
 
-  ROS_WARN("OMPL Planner could not compute a solution.");
-  return nullptr;
-}
+  // Unpack the solution and assign timestamps.
+  const og::PathGeometric& solution = ompl_setup.getSolutionPath();
 
+  // Populate the Trajectory with states and time stamps.
+  std::vector<S> states;
+  std::vector<double> times;
+
+  double time = start_time;
+  for (size_t ii = 0; ii < solution.getStateCount(); ii++) {
+    const S state = FromOmplState(solution.getState(ii));
+
+    // Increment time by the duration it takes us to get from the previous
+    // configuration to this one.
+    if (ii > 0)
+      time += dynamics_.BestPossibleTime(states.back(), state);
+
+    times.push_back(time);
+    states.push_back(state);
+  }
+
+  return Trajectory(states, times);
+}
 
 } //\namespace planning
 } //\namespace fastrack

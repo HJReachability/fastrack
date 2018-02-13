@@ -76,19 +76,19 @@ public:
     return config;
   }
 
+  // What are the positions that the system occupies at the current state.
+  // NOTE! For simplicity, this is a finite set. In future, this could
+  // be generalized to a collection of generic obstacles.
+  std::vector<Vector3d> OccupiedPositions() const;
+
   // Dimension of the configuration space.
-  constexpr size_t ConfigurationDimension() const { return 3; }
+  static constexpr size_t ConfigurationDimension() const { return 3; }
 
   // Set/get bounds of the configuration space.
   static void SetConfigurationBounds(
     const VectorXd& lower, const VectorXd& upper);
   static VectorXd GetConfigurationLower();
   static VectorXd GetConfigurationUpper();
-
-  // What are the positions that the system occupies at the current state.
-  // NOTE! For simplicity, this is a finite set. In future, this could
-  // be generalized to a collection of generic obstacles.
-  std::vector<Vector3d> OccupiedPositions() const;
 
   // Sample from the configuration space associated with this state space.
   static VectorXd Sample() const;
