@@ -54,6 +54,13 @@ public:
   // Destructor.
   virtual ~Dynamics() {}
 
+  // Initialize this class with control bounds.
+  inline void Initialize(const C& u_lower, const C& u_upper) {
+    u_lower_ = u_lower;
+    u_upper_ = u_upper;
+    initialized_ = true;
+  }
+
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
   virtual S Evaluate(const S& x, const C& u) const = 0;
@@ -67,13 +74,19 @@ public:
   inline const C& MaxControl() const { return u_upper_; }
 
 protected:
+  explicit Dynamics()
+    : initialized_(false) {}
   explicit Dynamics(const C& u_lower, const C& u_upper)
     : u_lower_(u_lower),
-      u_upper_(u_upper) {}
+      u_upper_(u_upper),
+      initialized_(true) {}
 
   // Lower and upper bounds for control variable.
-  const C u_lower_;
-  const C u_upper_;
+  C u_lower_;
+  C u_upper_;
+
+  // Has this class been initialized with control bounds?
+  bool initialized_;
 }; //\class Dynamics
 
 } //\namespace dynamics

@@ -36,15 +36,16 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Defines the ValueFunction class. Templated on the vehicle state (VS),
-// vehicle control (VC), bound (B), vehicle dynamics (VD) , and planner
-// dynamics (PD).
+// Defines the ValueFunction class. Templated on the tracker/planner state
+// (TS/PS), tracker/planner control (TC/PC), tracker/planner dynamics (TD/PC),
+// and bound (B).
 //
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef FASTRACK_VALUE_VALUE_FUNCTION_H
 #define FASTRACK_VALUE_VALUE_FUNCTION_H
 
+#include <fastrack/dynamics/dynamics.h>
 #include <fastrack/utils/types.h>
 #include <fastrack/utils/uncopyable.h>
 
@@ -53,8 +54,10 @@
 namespace fastrack {
 namespace value {
 
-template< typename VS, typename VC, typename B, typename VD<VS, VC>,
-          typename PD<typename PS, typename PC> >
+using dynamics::Dynamics;
+
+template< typename TS, typename TC, typename TD,
+          typename PS, typename PC, typename PD, typename B >
 class ValueFunction : private Uncopyable {
 public:
   virtual ~ValueFunction() {}
@@ -63,28 +66,29 @@ public:
   virtual bool Initialize(const ros::NodeHandle& n) = 0;
 
   // Value and gradient at particular relative states.
-  virtual double Value(const VS& vehicle_x, const PS& planner_x) const = 0;
-  virtual VS Gradient(const VS& vehicle_x, const PS& planner_x) const = 0;
+  virtual double Value(const TS& tracker_x, const PS& planner_x) const = 0;
+  virtual TS Gradient(const TS& tracker_x, const PS& planner_x) const = 0;
 
-  // Get the optimal control given the vehicle state and planner state.
-  inline VC OptimalControl(const VS& vehicle_x, const PS& planner_x) const {
-    const VS relative_x = vehicle_x.RelativeTo<PS>(planner_x);
-    return vehicle_dynamics_.OptimalControl(relative_x, Gradient(relative_x));
+  // Get the optimal control given the tracker state and planner state.
+  inline TC OptimalControl(const TS& tracker_x, const PS& planner_x) const {
+    const TS relative_x = tracker_x.RelativeTo<PS>(planner_x);
+    return tracker_dynamics_.OptimalControl(relative_x, Gradient(relative_x));
   }
 
   // Accessors.
   inline const B& TrackingBound() const { return bound_; }
-  inline const VD<VS, VC>& VehicleDynamics() const { return vehicle_dynamics_; }
-  inline const PD<PS, PC>& VehicleDynamics() const { return planner_dynamics_; }
+  inline const TD& TrackerDynamics() const { return tracker_dynamics_; }
+  inline const PD& PlannerDynamics() const { return planner_dynamics_; }
 
-  // Priority of the optimal control at the given vehicle and planner states.
+  // Priority of the optimal control at the given tracker and planner states.
   // This is a number between 0 and 1, where 1 means the final control signal
   // should be exactly the optimal control signal computed by this
   // value function.
-  virtual double Priority(const VS& vehicle_x, const PS& planner_x) const = 0;
+  virtual double Priority(const VS& tracker_x, const PS& planner_x) const = 0;
 
 protected:
-  explicit ValueFunction() {}
+  explicit ValueFunction()
+    : initialized_(false) {}
 
   // Load parameters and register callbacks.
   virtual bool LoadParameters(const ros::NodeHandle& n) = 0;
@@ -92,12 +96,18 @@ protected:
 
   // Member variables to be instantiated by derived classes after
   // reading the necessary parameters from the ROS parameter server.
-  // Keep a copy of the vehicle and planner dynamics.
-  VD<VS, VC> vehicle_dynamics_;
-  PD<PS, PC> planner_dynamics_;
+  // Keep a copy of the tracker and planner dynamics.
+  VD tracker_dynamics_;
+  PD planner_dynamics_;
 
   // Keep a copy of the tracking errror bound.
   B bound_;
+
+  // Flag for whether this class has been initialized yet.
+  bool initialized_;
+
+  // Name of this class, for use in debug messages.
+  std::string name_;
 }; //\class ValueFunction
 
 } //\namespace value

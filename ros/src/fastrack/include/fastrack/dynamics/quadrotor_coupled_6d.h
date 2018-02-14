@@ -36,14 +36,14 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Defines the QuadrotorDecoupled6D class, which uses PositionVelocity as the
-// state and QuadrotorControl as the control, and models the dynamics as a
-// three decoupled 2D systems.
+// Defines the QuadrotorCoupled6D class, which uses PositionVelocity as the
+// state and QuadrotorControl as the control, and models the system as a single
+// coupled 6D system.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_DYNAMICS_QUADROTOR_DECOUPLED_6D_H
-#define FASTRACK_DYNAMICS_QUADROTOR_DECOUPLED_6D_H
+#ifndef FASTRACK_DYNAMICS_QUADROTOR_6D_H
+#define FASTRACK_DYNAMICS_QUADROTOR_6D_H
 
 #include <fastrack/dynamics/dynamics.h>
 #include <fastrack/state/position_velocity.h>
@@ -57,14 +57,14 @@ namespace dynamics {
 using state::PositionVelocity;
 using control::QuadrotorControl;
 
-class QuadrotorDecoupled6D :
+class QuadrotorCoupled6D :
     public Dynamics<PositionVelocity, QuadrotorControl> {
 public:
-  ~QuadrotorDecoupled6D() {}
-  explicit QuadrotorDecoupled6D()
+  ~QuadrotorCoupled6D() {}
+  explicit QuadrotorCoupled6D()
     : Dynamics() {}
-  explicit QuadrotorDecoupled6D(const QuadrotorControl& u_lower,
-                                const QuadrotorControl& u_upper)
+  explicit QuadrotorCoupled6D(const QuadrotorControl& u_lower,
+                              const QuadrotorControl& u_upper)
     : Dynamics(u_lower, u_upper) {}
 
   // Derived classes must be able to give the time derivative of state
@@ -77,8 +77,8 @@ public:
     // Velocity derivatives are given by simple trigonometric functions
     // of the pitch/roll, scaled by G since we assume that thrust is
     // approximately equal to G.
-    const Vector3d velocity_dot(constants::G * std::tan(u.pitch),
-                                -constants::G * std::tan(u.roll),
+    const Vector3d velocity_dot(u.thrust * std::tan(u.pitch),
+                                -u.thrust * std::tan(u.roll),
                                 u.thrust - constants::G);
 
     return PositionVelocity(position_dot, velocity_dot);
@@ -102,7 +102,7 @@ public:
 
     return c;
   }
-}; //\class QuadrotorDecoupled6D
+}; //\class QuadrotorCoupled6D
 
 } //\namespace dynamics
 } //\namespace fastrack

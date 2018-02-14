@@ -45,6 +45,7 @@
 
 // ------------------------------- INCLUDES -------------------------------- //
 
+#include <typeinfo>
 #include <exception>
 #include <memory>
 #include <limits>

@@ -36,14 +36,19 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Defines the AnalyticalQuadrotorDecoupled6D class, which inherits from
-// the ValueFunction base class.
+// Defines the AnalyticalKinematicBoxQuadrotorDecoupled6D class, which inherits
+// from the ValueFunction base class. This class assumes Kinematic planner
+// dynamics and QuadrotorDecoupled6D tracker dynamics, and uses a Box tracking
+// error bound.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_VALUE_ANALYTICAL_QUADROTOR_DECOUPLED_6D_H
-#define FASTRACK_VALUE_ANLAYTICAL_QUADROTOR_DECOUPLED_6D_H
+#ifndef FASTRACK_VALUE_ANALYTICAL_KINEMATIC_BOX_QUADROTOR_DECOUPLED_6D_H
+#define FASTRACK_VALUE_ANLAYTICAL_KINEMATIC_BOX_QUADROTOR_DECOUPLED_6D_H
 
+#include <fastrack/state/position_velocity.h>
+#include <fastrack/control/quadrotor_control.h>
+#include <fastrack/dynamics/quadrotor_decoupled_6d.h>
 #include <fastrack/utils/types.h>
 #include <fastrack/utils/uncopyable.h>
 
@@ -52,52 +57,41 @@
 namespace fastrack {
 namespace value {
 
-template< typename VS, typename VC, typename B, typename VD<VS, VC>,
-          typename PD<typename PS, typename PC> >
-class ValueFunction : private Uncopyable {
+using control::QuadrotorControl;
+using state::PositionVelocity;
+using dynamics::QuadrotorDecoupled6D;
+using dynamics::Kinematics;
+using bound::Box;
+
+class AnalyticalKinematicBoxQuadrotorDecoupled6D : public ValueFunction<
+  PositionVelocity, QuadrotorControl, QuadrotorDecoupled6D,
+  PositionVelocity, VectorXd, Kinematics<PositionVelocity>, Box> {
 public:
-  virtual ~ValueFunction() {}
+  ~AnalyticalKinematicBoxQuadrotorDecoupled6D() {}
+  explicit AnalyticalKinematicBoxQuadrotorDecoupled6D()
+    : ValueFunction() {}
 
   // Initialize from a ROS NodeHandle.
-  virtual bool Initialize(const ros::NodeHandle& n) = 0;
+  bool Initialize(const ros::NodeHandle& n);
 
   // Value and gradient at particular relative states.
-  virtual double Value(const VS& vehicle_x, const PS& planner_x) const = 0;
-  virtual VS Gradient(const VS& vehicle_x, const PS& planner_x) const = 0;
-
-  // Get the optimal control given the vehicle state and planner state.
-  inline VC OptimalControl(const VS& vehicle_x, const PS& planner_x) const {
-    const VS relative_x = vehicle_x.RelativeTo<PS>(planner_x);
-    return vehicle_dynamics_.OptimalControl(relative_x, Gradient(relative_x));
-  }
-
-  // Accessors.
-  inline const B& TrackingBound() const { return bound_; }
-  inline const VD<VS, VC>& VehicleDynamics() const { return vehicle_dynamics_; }
-  inline const PD<PS, PC>& VehicleDynamics() const { return planner_dynamics_; }
+  double Value(const PositionVelocity& vehicle_x,
+               const PositionVelocity& planner_x) const;
+  PositionVelocity Gradient(const PositionVelocity& vehicle_x,
+                            const PositionVelocity& planner_x) const;
 
   // Priority of the optimal control at the given vehicle and planner states.
   // This is a number between 0 and 1, where 1 means the final control signal
   // should be exactly the optimal control signal computed by this
   // value function.
-  virtual double Priority(const VS& vehicle_x, const PS& planner_x) const = 0;
+  double Priority(const PositionVelocity& vehicle_x,
+                  const PositionVelocity& planner_x) const;
 
-protected:
-  explicit ValueFunction() {}
-
+private:
   // Load parameters and register callbacks.
-  virtual bool LoadParameters(const ros::NodeHandle& n) = 0;
-  virtual bool RegisterCallbacks(const ros::NodeHandle& n) = 0;
-
-  // Member variables to be instantiated by derived classes after
-  // reading the necessary parameters from the ROS parameter server.
-  // Keep a copy of the vehicle and planner dynamics.
-  VD<VS, VC> vehicle_dynamics_;
-  PD<PS, PC> planner_dynamics_;
-
-  // Keep a copy of the tracking errror bound.
-  B bound_;
-}; //\class ValueFunction
+  bool LoadParameters(const ros::NodeHandle& n);
+  bool RegisterCallbacks(const ros::NodeHandle& n);
+}; //\class AnalyticalKinematicBoxQuadrotorDecoupled6D
 
 } //\namespace value
 } //\namespace fastrack

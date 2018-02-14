@@ -51,17 +51,17 @@ namespace bound {
 
 struct Box {
   // Size in each dimension.
-  double x_size;
-  double y_size;
-  double z_size;
+  double x;
+  double y;
+  double z;
 
   // Constructors and destructor.
   ~Box() {}
   explicit Box() {}
   explicit Box(double xsize, double ysize, double zsize)
-    : x_size(xsize),
-      y_size(ysize),
-      z_size(zsize) {}
+    : x(xsize),
+      y(ysize),
+      z(zsize) {}
 }; //\struct Box
 
 } //\namespace bound

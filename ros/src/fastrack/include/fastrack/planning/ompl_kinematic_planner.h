@@ -65,7 +65,10 @@ class OmplKinematicPlanner : public KinematicPlanner<S, B> {
 public:
   ~KinematicPlanner() {}
   explicit OmplKinematicPlanner(const Kinematics<S>& dynamics, const B& bound)
-    : KinematicPlanner(dynamics, bound) {}
+    : KinematicPlanner(dynamics, bound) {
+    // Set OMPL log level.
+    ompl::msg::setLogLevel(ompl::msg::LogLevel::LOG_ERROR);
+  }
 
   // Plan a trajectory from the given start to goal states starting
   // at the given time.
