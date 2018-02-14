@@ -63,6 +63,9 @@ public:
   virtual Vector3d Position() const = 0;
   virtual VectorXd Configuration() const = 0;
 
+  // Compute the relative state to a particular planner state.
+  template<typename PS> State RelativeTo(const PS& planner_x) const = 0;
+
   // What are the positions that the system occupies at the current state.
   // NOTE! For simplicity, this is a finite set. In future, this could
   // be generalized to a collection of generic obstacles.

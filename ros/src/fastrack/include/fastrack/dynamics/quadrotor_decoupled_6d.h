@@ -56,11 +56,12 @@ namespace dynamics {
 using state::PositionVelocity;
 using control::QuadrotorControl;
 
-class Quadrotor6D : public Dynamics<PositionVelocity, QuadrotorControl> {
+class QuadrotorDecoupled6D :
+    public Dynamics<PositionVelocity, QuadrotorControl> {
 public:
-  ~Quadrotor6D() {}
-  explicit Quadrotor6D(const QuadrotorControl& u_lower,
-                       const QuadrotorControl& u_upper)
+  ~QuadrotorDecoupled6D() {}
+  explicit QuadrotorDecoupled6D(const QuadrotorControl& u_lower,
+                                const QuadrotorControl& u_upper)
     : Dynamics(u_lower, u_upper) {}
 
   // Derived classes must be able to give the time derivative of state

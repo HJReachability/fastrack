@@ -36,14 +36,13 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Defines the ValueFunction class. Templated on the vehicle state (VS),
-// vehicle control (VC), bound (B), vehicle dynamics (VD) , and planner
-// dynamics (PD).
+// Defines the AnalyticalQuadrotorDecoupled6D class, which inherits from
+// the ValueFunction base class.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_VALUE_VALUE_FUNCTION_H
-#define FASTRACK_VALUE_VALUE_FUNCTION_H
+#ifndef FASTRACK_VALUE_ANALYTICAL_QUADROTOR_DECOUPLED_6D_H
+#define FASTRACK_VALUE_ANLAYTICAL_QUADROTOR_DECOUPLED_6D_H
 
 #include <fastrack/utils/types.h>
 #include <fastrack/utils/uncopyable.h>

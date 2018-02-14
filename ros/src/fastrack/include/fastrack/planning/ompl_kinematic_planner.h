@@ -80,8 +80,8 @@ private:
 // ---------------------------- IMPLEMENTATION ------------------------------ //
 
 // Convert between OMPL states and configurations.
-template<typename S, typename P>
-S OmplKinematicPlanner<S, P>::FromOmplState(const ob::State* state) const {
+template<typename S, typename B, typename P>
+S OmplKinematicPlanner<S, B, P>::FromOmplState(const ob::State* state) const {
   // Catch null state.
   if (!state)
     throw std::runtime_error("OmplKinematicPlanner: null OMPL state.");
@@ -100,8 +100,8 @@ S OmplKinematicPlanner<S, P>::FromOmplState(const ob::State* state) const {
 
 // Plan a trajectory from the given start to goal states starting
 // at the given time.
-template<typename S, typename P>
-Trajectory<S> OmplKinematicPlanner<S, P>::
+template<typename S, typename B, typename P>
+Trajectory<S> OmplKinematicPlanner<S, B, P>::
 Plan(const S& start, const S& goal, const Environment& env,
      double start_time) const {
   // Unpack start and goal configurations.

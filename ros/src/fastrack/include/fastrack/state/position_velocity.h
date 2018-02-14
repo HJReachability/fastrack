@@ -76,6 +76,12 @@ public:
     return config;
   }
 
+  // Compute the relative state to a particular planner state.
+  template<typename PS> PositionVelocity RelativeTo(const PS& planner_x) const {
+    return PositionVelocity(position_ - planner_x.Position(),
+                            velocity_ - planner_x.Velocity());
+  }
+
   // What are the positions that the system occupies at the current state.
   // NOTE! For simplicity, this is a finite set. In future, this could
   // be generalized to a collection of generic obstacles.
