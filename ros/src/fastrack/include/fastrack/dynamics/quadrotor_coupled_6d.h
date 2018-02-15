@@ -71,6 +71,10 @@ public:
   // as a function of current state and control.
   inline PositionVelocity Evaluate(
     const PositionVelocity& x, const QuadrotorControl& u) const {
+    // Check initialization.
+    if (!initialized_)
+      throw std::runtime_error("QuadrotorCoupled6D: uninitialized call to Evaluate.");
+
     // Position derivatives are just velocity.
     const Vector3d position_dot(x.Velocity());
 
@@ -90,6 +94,10 @@ public:
   // gradient of the value function at that state.
   inline QuadrotorControl OptimalControl(
     const PositionVelocity& x, const PositionVelocity& value_gradient) const {
+    // Check initialization.
+    if (!initialized_)
+      throw std::runtime_error("QuadrotorCoupled6D: uninitialized call to OptimalControl.");
+
     // Set each dimension of optimal control to upper/lower bound depending
     // on the sign of the gradient in that dimension. We want to minimize the
     // inner product between the projected gradient and control.

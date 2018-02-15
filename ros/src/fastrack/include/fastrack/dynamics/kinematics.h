@@ -58,15 +58,19 @@ template<typename S>
 class Kinematics : public Dynamics<S, VectorXd> {
 public:
   ~Kinematics() {}
+  explicit Kinematics()
+    : Dynamics() {}
   explicit Kinematics(const VectorXd& u_lower, const VectorXd& u_upper)
     : Dynamics(u_lower, u_upper) {}
 
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
   S Evaluate(const S& x, const VectorXd& u) const {
-    const VectorXd c = x.Configuration();
+    if (!initialized_)
+      throw std::runtime_error("Kinematics: uninitialized call to Evaluate.");
 
     // Make sure dimensions agree.
+    const VectorXd c = x.Configuration();
     if (c.size() != u.size()) {
       ROS_ERROR("Kinematics: config/control spaces not equal (%zu vs. %zu).",
                 c.size(), u.size());
@@ -85,6 +89,9 @@ public:
   // How much time will it take us to go between two configurations if we move
   // at max velocity between them in each dimension.
   double BestPossibleTime(const S& x1, const S& x2) const {
+    if (!initialized_)
+      throw std::runtime_error("Kinematics: uninitialized call to BestPossibleTime.");
+
     // Unpack into configurations.
     const VectorXd c1 = x1.Configuration();
     const VectorXd c2 = x2.Configuration();
