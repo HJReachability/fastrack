@@ -91,6 +91,17 @@ private:
   // Load parameters and register callbacks.
   bool LoadParameters(const ros::NodeHandle& n);
   bool RegisterCallbacks(const ros::NodeHandle& n);
+
+  // Maximum acceleration.
+  Vector3d max_acc_;
+
+  // Disturbance bounds (assumed to be symmetric).
+  Vector3d vel_dist_;
+  Vector3d acc_dist_;
+
+  // Position/velocity expansion.
+  Vector3d pos_exp_;
+  Vector3d vel_exp_;
 }; //\class AnalyticalKinematicBoxQuadrotorDecoupled6D
 
 } //\namespace value

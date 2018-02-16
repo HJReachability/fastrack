@@ -55,7 +55,7 @@ public:
                             double vx, double vy, double vz);
   explicit PositionVelocity(const Vector3d& position,
                             const Vector3d& velocity);
-  explicit State(const VectorXd& config);
+  explicit PositionVelocity(const VectorXd& config);
 
   // Accessors.
   inline double X() const { return position_(0); }

@@ -53,7 +53,7 @@
 namespace fastrack {
 namespace planning {
 
-template< typename S, typename D<S, typename C>, typename B >
+template< typename S, typename D, typename B >
 class Planner {
 public:
   virtual ~Planner() {}
@@ -65,12 +65,12 @@ public:
     double start_time=0.0) const = 0;
 
 protected:
-  explicit Planner(const D<S, C>& dynamics, const B& bound)
+  explicit Planner(const D& dynamics, const B& bound)
     : dynamics_(dynamics),
       bound_(bound) {}
 
   // Keep a copy of the dynamics and the tracking bound.
-  const D<S, C> dynamics_;
+  const D dynamics_;
   const B bound_;
 }; //\class Planner
 
