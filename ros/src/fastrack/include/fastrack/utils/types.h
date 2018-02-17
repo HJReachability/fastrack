@@ -45,6 +45,8 @@
 
 // ------------------------------- INCLUDES -------------------------------- //
 
+#include <string>
+#include <type_traits>
 #include <typeinfo>
 #include <exception>
 #include <memory>

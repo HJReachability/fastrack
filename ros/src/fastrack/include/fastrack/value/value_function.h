@@ -88,7 +88,14 @@ public:
 
 protected:
   explicit ValueFunction()
-    : initialized_(false) {}
+    : initialized_(false) {
+    // Check that dynamics are derived from the correctly-templated Dynamics.
+    if (!std::is_base_of< Dynamics<TS, TC>, TD >::value)
+      throw std::runtime_exception("ValueFunction: bad tracker dynamics type.");
+
+    if (!std::is_base_of< Dynamics<PS, PC>, PD >::value)
+      throw std::runtime_exception("ValueFunction: bad planner dynamics type.");
+  }
 
   // Load parameters and register callbacks.
   virtual bool LoadParameters(const ros::NodeHandle& n) = 0;
@@ -97,7 +104,7 @@ protected:
   // Member variables to be instantiated by derived classes after
   // reading the necessary parameters from the ROS parameter server.
   // Keep a copy of the tracker and planner dynamics.
-  VD tracker_dynamics_;
+  TD tracker_dynamics_;
   PD planner_dynamics_;
 
   // Keep a copy of the tracking errror bound.
