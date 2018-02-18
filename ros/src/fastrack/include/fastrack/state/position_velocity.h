@@ -82,6 +82,11 @@ public:
                             velocity_ - planner_x.Velocity());
   }
 
+  // Compute the relative state to a particular configuration.
+  PositionVelocity RelativeTo(const VectorXd& planner_config) const {
+    return RelativeTo<PositionVelocity>(PositionVelocity(planner_config));
+  }
+
   // What are the positions that the system occupies at the current state.
   // NOTE! For simplicity, this is a finite set. In future, this could
   // be generalized to a collection of generic obstacles.

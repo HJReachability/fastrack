@@ -67,8 +67,8 @@ PositionVelocity::PositionVelocity(const VectorXd& config)
     position_(Vector3d::Zero()),
     velocity_(Vector3d::Zero()) {
   // Check dimensions.
-  if (config.size() != 3)
-    throw std::runtime_error("PositionVelocity: config dimension was not 3.");
+  if (config.size() != ConfigurationDimension())
+    throw std::runtime_error("PositionVelocity: incorrect config dimension.");
 
   position_(0) = config(0);
   position_(1) = config(1);

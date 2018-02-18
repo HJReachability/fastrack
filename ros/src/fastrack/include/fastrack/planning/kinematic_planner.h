@@ -60,6 +60,7 @@ public:
 
   // Plan a trajectory from the given start to goal states starting
   // at the given time.
+  // NOTE! The states in the output trajectory are essentially configurations.
   virtual Trajectory<S> Plan(
     const S& start, const S& goal, const Environment& env,
     double start_time=0.0) const = 0;

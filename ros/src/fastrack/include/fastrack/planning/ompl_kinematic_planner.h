@@ -63,7 +63,7 @@ namespace og = ompl::geometric;
 template<typename S, typename B, typename P>
 class OmplKinematicPlanner : public KinematicPlanner<S, B> {
 public:
-  ~KinematicPlanner() {}
+  ~OmplKinematicPlanner() {}
   explicit OmplKinematicPlanner(const Kinematics<S>& dynamics, const B& bound)
     : KinematicPlanner(dynamics, bound) {
     // Set OMPL log level.
@@ -72,11 +72,12 @@ public:
 
   // Plan a trajectory from the given start to goal states starting
   // at the given time.
+  // NOTE! The states in the output trajectory are essentially configurations.
   Trajectory<S> Plan(const S& start, const S& goal, const Environment& env,
                      double start_time=0.0) const;
 
 private:
-  // Convert between OMPL states and States.
+  // Convert between OMPL states and configurations.
   S FromOmplState(const ob::State* state) const;
 }; //\class KinematicPlanner
 
@@ -98,7 +99,7 @@ S OmplKinematicPlanner<S, B, P>::FromOmplState(const ob::State* state) const {
   for (size_t ii = 0; ii < S::ConfigurationDimension(); ii++)
     config(ii) = cast_state->values[ii];
 
-  return config;
+  return S(config);
 }
 
 // Plan a trajectory from the given start to goal states starting
@@ -171,6 +172,7 @@ Plan(const S& start, const S& goal, const Environment& env,
   const og::PathGeometric& solution = ompl_setup.getSolutionPath();
 
   // Populate the Trajectory with states and time stamps.
+  // NOTE! These states are essentially just configurations.
   std::vector<S> states;
   std::vector<double> times;
 
