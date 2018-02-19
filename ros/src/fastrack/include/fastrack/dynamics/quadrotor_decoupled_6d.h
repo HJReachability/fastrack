@@ -58,7 +58,7 @@ using state::PositionVelocity;
 using control::QuadrotorControl;
 
 class QuadrotorDecoupled6D :
-    public Dynamics<PositionVelocity, QuadrotorControl> {
+    public Dynamics<PositionVelocity, QuadrotorControl, Empty> {
 public:
   ~QuadrotorDecoupled6D() {}
   explicit QuadrotorDecoupled6D()
@@ -109,6 +109,12 @@ public:
     c.thrust = (value_gradient.Vz() < 0.0) ? u_upper_.thrust : u_lower_.thrust;
 
     return c;
+  }
+
+  // Convert to the appropriate service response type.
+  inline Empty ToRos() const {
+    throw std::runtime_error("QuadrotorDecoupled6D: ToRos is unimplemented.");
+    return Empty();
   }
 }; //\class QuadrotorDecoupled6D
 

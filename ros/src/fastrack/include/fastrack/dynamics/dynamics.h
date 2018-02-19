@@ -36,7 +36,8 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Defines the Dynamics class. Templated on the state type and control type.
+// Defines the Dynamics class. Templated on the state type and control type,
+// as well as the type of service response (SR) which encodes these dynamics.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -48,7 +49,7 @@
 namespace fastrack {
 namespace dynamics {
 
-template<typename S, typename C>
+template<typename S, typename C, typename SR>
 class Dynamics {
 public:
   // Destructor.
@@ -72,6 +73,9 @@ public:
   // Get the min and max controls.
   inline const C& MinControl() const { return u_lower_; }
   inline const C& MaxControl() const { return u_upper_; }
+
+  // Convert to the appropriate service response type.
+  SR ToRos() const = 0;
 
 protected:
   explicit Dynamics()

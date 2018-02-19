@@ -46,6 +46,8 @@
 
 #include <fastrack/space/state.h>
 #include <fastrack/utils/types.h>
+#include <fastrack_msgs/Trajectory.h>
+#include <fastrack_msgs/State.h>
 
 #include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
@@ -61,9 +63,13 @@ public:
   ~Trajectory() {}
   explicit Trajectory(const std::vector<S> states,
                       const std::vector<double> times);
+  explicit Trajectory(const fastrack_msgs::Trajectory::ConstPtr& msg);
 
   // Interpolate at a particular time.
   S Interpolate(double t) const;
+
+  // Convert to a ROS message.
+  fastrack_msgs::Trajectory ToRos() const;
 
   // Visualize this trajectory.
   void Visualize(const ros::Publisher& pub, const std::string& frame) const;
@@ -106,6 +112,24 @@ Trajectory<S>::Trajectory(const std::vector<S> states,
   }
 }
 
+// Construct from a ROS message.
+template<typename S>
+Trajectory<S>::Trajectory(const fastrack_msgs::Trajectory::ConstPtr& msg) {
+  size_t num_elements = msg->states.size();
+
+  // Get size carefully.
+  if (msg->states.size() != msg->times.size()) {
+    ROS_ERROR("Trajectory: states/times are not the same length.");
+    num_elements = std::min(msg->states.size(), msg->times.size());
+  }
+
+  // Unpack message.
+  for (size_t ii = 0; ii < num_elements; ii++) {
+    states_.push_back(S(msg->states[ii]));
+    times_.push_back(S(msg->times[ii]));
+  }
+}
+
 // Interpolate at a particular time.
 template<typename S>
 S Trajectory<S>::Interpolate(double t) const {
@@ -137,6 +161,20 @@ S Trajectory<S>::Interpolate(double t) const {
   const double frac = (t - times_[lo]) / (times_[hi] - times_[lo]);
   return (1.0 - frac) * states_[lo] + frac * states_[hi];
 }
+
+// Convert to a ROS message.
+template <typename S>
+fastrack_msgs::Trajectory Trajectory<S>::ToRos() const {
+  fastrack_msgs::Trajectory msg;
+
+  for (size_t ii = 0; ii < states_.size(); ii++) {
+    msg.states.push_back(states_[ii].ToRos());
+    msg.times.push_back(times_[ii]);
+  }
+
+  return msg;
+}
+
 
 // Visualize this trajectory.
 template<typename S>

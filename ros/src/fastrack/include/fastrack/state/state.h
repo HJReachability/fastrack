@@ -46,6 +46,7 @@
 #define FASTRACK_STATE_STATE_H
 
 #include <fastrack/utils/types.h>
+#include <fastrack_msgs/State.h>
 
 namespace fastrack {
 namespace state {
@@ -68,11 +69,15 @@ public:
   // be generalized to a collection of generic obstacles.
   virtual std::vector<Vector3d> OccupiedPositions() const = 0;
 
+  // Convert to ROS message.
+  fastrack_msgs::State ToRos() const = 0;
+
   // Re-seed the random engine.
   static inline void Seed(unsigned int seed) const { rng_.seed(seed); }
 
 protected:
   explicit State() {}
+  explicit virtual State(const fastrack_msgs::State& msg) = 0;
   explicit virtual State(const VectorXd& config) = 0;
 
   // Random number generator shared across all instances of states.

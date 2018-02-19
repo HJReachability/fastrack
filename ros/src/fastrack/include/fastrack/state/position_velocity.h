@@ -55,6 +55,7 @@ public:
                             double vx, double vy, double vz);
   explicit PositionVelocity(const Vector3d& position,
                             const Vector3d& velocity);
+  explicit PositionVelocity(const fastrack_msgs::State& msg);
   explicit PositionVelocity(const VectorXd& config);
 
   // Accessors.
@@ -92,7 +93,11 @@ public:
   // be generalized to a collection of generic obstacles.
   std::vector<Vector3d> OccupiedPositions() const;
 
-  // Dimension of the configuration space.
+  // Convert to ROS message.
+  fastrack_msgs::State ToRos() const;
+
+  // Dimension of the state and configuration spaces.
+  static constexpr size_t StateDimension() const { return 6; }
   static constexpr size_t ConfigurationDimension() const { return 3; }
 
   // Set/get bounds of the configuration space.

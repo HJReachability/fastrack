@@ -45,11 +45,12 @@
 #define FASTRACK_BOUND_BOX_H
 
 #include <fastrack/utils/types.h>
+#include <fastrack_srvs/TrackingBoundBox.h>
 
 namespace fastrack {
 namespace bound {
 
-struct Box {
+struct Box : public TrackingBound<fastrack_srvs::TrackingBoundBox::Response> {
   // Size in each dimension.
   double x;
   double y;
@@ -57,11 +58,21 @@ struct Box {
 
   // Constructors and destructor.
   ~Box() {}
-  explicit Box() {}
+  explicit Box()
+    : TrackingBound() {}
   explicit Box(double xsize, double ysize, double zsize)
-    : x(xsize),
-      y(ysize),
-      z(zsize) {}
+    : TrackingBound(),
+      x(xsize), y(ysize), z(zsize) {}
+
+  // Convert to service response.
+  inline fastrack_srvs::TrackingBoundBox::Response ToRos() const {
+    fastrack_srvs::TrackingBoundBox::Response res;
+    res.x = x;
+    res.y = y;
+    res.z = z;
+
+    return res;
+  }
 }; //\struct Box
 
 } //\namespace bound

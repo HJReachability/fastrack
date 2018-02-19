@@ -50,6 +50,8 @@
 #include <fastrack/planning/trajectory.h>
 #include <fastrack/utils/types.h>
 
+#include <fastrack_msgs/ReplanRequest.h>
+
 namespace fastrack {
 namespace planning {
 
@@ -58,16 +60,35 @@ class Planner {
 public:
   virtual ~Planner() {}
 
+  // Initialize from a ROS NodeHandle.
+  bool Initialize(const ros::NodeHandle& n);
+
+protected:
+  explicit Planner(const D& dynamics, const B& bound)
+    : dynamics_(dynamics),
+      bound_(bound) {}
+
+  // Load parameters and register callbacks.
+  bool LoadParameters(const ros::NodeHandle& n);
+  bool RegisterCallbacks(const ros::NodeHandle& n);
+
+  // Callback to handle replanning requests.
+  inline void ReplanRequestCallback(const std_msgs::Empty::ConstPtr& msg) const {
+    //    traj_pub_.publish(Pl
+  }
+
   // Plan a trajectory from the given start to goal states starting
   // at the given time.
   virtual Trajectory<S> Plan(
     const S& start, const S& goal, const Environment& env,
     double start_time=0.0) const = 0;
 
-protected:
-  explicit Planner(const D& dynamics, const B& bound)
-    : dynamics_(dynamics),
-      bound_(bound) {}
+  // Publisher and subscriber.
+  ros::Subscriber replan_request_sub_;
+  ros::Publisher traj_pub_;
+
+  std::string replan_request_topic_;
+  std::string traj_topic_;
 
   // Keep a copy of the dynamics and the tracking bound.
   const D dynamics_;

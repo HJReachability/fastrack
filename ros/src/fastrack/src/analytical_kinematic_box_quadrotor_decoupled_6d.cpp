@@ -122,6 +122,8 @@ LoadParameters(const ros::NodeHandle& n) {
     (max_planner_speed(1) + vel_dist_(1)) / (max_acc_(1) - acc_dist_(1));
   bound_.z = pos_exp_(2) + (max_planner_speed(2) + vel_dist_(2)) *
     (max_planner_speed(2) + vel_dist_(2)) / (max_acc_(2) - acc_dist_(2));
+
+  return true;
 }
 
 // Register callbacks.

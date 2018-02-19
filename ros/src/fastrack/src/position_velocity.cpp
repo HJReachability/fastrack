@@ -62,6 +62,21 @@ PositionVelocity::PositionVelocity(const Vector3d& position,
   : State(),
     position_(position),
     velocity_(velocity) {}
+PositionVelocity::PositionVelocity(const fastrack_msgs::State& msg)
+  : State(),
+    position_(Vector3d::Zero()),
+    velocity_(Vector3d::Zero()) {
+  // Check dimensions.
+  if (msg.state.size() != StateDimension())
+    throw std::runtime_error("PositionVelocity: incorrect msg dimension.");
+
+  position_(0) = msg.state[0];
+  position_(1) = msg.state[1];
+  position_(2) = msg.state[2];
+  velocity_(0) = msg.state[3];
+  velocity_(1) = msg.state[4];
+  velocity_(2) = msg.state[5];
+}
 PositionVelocity::PositionVelocity(const VectorXd& config)
   : State(),
     position_(Vector3d::Zero()),
@@ -119,6 +134,20 @@ void PositionVelocity::SetConfigurationBounds(
   lower_ = lower;
   upper_ = upper;
 }
+
+// Convert to ROS message.
+fastrack_msgs::State PositionVelocity::ToRos() const {
+  fastrack_msgs::State msg;
+  msg.state.push_back(position_[0]);
+  msg.state.push_back(position_[1]);
+  msg.state.push_back(position_[2]);
+  msg.state.push_back(velocity_[0]);
+  msg.state.push_back(velocity_[1]);
+  msg.state.push_back(velocity_[2]);
+
+  return msg;
+}
+
 
 // Get bounds of configuration space.
 VectorXd PositionVelocity::GetConfigurationLower() { return lower_; }

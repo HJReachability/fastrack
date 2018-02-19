@@ -66,38 +66,46 @@ template<typename V, typename TS, typename TC, typename MTS, typename MTC,
          typename PS, typename MPS, typename SB, typename SP>
 class Tracker : private Uncopyable {
 public:
-  ~Tracker() {}
-  explicit Tracker()
-    : initialized_(false) {}
+  virtual ~Tracker() {}
 
   // Initialize from a ROS NodeHandle.
   bool Initialize(const ros::NodeHandle& n);
 
-private:
+protected:
+  explicit Tracker()
+    : initialized_(false) {}
+
   // Load parameters and register callbacks.
   bool LoadParameters(const ros::NodeHandle& n);
   bool RegisterCallbacks(const ros::NodeHandle& n);
 
   // Callback to update tracker/planner state.
   inline void TrackerStateCallback(const MTS::ConstPtr& msg) {
-    tracker_x_ = TS(msg);
+    tracker_x_ = FromRos(msg);
   }
   inline void PlannerStateCallback(const MPS::ConstPtr& msg) {
-    planner_x_ = PS(msg);
+    planner_x_ = FromRos(msg);
   }
 
   // Service callbacks for tracking bound and planner parameters.
   inline bool TrackingBoundServer(
     const SB::Request::ConstPtr& req, SB::Response::ConstPtr& res) const {
-    res = value_.TrackingBound().Pack();
+    res = value_.TrackingBound().ToRos();
   }
   inline bool PlannerDynamicsServer(
     const SP::Request::ConstPtr& req, SP::Response::ConstPtr& res) const {
-    res = value_.PlannerDynamics().Pack();
+    res = value_.PlannerDynamics().ToRos();
   }
 
   // Timer callback. Compute the optimal control and publish.
-  void TimerCallback(const ros::TimerEvent& e) const;
+  inline void TimerCallback(const ros::TimerEvent& e) const {
+    control_pub_.publish(ToRos(value_.OptimalControl(tracker_x_, planner_x_)));
+  }
+
+  // Convert states/control from/to ROS messages.
+  TS FromRos(const MTS::ConstPtr& msg) const = 0;
+  PS FromRos(const MPS::ConstPtr& msg) const = 0;
+  MTC ToRos(const TC& control) const = 0;
 
   // Most recent tracker/planner states.
   TS tracker_x_;
@@ -114,13 +122,14 @@ private:
 
   // Services.
   std::string bound_name_;
-  std::string planner_params_name_;
+  std::string planner_dynamics_name_;
 
   ros::ServiceServer bound_srv_;
-  ros::ServiceServer planner_params_srv_;
+  ros::ServiceServer planner_dynamics_srv_;
 
   // Timer.
   ros::Timer timer_;
+  double time_step_;
 
   // Value function.
   V value_;
@@ -138,25 +147,81 @@ private:
 template<typename V, typename TS, typename TC, typename MTS, typename MTC,
          typename PS, typename MPS, typename SB, typename SP>
 bool Tracker<V, TS, TC, MTS, MTC, PS, MPS, SB, SP>::
-Initialize(const ros::NodeHandle& n);
+Initialize(const ros::NodeHandle& n) {
+  name_ = ros::names::append(n.getNamespace(), "Tracker");
+
+  // Initialize value function.
+  if (!value_.Initialize(n)) {
+    ROS_ERROR("%s: Failed to initialize value function.", name_.c_str());
+    return false;
+  }
+
+  // Load parameters.
+  if (!LoadParameters(n)) {
+    ROS_ERROR("%s: Failed to load parameters.", name_.c_str());
+    return false;
+  }
+
+  // Register callbacks.
+  if (!RegisterCallbacks(n)) {
+    ROS_ERROR("%s: Failed to register callbacks.", name_.c_str());
+    return false;
+  }
+
+  initialized_ = true;
+  return true;
+}
 
 // Load parameters.
 template<typename V, typename TS, typename TC, typename MTS, typename MTC,
          typename PS, typename MPS, typename SB, typename SP>
 bool Tracker<V, TS, TC, MTS, MTC, PS, MPS, SB, SP>::
-LoadParameters(const ros::NodeHandle& n);
+LoadParameters(const ros::NodeHandle& n) {
+  ros::NodeHandle nl(n);
+
+  // Topics.
+  if (!nl.getParam("topic/tracker_state", tracker_state_topic_)) return false;
+  if (!nl.getParam("topic/planner_state", planner_state_topic_)) return false;
+
+  // Service names.
+  if (!nl.getParam("srv/bound", bound_name_)) return false;
+  if (!nl.getParam("srv/planner_dynamics", planner_dynamics_name_))
+    return false;
+
+  // Time step.
+  if (!nl.getParam("time_step", time_step_)) return false;
+
+  return true;
+}
 
 // Register callbacks.
 template<typename V, typename TS, typename TC, typename MTS, typename MTC,
          typename PS, typename MPS, typename SB, typename SP>
 bool Tracker<V, TS, TC, MTS, MTC, PS, MPS, SB, SP>::
-RegisterCallbacks(const ros::NodeHandle& n);
+RegisterCallbacks(const ros::NodeHandle& n) {
+  ros::NodeHandle nl(n);
 
-// Timer callback. Compute the optimal control and publish.
-template<typename V, typename TS, typename TC, typename MTS, typename MTC,
-           typename PS, typename MPS, typename SB, typename SP>
-void Tracker<V, TS, TC, MTS, MTC, PS, MPS, SB, SP>::
-TimerCallback(const ros::TimerEvent& e) const;
+  // Services.
+  bound_srv_ = nl.advertiseService(bound_name_.c_str(),
+    &Tracker<V, TS, TC, MTS, MTC, PS, MPS, SB, SP>::TrackingBoundServer, this);
+  planner_dynamics_srv_ = nl.advertiseService(planner_dynamics_name_.c_str(),
+    &Tracker<V, TS, TC, MTS, MTC, PS, MPS, SB, SP>::PlannerDynamicsServer, this);
+
+  // Subscribers.
+  planner_state_sub_ = nl.subscribe(planner_state_topic_.c_str(), 1,
+    &Tracker<V, TS, TC, MTS, MTC, PS, MPS, SB, SP>::PlannerStateCallback, this);
+  tracker_state_sub_ = nl.subscribe(tracker_state_topic_.c_str(), 1,
+    &Tracker<V, TS, TC, MTS, MTC, PS, MPS, SB, SP>::TrackerStateCallback, this);
+
+  // Publisher.
+  control_pub_ = nl.advertise<MTC>(control_topic_.c_str(), 1, false);
+
+  // Timer.
+  timer_ = nl.createTimer(ros::Duration(time_step_),
+    &Tracker<V, TS, TC, MTS, MTC, PS, MPS, SB, SP>::TimerCallback, this);
+
+  return true;
+}
 
 } //\namespace tracking
 } //\namespace fastrack

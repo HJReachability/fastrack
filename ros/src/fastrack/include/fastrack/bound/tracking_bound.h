@@ -36,48 +36,31 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Custom types.
+// Base struct for tracking error bound. All tracking error bounds must be
+// convertible to a ROS service response of the appropriate type (SR).
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_UTILS_TYPES_H
-#define FASTRACK_UTILS_TYPES_H
+#ifndef FASTRACK_BOUND_TRACKING_BOUND_H
+#define FASTRACK_BOUND_TRACKING_BOUND_H
 
-// ------------------------------- INCLUDES -------------------------------- //
-
-#include <string>
-#include <type_traits>
-#include <typeinfo>
-#include <exception>
-#include <memory>
-#include <limits>
-#include <vector>
-#include <algorithm>
-#include <random>
-#include <iostream>
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
-
-// ------------------------------- CONSTANTS -------------------------------- //
+#include <fastrack/utils/types.h>
 
 namespace fastrack {
-  namespace constants {
-    // Acceleration due to gravity.
-    const double G = 9.81;
-  } //\namespace constants
+namespace bound {
 
-  // Empty struct for setting unused/unimplemented template args.
-  struct Empty {};
+template<typename SR>
+struct TrackingBound {
+  virtual ~TrackingBound() {}
 
-// ------------------------ THIRD PARTY TYPEDEFS ---------------------------- //
+  // Convert to service response type SR.
+  SR ToRos() const = 0;
 
-using Eigen::Matrix3d;
-using Eigen::Vector3d;
-using Eigen::Matrix4d;
-using Eigen::VectorXd;
-using Eigen::MatrixXd;
-using Eigen::Quaterniond;
+protected:
+  explicit TrackingBound() {}
+}; //\struct Box
 
+} //\namespace bound
 } //\namespace fastrack
 
 #endif

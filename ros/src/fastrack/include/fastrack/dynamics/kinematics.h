@@ -48,6 +48,7 @@
 #define FASTRACK_DYNAMICS_KINEMATICS_H
 
 #include <fastrack/dynamics/dynamics.h>
+#include <fastrack_srvs/KinematicPlannerDynamics.h>
 
 #include <exception>
 
@@ -55,7 +56,8 @@ namespace fastrack {
 namespace dynamics {
 
 template<typename S>
-class Kinematics : public Dynamics<S, VectorXd> {
+class Kinematics : public Dynamics<
+  S, VectorXd, fastrack_srvs::KinematicPlannerDynamics::Response> {
 public:
   ~Kinematics() {}
   explicit Kinematics()
@@ -84,6 +86,20 @@ public:
   // we will throw an error here.
   VectorXd OptimalControl(const S& x, const S& value_gradient) const {
     throw std::runtime_error("Kinematics: OptimalControl is not implemented.");
+  }
+
+  // Convert to the appropriate service response type.
+  fastrack_srvs::KinematicPlannerDynamics::Response ToRos() const {
+    if (!initialized_)
+      throw std::runtime_error("Kinematics: uninitialized call to ToRos.");
+
+    fastrack_srvs::KinematicPlannerDynamics::Response res;
+    for (size_t ii = 0; ii < u_upper_; ii++) {
+      res.max_speed.push_back(u_upper_(ii));
+      res.min_speed.push_back(u_lower_(ii));
+    }
+
+    return res;
   }
 
   // How much time will it take us to go between two configurations if we move
