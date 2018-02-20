@@ -38,7 +38,7 @@
 //
 // Base class for all planners. Planners are templated on state and dynamics
 // types **of the planner** NOT **of the tracker,** as well as the tracking
-// error bound type. Planners take in start and goal states, environment, and
+// error bound type and environment. Planners take in start and goal states, and
 // start time, and output a trajectory of planner states.
 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,7 @@
 namespace fastrack {
 namespace planning {
 
-template< typename S, typename D, typename B >
+template< typename S, typename D, typename B, typename E >
 class Planner {
 public:
   virtual ~Planner() {}
@@ -64,24 +64,30 @@ public:
   bool Initialize(const ros::NodeHandle& n);
 
 protected:
-  explicit Planner(const D& dynamics, const B& bound)
+  explicit Planner(const D& dynamics, const B& bound, const E& env)
     : dynamics_(dynamics),
-      bound_(bound) {}
+      bound_(bound),
+      env_(env) {}
 
   // Load parameters and register callbacks.
   bool LoadParameters(const ros::NodeHandle& n);
   bool RegisterCallbacks(const ros::NodeHandle& n);
 
   // Callback to handle replanning requests.
-  inline void ReplanRequestCallback(const std_msgs::Empty::ConstPtr& msg) const {
-    //    traj_pub_.publish(Pl
+  inline void ReplanRequestCallback(
+    const fastrack_msgs::ReplanRequest::ConstPtr& msg) const {
+    // Unpack start/stop states.
+    const S start(msg->start);
+    const S goal(msg->goal);
+
+    // Plan and publish.
+    traj_pub_.publish(Plan(start, goal, msg->start_time).ToRos());
   }
 
   // Plan a trajectory from the given start to goal states starting
   // at the given time.
   virtual Trajectory<S> Plan(
-    const S& start, const S& goal, const Environment& env,
-    double start_time=0.0) const = 0;
+    const S& start, const S& goal, double start_time=0.0) const = 0;
 
   // Publisher and subscriber.
   ros::Subscriber replan_request_sub_;
@@ -90,9 +96,10 @@ protected:
   std::string replan_request_topic_;
   std::string traj_topic_;
 
-  // Keep a copy of the dynamics and the tracking bound.
+  // Keep a copy of the dynamics, tracking bound, and environment.
   const D dynamics_;
   const B bound_;
+  E env_;
 }; //\class Planner
 
 } //\namespace planning
