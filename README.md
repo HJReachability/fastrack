@@ -1,5 +1,5 @@
 # FaSTrack
-Fast and Safe Tracking (FaSTrack): fast planning methods with slower, reacbability-based safety guarantees for online safe trajectory planning.
+Fast and Safe Tracking (FaSTrack): fast planning methods with slower, reachability-based safety guarantees for online safe trajectory planning.
 
 ## Repository organization
 All code in this repository is written in the Robot Operating System (ROS) framework, and as such is broken up into atomic packages that implement specific functionality. The `ros/` directory is the root workspace, and individual packages live inside the `ros/src/` directory.
