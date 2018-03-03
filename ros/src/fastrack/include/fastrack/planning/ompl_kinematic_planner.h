@@ -60,12 +60,12 @@ namespace planning {
 namespace ob = ompl::base;
 namespace og = ompl::geometric;
 
-template<typename S, typename B, typename P>
-class OmplKinematicPlanner : public KinematicPlanner<S, B> {
+template<typename S, typename E, typename B, typename SB, typename P>
+class OmplKinematicPlanner : public KinematicPlanner<S, E, B, SB> {
 public:
   ~OmplKinematicPlanner() {}
-  explicit OmplKinematicPlanner(const Kinematics<S>& dynamics, const B& bound)
-    : KinematicPlanner(dynamics, bound) {
+  explicit OmplKinematicPlanner()
+    : KinematicPlanner() {
     // Set OMPL log level.
     ompl::msg::setLogLevel(ompl::msg::LogLevel::LOG_ERROR);
   }
@@ -84,8 +84,8 @@ private:
 // ---------------------------- IMPLEMENTATION ------------------------------ //
 
 // Convert between OMPL states and configurations.
-template<typename S, typename B, typename P>
-S OmplKinematicPlanner<S, B, P>::FromOmplState(const ob::State* state) const {
+template<typename S, typename E, typename B, typename SB, typename P>
+S OmplKinematicPlanner<S, E, B, SB, P>::FromOmplState(const ob::State* state) const {
   // Catch null state.
   if (!state)
     throw std::runtime_error("OmplKinematicPlanner: null OMPL state.");
@@ -104,8 +104,8 @@ S OmplKinematicPlanner<S, B, P>::FromOmplState(const ob::State* state) const {
 
 // Plan a trajectory from the given start to goal states starting
 // at the given time.
-template<typename S, typename B, typename P>
-Trajectory<S> OmplKinematicPlanner<S, B, P>::
+template<typename S, typename E, typename B, typename SB, typename P>
+Trajectory<S> OmplKinematicPlanner<S, E, B, SB, P>::
 Plan(const S& start, const S& goal, const Environment& env,
      double start_time) const {
   // Unpack start and goal configurations.

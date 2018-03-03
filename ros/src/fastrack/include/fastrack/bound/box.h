@@ -64,6 +64,13 @@ struct Box : public TrackingBound<fastrack_srvs::TrackingBoundBox::Response> {
     : TrackingBound(),
       x(xsize), y(ysize), z(zsize) {}
 
+  // Convert from service response type SR.
+  inline void FromRos(const fastrack_srvs::TrackingBoundBox::Response& res) {
+    x = res.x;
+    y = res.y;
+    z = res.z;
+  }
+
   // Convert to service response.
   inline fastrack_srvs::TrackingBoundBox::Response ToRos() const {
     fastrack_srvs::TrackingBoundBox::Response res;

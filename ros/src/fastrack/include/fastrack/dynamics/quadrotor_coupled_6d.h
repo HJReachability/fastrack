@@ -116,6 +116,13 @@ public:
     throw std::runtime_error("QuadrotorCoupled6D: ToRos is unimplemented.");
     return Empty();
   }
+
+  // Convert from the appropriate service response type.
+  inline void FromRos(const Empty& res) {
+    throw std::runtime_error("QuadrotorCoupled6D: FromRos is unimplemented.");
+    return Empty();
+  }
+
 }; //\class QuadrotorCoupled6D
 
 } //\namespace dynamics

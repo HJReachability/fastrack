@@ -67,63 +67,99 @@ public:
 
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
-  S Evaluate(const S& x, const VectorXd& u) const {
-    if (!initialized_)
-      throw std::runtime_error("Kinematics: uninitialized call to Evaluate.");
-
-    // Make sure dimensions agree.
-    const VectorXd c = x.Configuration();
-    if (c.size() != u.size()) {
-      ROS_ERROR("Kinematics: config/control spaces not equal (%zu vs. %zu).",
-                c.size(), u.size());
-      throw std::runtime_error("Kinematics: config/control spaces not equal.");
-    }
-
-    return S(u);
-  }
+  inline S Evaluate(const S& x, const VectorXd& u) const;
 
   // Since this function does not really make sense for kinematics,
   // we will throw an error here.
-  VectorXd OptimalControl(const S& x, const S& value_gradient) const {
+  inline VectorXd OptimalControl(const S& x, const S& value_gradient) const {
     throw std::runtime_error("Kinematics: OptimalControl is not implemented.");
   }
 
   // Convert to the appropriate service response type.
-  fastrack_srvs::KinematicPlannerDynamics::Response ToRos() const {
-    if (!initialized_)
-      throw std::runtime_error("Kinematics: uninitialized call to ToRos.");
+  inline fastrack_srvs::KinematicPlannerDynamics::Response ToRos() const;
 
-    fastrack_srvs::KinematicPlannerDynamics::Response res;
-    for (size_t ii = 0; ii < u_upper_; ii++) {
-      res.max_speed.push_back(u_upper_(ii));
-      res.min_speed.push_back(u_lower_(ii));
-    }
-
-    return res;
-  }
+  // Convert from the appropriate service response type.
+  inline void FromRos(const SR& res);
 
   // How much time will it take us to go between two configurations if we move
   // at max velocity between them in each dimension.
-  double BestPossibleTime(const S& x1, const S& x2) const {
-    if (!initialized_)
-      throw std::runtime_error("Kinematics: uninitialized call to BestPossibleTime.");
-
-    // Unpack into configurations.
-    const VectorXd c1 = x1.Configuration();
-    const VectorXd c2 = x2.Configuration();
-
-    // Take the maximum of the times in each dimension.
-    double time = -std::numeric_limits<double>::infinity();
-    for (size_t ii = 0; ii < S::ConfigurationDimension(); ii++) {
-      if (c2(ii) >= c1(ii))
-        time = std::max(time, (c2(ii) - c1(ii)) / u_upper_);
-      else
-        time = std::max(time, (c2(ii) - c1(ii)) / u_lower_);
-    }
-
-    return time;
-  }
+  double BestPossibleTime(const S& x1, const S& x2) const;
 }; //\class Kinematics
+
+// ----------------------------- IMPLEMENTATION ----------------------------- //
+
+// Derived classes must be able to give the time derivative of state
+// as a function of current state and control.
+template<typename S>
+S Kinematics<S>::Evaluate(const S& x, const VectorXd& u) const {
+  if (!initialized_)
+    throw std::runtime_error("Kinematics: uninitialized call to Evaluate.");
+
+  // Make sure dimensions agree.
+  const VectorXd c = x.Configuration();
+  if (c.size() != u.size()) {
+    ROS_ERROR("Kinematics: config/control spaces not equal (%zu vs. %zu).",
+              c.size(), u.size());
+    throw std::runtime_error("Kinematics: config/control spaces not equal.");
+  }
+
+  return S(u);
+}
+
+// Convert to the appropriate service response type.
+template<typename S>
+fastrack_srvs::KinematicPlannerDynamics::Response Kinematics<S>::ToRos() const {
+  if (!initialized_)
+    throw std::runtime_error("Kinematics: uninitialized call to ToRos.");
+
+  fastrack_srvs::KinematicPlannerDynamics::Response res;
+  for (size_t ii = 0; ii < u_upper_; ii++) {
+    res.max_speed.push_back(u_upper_(ii));
+    res.min_speed.push_back(u_lower_(ii));
+  }
+
+  return res;
+}
+
+// Convert from the appropriate service response type.
+template<typename S>
+void fastrack_srvs::KinematicPlannerDynamics::Response FromRos(const SR& res) {
+  if (res.max_speed.size() != res.min_speed.size())
+    throw std::runtime_error("Kinematics: invalid service response.");
+
+  // Populate control bounds.
+  u_upper_.resize(res.max_speed.size());
+  u_lower_.resize(res.max_speed.size());
+  for (size_t ii = 0; ii < res.max_speed.size(); ii++) {
+    u_upper_(ii) = res.max_speed[ii];
+    u_lower_(ii) = res.min_speed[ii];
+  }
+
+  initialized_ = true;
+}
+
+// How much time will it take us to go between two configurations if we move
+// at max velocity between them in each dimension.
+template<typename S>
+double Kinematics<S>::BestPossibleTime(const S& x1, const S& x2) const {
+  if (!initialized_)
+    throw std::runtime_error("Kinematics: uninitialized call to BestPossibleTime.");
+
+  // Unpack into configurations.
+  const VectorXd c1 = x1.Configuration();
+  const VectorXd c2 = x2.Configuration();
+
+  // Take the maximum of the times in each dimension.
+  double time = -std::numeric_limits<double>::infinity();
+  for (size_t ii = 0; ii < S::ConfigurationDimension(); ii++) {
+    if (c2(ii) >= c1(ii))
+      time = std::max(time, (c2(ii) - c1(ii)) / u_upper_);
+    else
+      time = std::max(time, (c2(ii) - c1(ii)) / u_lower_);
+  }
+
+  return time;
+}
 
 } //\namespace dynamics
 } //\namespace fastrack

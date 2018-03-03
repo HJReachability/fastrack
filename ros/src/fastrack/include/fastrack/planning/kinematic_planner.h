@@ -48,13 +48,16 @@
 #include <fastrack/planning/planner.h>
 #include <fastrack/dynamics/kinematics.h>
 
+#include <fastrack_srvs/KinematicPlannerDynamics.h>
+
 namespace fastrack {
 namespace planning {
 
 using dynamics::Kinematics;
 
-template<typename S, typename B>
-class KinematicPlanner : public Planner< S, Kinematics<S>, B > {
+template<typename S, typename E, typename B, typename SB>
+class KinematicPlanner : public Planner< S, E,
+  fastrack_srvs::KinematicPlannerDynamics, Kinematics<S>, B, SB > {
 public:
   virtual ~KinematicPlanner() {}
 
@@ -66,8 +69,8 @@ public:
     double start_time=0.0) const = 0;
 
 protected:
-  explicit KinematicPlanner(const Kinematics<S>& dynamics, const B& bound)
-    : Planner(dynamics, bound) {}
+  explicit KinematicPlanner()
+    : Planner() {}
 }; //\class KinematicPlanner
 
 } //\namespace planning

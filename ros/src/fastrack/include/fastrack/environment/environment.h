@@ -57,33 +57,38 @@ class Environment {
 public:
   virtual ~Environment() {}
 
+  // Initialize from a ROS NodeHandle.
+  bool Initialize(const ros::NodeHandle& n);
+
   // Derived classes must provide a collision checker which returns true if
   // and only if the provided position is a valid collision-free configuration.
   // Provide a separate collision check for each type of tracking error bound.
   virtual bool IsValid(const Vector3d& position, const Box& bound) const = 0;
-
-  // Provide auxiliary validity checkers for sets of positions.
-  bool IsValid(const std::vector<Vector3d>& positions, const Box& bound) const {
-    for (const auto& p : positions) {
-      if (!IsValid(p, bound))
-        return false;
-    }
-
-    return true;
-  }
+  bool IsValid(const std::vector<Vector3d>& positions, const Box& bound) const;
 
   // Derived classes must have some sort of visualization through RViz.
   virtual void Visualize(const ros::Publisher& pub,
                          const std::string& frame) const = 0;
 
 protected:
+  explicit Environment()
+    : initialized_(false) {}
   explicit Environment(const Vector3d& lower, const Vector3d& upper)
     : lower_(lower),
-      upper_(upper) {}
+      upper_(upper),
+      initialized_(true) {}
+
+  // Load parameters. This may be overridden by derived classes if needed
+  // (they should still call this one via Environment::LoadParameters).
+  virtual bool LoadParameters(const ros::NodeHandle& n);
 
   // Upper and lower bounds.
-  const Vector3d lower_;
-  const Vector3d upper_;
+  Vector3d lower_;
+  Vector3d upper_;
+
+  // Naming and initialization.
+  std::string name_;
+  bool initialized_;
 }; //\class Environment
 
 } //\namespace environment

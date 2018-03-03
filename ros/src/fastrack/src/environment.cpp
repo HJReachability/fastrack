@@ -36,64 +36,60 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Defines the Dynamics class. Templated on the state type and control type,
-// as well as the type of service response (SR) which encodes these dynamics.
+// Base class for all environment models, providing separate collision check
+// functions for each type of tracking error bound. All environments are
+// boxes in 3D space.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_DYNAMICS_DYNAMICS_H
-#define FASTRACK_DYNAMICS_DYNAMICS_H
-
-#include <fastrack/utils/types.h>
+#include <fastrack/environment/environment.h>
 
 namespace fastrack {
-namespace dynamics {
+namespace environment {
 
-template<typename S, typename C, typename SR>
-class Dynamics {
-public:
-  // Destructor.
-  virtual ~Dynamics() {}
+// Initialize from a ROS NodeHandle.
+bool Environment::Initialize(const ros::NodeHandle& n) {
+  name_ = ros::names::append(n.getNamespace(), "Environment");
 
-  // Initialize with control bounds.
-  void Initialize(const C& u_lower, const C& u_upper) {
-    u_lower_ = u_lower;
-    u_upper_ = u_upper;
-    initialized_ = true;
+  if (!LoadParameters(n)) {
+    ROS_ERROR("%s: Failed to load parameters.", name_.c_str());
+    return false;
   }
 
-  // Derived classes must be able to give the time derivative of state
-  // as a function of current state and control.
-  virtual S Evaluate(const S& x, const C& u) const = 0;
+  initialized_ = true;
+  return true;
+}
 
-  // Derived classes must be able to compute an optimal control given
-  // the gradient of the value function at the specified state.
-  virtual C OptimalControl(const S& x, const S& value_gradient) const = 0;
+// Provide auxiliary validity checkers for sets of positions.
+bool Environment::IsValid(
+  const std::vector<Vector3d>& positions, const Box& bound) const {
+  // Return Boolean AND of all IsValid calls.
+  for (const auto& p : positions) {
+    if (!IsValid(p, bound))
+      return false;
+  }
 
-  // Get the min and max controls.
-  inline const C& MinControl() const { return u_lower_; }
-  inline const C& MaxControl() const { return u_upper_; }
+  return true;
+}
 
-  // Convert to the appropriate service response type.
-  SR ToRos() const = 0;
+// Load parameters. This may be overridden by derived classes if needed
+// (they should still call this one via Environment::LoadParameters).
+bool Environment::LoadParameters(const ros::NodeHandle& n) {
+  ros::NodeHandle nl(n);
 
-  // Convert from the appropriate service response type.
-  void FromRos(const SR& res) = 0;
+  // Upper and lower bounds of the environment.
+  if (!nl.getParam("env/upper/x", upper_(0))) return false;
+  if (!nl.getParam("env/upper/y", upper_(1))) return false;
+  if (!nl.getParam("env/upper/z", upper_(2))) return false;
 
-protected:
-  explicit Dynamics()
-    : initialized_(false) {}
-  explicit Dynamics(const C& u_lower, const C& u_upper)
-    : u_lower_(u_lower),
-      u_upper_(u_upper),
-      initialized_(true) {}
+  if (!nl.getParam("env/lower/x", lower_(0))) return false;
+  if (!nl.getParam("env/lower/y", lower_(1))) return false;
+  if (!nl.getParam("env/lower/z", lower_(2))) return false;
 
-  // Lower and upper bounds for control variable.
-  C u_lower_;
-  C u_upper_;
-}; //\class Dynamics
+  return true;
+}
 
-} //\namespace dynamics
+} //\namespace environment
 } //\namespace fastrack
 
 #endif

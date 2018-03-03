@@ -1,4 +1,5 @@
 ---
+# Maximum tracking error in each Cartesian dimension.
 float64 x
 float64 y
 float64 z

@@ -41,6 +41,9 @@
 // error bound type and environment. Planners take in start and goal states, and
 // start time, and output a trajectory of planner states.
 //
+// Templated on state (S), environment (E), dynamics (D), dynamics service (SD),
+// bound (B), and bound service (SB).
+//
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef FASTRACK_PLANNING_PLANNER_H
@@ -51,11 +54,13 @@
 #include <fastrack/utils/types.h>
 
 #include <fastrack_msgs/ReplanRequest.h>
+#include <fastrack_msgs/Trajectory.h>
 
 namespace fastrack {
 namespace planning {
 
-template< typename S, typename D, typename B, typename E >
+template<typename S, typename E,
+         typename D, typename SD, typename B, typename SB>
 class Planner {
 public:
   virtual ~Planner() {}
@@ -64,14 +69,14 @@ public:
   bool Initialize(const ros::NodeHandle& n);
 
 protected:
-  explicit Planner(const D& dynamics, const B& bound, const E& env)
-    : dynamics_(dynamics),
-      bound_(bound),
-      env_(env) {}
+  explicit Planner()
+    : initialized_(false) {}
 
-  // Load parameters and register callbacks.
-  bool LoadParameters(const ros::NodeHandle& n);
-  bool RegisterCallbacks(const ros::NodeHandle& n);
+  // Load parameters and register callbacks. These may be overridden
+  // by derived classes if needed (they should still call these functions
+  // via Planner::LoadParameters and Planner::RegisterCallbacks).
+  virtual bool LoadParameters(const ros::NodeHandle& n);
+  virtual bool RegisterCallbacks(const ros::NodeHandle& n);
 
   // Callback to handle replanning requests.
   inline void ReplanRequestCallback(
@@ -89,6 +94,11 @@ protected:
   virtual Trajectory<S> Plan(
     const S& start, const S& goal, double start_time=0.0) const = 0;
 
+  // Keep a copy of the dynamics, tracking bound, and environment.
+  D dynamics_;
+  B bound_;
+  E env_;
+
   // Publisher and subscriber.
   ros::Subscriber replan_request_sub_;
   ros::Publisher traj_pub_;
@@ -96,11 +106,115 @@ protected:
   std::string replan_request_topic_;
   std::string traj_topic_;
 
-  // Keep a copy of the dynamics, tracking bound, and environment.
-  const D dynamics_;
-  const B bound_;
-  E env_;
+  // Services for loading dynamics and bound.
+  ros::ServiceClient dynamics_srv_;
+  ros::ServiceClient bound_srv_;
+
+  std::string dynamics_srv_name_;
+  std::string bound_srv_name_;
+
+  // Naming and initialization.
+  std::string name_;
+  bool initialized_;
 }; //\class Planner
+
+// ----------------------------- IMPLEMENTATION ----------------------------- //
+
+// Initialize from a ROS NodeHandle.
+template<typename S, typename E,
+         typename D, typename SD, typename B, typename SB>
+bool Planner<S, E, D, SD, B, SB>::Initialize(const ros::NodeHandle& n) {
+  name_ = ros::names::append(n.getNamespace(), "Planner");
+
+  if (!LoadParameters(n)) {
+    ROS_ERROR("%s: Failed to load parameters.", name_.c_str());
+    return false;
+  }
+
+  if (!RegisterCallbacks(n)) {
+    ROS_ERROR("%s: Failed to register callbacks.", name_.c_str());
+    return false;
+  }
+
+  // Initialize environment.
+  if (!env_.Initialize(n)) {
+    ROS_ERROR("%s: Failed to initialize environment.", name_.c_str());
+    return false;
+  }
+
+  // Set bound by calling service provided by tracker.
+  if (!bound_srv_) {
+    ROS_ERROR("%s: Bound server was disconnected.", name_.c_str());
+    return false;
+  }
+
+  SB b;
+  if (!bound_srv_.call(b)) {
+    ROS_ERROR("%s: Bound server error.", name_.c_str());
+    return false;
+  }
+
+  bound_.FromRos(b.response);
+
+  // Set dynamics by calling service provided by tracker.
+  if (!dynamics_srv_) {
+    ROS_ERROR("%s: Dynamics server was disconnected.", name_.c_str());
+    return false;
+  }
+
+  SD d;
+  if (!dynamics_srv_.call(d)) {
+    ROS_ERROR("%s: Dynamics server error.", name_.c_str());
+    return false;
+  }
+
+  dynamics_.FromRos(d.response);
+
+  initialized_ = true;
+  return true;
+}
+
+// Load parameters.
+template<typename S, typename E,
+         typename D, typename SD, typename B, typename SB>
+bool Planner<S, E, D, SD, B, SB>::LoadParameters(const ros::NodeHandle& n) {
+  ros::NodeHandle nl(n);
+
+  // Topics.
+  if (!nl.getParam("topics/traj", traj_topic_)) return false;
+  if (!nl.getParam("topics/replan_request", replan_request_topic_))
+    return false;
+
+  // Services.
+  if (!nl.getParam("srvs/dynamics", dynamics_srv_name_)) return false;
+  if (!nl.getParam("srvs/bound", bound_srv_name_)) return false;
+
+  return true;
+}
+
+// Register callbacks.
+template<typename S, typename E,
+         typename D, typename SD, typename B, typename SB>
+bool Planner<S, E, D, SD, B, SB>::RegisterCallbacks(const ros::NodeHandle& n) {
+  ros::NodeHandle nl(n);
+
+  // Subscribers.
+  replan_request_sub_ = nl.subscribe(
+    replan_request_topic_.c_str(), 1, &Planner::ReplanRequestCallback, this);
+
+  // Publishers.
+  traj_pub_ = nl.advertise<fastrack_msgs::Trajectory>(
+    traj_topic_.c_str(), 1, false);
+
+  // Services.
+  ros::service::waitForService(dynamics_srv_name_);
+  dynamics_srv_ = nl.serviceClient<SD>(dynamics_srv_name_.c_str(), true);
+
+  ros::service::waitForService(bound_srv_name_);
+  bound_srv_ = nl.serviceClient<SB>(bound_srv_name_.c_str(), true);
+
+  return true;
+}
 
 } //\namespace planning
 } //\namespace fastrack
