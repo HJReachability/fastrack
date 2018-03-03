@@ -97,8 +97,8 @@ public:
   fastrack_msgs::State ToRos() const;
 
   // Dimension of the state and configuration spaces.
-  static constexpr size_t StateDimension() const { return 6; }
-  static constexpr size_t ConfigurationDimension() const { return 3; }
+  static constexpr size_t StateDimension() { return 6; }
+  static constexpr size_t ConfigurationDimension() { return 3; }
 
   // Set/get bounds of the configuration space.
   static void SetConfigurationBounds(
@@ -107,7 +107,7 @@ public:
   static VectorXd GetConfigurationUpper();
 
   // Sample from the configuration space associated with this state space.
-  static VectorXd Sample() const;
+  static VectorXd Sample();
 
   // Compound assignment operators.
   PositionVelocity& operator+=(const PositionVelocity& rhs);

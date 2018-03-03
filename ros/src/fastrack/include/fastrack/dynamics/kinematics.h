@@ -61,9 +61,9 @@ class Kinematics : public Dynamics<
 public:
   ~Kinematics() {}
   explicit Kinematics()
-    : Dynamics() {}
+    : Dynamics<S, VectorXd, fastrack_srvs::KinematicPlannerDynamics::Response>() {}
   explicit Kinematics(const VectorXd& u_lower, const VectorXd& u_upper)
-    : Dynamics(u_lower, u_upper) {}
+    : Dynamics<S, VectorXd, fastrack_srvs::KinematicPlannerDynamics::Response>(u_lower, u_upper) {}
 
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
@@ -79,7 +79,7 @@ public:
   inline fastrack_srvs::KinematicPlannerDynamics::Response ToRos() const;
 
   // Convert from the appropriate service response type.
-  inline void FromRos(const SR& res);
+  inline void FromRos(const fastrack_srvs::KinematicPlannerDynamics::Response& res);
 
   // How much time will it take us to go between two configurations if we move
   // at max velocity between them in each dimension.
@@ -98,8 +98,6 @@ S Kinematics<S>::Evaluate(const S& x, const VectorXd& u) const {
   // Make sure dimensions agree.
   const VectorXd c = x.Configuration();
   if (c.size() != u.size()) {
-    ROS_ERROR("Kinematics: config/control spaces not equal (%zu vs. %zu).",
-              c.size(), u.size());
     throw std::runtime_error("Kinematics: config/control spaces not equal.");
   }
 
@@ -123,7 +121,8 @@ fastrack_srvs::KinematicPlannerDynamics::Response Kinematics<S>::ToRos() const {
 
 // Convert from the appropriate service response type.
 template<typename S>
-void fastrack_srvs::KinematicPlannerDynamics::Response FromRos(const SR& res) {
+void fastrack_srvs::KinematicPlannerDynamics::Response FromRos(
+  const fastrack_srvs::KinematicPlannerDynamics::Response& res) {
   if (res.max_speed.size() != res.min_speed.size())
     throw std::runtime_error("Kinematics: invalid service response.");
 

@@ -48,6 +48,8 @@
 #include <fastrack/bound/box.h>
 #include <fastrack/utils/types.h>
 
+#include <ros/ros.h>
+
 namespace fastrack {
 namespace environment {
 

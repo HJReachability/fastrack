@@ -44,8 +44,11 @@
 #ifndef FASTRACK_BOUND_BOX_H
 #define FASTRACK_BOUND_BOX_H
 
+#include <fastrack/bound/tracking_bound.h>
 #include <fastrack/utils/types.h>
+
 #include <fastrack_srvs/TrackingBoundBox.h>
+#include <fastrack_srvs/TrackingBoundBoxResponse.h>
 
 namespace fastrack {
 namespace bound {

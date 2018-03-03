@@ -47,8 +47,8 @@ namespace fastrack {
 namespace state {
 
 // Random number generator shared across all instances of states.
-State::rd_ = std::random_device();
-State::rng_ = std::default_random_engine(State::rd_());
+std::random_device State::rd_;
+std::default_random_engine State::rng_ = std::default_random_engine(State::rd_());
 
 } //\namespace state
 } //\namespace fastrack

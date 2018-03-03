@@ -92,4 +92,3 @@ bool Environment::LoadParameters(const ros::NodeHandle& n) {
 } //\namespace environment
 } //\namespace fastrack
 
-#endif

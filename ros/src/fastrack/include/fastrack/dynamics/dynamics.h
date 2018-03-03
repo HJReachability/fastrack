@@ -75,10 +75,10 @@ public:
   inline const C& MaxControl() const { return u_upper_; }
 
   // Convert to the appropriate service response type.
-  SR ToRos() const = 0;
+  virtual SR ToRos() const = 0;
 
   // Convert from the appropriate service response type.
-  void FromRos(const SR& res) = 0;
+  virtual void FromRos(const SR& res) = 0;
 
 protected:
   explicit Dynamics()
@@ -91,6 +91,9 @@ protected:
   // Lower and upper bounds for control variable.
   C u_lower_;
   C u_upper_;
+
+  // Initialization.
+  bool initialized_;
 }; //\class Dynamics
 
 } //\namespace dynamics

@@ -54,10 +54,10 @@ struct TrackingBound {
   virtual ~TrackingBound() {}
 
   // Convert from service response type SR.
-  void FromRos(const SR& res) = 0;
+  virtual void FromRos(const SR& res) = 0;
 
   // Convert to service response type SR.
-  SR ToRos() const = 0;
+  virtual SR ToRos() const = 0;
 
 protected:
   explicit TrackingBound() {}

@@ -42,7 +42,7 @@
 
 #include <fastrack/state/position_velocity.h>
 
-#include <exception>
+
 
 namespace fastrack {
 namespace state {
@@ -67,15 +67,15 @@ PositionVelocity::PositionVelocity(const fastrack_msgs::State& msg)
     position_(Vector3d::Zero()),
     velocity_(Vector3d::Zero()) {
   // Check dimensions.
-  if (msg.state.size() != StateDimension())
+  if (msg.x.size() != StateDimension())
     throw std::runtime_error("PositionVelocity: incorrect msg dimension.");
 
-  position_(0) = msg.state[0];
-  position_(1) = msg.state[1];
-  position_(2) = msg.state[2];
-  velocity_(0) = msg.state[3];
-  velocity_(1) = msg.state[4];
-  velocity_(2) = msg.state[5];
+  position_(0) = msg.x[0];
+  position_(1) = msg.x[1];
+  position_(2) = msg.x[2];
+  velocity_(0) = msg.x[3];
+  velocity_(1) = msg.x[4];
+  velocity_(2) = msg.x[5];
 }
 PositionVelocity::PositionVelocity(const VectorXd& config)
   : State(),
@@ -99,9 +99,7 @@ VectorXd PositionVelocity::Sample() {
   // Make sure bounds are of the right size.
   if (lower_.size() != kConfigurationSpaceDimension ||
       upper_.size() != kConfigurationSpaceDimension) {
-    ROS_ERROR("PositionVelocity: lower/upper bounds not of size %zu.",
-              kConfigurationSpaceDimension);
-    return VectorXd::Zero(kConfigurationSpaceDimension);
+    throw std::runtime_error("PositionVelocity: invalid configuration space bounds.");
   }
 
   // Initialize a uniform random distribution in (0, 1).
@@ -138,12 +136,12 @@ void PositionVelocity::SetConfigurationBounds(
 // Convert to ROS message.
 fastrack_msgs::State PositionVelocity::ToRos() const {
   fastrack_msgs::State msg;
-  msg.state.push_back(position_[0]);
-  msg.state.push_back(position_[1]);
-  msg.state.push_back(position_[2]);
-  msg.state.push_back(velocity_[0]);
-  msg.state.push_back(velocity_[1]);
-  msg.state.push_back(velocity_[2]);
+  msg.x.push_back(position_[0]);
+  msg.x.push_back(position_[1]);
+  msg.x.push_back(position_[2]);
+  msg.x.push_back(velocity_[0]);
+  msg.x.push_back(velocity_[1]);
+  msg.x.push_back(velocity_[2]);
 
   return msg;
 }
@@ -212,4 +210,3 @@ PositionVelocity operator/(double s, PositionVelocity rhs) {
 } //\namespace state
 } //\namespace fastrack
 
-#endif

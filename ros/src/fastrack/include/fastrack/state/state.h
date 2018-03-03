@@ -70,15 +70,13 @@ public:
   virtual std::vector<Vector3d> OccupiedPositions() const = 0;
 
   // Convert to ROS message.
-  fastrack_msgs::State ToRos() const = 0;
+  virtual fastrack_msgs::State ToRos() const = 0;
 
   // Re-seed the random engine.
-  static inline void Seed(unsigned int seed) const { rng_.seed(seed); }
+  static inline void Seed(unsigned int seed) { rng_.seed(seed); }
 
 protected:
   explicit State() {}
-  explicit virtual State(const fastrack_msgs::State& msg) = 0;
-  explicit virtual State(const VectorXd& config) = 0;
 
   // Random number generator shared across all instances of states.
   static std::random_device rd_;

@@ -49,6 +49,8 @@
 #include <fastrack/state/position_velocity.h>
 #include <fastrack/control/quadrotor_control.h>
 #include <fastrack/dynamics/quadrotor_decoupled_6d.h>
+#include <fastrack/dynamics/kinematics.h>
+#include <fastrack/bound/box.h>
 #include <fastrack/utils/types.h>
 #include <fastrack/utils/uncopyable.h>
 

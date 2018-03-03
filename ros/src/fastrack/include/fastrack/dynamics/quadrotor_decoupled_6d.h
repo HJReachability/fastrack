@@ -73,7 +73,7 @@ public:
     const PositionVelocity& x, const QuadrotorControl& u) const {
     // Check initialization.
     if (!initialized_)
-      throw std::runtime_error("QuadrotorDecoupled6D: uninitialized call to Evaluate.")
+      throw std::runtime_error("QuadrotorDecoupled6D: uninitialized call to Evaluate.");
 
     // Position derivatives are just velocity.
     const Vector3d position_dot(x.Velocity());
@@ -120,7 +120,6 @@ public:
   // Convert from the appropriate service response type.
   inline void FromRos(const Empty& res) {
     throw std::runtime_error("QuadrotorDecoupled6D: FromRos is unimplemented.");
-    return Empty();
   }
 
 }; //\class QuadrotorDecoupled6D
