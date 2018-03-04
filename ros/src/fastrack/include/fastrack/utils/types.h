@@ -45,6 +45,7 @@
 
 // ------------------------------- INCLUDES -------------------------------- //
 
+#include <math.h>
 #include <string>
 #include <type_traits>
 #include <typeinfo>

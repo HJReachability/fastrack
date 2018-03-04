@@ -78,7 +78,8 @@ public:
   }
 
   // Compute the relative state to a particular planner state.
-  template<typename PS> PositionVelocity RelativeTo(const PS& planner_x) const {
+  template<typename PS>
+  PositionVelocity RelativeTo(const PS& planner_x) const {
     return PositionVelocity(position_ - planner_x.Position(),
                             velocity_ - planner_x.Velocity());
   }

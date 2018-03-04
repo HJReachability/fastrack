@@ -217,7 +217,7 @@ Priority(const PositionVelocity& tracker_x,
   const double value_low = relative_low * max_value;
 
   const double priority =
-    1.0 - std::clamp((value-value_low) / (value_high-value_low), 0.0, 1.0);
+    1.0 - std::max(0.0, std::min((value-value_low) / (value_high-value_low), 1.0));
 
   return priority;
 }

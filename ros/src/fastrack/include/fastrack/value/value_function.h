@@ -71,7 +71,7 @@ public:
 
   // Get the optimal control given the tracker state and planner state.
   inline TC OptimalControl(const TS& tracker_x, const PS& planner_x) const {
-    const TS relative_x = tracker_x.RelativeTo<PS>(planner_x);
+    const TS relative_x = tracker_x.RelativeTo(planner_x);
     return tracker_dynamics_.OptimalControl(relative_x, Gradient(relative_x));
   }
 
@@ -84,18 +84,11 @@ public:
   // This is a number between 0 and 1, where 1 means the final control signal
   // should be exactly the optimal control signal computed by this
   // value function.
-  virtual double Priority(const VS& tracker_x, const PS& planner_x) const = 0;
+  virtual double Priority(const TS& tracker_x, const PS& planner_x) const = 0;
 
 protected:
   explicit ValueFunction()
-    : initialized_(false) {
-    // Check that dynamics are derived from the correctly-templated Dynamics.
-    if (!std::is_base_of< Dynamics<TS, TC>, TD >::value)
-      throw std::runtime_exception("ValueFunction: bad tracker dynamics type.");
-
-    if (!std::is_base_of< Dynamics<PS, PC>, PD >::value)
-      throw std::runtime_exception("ValueFunction: bad planner dynamics type.");
-  }
+    : initialized_(false) {}
 
   // Load parameters and register callbacks.
   virtual bool LoadParameters(const ros::NodeHandle& n) = 0;
