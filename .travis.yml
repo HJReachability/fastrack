@@ -46,6 +46,7 @@ install:
 #  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get update -qq; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install --yes build-essential
     doxygen libgflags-dev libgoogle-glog-dev mercurial cmake libatlas-base-dev libmatio-dev libflann-dev; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo pip install kitchen; fi
 #  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install python-software-properties; fi
 #  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install gcc-4.8 g++-4.8; fi
 #  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 20; fi
@@ -73,6 +74,13 @@ before_script:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make -j4; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo make install; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd ../../..; fi
+
+  # Get rosdoc_lite for auto-generating documentation.
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir rosdoc_lite && cd rosdoc_lite; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then git clone https://github.com/ros-infrastructure/rosdoc_lite; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd rosdoc_lite; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo python setup.py install; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd ../..; fi
 
   # Get us to the main workspace.
   - cd ros
