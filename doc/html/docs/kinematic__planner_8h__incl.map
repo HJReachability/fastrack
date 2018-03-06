@@ -1,0 +1,10 @@
+<map id="kinematic_planner.h" name="kinematic_planner.h">
+<area shape="rect" id="node2" href="$planner_8h.html" title="fastrack/planning/planner.h" alt="" coords="1152,80,1331,107"/>
+<area shape="rect" id="node31" href="$kinematics_8h.html" title="fastrack/dynamics/kinematics.h" alt="" coords="1563,80,1770,107"/>
+<area shape="rect" id="node3" href="$environment_8h.html" title="fastrack/environment\l/environment.h" alt="" coords="91,155,235,196"/>
+<area shape="rect" id="node6" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="617,423,761,449"/>
+<area shape="rect" id="node23" href="$trajectory_8h.html" title="fastrack/planning/trajectory.h" alt="" coords="707,162,898,189"/>
+<area shape="rect" id="node4" href="$box_8h.html" title="fastrack/bound/box.h" alt="" coords="24,251,168,278"/>
+<area shape="rect" id="node5" href="$tracking__bound_8h.html" title="fastrack/bound/tracking\l_bound.h" alt="" coords="61,333,219,375"/>
+<area shape="rect" id="node32" href="$dynamics_8h.html" title="fastrack/dynamics/dynamics.h" alt="" coords="1429,341,1629,367"/>
+</map>
