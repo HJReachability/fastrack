@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   std_msgs
   fastrack_msgs
+  fastrack_srvs
 )
 
 catkin_package(
@@ -29,6 +30,7 @@ catkin_package(
     geometry_msgs
     std_msgs
     fastrack_msgs
+    fastrack_srvs
   DEPENDS
     EIGEN3
     OMPL

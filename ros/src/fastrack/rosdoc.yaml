@@ -1,0 +1,5 @@
+ - builder: doxygen
+   name: FaSTrack Documentation
+   output_dir: docs
+   file_patterns: '*.c *.cpp *.h *.cc *.hh *.dox'
+   exclude_patterns: '*/test/*'

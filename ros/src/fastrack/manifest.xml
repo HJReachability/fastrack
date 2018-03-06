@@ -1,0 +1,20 @@
+<package>
+  <description brief="fastrack">
+    fastrack implements the <a href="https://arxiv.org/abs/1703.07373">FaSTrack</a> (Fast and Safe Tracking) paradigm for real-time, safe trajectory planning and tracking.
+  </description>
+  <author>David Fridovich-Keil</author>
+  <email>dfk@eecs.berkeley.edu</email>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>https://hjreachability.github.io/fastrack/</url>
+  <export>
+    <rosdoc config="rosdoc.yaml" />
+  </export>
+  <!--<rosdep name="libsdl-dev" />-->
+  <depend package="roscpp"/>
+  <depend package="visualization_msgs"/>
+  <depend package="geometry_msgs"/>
+  <depend package="std_msgs"/>
+  <depend package="fastrack_msgs"/>
+  <depend package="fastrack_srvs"/>
+</package>
