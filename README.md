@@ -1,4 +1,8 @@
-# FaSTrack
+# [FaSTrack](https://hjreachability.github.io/fastrack/)
+
+[![Build Status](https://travis-ci.org/HJReachability/fastrack.svg?branch=master)](https://travis-ci.org/HJReachability/fastrack)
+[![License](https://img.shields.io/badge/license-BSD-blue.svg)](LICENSE)
+
 Fast and Safe Tracking (FaSTrack): fast planning methods with slower, reachability-based safety guarantees for online safe trajectory planning.
 
 ## Repository organization
