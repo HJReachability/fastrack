@@ -64,6 +64,16 @@ before_script:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo make install; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd ../../..; fi
 
+  # Get OMPL v1.2.1 (before they switched to gcc5 dependency).
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir ompl && cd ompl; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then git clone https://github.com/ompl/ompl; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd ompl && git checkout tags/1.2.1; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir build && cd build; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cmake -DCMAKE_BUILD_TYPE=Release ..; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make -j4; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo make install; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd ../../..; fi
+
   # Get us to the main workspace.
   - cd ros
 
