@@ -5,11 +5,11 @@ env:
     - CI_SOURCE_PATH=$(pwd)
     - ROSINSTALL_FILE=$CI_SOURCE_PATH/dependencies.rosinstall
     - CATKIN_OPTIONS=$CI_SOURCE_PATH/catkin.options
-    - ROS_PARALLEL_JOBS='-j8 -l6'
+    - ROS_PARALLEL_JOBS='-j4 -l4'
     # Set the python path manually to include /usr/-/python2.7/dist-packages
     # as this is where apt-get installs python packages.
     - PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages:/usr/local/lib/python2.7/dist-packages
-    secure:
+#    secure:
       # SSH authorization so that travis can push documentation to the repository.
 
 language: cpp
@@ -63,7 +63,7 @@ before_script:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo make install; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd ../../..; fi
 
-  # Configure and make Berkeley SfM.
+  # Get us to the main workspace.
   - cd ros
 
 script:
