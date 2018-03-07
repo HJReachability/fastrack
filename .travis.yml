@@ -1,5 +1,7 @@
 env:
   global:
+    - ENCRYPTION_LABEL=88c0c8498688
+    - COMMIT_AUTHOR_EMAIL=dfk\@eecs.berkeley.edu
     - ROS_DISTRO=indigo
     - ROS_CI_DESKTOP="`lsb_release -cs`"  # e.g. [precise|trusty|...]
     - CI_SOURCE_PATH=$(pwd)
@@ -82,12 +84,8 @@ before_script:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo python setup.py install; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd ../..; fi
 
-  # Get us to the main workspace.
-  - cd ros
-
 script:
-  - catkin_make -j4
-  - catkin_make run_tests
+  - bash ./deploy.sh
 
 after_success:
   # Make and publish documentation.
