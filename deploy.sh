@@ -5,7 +5,7 @@ SOURCE_BRANCH="master"
 TARGET_BRANCH="master"
 
 function doCompile {
-    ./compile.sh
+    bash ./compile.sh
 }
 
 # Pull requests and commits to other branches shouldn't try to deploy, just build to verify
