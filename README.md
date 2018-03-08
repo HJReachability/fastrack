@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/HJReachability/fastrack.svg?branch=master)](https://travis-ci.org/HJReachability/fastrack)
 [![License](https://img.shields.io/badge/license-BSD-blue.svg)](LICENSE)
 
-[FaSTrack](https://hjreachability.github.io/fastrack/) (Fast and Safe Tracking): fast planning methods with slower, reachability-based safety guarantees for online safe trajectory planning. Auto-generated documentation may be found [here]((https://hjreachability.github.io/fastrack/)).
+[FaSTrack](https://hjreachability.github.io/fastrack/) (Fast and Safe Tracking): fast planning methods with slower, reachability-based safety guarantees for online safe trajectory planning. Auto-generated documentation may be found [here](https://hjreachability.github.io/fastrack/doc/html).
 
 ## Repository organization
 All code in this repository is written in the Robot Operating System (ROS) framework, and as such is broken up into atomic packages that implement specific functionality. The `ros/` directory is the root workspace, and individual packages live inside the `ros/src/` directory.
