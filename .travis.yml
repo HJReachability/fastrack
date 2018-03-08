@@ -55,8 +55,7 @@ install:
 #  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 20; fi
 #  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo update-alternatives --config gcc; fi
 #  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo update-alternatives --config g++; fi
-
-before_script:
+#before_script:
   # Get Eigen. The apt-get version on 12.04 is too old; we need at least 3.1.0.
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir eigen && cd eigen; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then hg clone https://bitbucket.org/eigen/eigen; fi
