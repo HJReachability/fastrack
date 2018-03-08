@@ -4,6 +4,7 @@
 *.gz
 ~*
 *.png
+!doc/
 *.mat
 # !ros/src/meta_planner/precomputation/
 
