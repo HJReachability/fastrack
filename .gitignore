@@ -20,6 +20,10 @@ ros/build
 ros/devel
 ros/src/CMakeLists.txt
 
+# Deploy stuff.
+deploy_key
+deploy_key.pub
+
 # Compiled python files.
 *.pyc
 
