@@ -19,6 +19,7 @@ fi
 REPO=`git config remote.origin.url`
 SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
 SHA=`git rev-parse --verify HEAD`
+echo "SSH_REPO: ${SSH_REPO}"
 
 # Run our compile script
 doCompile
@@ -38,6 +39,7 @@ fi
 git add doc
 git status
 git commit -am "Deploy to GitHub Pages: ${SHA}"
+echo "Committed changes."
 
 # Get the deploy key by using Travis's stored variables to decrypt deploy_key.enc
 ENCRYPTED_KEY_VAR="encrypted_${ENCRYPTION_LABEL}_key"
