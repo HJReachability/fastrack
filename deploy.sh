@@ -37,7 +37,7 @@ fi
 # The delta will show diffs between new and old versions.
 git add doc
 git status
-git commit -m "Deploy to GitHub Pages: ${SHA}"
+git commit -am "Deploy to GitHub Pages: ${SHA}"
 
 # Get the deploy key by using Travis's stored variables to decrypt deploy_key.enc
 ENCRYPTED_KEY_VAR="encrypted_${ENCRYPTION_LABEL}_key"
@@ -51,3 +51,4 @@ ssh-add deploy_key
 
 # Now that we're all set up, we can push.
 git push $SSH_REPO $TARGET_BRANCH
+echo "Successfully pushed to ${TARGET_BRANCH}"
