@@ -3,5 +3,5 @@
 <area shape="rect" id="node2" href="$classfastrack_1_1tracking_1_1Tracker.html" title="fastrack::tracking\l::Tracker\&lt; V, TS, TC,\l MTS, MTC, PS, MPS, SB, SP \&gt;" alt="" coords="248,5,467,61"/>
 <area shape="rect" id="node3" href="$classfastrack_1_1value_1_1ValueFunction.html" title="fastrack::value::ValueFunction\l\&lt; TS, TC, TD, PS, PC, PD, B \&gt;" alt="" coords="251,85,463,126"/>
 <area shape="rect" id="node4" href="$classfastrack_1_1value_1_1ValueFunction.html" title="fastrack::value::ValueFunction\l\&lt; PositionVelocity, QuadrotorControl,\l QuadrotorDecoupled6D, PositionVelocity,\l VectorXd, Kinematics\&lt; PositionVelocity \&gt;, Box \&gt;" alt="" coords="200,150,515,221"/>
-<area shape="rect" id="node5" href="$classfastrack_1_1value_1_1AnalyticalKinematicBoxQuadrotorDecoupled6D.html" title="fastrack::value::Analytical\lKinematicBoxQuadrotorDecoupled6D" alt="" coords="563,165,801,206"/>
+<area shape="rect" id="node5" href="$classfastrack_1_1value_1_1AnalyticalKinematicBoxQuadrotorDecoupled6D.html" title="fastrack::value::Analytical\lKinematicBoxQuadrotorDecoupled6D" alt="" coords="563,165,802,206"/>
 </map>

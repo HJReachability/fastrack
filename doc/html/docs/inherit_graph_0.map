@@ -1,4 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structfastrack_1_1bound_1_1TrackingBound.html" title="fastrack::bound::Tracking\lBound\&lt; fastrack_srvs::Tracking\lBoundBox::Response \&gt;" alt="" coords="5,5,213,61"/>
-<area shape="rect" id="node2" href="$structfastrack_1_1bound_1_1Box.html" title="fastrack::bound::Box" alt="" coords="261,20,404,47"/>
+<area shape="rect" id="node1" href="$structfastrack_1_1bound_1_1TrackingBound.html" title="fastrack::bound::Tracking\lBound\&lt; fastrack_srvs::Tracking\lBoundBox::Response \&gt;" alt="" coords="5,4,213,60"/>
+<area shape="rect" id="node2" href="$structfastrack_1_1bound_1_1Box.html" title="fastrack::bound::Box" alt="" coords="262,19,405,45"/>
 </map>

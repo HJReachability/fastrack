@@ -1,5 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classfastrack_1_1planning_1_1Planner.html" title="fastrack::planning\l::Planner\&lt; S, E, fastrack\l_srvs::KinematicPlannerDynamics,\l Kinematics\&lt; S \&gt;, B, SB \&gt;" alt="" coords="5,5,232,76"/>
-<area shape="rect" id="node2" href="$classfastrack_1_1planning_1_1KinematicPlanner.html" title="fastrack::planning\l::KinematicPlanner\&lt;\l S, E, B, SB \&gt;" alt="" coords="280,13,420,69"/>
-<area shape="rect" id="node3" href="$classfastrack_1_1planning_1_1OmplKinematicPlanner.html" title="fastrack::planning\l::OmplKinematicPlanner\l\&lt; S, E, B, SB, P \&gt;" alt="" coords="468,13,631,69"/>
+<area shape="rect" id="node1" href="$classfastrack_1_1planning_1_1Planner.html" title="fastrack::planning\l::Planner\&lt; S, E, Kinematics\l\&lt; S \&gt;, fastrack_srvs::KinematicPlanner\lDynamics, B, SB \&gt;" alt="" coords="6,5,258,75"/>
+<area shape="rect" id="node2" href="$classfastrack_1_1planning_1_1KinematicPlanner.html" title="fastrack::planning\l::KinematicPlanner\&lt;\l S, E, B, SB \&gt;" alt="" coords="307,12,447,68"/>
+<area shape="rect" id="node3" href="$classfastrack_1_1planning_1_1OmplKinematicPlanner.html" title="fastrack::planning\l::OmplKinematicPlanner\l\&lt; P, S, E, B, SB \&gt;" alt="" coords="496,12,659,68"/>
 </map>
