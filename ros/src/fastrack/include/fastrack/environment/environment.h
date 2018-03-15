@@ -66,7 +66,9 @@ public:
   // and only if the provided position is a valid collision-free configuration.
   // Provide a separate collision check for each type of tracking error bound.
   virtual bool IsValid(const Vector3d& position, const Box& bound) const = 0;
-  bool IsValid(const std::vector<Vector3d>& positions, const Box& bound) const;
+
+  // Utility for checking multiple positions.
+  bool AreValid(const std::vector<Vector3d>& positions, const Box& bound) const;
 
   // Derived classes must have some sort of visualization through RViz.
   virtual void Visualize(const ros::Publisher& pub,
@@ -75,10 +77,6 @@ public:
 protected:
   explicit Environment()
     : initialized_(false) {}
-  explicit Environment(const Vector3d& lower, const Vector3d& upper)
-    : lower_(lower),
-      upper_(upper),
-      initialized_(true) {}
 
   // Load parameters. This may be overridden by derived classes if needed
   // (they should still call this one via Environment::LoadParameters).

@@ -153,9 +153,9 @@ double Kinematics<S>::BestPossibleTime(const S& x1, const S& x2) const {
   double time = -std::numeric_limits<double>::infinity();
   for (size_t ii = 0; ii < S::ConfigurationDimension(); ii++) {
     if (c2(ii) >= c1(ii))
-      time = std::max(time, (c2(ii) - c1(ii)) / this->u_upper_);
+      time = std::max(time, (c2(ii) - c1(ii)) / this->u_upper_(ii));
     else
-      time = std::max(time, (c2(ii) - c1(ii)) / this->u_lower_);
+      time = std::max(time, (c2(ii) - c1(ii)) / this->u_lower_(ii));
   }
 
   return time;

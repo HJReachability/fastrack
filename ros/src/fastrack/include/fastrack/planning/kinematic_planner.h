@@ -57,7 +57,7 @@ using dynamics::Kinematics;
 
 template<typename S, typename E, typename B, typename SB>
 class KinematicPlanner : public Planner< S, E,
-  fastrack_srvs::KinematicPlannerDynamics, Kinematics<S>, B, SB > {
+  Kinematics<S>, fastrack_srvs::KinematicPlannerDynamics, B, SB > {
 public:
   virtual ~KinematicPlanner() {}
 
@@ -65,12 +65,11 @@ public:
   // at the given time.
   // NOTE! The states in the output trajectory are essentially configurations.
   virtual Trajectory<S> Plan(
-    const S& start, const S& goal, const Environment& env,
-    double start_time=0.0) const = 0;
+    const S& start, const S& goal, double start_time=0.0) const = 0;
 
 protected:
   explicit KinematicPlanner()
-    : Planner() {}
+    : Planner<S, E, Kinematics<S>, fastrack_srvs::KinematicPlannerDynamics, B, SB>() {}
 }; //\class KinematicPlanner
 
 } //\namespace planning

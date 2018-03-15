@@ -36,58 +36,51 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base class for all environment models, providing separate collision check
-// functions for each type of tracking error bound. All environments are
-// boxes in 3D space.
+// BallsInBox is derived from the Environment base class. This class models
+// obstacles as spheres to provide a simple demo.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifndef FASTRACK_ENVIRONMENT_BALLS_IN_BOX_H
+#define FASTRACK_ENVIRONMENT_BALLS_IN_BOX_H
+
 #include <fastrack/environment/environment.h>
+
+#include <visualization_msgs/Marker.h>
+#include <geometry_msgs/Point.h>
 
 namespace fastrack {
 namespace environment {
 
-// Initialize from a ROS NodeHandle.
-bool Environment::Initialize(const ros::NodeHandle& n) {
-  name_ = ros::names::append(n.getNamespace(), "Environment");
+class BallsInBox : public Environment {
+public:
+  ~BallsInBox() {}
+  explicit BallsInBox()
+    : Environment() {}
 
-  if (!LoadParameters(n)) {
-    ROS_ERROR("%s: Failed to load parameters.", name_.c_str());
-    return false;
-  }
+  // Derived classes must provide a collision checker which returns true if
+  // and only if the provided position is a valid collision-free configuration.
+  // Provide a separate collision check for each type of tracking error bound.
+  bool IsValid(const Vector3d& position, const Box& bound) const;
 
-  initialized_ = true;
-  return true;
-}
+  // Derived classes must have some sort of visualization through RViz.
+  void Visualize(const ros::Publisher& pub, const std::string& frame) const;
 
-// Provide auxiliary validity checkers for sets of positions.
-bool Environment::AreValid(
-  const std::vector<Vector3d>& positions, const Box& bound) const {
-  // Return Boolean AND of all IsValid calls.
-  for (const auto& p : positions) {
-    if (!IsValid(p, bound))
-      return false;
-  }
+private:
+  // Load parameters. This may be overridden by derived classes if needed
+  // (they should still call this one via Environment::LoadParameters).
+  bool LoadParameters(const ros::NodeHandle& n);
 
-  return true;
-}
+  // Generate random obstacles.
+  void GenerateObstacles(size_t num, double min_radius, double max_radius,
+                         unsigned int seed=0);
 
-// Load parameters. This may be overridden by derived classes if needed
-// (they should still call this one via Environment::LoadParameters).
-bool Environment::LoadParameters(const ros::NodeHandle& n) {
-  ros::NodeHandle nl(n);
-
-  // Upper and lower bounds of the environment.
-  if (!nl.getParam("env/upper/x", upper_(0))) return false;
-  if (!nl.getParam("env/upper/y", upper_(1))) return false;
-  if (!nl.getParam("env/upper/z", upper_(2))) return false;
-
-  if (!nl.getParam("env/lower/x", lower_(0))) return false;
-  if (!nl.getParam("env/lower/y", lower_(1))) return false;
-  if (!nl.getParam("env/lower/z", lower_(2))) return false;
-
-  return true;
-}
+  // Obstacle centers and radii.
+  std::vector<Vector3d> centers_;
+  std::vector<double> radii_;
+}; //\class Environment
 
 } //\namespace environment
 } //\namespace fastrack
+
+#endif

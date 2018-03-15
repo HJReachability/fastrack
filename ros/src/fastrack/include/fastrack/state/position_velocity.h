@@ -51,6 +51,9 @@ namespace state {
 class PositionVelocity : public State {
 public:
   ~PositionVelocity() {}
+  explicit PositionVelocity()
+    : position_(Vector3d::Zero()),
+      velocity_(Vector3d::Zero()) {}
   explicit PositionVelocity(double x, double y, double z,
                             double vx, double vy, double vz);
   explicit PositionVelocity(const Vector3d& position,
@@ -76,6 +79,17 @@ public:
 
     return config;
   }
+
+  // Setters.
+  inline double& X() { return position_(0); }
+  inline double& Y() { return position_(1); }
+  inline double& Z() { return position_(2); }
+  inline double& Vx() { return velocity_(0); }
+  inline double& Vy() { return velocity_(1); }
+  inline double& Vz() { return velocity_(2); }
+
+  inline Vector3d& Position() { return position_; }
+  inline Vector3d& Velocity() { return velocity_; }
 
   // Compute the relative state to a particular planner state.
   template<typename PS>

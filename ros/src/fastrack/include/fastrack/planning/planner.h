@@ -59,6 +59,8 @@
 namespace fastrack {
 namespace planning {
 
+using environment::Environment;
+
 template<typename S, typename E,
          typename D, typename SD, typename B, typename SB>
 class Planner {
@@ -98,6 +100,9 @@ protected:
   D dynamics_;
   B bound_;
   E env_;
+
+  // Max amount of time for planning to run each time.
+  double max_runtime_;
 
   // Publisher and subscriber.
   ros::Subscriber replan_request_sub_;
@@ -188,6 +193,9 @@ bool Planner<S, E, D, SD, B, SB>::LoadParameters(const ros::NodeHandle& n) {
   // Services.
   if (!nl.getParam("srvs/dynamics", dynamics_srv_name_)) return false;
   if (!nl.getParam("srvs/bound", bound_srv_name_)) return false;
+
+  // Max runtime per call.
+  if (!nl.getParam("max_runtime", max_runtime_)) return false;
 
   return true;
 }

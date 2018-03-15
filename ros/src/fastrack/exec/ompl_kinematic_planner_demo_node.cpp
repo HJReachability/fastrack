@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, The Regents of the University of California (Regents).
+ * Copyright (c) 2017, The Regents of the University of California (Regents).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,58 +36,40 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base class for all environment models, providing separate collision check
-// functions for each type of tracking error bound. All environments are
-// boxes in 3D space.
+// Node running an OMPL kinematic planner for the PositionVelocity state space
+// and BallsInBox environment, with a Box tracking bound.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <fastrack/environment/environment.h>
+#include <fastrack/planning/ompl_kinematic_planner.h>
+#include <fastrack/state/position_velocity.h>
+#include <fastrack/environment/balls_in_box.h>
+#include <fastrack/bound/box.h>
 
-namespace fastrack {
-namespace environment {
+#include <fastrack_srvs/KinematicPlannerDynamics.h>
 
-// Initialize from a ROS NodeHandle.
-bool Environment::Initialize(const ros::NodeHandle& n) {
-  name_ = ros::names::append(n.getNamespace(), "Environment");
+#include <ros/ros.h>
 
-  if (!LoadParameters(n)) {
-    ROS_ERROR("%s: Failed to load parameters.", name_.c_str());
-    return false;
+namespace fp = fastrack::planning;
+namespace fs = fastrack::state;
+namespace fb = fastrack::bound;
+namespace fe = fastrack::environment;
+
+int main(int argc, char** argv) {
+  ros::init(argc, argv, "PlannerDemo");
+  ros::NodeHandle n("~");
+
+  fastrack::planning::OmplKinematicPlanner<
+    fp::og::BITstar, fs::PositionVelocity, fe::BallsInBox, fb::Box,
+    fastrack_srvs::TrackingBoundBox> planner;
+
+  if (!planner.Initialize(n)) {
+    ROS_ERROR("%s: Failed to initialize planner.",
+              ros::this_node::getName().c_str());
+    return EXIT_FAILURE;
   }
 
-  initialized_ = true;
-  return true;
+  ros::spin();
+
+  return EXIT_SUCCESS;
 }
-
-// Provide auxiliary validity checkers for sets of positions.
-bool Environment::AreValid(
-  const std::vector<Vector3d>& positions, const Box& bound) const {
-  // Return Boolean AND of all IsValid calls.
-  for (const auto& p : positions) {
-    if (!IsValid(p, bound))
-      return false;
-  }
-
-  return true;
-}
-
-// Load parameters. This may be overridden by derived classes if needed
-// (they should still call this one via Environment::LoadParameters).
-bool Environment::LoadParameters(const ros::NodeHandle& n) {
-  ros::NodeHandle nl(n);
-
-  // Upper and lower bounds of the environment.
-  if (!nl.getParam("env/upper/x", upper_(0))) return false;
-  if (!nl.getParam("env/upper/y", upper_(1))) return false;
-  if (!nl.getParam("env/upper/z", upper_(2))) return false;
-
-  if (!nl.getParam("env/lower/x", lower_(0))) return false;
-  if (!nl.getParam("env/lower/y", lower_(1))) return false;
-  if (!nl.getParam("env/lower/z", lower_(2))) return false;
-
-  return true;
-}
-
-} //\namespace environment
-} //\namespace fastrack

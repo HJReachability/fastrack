@@ -54,18 +54,21 @@
 #include <ompl/base/SpaceInformation.h>
 #include <ompl/base/spaces/RealVectorStateSpace.h>
 
+#include <ompl/geometric/planners/rrt/RRTConnect.h>
+#include <ompl/geometric/planners/bitstar/BITstar.h>
+
 namespace fastrack {
 namespace planning {
 
 namespace ob = ompl::base;
 namespace og = ompl::geometric;
 
-template<typename S, typename E, typename B, typename SB, typename P>
+template<typename P, typename S, typename E, typename B, typename SB>
 class OmplKinematicPlanner : public KinematicPlanner<S, E, B, SB> {
 public:
   ~OmplKinematicPlanner() {}
   explicit OmplKinematicPlanner()
-    : KinematicPlanner() {
+    : KinematicPlanner<S, E, B, SB>() {
     // Set OMPL log level.
     ompl::msg::setLogLevel(ompl::msg::LogLevel::LOG_ERROR);
   }
@@ -73,8 +76,7 @@ public:
   // Plan a trajectory from the given start to goal states starting
   // at the given time.
   // NOTE! The states in the output trajectory are essentially configurations.
-  Trajectory<S> Plan(const S& start, const S& goal, const Environment& env,
-                     double start_time=0.0) const;
+  Trajectory<S> Plan(const S& start, const S& goal, double start_time=0.0) const;
 
 private:
   // Convert between OMPL states and configurations.
@@ -84,8 +86,8 @@ private:
 // ---------------------------- IMPLEMENTATION ------------------------------ //
 
 // Convert between OMPL states and configurations.
-template<typename S, typename E, typename B, typename SB, typename P>
-S OmplKinematicPlanner<S, E, B, SB, P>::FromOmplState(const ob::State* state) const {
+template<typename P, typename S, typename E, typename B, typename SB>
+S OmplKinematicPlanner<P, S, E, B, SB>::FromOmplState(const ob::State* state) const {
   // Catch null state.
   if (!state)
     throw std::runtime_error("OmplKinematicPlanner: null OMPL state.");
@@ -104,23 +106,22 @@ S OmplKinematicPlanner<S, E, B, SB, P>::FromOmplState(const ob::State* state) co
 
 // Plan a trajectory from the given start to goal states starting
 // at the given time.
-template<typename S, typename E, typename B, typename SB, typename P>
-Trajectory<S> OmplKinematicPlanner<S, E, B, SB, P>::
-Plan(const S& start, const S& goal, const Environment& env,
-     double start_time) const {
+template<typename P, typename S, typename E, typename B, typename SB>
+Trajectory<S> OmplKinematicPlanner<P, S, E, B, SB>::
+Plan(const S& start, const S& goal, double start_time) const {
   // Unpack start and goal configurations.
   const VectorXd start_config = start.Configuration();
   const VectorXd goal_config = goal.Configuration();
 
   // Check that both start and stop are in bounds.
-  if (!env.IsValid(start.OccupiedPositions(), bound_)) {
+  if (!this->env_.AreValid(start.OccupiedPositions(), this->bound_)) {
     ROS_WARN_THROTTLE(1.0, "Start point was in collision or out of bounds.");
-    return nullptr;
+    return Trajectory<S>();
   }
 
-  if (!env.IsValid(goal.OccupiedPositions(), bound_)) {
+  if (!this->env_.AreValid(goal.OccupiedPositions(), this->bound_)) {
     ROS_WARN_THROTTLE(1.0, "Goal point was in collision or out of bounds.");
-    return nullptr;
+    return Trajectory<S>();
   }
 
   // Create the OMPL state space corresponding to this environment.
@@ -135,7 +136,6 @@ Plan(const S& start, const S& goal, const Environment& env,
   for (size_t ii = 0; ii < S::ConfigurationDimension(); ii++) {
     ompl_bounds.setLow(ii, lower(ii));
     ompl_bounds.setHigh(ii, upper(ii));
-
   }
 
   ompl_space->setBounds(ompl_bounds);
@@ -143,29 +143,29 @@ Plan(const S& start, const S& goal, const Environment& env,
   // Create a SimpleSetup instance and set the state validity checker function.
   og::SimpleSetup ompl_setup(ompl_space);
   ompl_setup.setStateValidityChecker([&](const ob::State* state) {
-      return env.IsValid(FromOmplState(state).OccupiedPositions(), bound_);
+      return this->env_.AreValid(FromOmplState(state).OccupiedPositions(), this->bound_);
     });
 
-  // Set the start and stop states.
+  // Set the start and goal states.
   ob::ScopedState<ob::RealVectorStateSpace> ompl_start(ompl_space);
-  ob::ScopedState<ob::RealVectorStateSpace> ompl_stop(ompl_space);
+  ob::ScopedState<ob::RealVectorStateSpace> ompl_goal(ompl_space);
   for (size_t ii = 0; ii < S::ConfigurationDimension(); ii++) {
-    ompl_start[ii] = start(ii);
-    ompl_stop[ii] = stop(ii);
+    ompl_start[ii] = start_config(ii);
+    ompl_goal[ii] = goal_config(ii);
   }
 
-  ompl_setup.setStartAndGoalStates(ompl_start, ompl_stop);
+  ompl_setup.setStartAndGoalStates(ompl_start, ompl_goal);
 
   // Set the planner.
   ob::PlannerPtr ompl_planner(new P(ompl_setup.getSpaceInformation()));
   ompl_setup.setPlanner(ompl_planner);
 
   // Solve. Parameter is the amount of time (in seconds) used by the solver.
-  const ob::PlannerStatus solved = ompl_setup.solve(budget);
+  const ob::PlannerStatus solved = ompl_setup.solve(this->max_runtime_);
 
   if (!solved) {
     ROS_WARN("OMPL Planner could not compute a solution.");
-    return nullptr;
+    return Trajectory<S>();
   }
 
   // Unpack the solution and assign timestamps.
@@ -183,13 +183,13 @@ Plan(const S& start, const S& goal, const Environment& env,
     // Increment time by the duration it takes us to get from the previous
     // configuration to this one.
     if (ii > 0)
-      time += dynamics_.BestPossibleTime(states.back(), state);
+      time += this->dynamics_.BestPossibleTime(states.back(), state);
 
     times.push_back(time);
     states.push_back(state);
   }
 
-  return Trajectory(states, times);
+  return Trajectory<S>(states, times);
 }
 
 } //\namespace planning

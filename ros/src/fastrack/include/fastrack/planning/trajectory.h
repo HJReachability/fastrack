@@ -44,7 +44,7 @@
 #ifndef FASTRACK_PLANNING_TRAJECTORY_H
 #define FASTRACK_PLANNING_TRAJECTORY_H
 
-#include <fastrack/space/state.h>
+#include <fastrack/state/state.h>
 #include <fastrack/utils/types.h>
 #include <fastrack_msgs/Trajectory.h>
 #include <fastrack_msgs/State.h>
@@ -61,6 +61,7 @@ template<typename S>
 class Trajectory {
 public:
   ~Trajectory() {}
+  explicit Trajectory() {}
   explicit Trajectory(const std::vector<S> states,
                       const std::vector<double> times);
   explicit Trajectory(const fastrack_msgs::Trajectory::ConstPtr& msg);
@@ -79,8 +80,8 @@ private:
   std_msgs::ColorRGBA Colormap(double t) const;
 
   // Lists of states and times.
-  const std::vector<S> states_;
-  const std::vector<double> times_;
+  std::vector<S> states_;
+  std::vector<double> times_;
 }; //\class Trajectory
 
 // ------------------------------ IMPLEMENTATION ----------------------------- //
@@ -135,8 +136,7 @@ template<typename S>
 S Trajectory<S>::Interpolate(double t) const {
   // Get an iterator pointing to the first element in times_ that does
   // not compare less than t.
-  const std::vector<S>::const_iterator iter =
-    std::lower_bound(times_.begin(), times_.end(), t);
+  const auto iter = std::lower_bound(times_.begin(), times_.end(), t);
 
   // Catch case where iter points to the beginning of the list.
   // This will happen if t occurs before the first time in the list.
@@ -198,7 +198,7 @@ void Trajectory<S>::Visualize(const ros::Publisher& pub,
   // Set up line strip marker.
   visualization_msgs::Marker lines;
   lines.ns = "lines";
-  lines.header.frame_id = frame_id;
+  lines.header.frame_id = frame;
   lines.header.stamp = ros::Time::now();
   lines.id = 0;
   lines.type = visualization_msgs::Marker::LINE_STRIP;
@@ -230,8 +230,8 @@ void Trajectory<S>::Visualize(const ros::Publisher& pub,
 template<typename S>
 std_msgs::ColorRGBA Trajectory<S>::Colormap(double t) const {
   std_msgs::ColorRGBA c;
-  c.r = std::clamp((t - times_.front()) /
-                   (times_.back() - times_.front()), 0.0, 1.0);
+  c.r = std::max(0.0, std::min(1.0,
+    (t - times_.front()) / (times_.back() - times_.front())));
   c.g = 0.0;
   c.b = 1.0 - c.r;
   c.a = 0.9;
