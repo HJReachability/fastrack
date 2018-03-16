@@ -42,7 +42,7 @@ fi
 # The delta will show diffs between new and old versions.
 git add doc
 #git status
-git commit -am "Deploy to GitHub Pages: ${SHA}"
+git commit -am "[ci skip] Deploy to GitHub Pages: ${SHA}"
 echo "Committed changes."
 
 # Get the deploy key by using Travis's stored variables to decrypt deploy_key.enc
