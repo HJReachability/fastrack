@@ -55,7 +55,7 @@
 #include <std_msgs/ColorRGBA.h>
 
 namespace fastrack {
-namespace planning {
+namespace trajectory {
 
 template<typename S>
 class Trajectory {
@@ -65,6 +65,12 @@ public:
   explicit Trajectory(const std::vector<S> states,
                       const std::vector<double> times);
   explicit Trajectory(const fastrack_msgs::Trajectory::ConstPtr& msg);
+
+  // Size (number of states in this Trajectory).
+  inline size_t Size() const { return states_.size(); }
+
+  // Duration in seconds.
+  inline double Duration() const { return times_.back() - times_.front(); }
 
   // Interpolate at a particular time.
   S Interpolate(double t) const;
@@ -82,6 +88,9 @@ private:
   // Lists of states and times.
   std::vector<S> states_;
   std::vector<double> times_;
+
+  // Is this a trajectory in configuration space?
+  bool configuration_;
 }; //\class Trajectory
 
 // ------------------------------ IMPLEMENTATION ----------------------------- //
@@ -90,7 +99,8 @@ template<typename S>
 Trajectory<S>::Trajectory(const std::vector<S> states,
                           const std::vector<double> times)
   : states_(states),
-    times_(times) {
+    times_(times),
+    configuration_(false) {
   // Warn if state/time lists are not the same length and truncate
   // the longer one to match the smaller.
   if (states_.size() != times_.size()) {
@@ -115,7 +125,8 @@ Trajectory<S>::Trajectory(const std::vector<S> states,
 
 // Construct from a ROS message.
 template<typename S>
-Trajectory<S>::Trajectory(const fastrack_msgs::Trajectory::ConstPtr& msg) {
+Trajectory<S>::Trajectory(const fastrack_msgs::Trajectory::ConstPtr& msg)
+  : configuration_(false) {
   size_t num_elements = msg->states.size();
 
   // Get size carefully.
@@ -129,6 +140,9 @@ Trajectory<S>::Trajectory(const fastrack_msgs::Trajectory::ConstPtr& msg) {
     states_.push_back(S(msg->states[ii]));
     times_.push_back(S(msg->times[ii]));
   }
+
+  // Is this trajectory in state space or configuration space?
+  configuration_ = msg->states.front().x.size() == S::ConfigurationDimension();
 }
 
 // Interpolate at a particular time.
@@ -159,7 +173,18 @@ S Trajectory<S>::Interpolate(double t) const {
 
   // Linearly interpolate states.
   const double frac = (t - times_[lo]) / (times_[hi] - times_[lo]);
-  return (1.0 - frac) * states_[lo] + frac * states_[hi];
+  S interpolated = (1.0 - frac) * states_[lo] + frac * states_[hi];
+
+  // If this is a configuration trajectory, set non-configuration states
+  // by providing a numerical derivative of configuration.
+  if (configuration_) {
+    const VectorXd configuration_dot = (times_[hi] - times_[lo] > 1e-8) ?
+      (states_[hi] - states_[lo]).Configuration() / (times_[hi] - times_[lo]) :
+      VectorXd::Zero(S::ConfigurationDimension());
+    interpolated.SetConfigurationDot(configuration_dot);
+  }
+
+  return interpolated;
 }
 
 // Convert to a ROS message.

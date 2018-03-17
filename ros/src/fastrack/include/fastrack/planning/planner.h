@@ -50,7 +50,7 @@
 #define FASTRACK_PLANNING_PLANNER_H
 
 #include <fastrack/environment/environment.h>
-#include <fastrack/planning/trajectory.h>
+#include <fastrack/trajectory/trajectory.h>
 #include <fastrack/utils/types.h>
 
 #include <fastrack_msgs/ReplanRequest.h>
@@ -60,6 +60,7 @@ namespace fastrack {
 namespace planning {
 
 using environment::Environment;
+using trajectory::Trajectory;
 
 template<typename S, typename E,
          typename D, typename SD, typename B, typename SB>

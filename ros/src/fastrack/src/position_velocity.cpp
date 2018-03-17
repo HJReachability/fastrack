@@ -42,7 +42,7 @@
 
 #include <fastrack/state/position_velocity.h>
 
-
+#include <ros/ros.h>
 
 namespace fastrack {
 namespace state {
@@ -67,15 +67,19 @@ PositionVelocity::PositionVelocity(const fastrack_msgs::State& msg)
     position_(Vector3d::Zero()),
     velocity_(Vector3d::Zero()) {
   // Check dimensions.
-  if (msg.x.size() != StateDimension())
-    throw std::runtime_error("PositionVelocity: incorrect msg dimension.");
-
-  position_(0) = msg.x[0];
-  position_(1) = msg.x[1];
-  position_(2) = msg.x[2];
-  velocity_(0) = msg.x[3];
-  velocity_(1) = msg.x[4];
-  velocity_(2) = msg.x[5];
+  if (msg.x.size() == StateDimension()) {
+    position_(0) = msg.x[0];
+    position_(1) = msg.x[1];
+    position_(2) = msg.x[2];
+    velocity_(0) = msg.x[3];
+    velocity_(1) = msg.x[4];
+    velocity_(2) = msg.x[5];
+  } else if (msg.x.size() == ConfigurationDimension()) {
+    position_(0) = msg.x[0];
+    position_(1) = msg.x[1];
+    position_(2) = msg.x[2];
+  } else
+    ROS_ERROR("PositionVelocity: msg dimension is incorrect.");
 }
 PositionVelocity::PositionVelocity(const VectorXd& config)
   : State(),
@@ -88,6 +92,16 @@ PositionVelocity::PositionVelocity(const VectorXd& config)
   position_(0) = config(0);
   position_(1) = config(1);
   position_(2) = config(2);
+}
+
+// Set non-configuration dimensions to match the given config derivative.
+void PositionVelocity::SetConfigurationDot(const VectorXd& configuration_dot) {
+  if (configuration_dot.size() != ConfigurationDimension())
+    throw std::runtime_error("PositionVelocity: invalid configuration_dot dim.");
+
+  velocity_(0) = configuration_dot(0);
+  velocity_(1) = configuration_dot(1);
+  velocity_(2) = configuration_dot(2);
 }
 
 // Static function to sample from the configuration space associated
@@ -133,15 +147,35 @@ void PositionVelocity::SetConfigurationBounds(
   upper_ = upper;
 }
 
+// Convert from ROS message. Assume State is [x, y, z, vx, vy, vz] or
+// configuration only.
+void PositionVelocity::FromRos(const fastrack_msgs::State::ConstPtr& msg) {
+  if (msg->x.size() == 6) {
+    // Message contains full state.
+    position_(0) = msg->x[0];
+    position_(1) = msg->x[1];
+    position_(2) = msg->x[2];
+    velocity_(0) = msg->x[3];
+    velocity_(1) = msg->x[4];
+    velocity_(2) = msg->x[5];
+  } else if (msg->x.size() == 3) {
+    // Message contains configuration only.
+    position_(0) = msg->x[0];
+    position_(1) = msg->x[1];
+    position_(2) = msg->x[2];
+  } else
+    ROS_ERROR("PositionVelocity: msg is neither state nor configuration.");
+}
+
 // Convert to ROS message.
 fastrack_msgs::State PositionVelocity::ToRos() const {
   fastrack_msgs::State msg;
-  msg.x.push_back(position_[0]);
-  msg.x.push_back(position_[1]);
-  msg.x.push_back(position_[2]);
-  msg.x.push_back(velocity_[0]);
-  msg.x.push_back(velocity_[1]);
-  msg.x.push_back(velocity_[2]);
+  msg.x.push_back(position_(0));
+  msg.x.push_back(position_(1));
+  msg.x.push_back(position_(2));
+  msg.x.push_back(velocity_(0));
+  msg.x.push_back(velocity_(1));
+  msg.x.push_back(velocity_(2));
 
   return msg;
 }
@@ -209,4 +243,3 @@ PositionVelocity operator/(double s, PositionVelocity rhs) {
 
 } //\namespace state
 } //\namespace fastrack
-

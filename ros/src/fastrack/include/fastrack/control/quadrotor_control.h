@@ -45,6 +45,7 @@
 #define FASTRACK_CONTROL_CONTROL_H
 
 #include <fastrack/utils/types.h>
+#include <fastrack_msgs/Control.h>
 
 namespace fastrack {
 namespace control {
@@ -64,6 +65,17 @@ struct QuadrotorControl {
       roll(r),
       yaw_rate(yr),
       thrust(t) {}
+
+  // Convert to ROS message. Assume ordering [pitch, roll, yaw_rate, thrust].
+  inline fastrack_msgs::Control ToRos() {
+    fastrack_msgs::Control msg;
+    msg.u.push_back(pitch);
+    msg.u.push_back(roll);
+    msg.u.push_back(yaw_rate);
+    msg.u.push_back(thrust);
+
+    return msg;
+  }
 }; //\struct QuadrotorControl
 
 } //\namespace control

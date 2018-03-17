@@ -91,6 +91,9 @@ public:
   inline Vector3d& Position() { return position_; }
   inline Vector3d& Velocity() { return velocity_; }
 
+  // Set non-configuration dimensions to match the given config derivative.
+  void SetConfigurationDot(const VectorXd& configuration_dot);
+
   // Compute the relative state to a particular planner state.
   template<typename PS>
   PositionVelocity RelativeTo(const PS& planner_x) const {
@@ -108,7 +111,9 @@ public:
   // be generalized to a collection of generic obstacles.
   std::vector<Vector3d> OccupiedPositions() const;
 
-  // Convert to ROS message.
+  // Convert from/to ROS message. Assume State is [x, y, z, vx, vy, vz]
+  // or configuration only.
+  void FromRos(const fastrack_msgs::State::ConstPtr& msg);
   fastrack_msgs::State ToRos() const;
 
   // Dimension of the state and configuration spaces.

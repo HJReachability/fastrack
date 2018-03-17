@@ -69,7 +69,8 @@ public:
   // be generalized to a collection of generic obstacles.
   virtual std::vector<Vector3d> OccupiedPositions() const = 0;
 
-  // Convert to ROS message.
+  // Convert from/to ROS message.
+  virtual void FromRos(const fastrack_msgs::State::ConstPtr& msg) = 0;
   virtual fastrack_msgs::State ToRos() const = 0;
 
   // Re-seed the random engine.

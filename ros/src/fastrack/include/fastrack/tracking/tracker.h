@@ -38,8 +38,8 @@
 //
 // Defines the Tracker base class, which is templated on the following types:
 // -- Value function (V)
-// -- [Planner] state (PS), state msg (MPS)
-// -- [Tracker] state (TS), state msg (MTS), control (TC), control msg (MTC)
+// -- [Planner] state (PS)
+// -- [Tracker] state (TS), control (TC)
 // -- Tracking error bound service (SB)
 // -- Planner dynamics service (SP)
 //
@@ -57,34 +57,36 @@
 #include <fastrack/utils/types.h>
 #include <fastrack/utils/uncopyable.h>
 
+#include <fastrack_msgs/Control.h>
+#include <fastrack_msgs/State.h>
+
 #include <ros/ros.h>
 
 namespace fastrack {
 namespace tracking {
 
-template<typename V, typename TS, typename TC, typename MTS, typename MTC,
-         typename PS, typename MPS, typename SB, typename SP>
+template<typename V, typename TS, typename TC, typename PS,
+         typename SB, typename SP>
 class Tracker : private Uncopyable {
 public:
-  virtual ~Tracker() {}
+  ~Tracker() {}
+  explicit Tracker()
+    : initialized_(false) {}
 
   // Initialize from a ROS NodeHandle.
   bool Initialize(const ros::NodeHandle& n);
 
-protected:
-  explicit Tracker()
-    : initialized_(false) {}
-
+private:
   // Load parameters and register callbacks.
   bool LoadParameters(const ros::NodeHandle& n);
   bool RegisterCallbacks(const ros::NodeHandle& n);
 
   // Callback to update tracker/planner state.
-  inline void TrackerStateCallback(const MTS::ConstPtr& msg) {
-    tracker_x_ = FromRos(msg);
+  inline void TrackerStateCallback(const fastrack_msgs::State::ConstPtr& msg) {
+    tracker_x_.FromRos(msg);
   }
-  inline void PlannerStateCallback(const MPS::ConstPtr& msg) {
-    planner_x_ = FromRos(msg);
+  inline void PlannerStateCallback(const fastrack_msgs::State::ConstPtr& msg) {
+    planner_x_.FromRos(msg);
   }
 
   // Service callbacks for tracking bound and planner parameters.
@@ -99,17 +101,15 @@ protected:
 
   // Timer callback. Compute the optimal control and publish.
   inline void TimerCallback(const ros::TimerEvent& e) const {
-    control_pub_.publish(ToRos(value_.OptimalControl(tracker_x_, planner_x_)));
+    control_pub_.publish(value_.OptimalControl(tracker_x_, planner_x_).ToRos());
   }
-
-  // Convert states/control from/to ROS messages.
-  TS FromRos(const MTS::ConstPtr& msg) const = 0;
-  PS FromRos(const MPS::ConstPtr& msg) const = 0;
-  MTC ToRos(const TC& control) const = 0;
 
   // Most recent tracker/planner states.
   TS tracker_x_;
   PS planner_x_;
+
+  // Value function.
+  V value_;
 
   // Publishers and subscribers.
   std::string tracker_state_topic_;
@@ -131,9 +131,6 @@ protected:
   ros::Timer timer_;
   double time_step_;
 
-  // Value function.
-  V value_;
-
   // Flag for whether this class has been initialized yet.
   bool initialized_;
 
@@ -144,10 +141,9 @@ protected:
 // ----------------------------- IMPLEMEMTATION ----------------------------- //
 
 // Initialize from a ROS NodeHandle.
-template<typename V, typename TS, typename TC, typename MTS, typename MTC,
-         typename PS, typename MPS, typename SB, typename SP>
-bool Tracker<V, TS, TC, MTS, MTC, PS, MPS, SB, SP>::
-Initialize(const ros::NodeHandle& n) {
+template<typename V, typename TS, typename TC,
+         typename PS, typename SB, typename SP>
+bool Tracker<V, TS, TC, PS, SB, SP>::Initialize(const ros::NodeHandle& n) {
   name_ = ros::names::append(n.getNamespace(), "Tracker");
 
   // Initialize value function.
@@ -173,10 +169,9 @@ Initialize(const ros::NodeHandle& n) {
 }
 
 // Load parameters.
-template<typename V, typename TS, typename TC, typename MTS, typename MTC,
-         typename PS, typename MPS, typename SB, typename SP>
-bool Tracker<V, TS, TC, MTS, MTC, PS, MPS, SB, SP>::
-LoadParameters(const ros::NodeHandle& n) {
+template<typename V, typename TS, typename TC,
+         typename PS, typename SB, typename SP>
+bool Tracker<V, TS, TC, PS, SB, SP>::LoadParameters(const ros::NodeHandle& n) {
   ros::NodeHandle nl(n);
 
   // Topics.
@@ -195,30 +190,29 @@ LoadParameters(const ros::NodeHandle& n) {
 }
 
 // Register callbacks.
-template<typename V, typename TS, typename TC, typename MTS, typename MTC,
-         typename PS, typename MPS, typename SB, typename SP>
-bool Tracker<V, TS, TC, MTS, MTC, PS, MPS, SB, SP>::
-RegisterCallbacks(const ros::NodeHandle& n) {
+template<typename V, typename TS, typename TC,
+         typename PS, typename SB, typename SP>
+bool Tracker<V, TS, TC, PS, SB, SP>::RegisterCallbacks(const ros::NodeHandle& n) {
   ros::NodeHandle nl(n);
 
   // Services.
   bound_srv_ = nl.advertiseService(bound_name_.c_str(),
-    &Tracker<V, TS, TC, MTS, MTC, PS, MPS, SB, SP>::TrackingBoundServer, this);
+    &Tracker<V, TS, TC, PS, SB, SP>::TrackingBoundServer, this);
   planner_dynamics_srv_ = nl.advertiseService(planner_dynamics_name_.c_str(),
-    &Tracker<V, TS, TC, MTS, MTC, PS, MPS, SB, SP>::PlannerDynamicsServer, this);
+    &Tracker<V, TS, TC, PS, SB, SP>::PlannerDynamicsServer, this);
 
   // Subscribers.
   planner_state_sub_ = nl.subscribe(planner_state_topic_.c_str(), 1,
-    &Tracker<V, TS, TC, MTS, MTC, PS, MPS, SB, SP>::PlannerStateCallback, this);
+    &Tracker<V, TS, TC, PS, SB, SP>::PlannerStateCallback, this);
   tracker_state_sub_ = nl.subscribe(tracker_state_topic_.c_str(), 1,
-    &Tracker<V, TS, TC, MTS, MTC, PS, MPS, SB, SP>::TrackerStateCallback, this);
+    &Tracker<V, TS, TC, PS, SB, SP>::TrackerStateCallback, this);
 
   // Publisher.
-  control_pub_ = nl.advertise<MTC>(control_topic_.c_str(), 1, false);
+  control_pub_ = nl.advertise<fastrack_msgs::Control>(control_topic_.c_str(), 1, false);
 
   // Timer.
   timer_ = nl.createTimer(ros::Duration(time_step_),
-    &Tracker<V, TS, TC, MTS, MTC, PS, MPS, SB, SP>::TimerCallback, this);
+    &Tracker<V, TS, TC, PS, SB, SP>::TimerCallback, this);
 
   return true;
 }
