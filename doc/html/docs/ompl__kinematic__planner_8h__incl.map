@@ -4,7 +4,7 @@
 <area shape="rect" id="node32" href="$kinematics_8h.html" title="fastrack/dynamics/kinematics.h" alt="" coords="1467,171,1673,197"/>
 <area shape="rect" id="node4" href="$environment_8h.html" title="fastrack/environment\l/environment.h" alt="" coords="128,246,272,287"/>
 <area shape="rect" id="node7" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="686,517,830,544"/>
-<area shape="rect" id="node24" href="$trajectory_8h.html" title="fastrack/planning/trajectory.h" alt="" coords="742,253,932,280"/>
+<area shape="rect" id="node24" href="$trajectory_8h.html" title="fastrack/trajectory\l/trajectory.h" alt="" coords="774,246,900,287"/>
 <area shape="rect" id="node5" href="$box_8h.html" title="fastrack/bound/box.h" alt="" coords="61,344,205,371"/>
 <area shape="rect" id="node6" href="$tracking__bound_8h.html" title="fastrack/bound/tracking\l_bound.h" alt="" coords="528,427,686,469"/>
 <area shape="rect" id="node25" href="$state_8h.html" title="fastrack/state/state.h" alt="" coords="764,344,910,371"/>

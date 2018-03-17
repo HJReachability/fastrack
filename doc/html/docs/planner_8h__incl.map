@@ -1,7 +1,7 @@
 <map id="planner.h" name="planner.h">
 <area shape="rect" id="node2" href="$environment_8h.html" title="fastrack/environment\l/environment.h" alt="" coords="622,81,766,122"/>
 <area shape="rect" id="node5" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="576,352,720,379"/>
-<area shape="rect" id="node22" href="$trajectory_8h.html" title="fastrack/planning/trajectory.h" alt="" coords="1008,88,1198,115"/>
+<area shape="rect" id="node22" href="$trajectory_8h.html" title="fastrack/trajectory\l/trajectory.h" alt="" coords="1040,81,1166,122"/>
 <area shape="rect" id="node3" href="$box_8h.html" title="fastrack/bound/box.h" alt="" coords="400,179,544,205"/>
 <area shape="rect" id="node4" href="$tracking__bound_8h.html" title="fastrack/bound/tracking\l_bound.h" alt="" coords="510,262,668,303"/>
 <area shape="rect" id="node23" href="$state_8h.html" title="fastrack/state/state.h" alt="" coords="1030,179,1177,205"/>

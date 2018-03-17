@@ -105,7 +105,7 @@
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  <span class="comment">// Plan a trajectory from the given start to goal states starting</span></div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  <span class="comment">// at the given time.</span></div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  <span class="comment">// NOTE! The states in the output trajectory are essentially configurations.</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  <a class="code" href="classfastrack_1_1planning_1_1Trajectory.html">Trajectory&lt;S&gt;</a> <a class="code" href="classfastrack_1_1planning_1_1OmplKinematicPlanner.html#aa5f894990da384f1b0bf35f47bd2ebcc">Plan</a>(<span class="keyword">const</span> S&amp; start, <span class="keyword">const</span> S&amp; goal, <span class="keywordtype">double</span> start_time=0.0) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  Trajectory&lt;S&gt; <a class="code" href="classfastrack_1_1planning_1_1OmplKinematicPlanner.html#aa5f894990da384f1b0bf35f47bd2ebcc">Plan</a>(<span class="keyword">const</span> S&amp; start, <span class="keyword">const</span> S&amp; goal, <span class="keywordtype">double</span> start_time=0.0) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;  <span class="comment">// Convert between OMPL states and configurations.</span></div>
@@ -136,7 +136,7 @@
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="comment">// Plan a trajectory from the given start to goal states starting</span></div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="comment">// at the given time.</span></div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> P, <span class="keyword">typename</span> S, <span class="keyword">typename</span> E, <span class="keyword">typename</span> B, <span class="keyword">typename</span> SB&gt;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<a class="code" href="classfastrack_1_1planning_1_1Trajectory.html">Trajectory&lt;S&gt;</a> <a class="code" href="classfastrack_1_1planning_1_1OmplKinematicPlanner.html#aa5f894990da384f1b0bf35f47bd2ebcc">OmplKinematicPlanner&lt;P, S, E, B, SB&gt;::</a></div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;Trajectory&lt;S&gt; <a class="code" href="classfastrack_1_1planning_1_1OmplKinematicPlanner.html#aa5f894990da384f1b0bf35f47bd2ebcc">OmplKinematicPlanner&lt;P, S, E, B, SB&gt;::</a></div>
 <div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="classfastrack_1_1planning_1_1OmplKinematicPlanner.html#aa5f894990da384f1b0bf35f47bd2ebcc">  111</a></span>&#160;<a class="code" href="classfastrack_1_1planning_1_1OmplKinematicPlanner.html#aa5f894990da384f1b0bf35f47bd2ebcc">Plan</a>(<span class="keyword">const</span> S&amp; start, <span class="keyword">const</span> S&amp; goal, <span class="keywordtype">double</span> start_time)<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  <span class="comment">// Unpack start and goal configurations.</span></div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;  <span class="keyword">const</span> VectorXd start_config = start.Configuration();</div>
@@ -145,12 +145,12 @@
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  <span class="comment">// Check that both start and stop are in bounds.</span></div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;  <span class="keywordflow">if</span> (!this-&gt;env_.AreValid(start.OccupiedPositions(), this-&gt;bound_)) {</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    ROS_WARN_THROTTLE(1.0, <span class="stringliteral">&quot;Start point was in collision or out of bounds.&quot;</span>);</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classfastrack_1_1planning_1_1Trajectory.html">Trajectory&lt;S&gt;</a>();</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keywordflow">return</span> Trajectory&lt;S&gt;();</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  }</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  <span class="keywordflow">if</span> (!this-&gt;env_.AreValid(goal.OccupiedPositions(), this-&gt;bound_)) {</div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    ROS_WARN_THROTTLE(1.0, <span class="stringliteral">&quot;Goal point was in collision or out of bounds.&quot;</span>);</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classfastrack_1_1planning_1_1Trajectory.html">Trajectory&lt;S&gt;</a>();</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keywordflow">return</span> Trajectory&lt;S&gt;();</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  }</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;  <span class="comment">// Create the OMPL state space corresponding to this environment.</span></div>
@@ -194,7 +194,7 @@
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;</div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;  <span class="keywordflow">if</span> (!solved) {</div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    ROS_WARN(<span class="stringliteral">&quot;OMPL Planner could not compute a solution.&quot;</span>);</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classfastrack_1_1planning_1_1Trajectory.html">Trajectory&lt;S&gt;</a>();</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <span class="keywordflow">return</span> Trajectory&lt;S&gt;();</div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;  }</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;  <span class="comment">// Unpack the solution and assign timestamps.</span></div>
@@ -218,7 +218,7 @@
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    states.push_back(state);</div>
 <div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;  }</div>
 <div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="classfastrack_1_1planning_1_1Trajectory.html">Trajectory&lt;S&gt;</a>(states, times);</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;  <span class="keywordflow">return</span> Trajectory&lt;S&gt;(states, times);</div>
 <div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;}</div>
 <div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;</div>
 <div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;} <span class="comment">//\namespace planning</span></div>
@@ -228,7 +228,6 @@
 <div class="ttc" id="classfastrack_1_1planning_1_1OmplKinematicPlanner_html_a8c035e37450c03a5412e1b6659ced5a2"><div class="ttname"><a href="classfastrack_1_1planning_1_1OmplKinematicPlanner.html#a8c035e37450c03a5412e1b6659ced5a2">fastrack::planning::OmplKinematicPlanner::FromOmplState</a></div><div class="ttdeci">S FromOmplState(const ob::State *state) const </div><div class="ttdef"><b>Definition:</b> <a href="ompl__kinematic__planner_8h_source.html#l00090">ompl_kinematic_planner.h:90</a></div></div>
 <div class="ttc" id="classfastrack_1_1planning_1_1OmplKinematicPlanner_html_aa5f894990da384f1b0bf35f47bd2ebcc"><div class="ttname"><a href="classfastrack_1_1planning_1_1OmplKinematicPlanner.html#aa5f894990da384f1b0bf35f47bd2ebcc">fastrack::planning::OmplKinematicPlanner::Plan</a></div><div class="ttdeci">Trajectory&lt; S &gt; Plan(const S &amp;start, const S &amp;goal, double start_time=0.0) const </div><div class="ttdef"><b>Definition:</b> <a href="ompl__kinematic__planner_8h_source.html#l00111">ompl_kinematic_planner.h:111</a></div></div>
 <div class="ttc" id="kinematic__planner_8h_html"><div class="ttname"><a href="kinematic__planner_8h.html">kinematic_planner.h</a></div></div>
-<div class="ttc" id="classfastrack_1_1planning_1_1Trajectory_html"><div class="ttname"><a href="classfastrack_1_1planning_1_1Trajectory.html">fastrack::planning::Trajectory</a></div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00061">trajectory.h:61</a></div></div>
 <div class="ttc" id="classfastrack_1_1planning_1_1OmplKinematicPlanner_html_ab15da9ce28e094a4b6e3af0964427239"><div class="ttname"><a href="classfastrack_1_1planning_1_1OmplKinematicPlanner.html#ab15da9ce28e094a4b6e3af0964427239">fastrack::planning::OmplKinematicPlanner::~OmplKinematicPlanner</a></div><div class="ttdeci">~OmplKinematicPlanner()</div><div class="ttdef"><b>Definition:</b> <a href="ompl__kinematic__planner_8h_source.html#l00069">ompl_kinematic_planner.h:69</a></div></div>
 <div class="ttc" id="classfastrack_1_1planning_1_1KinematicPlanner_html"><div class="ttname"><a href="classfastrack_1_1planning_1_1KinematicPlanner.html">fastrack::planning::KinematicPlanner</a></div><div class="ttdef"><b>Definition:</b> <a href="kinematic__planner_8h_source.html#l00059">kinematic_planner.h:59</a></div></div>
 <div class="ttc" id="classfastrack_1_1planning_1_1OmplKinematicPlanner_html"><div class="ttname"><a href="classfastrack_1_1planning_1_1OmplKinematicPlanner.html">fastrack::planning::OmplKinematicPlanner</a></div><div class="ttdef"><b>Definition:</b> <a href="ompl__kinematic__planner_8h_source.html#l00067">ompl_kinematic_planner.h:67</a></div></div>
@@ -239,7 +238,7 @@
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Fri Mar 16 2018 03:28:28</small>
+<small>autogenerated on Sat Mar 17 2018 23:48:34</small>
 </div>
 </body>
 </html>

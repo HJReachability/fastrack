@@ -1,14 +1,14 @@
 <map id="ompl_kinematic_planner_demo_node.cpp" name="ompl_kinematic_planner_demo_node.cpp">
-<area shape="rect" id="node2" href="$ompl__kinematic__planner_8h.html" title="fastrack/planning/ompl\l_kinematic_planner.h" alt="" coords="1517,97,1669,138"/>
-<area shape="rect" id="node6" href="$box_8h.html" title="fastrack/bound/box.h" alt="" coords="267,467,411,493"/>
-<area shape="rect" id="node42" href="$position__velocity_8h.html" title="fastrack/state/position\l_velocity.h" alt="" coords="687,97,837,138"/>
-<area shape="rect" id="node43" href="$balls__in__box_8h.html" title="fastrack/environment\l/balls_in_box.h" alt="" coords="581,278,725,319"/>
-<area shape="rect" id="node3" href="$kinematic__planner_8h.html" title="fastrack/planning/kinematic\l_planner.h" alt="" coords="1396,187,1577,229"/>
-<area shape="rect" id="node4" href="$planner_8h.html" title="fastrack/planning/planner.h" alt="" coords="1241,285,1420,312"/>
-<area shape="rect" id="node33" href="$kinematics_8h.html" title="fastrack/dynamics/kinematics.h" alt="" coords="1542,285,1748,312"/>
-<area shape="rect" id="node5" href="$environment_8h.html" title="fastrack/environment\l/environment.h" alt="" coords="585,369,729,410"/>
+<area shape="rect" id="node2" href="$ompl__kinematic__planner_8h.html" title="fastrack/planning/ompl\l_kinematic_planner.h" alt="" coords="1519,97,1672,138"/>
+<area shape="rect" id="node6" href="$box_8h.html" title="fastrack/bound/box.h" alt="" coords="264,467,408,493"/>
+<area shape="rect" id="node42" href="$position__velocity_8h.html" title="fastrack/state/position\l_velocity.h" alt="" coords="690,97,840,138"/>
+<area shape="rect" id="node43" href="$balls__in__box_8h.html" title="fastrack/environment\l/balls_in_box.h" alt="" coords="584,278,728,319"/>
+<area shape="rect" id="node3" href="$kinematic__planner_8h.html" title="fastrack/planning/kinematic\l_planner.h" alt="" coords="1399,187,1580,229"/>
+<area shape="rect" id="node4" href="$planner_8h.html" title="fastrack/planning/planner.h" alt="" coords="1212,285,1391,312"/>
+<area shape="rect" id="node33" href="$kinematics_8h.html" title="fastrack/dynamics/kinematics.h" alt="" coords="1545,285,1751,312"/>
+<area shape="rect" id="node5" href="$environment_8h.html" title="fastrack/environment\l/environment.h" alt="" coords="588,369,732,410"/>
 <area shape="rect" id="node8" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="843,640,987,667"/>
-<area shape="rect" id="node25" href="$trajectory_8h.html" title="fastrack/planning/trajectory.h" alt="" coords="1138,376,1328,403"/>
+<area shape="rect" id="node25" href="$trajectory_8h.html" title="fastrack/trajectory\l/trajectory.h" alt="" coords="1141,369,1267,410"/>
 <area shape="rect" id="node7" href="$tracking__bound_8h.html" title="fastrack/bound/tracking\l_bound.h" alt="" coords="489,550,647,591"/>
 <area shape="rect" id="node26" href="$state_8h.html" title="fastrack/state/state.h" alt="" coords="931,467,1077,493"/>
 <area shape="rect" id="node34" href="$dynamics_8h.html" title="fastrack/dynamics/dynamics.h" alt="" coords="1415,557,1613,584"/>

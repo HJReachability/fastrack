@@ -84,7 +84,7 @@
 
 <h3><a class="anchor" id="index_c"></a>- c -</h3><ul>
 <li>Colormap()
-: <a class="el" href="classfastrack_1_1planning_1_1Trajectory.html#a82fa95b105c2bf2baa9e3e079c2ffa0d">fastrack::planning::Trajectory&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#aeb351589f0e8785d721340fdf30e76b2">fastrack::trajectory::Trajectory&lt; S &gt;</a>
 </li>
 <li>Configuration()
 : <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#a203b5e56a0a816644e706f8470bb0bd5">fastrack::state::PositionVelocity</a>
@@ -97,8 +97,11 @@
 
 
 <h3><a class="anchor" id="index_d"></a>- d -</h3><ul>
+<li>Duration()
+: <a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#adda2bf5839763aca5bb4492151385d6d">fastrack::trajectory::Trajectory&lt; S &gt;</a>
+</li>
 <li>Dynamics()
-: <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a587368aef37dd6f58602b6fe1cda8c83">fastrack::dynamics::Dynamics&lt; S, C, SR &gt;</a>
+: <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#af263e1d4a24bbe0769506dbab35d0483">fastrack::dynamics::Dynamics&lt; S, C, SR &gt;</a>
 </li>
 </ul>
 
@@ -127,7 +130,8 @@
 , <a class="el" href="classfastrack_1_1dynamics_1_1Kinematics.html#ae5181b1d3a9ec0d7ea10124fecc24908">fastrack::dynamics::Kinematics&lt; S &gt;</a>
 , <a class="el" href="classfastrack_1_1dynamics_1_1QuadrotorCoupled6D.html#aac19034d4e317f82ebbf6fc956c2ab45">fastrack::dynamics::QuadrotorCoupled6D</a>
 , <a class="el" href="classfastrack_1_1dynamics_1_1QuadrotorDecoupled6D.html#ac2f9aaa750809299fad1a30fdd2f402b">fastrack::dynamics::QuadrotorDecoupled6D</a>
-, <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a1484f822a4b1a5a2eb5f6c6b344d2ff9">fastrack::tracking::Tracker&lt; V, TS, TC, MTS, MTC, PS, MPS, SB, SP &gt;</a>
+, <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#a1f0c6580233c587a171ffae2c8091074">fastrack::state::PositionVelocity</a>
+, <a class="el" href="classfastrack_1_1state_1_1State.html#aed632a373ffb9ebf47124dcdc4012a06">fastrack::state::State</a>
 </li>
 </ul>
 
@@ -150,16 +154,20 @@
 
 
 <h3><a class="anchor" id="index_i"></a>- i -</h3><ul>
+<li>InFlightCallback()
+: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#a3b6866b71ed217f2278afed6db70f0ad">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+</li>
 <li>Initialize()
 : <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a21eb656cf6a6b34ae6de461e4b607de2">fastrack::dynamics::Dynamics&lt; S, C, SR &gt;</a>
 , <a class="el" href="classfastrack_1_1environment_1_1Environment.html#acf3d79ca976737c77554dd901ab56f3c">fastrack::environment::Environment</a>
 , <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a57acd65ee445b90b1986ea5531c8dbab">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
-, <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a16ebd169c3c6129308ec12281a9e11bd">fastrack::tracking::Tracker&lt; V, TS, TC, MTS, MTC, PS, MPS, SB, SP &gt;</a>
+, <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#af8f5350e5e24b7a4e79d1db9182c4e81">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
+, <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#a0a7362457e83fdec82e0a30d4055b253">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
 , <a class="el" href="classfastrack_1_1value_1_1AnalyticalKinematicBoxQuadrotorDecoupled6D.html#a0d3da1fac17f6e788f7f69a76b4f7e66">fastrack::value::AnalyticalKinematicBoxQuadrotorDecoupled6D</a>
 , <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#a926b6e2b7a36d387173b72e1c44677c7">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
 </li>
 <li>Interpolate()
-: <a class="el" href="classfastrack_1_1planning_1_1Trajectory.html#a0097baa10ae148bac0dde8102c98a7a0">fastrack::planning::Trajectory&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#ae13cab472225cffccde2d8172f413eeb">fastrack::trajectory::Trajectory&lt; S &gt;</a>
 </li>
 <li>IsValid()
 : <a class="el" href="classfastrack_1_1environment_1_1BallsInBox.html#afd74edb5caf15b48a746edfe1de2ee59">fastrack::environment::BallsInBox</a>
@@ -183,7 +191,8 @@
 : <a class="el" href="classfastrack_1_1environment_1_1BallsInBox.html#a4184d950bb44336b6009e436141258a0">fastrack::environment::BallsInBox</a>
 , <a class="el" href="classfastrack_1_1environment_1_1Environment.html#a2ab5bf435bbacc5c3309774087ff9036">fastrack::environment::Environment</a>
 , <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a0798e8df6b3b52d897e1ea21d6bec93f">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
-, <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a79a0039f228112010513e4e4082d1134">fastrack::tracking::Tracker&lt; V, TS, TC, MTS, MTC, PS, MPS, SB, SP &gt;</a>
+, <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#aaf735df46c2a1e9b7523a82a0c16824d">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
+, <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#a6baa9191ec33e635d59b801d1244a0a4">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
 , <a class="el" href="classfastrack_1_1value_1_1AnalyticalKinematicBoxQuadrotorDecoupled6D.html#ad0fb56d40406a9de537e89aa98148840">fastrack::value::AnalyticalKinematicBoxQuadrotorDecoupled6D</a>
 , <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#ab7c2d17058f3aaa9068b1cc076a8b1e7">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
 </li>
@@ -246,10 +255,10 @@
 : <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#a93e5a8bec3a8c5dd452fed0244442d1f">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
 </li>
 <li>PlannerDynamicsServer()
-: <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a034b2452b27c6c96def13988c23bc71d">fastrack::tracking::Tracker&lt; V, TS, TC, MTS, MTC, PS, MPS, SB, SP &gt;</a>
+: <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#ae30b68273753e219fe5cc1b4587f7411">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
 <li>PlannerStateCallback()
-: <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#abe02385c9e0cd80c7d1fdccc86f66828">fastrack::tracking::Tracker&lt; V, TS, TC, MTS, MTC, PS, MPS, SB, SP &gt;</a>
+: <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#af03dbea1694e5c92b04835eb9a49ce56">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
 <li>Position()
 : <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#a75a7abb2b6a384e3d450e7abc7e49f4f">fastrack::state::PositionVelocity</a>
@@ -281,15 +290,19 @@
 <h3><a class="anchor" id="index_r"></a>- r -</h3><ul>
 <li>RegisterCallbacks()
 : <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a09d8d1d905b98fec306a95b81336b655">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
-, <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#af381f3ec362b4f194ebdf09647313813">fastrack::tracking::Tracker&lt; V, TS, TC, MTS, MTC, PS, MPS, SB, SP &gt;</a>
+, <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a51f000fbe42c2eadd10723767409fc13">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
+, <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#a5763819fedf5d64dd6f2226b43aaf988">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
 , <a class="el" href="classfastrack_1_1value_1_1AnalyticalKinematicBoxQuadrotorDecoupled6D.html#adbe2c12a4ac701688ae719d758127fff">fastrack::value::AnalyticalKinematicBoxQuadrotorDecoupled6D</a>
 , <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#a70e4f466b1ea5f09bba0df288643080d">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
 </li>
 <li>RelativeTo()
-: <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#a20afa6dbc4a22723f18f7279a7cc2712">fastrack::state::PositionVelocity</a>
+: <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#ae045af5af49193f82543689113e837d2">fastrack::state::PositionVelocity</a>
 </li>
 <li>ReplanRequestCallback()
 : <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a070f498e53226c078d6cc3aab2384934">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
+</li>
+<li>RequestTrajectory()
+: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#a0dc8a8d7dd87cf63812f934a73084b3b">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
 </li>
 </ul>
 
@@ -304,6 +317,12 @@
 <li>SetConfigurationBounds()
 : <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#aa72aca18d72de15805d12a43d33c211f">fastrack::state::PositionVelocity</a>
 </li>
+<li>SetConfigurationDot()
+: <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#a3b8557fbe8dfa6b47977967869331961">fastrack::state::PositionVelocity</a>
+</li>
+<li>Size()
+: <a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#aab94b290fb0fa5011214196c51b18b44">fastrack::trajectory::Trajectory&lt; S &gt;</a>
+</li>
 <li>State()
 : <a class="el" href="classfastrack_1_1state_1_1State.html#a83048f6fd9e792c9b5c0c9bb0c2c9903">fastrack::state::State</a>
 </li>
@@ -315,38 +334,45 @@
 
 <h3><a class="anchor" id="index_t"></a>- t -</h3><ul>
 <li>TimerCallback()
-: <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a240d0885ac3cc6dcff1b1db37e0631d8">fastrack::tracking::Tracker&lt; V, TS, TC, MTS, MTC, PS, MPS, SB, SP &gt;</a>
+: <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a8538a9cdbe6bbb8bcd36da43918a2d96">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
+, <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#a3767c02adb8353b4615206e0d6e5cd78">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
 </li>
 <li>ToRos()
 : <a class="el" href="structfastrack_1_1bound_1_1Box.html#a4130597d61bf971974ef2005275c6f39">fastrack::bound::Box</a>
 , <a class="el" href="structfastrack_1_1bound_1_1TrackingBound.html#a7d691979e7a91489038b94a653cbb6fb">fastrack::bound::TrackingBound&lt; SR &gt;</a>
+, <a class="el" href="structfastrack_1_1control_1_1QuadrotorControl.html#a16c92fbfde168f3027e2fed051c0df4b">fastrack::control::QuadrotorControl</a>
 , <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a6cdf1deb2aef37983498d36e747e4b6d">fastrack::dynamics::Dynamics&lt; S, C, SR &gt;</a>
 , <a class="el" href="classfastrack_1_1dynamics_1_1Kinematics.html#a9af4fe6d0e1445ca652d1aca3dbbfda0">fastrack::dynamics::Kinematics&lt; S &gt;</a>
 , <a class="el" href="classfastrack_1_1dynamics_1_1QuadrotorCoupled6D.html#acdeaee78f51ef3015b0770e3bdb5a1f0">fastrack::dynamics::QuadrotorCoupled6D</a>
 , <a class="el" href="classfastrack_1_1dynamics_1_1QuadrotorDecoupled6D.html#a66bcf29c66db952b517e961523be34c7">fastrack::dynamics::QuadrotorDecoupled6D</a>
-, <a class="el" href="classfastrack_1_1planning_1_1Trajectory.html#a66a0815854883cffb861698a3d56b8d9">fastrack::planning::Trajectory&lt; S &gt;</a>
 , <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#a580c16b5e47ee72cc4cba59147e38dfc">fastrack::state::PositionVelocity</a>
 , <a class="el" href="classfastrack_1_1state_1_1State.html#a8cbb37237f9962cd284dbfd4ebddc09a">fastrack::state::State</a>
-, <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#ab705b9495f41edde85b3db6e9ee039e2">fastrack::tracking::Tracker&lt; V, TS, TC, MTS, MTC, PS, MPS, SB, SP &gt;</a>
+, <a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#a54d233572a29556f3d0e385d40301904">fastrack::trajectory::Trajectory&lt; S &gt;</a>
 </li>
 <li>Tracker()
-: <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a7bb841d1e4f3e4fc04add9ab169c9893">fastrack::tracking::Tracker&lt; V, TS, TC, MTS, MTC, PS, MPS, SB, SP &gt;</a>
+: <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#ad745e85edafe131610bb4a2d47332115">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
 <li>TrackerDynamics()
 : <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#a21a952793cadf3bae94df105b5bc456b">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
 </li>
 <li>TrackerStateCallback()
-: <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#aed170ffda0fe3978c36c93eaaa239cb8">fastrack::tracking::Tracker&lt; V, TS, TC, MTS, MTC, PS, MPS, SB, SP &gt;</a>
+: <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a9a756ae552fef1b6dc20c9e54493cf7a">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
 <li>TrackingBound()
 : <a class="el" href="structfastrack_1_1bound_1_1TrackingBound.html#ad8592a8f318dac3c8e469857404b8585">fastrack::bound::TrackingBound&lt; SR &gt;</a>
 , <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#a00b5449c8c82ebf28d9235eb56784191">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
 </li>
 <li>TrackingBoundServer()
-: <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a8dc2f1e0d1e1c43aece5f0dd92595daa">fastrack::tracking::Tracker&lt; V, TS, TC, MTS, MTC, PS, MPS, SB, SP &gt;</a>
+: <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a7d1c9cee88e9768e4eef3f3c66bce0a7">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
 <li>Trajectory()
-: <a class="el" href="classfastrack_1_1planning_1_1Trajectory.html#a37c3dddbac5fc9c023de64640f459a8b">fastrack::planning::Trajectory&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#a695837c3c32c2b883ae22430ea5f90ee">fastrack::trajectory::Trajectory&lt; S &gt;</a>
+</li>
+<li>TrajectoryCallback()
+: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#ab7fb49e4f437827869dea9f4f4d7c431">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+</li>
+<li>TrajectoryInterpreter()
+: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#ad64e7da6b540b1fa8bc92f540132e926">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
 </li>
 </ul>
 
@@ -372,7 +398,7 @@
 <li>Visualize()
 : <a class="el" href="classfastrack_1_1environment_1_1BallsInBox.html#a2b59ffa10ebd2f0a5ca2f14a1f14239f">fastrack::environment::BallsInBox</a>
 , <a class="el" href="classfastrack_1_1environment_1_1Environment.html#aaf7606d1e2943f90d00db0c9f14ddb1c">fastrack::environment::Environment</a>
-, <a class="el" href="classfastrack_1_1planning_1_1Trajectory.html#a3be2a61e3f7fbef65ca74f98d8a8a57b">fastrack::planning::Trajectory&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#aefab5e4ba8b555a97a10a24f7596461d">fastrack::trajectory::Trajectory&lt; S &gt;</a>
 </li>
 <li>Vx()
 : <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#a5571c0fe9f7168ee80c72472ae441ee6">fastrack::state::PositionVelocity</a>
@@ -454,13 +480,16 @@
 : <a class="el" href="classfastrack_1_1state_1_1State.html#a7a627052c8a2184da0d5edeed2a35131">fastrack::state::State</a>
 </li>
 <li>~Tracker()
-: <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a3334a181d9eb53e7250792d46fd6c4a3">fastrack::tracking::Tracker&lt; V, TS, TC, MTS, MTC, PS, MPS, SB, SP &gt;</a>
+: <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#ad31befddb6bcfee7a48c0981a90cdea7">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
 <li>~TrackingBound()
 : <a class="el" href="structfastrack_1_1bound_1_1TrackingBound.html#a3447c033d12f90a0f45c2904439a4f05">fastrack::bound::TrackingBound&lt; SR &gt;</a>
 </li>
 <li>~Trajectory()
-: <a class="el" href="classfastrack_1_1planning_1_1Trajectory.html#adbb07b739254f14bd08e1d0834f52d93">fastrack::planning::Trajectory&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#af67cf60d3c83ff50e4d04c1b0ba09342">fastrack::trajectory::Trajectory&lt; S &gt;</a>
+</li>
+<li>~TrajectoryInterpreter()
+: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#a91c41d52161873924b6239e83569cabb">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
 </li>
 <li>~Uncopyable()
 : <a class="el" href="classfastrack_1_1Uncopyable.html#a2eb561d8c2257d77c2cdd3e585bebda1">fastrack::Uncopyable</a>
@@ -475,7 +504,7 @@
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Fri Mar 16 2018 03:28:28</small>
+<small>autogenerated on Sat Mar 17 2018 23:48:34</small>
 </div>
 </body>
 </html>

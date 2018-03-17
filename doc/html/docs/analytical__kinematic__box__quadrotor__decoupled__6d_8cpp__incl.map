@@ -1,14 +1,14 @@
 <map id="analytical_kinematic_box_quadrotor_decoupled_6d.cpp" name="analytical_kinematic_box_quadrotor_decoupled_6d.cpp">
-<area shape="rect" id="node2" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8h.html" title="fastrack/value/analytical\l_kinematic_box_quadrotor\l_decoupled_6d.h" alt="" coords="837,109,1011,165"/>
-<area shape="rect" id="node3" href="$value__function_8h.html" title="fastrack/value/value\l_function.h" alt="" coords="961,214,1100,255"/>
-<area shape="rect" id="node5" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="852,485,996,512"/>
-<area shape="rect" id="node19" href="$uncopyable_8h.html" title="fastrack/utils/uncopyable.h" alt="" coords="1012,312,1191,339"/>
-<area shape="rect" id="node21" href="$position__velocity_8h.html" title="fastrack/state/position\l_velocity.h" alt="" coords="266,305,416,346"/>
-<area shape="rect" id="node24" href="$quadrotor__control_8h.html" title="fastrack/control/quadrotor\l_control.h" alt="" coords="716,305,887,346"/>
-<area shape="rect" id="node25" href="$quadrotor__decoupled__6d_8h.html" title="fastrack/dynamics/quadrotor\l_decoupled_6d.h" alt="" coords="499,214,685,255"/>
-<area shape="rect" id="node26" href="$kinematics_8h.html" title="fastrack/dynamics/kinematics.h" alt="" coords="97,221,303,248"/>
-<area shape="rect" id="node28" href="$box_8h.html" title="fastrack/bound/box.h" alt="" coords="1313,312,1457,339"/>
-<area shape="rect" id="node4" href="$dynamics_8h.html" title="fastrack/dynamics/dynamics.h" alt="" coords="492,312,691,339"/>
-<area shape="rect" id="node22" href="$state_8h.html" title="fastrack/state/state.h" alt="" coords="268,403,415,429"/>
-<area shape="rect" id="node29" href="$tracking__bound_8h.html" title="fastrack/bound/tracking\l_bound.h" alt="" coords="1013,395,1171,437"/>
+<area shape="rect" id="node2" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8h.html" title="fastrack/value/analytical\l_kinematic_box_quadrotor\l_decoupled_6d.h" alt="" coords="841,109,1015,165"/>
+<area shape="rect" id="node3" href="$value__function_8h.html" title="fastrack/value/value\l_function.h" alt="" coords="966,214,1104,255"/>
+<area shape="rect" id="node5" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="788,485,932,512"/>
+<area shape="rect" id="node19" href="$uncopyable_8h.html" title="fastrack/utils/uncopyable.h" alt="" coords="1016,312,1195,339"/>
+<area shape="rect" id="node21" href="$position__velocity_8h.html" title="fastrack/state/position\l_velocity.h" alt="" coords="321,305,471,346"/>
+<area shape="rect" id="node24" href="$quadrotor__control_8h.html" title="fastrack/control/quadrotor\l_control.h" alt="" coords="720,305,891,346"/>
+<area shape="rect" id="node26" href="$quadrotor__decoupled__6d_8h.html" title="fastrack/dynamics/quadrotor\l_decoupled_6d.h" alt="" coords="503,214,690,255"/>
+<area shape="rect" id="node27" href="$kinematics_8h.html" title="fastrack/dynamics/kinematics.h" alt="" coords="113,221,319,248"/>
+<area shape="rect" id="node29" href="$box_8h.html" title="fastrack/bound/box.h" alt="" coords="1318,312,1462,339"/>
+<area shape="rect" id="node4" href="$dynamics_8h.html" title="fastrack/dynamics/dynamics.h" alt="" coords="496,312,695,339"/>
+<area shape="rect" id="node22" href="$state_8h.html" title="fastrack/state/state.h" alt="" coords="370,403,516,429"/>
+<area shape="rect" id="node30" href="$tracking__bound_8h.html" title="fastrack/bound/tracking\l_bound.h" alt="" coords="1100,395,1258,437"/>
 </map>

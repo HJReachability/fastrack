@@ -1,7 +1,7 @@
 <map id="quadrotor_coupled_6d.h" name="quadrotor_coupled_6d.h">
-<area shape="rect" id="node2" href="$dynamics_8h.html" title="fastrack/dynamics/dynamics.h" alt="" coords="381,171,580,197"/>
-<area shape="rect" id="node17" href="$position__velocity_8h.html" title="fastrack/state/position\l_velocity.h" alt="" coords="221,81,371,122"/>
-<area shape="rect" id="node20" href="$quadrotor__control_8h.html" title="fastrack/control/quadrotor\l_control.h" alt="" coords="520,81,691,122"/>
+<area shape="rect" id="node2" href="$dynamics_8h.html" title="fastrack/dynamics/dynamics.h" alt="" coords="647,171,845,197"/>
+<area shape="rect" id="node17" href="$position__velocity_8h.html" title="fastrack/state/position\l_velocity.h" alt="" coords="234,81,384,122"/>
+<area shape="rect" id="node20" href="$quadrotor__control_8h.html" title="fastrack/control/quadrotor\l_control.h" alt="" coords="409,81,580,122"/>
 <area shape="rect" id="node3" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="479,245,623,272"/>
-<area shape="rect" id="node18" href="$state_8h.html" title="fastrack/state/state.h" alt="" coords="211,171,357,197"/>
+<area shape="rect" id="node18" href="$state_8h.html" title="fastrack/state/state.h" alt="" coords="236,171,383,197"/>
 </map>
