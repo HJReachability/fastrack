@@ -75,9 +75,6 @@ private:
   bool LoadParameters(const ros::NodeHandle& n);
   bool RegisterCallbacks(const ros::NodeHandle& n);
 
-  // Request a new trajectory from the meta planner.
-  void RequestTrajectory() const;
-
   // Callback for applying tracking controller.
   void TimerCallback(const ros::TimerEvent& e);
 
@@ -93,6 +90,9 @@ private:
 
   // Current trajectory.
   Trajectory<S> traj_;
+
+  // Planner runtime -- how long does it take for the planner to run.
+  double planner_runtime_;
 
   // Set a recurring timer for a discrete-time controller.
   ros::Timer timer_;
@@ -189,7 +189,7 @@ bool TrajectoryInterpreter<S>::RegisterCallbacks(const ros::NodeHandle& n) {
   // Publishers.
   ref_pub_ = nl.advertise<fastrack_msgs::State>(ref_topic_.c_str(), 1, false);
 
-  request_traj_pub_ = nl.advertise<fastrack_msgs::TrajectoryRequest>(
+  request_traj_pub_ = nl.advertise<fastrack_msgs::ReplanRequest>(
     request_traj_topic_.c_str(), 1, false);
 
   bound_pub_ = nl.advertise<visualization_msgs::Marker>(
@@ -208,13 +208,16 @@ bool TrajectoryInterpreter<S>::RegisterCallbacks(const ros::NodeHandle& n) {
 // Callback for applying tracking controller.
 template<typename S>
 void TrajectoryInterpreter<S>::TimerCallback(const ros::TimerEvent& e) {
-  // TODO!
-}
+  if (traj_.Size() == 0) {
+    ROS_WARN_THROTTLE(1.0, "%s: No trajectory received.", name_.c_str());
+    return;
+  }
 
-// Request a new trajectory from the meta planner.
-template<typename S>
-void TrajectoryInterpreter<S>::RequestTrajectory() const {
-  // TODO!
+  // Interpolate the current trajectory.
+  const S planner_x = traj_.Interpolate(ros::Time::now().toSec());
+
+  // Convert to ROS msg and publish.
+  ref_pub_.publish(planner_x.ToRos());
 }
 
 } //\namespace trajectory

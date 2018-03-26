@@ -72,6 +72,12 @@ public:
   // Duration in seconds.
   inline double Duration() const { return times_.back() - times_.front(); }
 
+  // First and last states/times.
+  inline S FirstState() const { return states_.front(); }
+  inline S LastState() const { return states_.back(); }
+  inline double FirstTime() const { return times_.front(); }
+  inline double LastTime() const { return times_.back(); }
+
   // Interpolate at a particular time.
   S Interpolate(double t) const;
 
