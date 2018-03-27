@@ -105,6 +105,10 @@ protected:
   // Max amount of time for planning to run each time.
   double max_runtime_;
 
+  // Configration space bounds.
+  std::vector<double> config_upper_;
+  std::vector<double> config_lower_;
+
   // Publisher and subscriber.
   ros::Subscriber replan_request_sub_;
   ros::Publisher traj_pub_;
@@ -176,6 +180,9 @@ bool Planner<S, E, D, SD, B, SB>::Initialize(const ros::NodeHandle& n) {
 
   dynamics_.FromRos(d.response);
 
+  // Set configuration space bounds.
+  S::SetConfigurationBounds(config_lower_, config_upper_);
+
   initialized_ = true;
   return true;
 }
@@ -192,11 +199,15 @@ bool Planner<S, E, D, SD, B, SB>::LoadParameters(const ros::NodeHandle& n) {
     return false;
 
   // Services.
-  if (!nl.getParam("srvs/dynamics", dynamics_srv_name_)) return false;
-  if (!nl.getParam("srvs/bound", bound_srv_name_)) return false;
+  if (!nl.getParam("srv/dynamics", dynamics_srv_name_)) return false;
+  if (!nl.getParam("srv/bound", bound_srv_name_)) return false;
 
   // Max runtime per call.
   if (!nl.getParam("max_runtime", max_runtime_)) return false;
+
+  // Configuration space bounds.
+  if (!nl.getParam("config/lower", config_lower_)) return false;
+  if (!nl.getParam("config/upper", config_upper_)) return false;
 
   return true;
 }

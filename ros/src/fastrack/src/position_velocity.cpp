@@ -147,6 +147,22 @@ void PositionVelocity::SetConfigurationBounds(
   upper_ = upper;
 }
 
+void PositionVelocity::SetConfigurationBounds(
+  const std::vector<double>& lower, const std::vector<double>& upper) {
+  // Catch incorrect dimensions.
+  if (lower.size() != ConfigurationDimension() ||
+      upper.size() != ConfigurationDimension())
+    throw std::runtime_error("PositionVelocity: incorrect bound dimensions.");
+
+  lower_(0) = lower[0];
+  lower_(1) = lower[1];
+  lower_(2) = lower[2];
+
+  upper_(0) = upper[0];
+  upper_(1) = upper[1];
+  upper_(2) = upper[2];
+}
+
 // Convert from ROS message. Assume State is [x, y, z, vx, vy, vz] or
 // configuration only.
 void PositionVelocity::FromRos(const fastrack_msgs::State::ConstPtr& msg) {

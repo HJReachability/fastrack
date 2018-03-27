@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+
+<launch>
+  <!-- Topics. -->
+  <arg name="traj_topic" default="/traj" />
+  <arg name="replan_request_topic" default="/replan" />
+
+  <!-- Services. -->
+  <arg name="bound_srv" default="/bound" />
+  <arg name="dynamics_srv" default="/planner_dynamics" />
+
+  <!-- Maximum planning runtime (sec). -->
+  <arg name="max_runtime" default="0.5" />
+
+  <!-- Configuration space dimension.
+       NOTE! These should agree with the upper and lower environment bounds. -->
+  <arg name="config_upper" default="[10.0, 10.0, 10.0]" />
+  <arg name="config_lower" default="[-10.0, -10.0, 0.0]" />
+
+  <!-- Environment parameters. -->
+  <arg name="env_upper_x" default="10.0" />
+  <arg name="env_upper_y" default="10.0" />
+  <arg name="env_upper_z" default="10.0" />
+  <arg name="env_lower_x" default="10.0" />
+  <arg name="env_lower_y" default="10.0" />
+  <arg name="env_lower_z" default="0.0" />
+
+  <arg name="env_num_obstacles" default="5" />
+  <arg name="env_min_radius" default="0.5" />
+  <arg name="env_max_radius" default="1.0" />
+
+  <arg name="seed" default="0" />
+
+  <!-- OMPL kinematic planner node.  -->
+  <node name="planner"
+        pkg="fastrack_crazyflie_demos"
+        type="ompl_kinematic_planner_demo_node"
+        output="screen">
+    <param name="topic/traj" value="$(arg traj_topic)" />
+    <param name="topic/replan_request" value="$(arg replan_request_topic)" />
+
+    <param name="srv/dynamics" value="$(arg dynamics_srv)" />
+    <param name="srv/bound" value="$(arg bound_srv)" />
+
+    <param name="max_runtime" value="$(arg max_runtime)" />
+
+    <rosparam param="config/upper" subst_value="True">$(arg config_upper)</rosparam>
+    <rosparam param="config/lower" subst_value="True">$(arg config_lower)</rosparam>
+
+    <param name="env/upper/x" value="$(arg env_upper_x)" />
+    <param name="env/upper/y" value="$(arg env_upper_y)" />
+    <param name="env/upper/z" value="$(arg env_upper_z)" />
+    <param name="env/lower/x" value="$(arg env_lower_x)" />
+    <param name="env/lower/y" value="$(arg env_lower_y)" />
+    <param name="env/lower/z" value="$(arg env_lower_z)" />
+
+    <param name="env/num_obstacles" value="$(arg env_num_obstacles)" />
+    <param name="env/min_radius" value="$(arg env_min_radius)" />
+    <param name="env/max_radius" value="$(arg env_max_radius)" />
+    <param name="env/seed" value="$(arg seed)" />
+  </node>
+</launch>

@@ -123,6 +123,8 @@ public:
   // Set/get bounds of the configuration space.
   static void SetConfigurationBounds(
     const VectorXd& lower, const VectorXd& upper);
+  static void SetConfigurationBounds(
+    const std::vector<double>& lower, const std::vector<double>& upper);
   static VectorXd GetConfigurationLower();
   static VectorXd GetConfigurationUpper();
 

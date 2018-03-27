@@ -101,14 +101,14 @@ private:
   // Publishers/subscribers and related topics.
   ros::Publisher bound_pub_;
   ros::Publisher ref_pub_;
-  ros::Publisher request_traj_pub_;
+  ros::Publisher replan_request_pub_;
   ros::Publisher traj_vis_pub_;
   ros::Subscriber traj_sub_;
   ros::Subscriber in_flight_sub_;
 
   std::string bound_topic_;
   std::string ref_topic_;
-  std::string request_traj_topic_;
+  std::string replan_request_topic_;
   std::string traj_vis_topic_;
   std::string traj_topic_;
   std::string in_flight_topic_;
@@ -160,7 +160,7 @@ bool TrajectoryInterpreter<S>::LoadParameters(const ros::NodeHandle& n) {
   if (!nl.getParam("topic/in_flight", in_flight_topic_)) return false;
   if (!nl.getParam("topic/traj", traj_topic_)) return false;
   if (!nl.getParam("topic/ref", ref_topic_)) return false;
-  if (!nl.getParam("topic/request_traj", request_traj_topic_)) return false;
+  if (!nl.getParam("topic/replan_request", replan_request_topic_)) return false;
   if (!nl.getParam("vis/traj", traj_vis_topic_)) return false;
   if (!nl.getParam("vis/bound", bound_topic_)) return false;
 
@@ -189,8 +189,8 @@ bool TrajectoryInterpreter<S>::RegisterCallbacks(const ros::NodeHandle& n) {
   // Publishers.
   ref_pub_ = nl.advertise<fastrack_msgs::State>(ref_topic_.c_str(), 1, false);
 
-  request_traj_pub_ = nl.advertise<fastrack_msgs::ReplanRequest>(
-    request_traj_topic_.c_str(), 1, false);
+  replan_request_pub_ = nl.advertise<fastrack_msgs::ReplanRequest>(
+    replan_request_topic_.c_str(), 1, false);
 
   bound_pub_ = nl.advertise<visualization_msgs::Marker>(
     bound_topic_.c_str(), 1, false);

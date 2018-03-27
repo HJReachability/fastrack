@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<launch>
+  <!-- Topics. -->
+  <arg name="in_flight_topic" default="/in_flight" />
+  <arg name="traj_topic" default="/traj" />
+  <arg name="replan_request_topic" default="/replan" />
+  <arg name="ref_topic" default="/ref" />
+  <arg name="traj_vis" default="/vis/traj" />
+  <arg name="bound_vis" default="/vis/bound" />
+
+  <!-- Frames of reference. -->
+  <arg name="fixed_frame" default="world" />
+  <arg name="planner_frame" default="planner" />
+
+  <!-- Time step for interpolating trajectory. -->
+  <arg name="time_step" default="0.1" />
+
+  <!-- Trajectory interpreter node.  -->
+  <node name="trajectory_interpreter"
+        pkg="fastrack_crazyflie_demos"
+        type="position_velocity_trajectory_interpreter_demo_node"
+        output="screen">
+    <param name="topic/in_flight" value="$(arg in_flight_topic)" />
+    <param name="topic/traj" value="$(arg traj_topic)" />
+    <param name="topic/ref" value="$(arg ref_topic)" />
+    <param name="topic/replan_request" value="$(arg replan_request_topic)" />
+    <param name="vis/traj" value="$(arg traj_vis)" />
+    <param name="vis/bound" value="$(arg bound_vis)" />
+
+    <param name="frame/fixed" value="$(arg fixed_frame)" />
+    <param name="frame/planner" value="$(arg planner_frame)" />
+
+    <param name="time_step" value="$(arg time_step)" />
+  </node>
+</launch>
