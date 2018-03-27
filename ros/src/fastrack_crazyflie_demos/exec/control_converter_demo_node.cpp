@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, The Regents of the University of California (Regents).
+ * Copyright (c) 2017, The Regents of the University of California (Regents).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,51 +36,27 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// 4D quadrotor controls as a demo control type. All controls must support
-// functions like min and max of different control variables.
+// Node running a ControlConverter for a Crazyflie demo.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_CONTROL_CONTROL_H
-#define FASTRACK_CONTROL_CONTROL_H
+#include <fastrack_crazyflie_demos/control_converter.h>
 
-#include <fastrack/utils/types.h>
-#include <fastrack_msgs/Control.h>
+#include <ros/ros.h>
 
-namespace fastrack {
-namespace control {
+int main(int argc, char** argv) {
+  ros::init(argc, argv, "ControlConverterDemo");
+  ros::NodeHandle n("~");
 
-struct QuadrotorControl {
-  // Pitch, roll, yaw rate, thrust.
-  double pitch;
-  double roll;
-  double yaw_rate;
-  double thrust;
+  fastrack::crazyflie::ControlConverter converter;
 
-  // Constructors and destructor.
-  ~QuadrotorControl() {}
-  explicit QuadrotorControl() {}
-  explicit QuadrotorControl(double p, double r, double yr, double t)
-    : pitch(p),
-      roll(r),
-      yaw_rate(yr),
-      thrust(t) {}
-
-  // Convert to ROS message. Assume ordering [pitch, roll, yaw_rate, thrust].
-  // NOTE! Set priority to 1 by default.
-  inline fastrack_msgs::Control ToRos() {
-    fastrack_msgs::Control msg;
-    msg.u.push_back(pitch);
-    msg.u.push_back(roll);
-    msg.u.push_back(yaw_rate);
-    msg.u.push_back(thrust);
-    msg.priority = 1.0;
-
-    return msg;
+  if (!converter.Initialize(n)) {
+    ROS_ERROR("%s: Failed to initialize control converter.",
+              ros::this_node::getName().c_str());
+    return EXIT_FAILURE;
   }
-}; //\struct QuadrotorControl
 
-} //\namespace control
-} //\namespace fastrack
+  ros::spin();
 
-#endif
+  return EXIT_SUCCESS;
+}

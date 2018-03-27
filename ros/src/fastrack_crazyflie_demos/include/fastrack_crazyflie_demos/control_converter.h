@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, The Regents of the University of California (Regents).
+ * Copyright (c) 2017, The Regents of the University of California (Regents).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,51 +36,54 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// 4D quadrotor controls as a demo control type. All controls must support
-// functions like min and max of different control variables.
+// Defines the ControlConverter class, which listens for new fastrack control
+// messages and immediately republishes them as crazyflie control messages.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_CONTROL_CONTROL_H
-#define FASTRACK_CONTROL_CONTROL_H
+#ifndef FASTRACK_CRAZYFLIE_DEMOS_CONTROL_CONVERTER_H
+#define FASTRACK_CRAZYFLIE_DEMOS_CONTROL_CONVERTER_H
 
 #include <fastrack/utils/types.h>
+#include <fastrack/utils/uncopyable.h>
+
 #include <fastrack_msgs/Control.h>
+#include <crazyflie_msgs/PrioritizedControl.h>
+
+#include <ros/ros.h>
 
 namespace fastrack {
-namespace control {
+namespace crazyflie {
 
-struct QuadrotorControl {
-  // Pitch, roll, yaw rate, thrust.
-  double pitch;
-  double roll;
-  double yaw_rate;
-  double thrust;
+class ControlConverter : private Uncopyable {
+public:
+  ~ControlConverter() {}
+  explicit ControlConverter()
+    : initialized_(false) {}
 
-  // Constructors and destructor.
-  ~QuadrotorControl() {}
-  explicit QuadrotorControl() {}
-  explicit QuadrotorControl(double p, double r, double yr, double t)
-    : pitch(p),
-      roll(r),
-      yaw_rate(yr),
-      thrust(t) {}
+  // Initialize this class with all parameters and callbacks.
+  bool Initialize(const ros::NodeHandle& n);
 
-  // Convert to ROS message. Assume ordering [pitch, roll, yaw_rate, thrust].
-  // NOTE! Set priority to 1 by default.
-  inline fastrack_msgs::Control ToRos() {
-    fastrack_msgs::Control msg;
-    msg.u.push_back(pitch);
-    msg.u.push_back(roll);
-    msg.u.push_back(yaw_rate);
-    msg.u.push_back(thrust);
-    msg.priority = 1.0;
+private:
+  bool LoadParameters(const ros::NodeHandle& n);
+  bool RegisterCallbacks(const ros::NodeHandle& n);
 
-    return msg;
-  }
-}; //\struct QuadrotorControl
+  // Callback for processing new control signals.
+  void ControlCallback(const fastrack_msgs::Control::ConstPtr& msg);
 
-} //\namespace control
+  // Publishers/subscribers and related topics.
+  ros::Publisher converted_control_pub_;
+  ros::Subscriber fastrack_control_sub_;
+
+  std::string fastrack_control_topic_;
+  std::string converted_control_topic_;
+
+  // Naming and initialization.
+  std::string name_;
+  bool initialized_;
+};
+
+} //\namespace crazyflie
 } //\namespace fastrack
 
 #endif

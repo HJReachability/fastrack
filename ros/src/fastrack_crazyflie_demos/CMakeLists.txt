@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(fastrack)
+project(fastrack_crazyflie_demos)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/fastrack/modules)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/fastrack_crazyflie_demos/modules)
 message("Cmake module path: ${CMAKE_MODULE_PATH}")
 
 find_package(Eigen3 REQUIRED)
@@ -14,12 +14,9 @@ find_package(Boost REQUIRED COMPONENTS filesystem)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  visualization_msgs
-  geometry_msgs
-  std_msgs
-  tf2_ros
+  fastrack
   fastrack_msgs
-  fastrack_srvs
+  crazyflie_msgs
 )
 
 catkin_package(
@@ -27,12 +24,9 @@ catkin_package(
   LIBRARIES ${PROJECT_NAME}
   CATKIN_DEPENDS
     roscpp
-    visualization_msgs
-    geometry_msgs
-    std_msgs
-    tf2_ros
+    fastrack
     fastrack_msgs
-    fastrack_srvs
+    crazyflie_msgs
   DEPENDS
     EIGEN3
     OMPL
@@ -48,8 +42,6 @@ else()
   add_definitions(-DENABLE_DEBUG_MESSAGES=0)
 endif()
 
-add_definitions(-DPRECOMPUTATION_DIR="${CMAKE_SOURCE_DIR}/fastrack/precomputation/")
-
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
@@ -58,6 +50,7 @@ include_directories(
   ${MATIO_INCLUDE_DIRS}
   ${FLANN_INCLUDE_DIRS}
   ${BOOST_INCLUDE_DIRS}
+
 )
 
 link_directories(
@@ -128,26 +121,6 @@ foreach(executable ${${PROJECT_NAME}_execs})
     ${MATIO_LIBRARIES}
     ${FLANN_LIBRARIES}
     ${BOOST_LIBRARIES}
-    )
+  )
 endforeach()
 endif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-
-if(CATKIN_ENABLE_TESTING)
-  file(GLOB test_srcs test/*.cpp)
-  foreach(test ${test_srcs})
-    get_filename_component(test_no_ext ${test} NAME_WE)
-    message("Including test   \"${BoldBlue}${test_no_ext}${ColorReset}\".")
-  endforeach()
-
-  catkin_add_gtest(test_${PROJECT_NAME} ${test_srcs})
-  target_link_libraries(
-    test_${PROJECT_NAME}
-    ${PROJECT_NAME}
-    ${GTEST_LIBRARIES}
-    ${EIGEN3_LIBRARIES}
-    ${OMPL_LIBRARIES}
-    ${MATIO_LIBRARIES}
-    ${FLANN_LIBRARIES}
-    ${BOOST_LIBRARIES}
-  )
-endif()
