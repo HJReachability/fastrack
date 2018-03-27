@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   visualization_msgs
   geometry_msgs
   std_msgs
+  tf2_ros
   fastrack_msgs
   fastrack_srvs
 )
@@ -29,6 +30,7 @@ catkin_package(
     visualization_msgs
     geometry_msgs
     std_msgs
+    tf2_ros
     fastrack_msgs
     fastrack_srvs
   DEPENDS

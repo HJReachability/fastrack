@@ -80,7 +80,7 @@ private:
 
   // Callback for processing trajectory updates.
   inline void TrajectoryCallback(const fastrack_msgs::Trajectory::ConstPtr& msg) {
-    traj_ = Trajectory(msg);
+    traj_ = Trajectory<S>(msg);
   }
 
   // Process in flight notifications.

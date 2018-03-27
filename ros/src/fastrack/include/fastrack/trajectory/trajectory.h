@@ -144,7 +144,7 @@ Trajectory<S>::Trajectory(const fastrack_msgs::Trajectory::ConstPtr& msg)
   // Unpack message.
   for (size_t ii = 0; ii < num_elements; ii++) {
     states_.push_back(S(msg->states[ii]));
-    times_.push_back(S(msg->times[ii]));
+    times_.push_back(msg->times[ii]);
   }
 
   // Is this trajectory in state space or configuration space?
@@ -184,10 +184,12 @@ S Trajectory<S>::Interpolate(double t) const {
   // If this is a configuration trajectory, set non-configuration states
   // by providing a numerical derivative of configuration.
   if (configuration_) {
-    const VectorXd configuration_dot = (times_[hi] - times_[lo] > 1e-8) ?
-      (states_[hi] - states_[lo]).Configuration() / (times_[hi] - times_[lo]) :
-      VectorXd::Zero(S::ConfigurationDimension());
-    interpolated.SetConfigurationDot(configuration_dot);
+    if (times_[hi] - times_[lo] > 1e-8)
+      interpolated.SetConfigurationDot(
+        (states_[hi] - states_[lo]).Configuration() / (times_[hi] - times_[lo]));
+    else
+      interpolated.SetConfigurationDot(
+        VectorXd::Zero(S::ConfigurationDimension()));
   }
 
   return interpolated;
