@@ -42,8 +42,16 @@
 Public Member Functions</h2></td></tr>
 <tr class="memitem:adda2bf5839763aca5bb4492151385d6d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#adda2bf5839763aca5bb4492151385d6d">Duration</a> () const </td></tr>
 <tr class="separator:adda2bf5839763aca5bb4492151385d6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a191f4e3b36a45dd5a449f5abd9e1fd7d"><td class="memItemLeft" align="right" valign="top">S&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#a191f4e3b36a45dd5a449f5abd9e1fd7d">FirstState</a> () const </td></tr>
+<tr class="separator:a191f4e3b36a45dd5a449f5abd9e1fd7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac042d835989b28f17adab87c223f5341"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#ac042d835989b28f17adab87c223f5341">FirstTime</a> () const </td></tr>
+<tr class="separator:ac042d835989b28f17adab87c223f5341"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae13cab472225cffccde2d8172f413eeb"><td class="memItemLeft" align="right" valign="top">S&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#ae13cab472225cffccde2d8172f413eeb">Interpolate</a> (double t) const </td></tr>
 <tr class="separator:ae13cab472225cffccde2d8172f413eeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1256c000f7a30546b683a5c5f9d195fb"><td class="memItemLeft" align="right" valign="top">S&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1256c000f7a30546b683a5c5f9d195fb">LastState</a> () const </td></tr>
+<tr class="separator:a1256c000f7a30546b683a5c5f9d195fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad754388b96e3eb3accd29cb7eb4c1552"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#ad754388b96e3eb3accd29cb7eb4c1552">LastTime</a> () const </td></tr>
+<tr class="separator:ad754388b96e3eb3accd29cb7eb4c1552"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab94b290fb0fa5011214196c51b18b44"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#aab94b290fb0fa5011214196c51b18b44">Size</a> () const </td></tr>
 <tr class="separator:aab94b290fb0fa5011214196c51b18b44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a54d233572a29556f3d0e385d40301904"><td class="memItemLeft" align="right" valign="top">fastrack_msgs::Trajectory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#a54d233572a29556f3d0e385d40301904">ToRos</a> () const </td></tr>
@@ -168,7 +176,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00099">99</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
+<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00105">105</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
 
 </div>
 </div>
@@ -196,7 +204,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00128">128</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
+<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00134">134</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
 
 </div>
 </div>
@@ -225,7 +233,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00256">256</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
+<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00262">262</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
 
 </div>
 </div>
@@ -256,6 +264,60 @@ template&lt;typename S &gt; </div>
 
 </div>
 </div>
+<a class="anchor" id="a191f4e3b36a45dd5a449f5abd9e1fd7d"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename S &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">S <a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html">fastrack::trajectory::Trajectory</a>&lt; S &gt;::FirstState </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00076">76</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac042d835989b28f17adab87c223f5341"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename S &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double <a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html">fastrack::trajectory::Trajectory</a>&lt; S &gt;::FirstTime </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00078">78</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="ae13cab472225cffccde2d8172f413eeb"></a>
 <div class="memitem">
 <div class="memproto">
@@ -272,7 +334,61 @@ template&lt;typename S &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00150">150</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
+<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00156">156</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1256c000f7a30546b683a5c5f9d195fb"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename S &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">S <a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html">fastrack::trajectory::Trajectory</a>&lt; S &gt;::LastState </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00077">77</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad754388b96e3eb3accd29cb7eb4c1552"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename S &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double <a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html">fastrack::trajectory::Trajectory</a>&lt; S &gt;::LastTime </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00079">79</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
 
 </div>
 </div>
@@ -318,7 +434,7 @@ template&lt;typename S &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00192">192</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
+<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00198">198</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
 
 </div>
 </div>
@@ -348,7 +464,7 @@ template&lt;typename S &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00206">206</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
+<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00212">212</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
 
 </div>
 </div>
@@ -373,7 +489,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00093">93</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
+<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00099">99</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
 
 </div>
 </div>
@@ -397,7 +513,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00089">89</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
+<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00095">95</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
 
 </div>
 </div>
@@ -421,7 +537,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00090">90</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
+<p>Definition at line <a class="el" href="trajectory_8h_source.html#l00096">96</a> of file <a class="el" href="trajectory_8h_source.html">trajectory.h</a>.</p>
 
 </div>
 </div>
@@ -434,7 +550,7 @@ template&lt;typename S &gt; </div>
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Sat Mar 17 2018 23:48:34</small>
+<small>autogenerated on Mon Mar 26 2018 22:01:56</small>
 </div>
 </body>
 </html>

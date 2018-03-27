@@ -101,213 +101,223 @@
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <span class="comment">// Duration in seconds.</span></div>
 <div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#adda2bf5839763aca5bb4492151385d6d">   73</a></span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">double</span> <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#adda2bf5839763aca5bb4492151385d6d">Duration</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>.back() - <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>.front(); }</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <span class="comment">// Interpolate at a particular time.</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  S <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#ae13cab472225cffccde2d8172f413eeb">Interpolate</a>(<span class="keywordtype">double</span> t) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  <span class="comment">// Convert to a ROS message.</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  fastrack_msgs::Trajectory <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a54d233572a29556f3d0e385d40301904">ToRos</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <span class="comment">// First and last states/times.</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#a191f4e3b36a45dd5a449f5abd9e1fd7d">   76</a></span>&#160;  <span class="keyword">inline</span> S <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a191f4e3b36a45dd5a449f5abd9e1fd7d">FirstState</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">states_</a>.front(); }</div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1256c000f7a30546b683a5c5f9d195fb">   77</a></span>&#160;  <span class="keyword">inline</span> S <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1256c000f7a30546b683a5c5f9d195fb">LastState</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">states_</a>.back(); }</div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#ac042d835989b28f17adab87c223f5341">   78</a></span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">double</span> <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#ac042d835989b28f17adab87c223f5341">FirstTime</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>.front(); }</div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#ad754388b96e3eb3accd29cb7eb4c1552">   79</a></span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">double</span> <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#ad754388b96e3eb3accd29cb7eb4c1552">LastTime</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>.back(); }</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;  <span class="comment">// Visualize this trajectory.</span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#aefab5e4ba8b555a97a10a24f7596461d">Visualize</a>(<span class="keyword">const</span> ros::Publisher&amp; pub, <span class="keyword">const</span> std::string&amp; frame) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;  <span class="comment">// Interpolate at a particular time.</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;  S <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#ae13cab472225cffccde2d8172f413eeb">Interpolate</a>(<span class="keywordtype">double</span> t) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  <span class="comment">// Custom colormap for the given time.</span></div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  std_msgs::ColorRGBA <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#aeb351589f0e8785d721340fdf30e76b2">Colormap</a>(<span class="keywordtype">double</span> t) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  <span class="comment">// Lists of states and times.</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">   89</a></span>&#160;  std::vector&lt;S&gt; <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">states_</a>;</div>
-<div class="line"><a name="l00090"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">   90</a></span>&#160;  std::vector&lt;double&gt; <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  <span class="comment">// Is this a trajectory in configuration space?</span></div>
-<div class="line"><a name="l00093"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#aca0c08f1a321a87df8485fa9aef590de">   93</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#aca0c08f1a321a87df8485fa9aef590de">configuration_</a>;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}; <span class="comment">//\class Trajectory</span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="comment">// ------------------------------ IMPLEMENTATION ----------------------------- //</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;  <span class="comment">// Convert to a ROS message.</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  fastrack_msgs::Trajectory <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a54d233572a29556f3d0e385d40301904">ToRos</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  <span class="comment">// Visualize this trajectory.</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#aefab5e4ba8b555a97a10a24f7596461d">Visualize</a>(<span class="keyword">const</span> ros::Publisher&amp; pub, <span class="keyword">const</span> std::string&amp; frame) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  <span class="comment">// Custom colormap for the given time.</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  std_msgs::ColorRGBA <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#aeb351589f0e8785d721340fdf30e76b2">Colormap</a>(<span class="keywordtype">double</span> t) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <span class="comment">// Lists of states and times.</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">   95</a></span>&#160;  std::vector&lt;S&gt; <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">states_</a>;</div>
+<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">   96</a></span>&#160;  std::vector&lt;double&gt; <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>;</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> S&gt;</div>
-<div class="line"><a name="l00099"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#a695837c3c32c2b883ae22430ea5f90ee">   99</a></span>&#160;<a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a165f407c37746de6419b84e9aef5466e">Trajectory&lt;S&gt;::Trajectory</a>(<span class="keyword">const</span> std::vector&lt;S&gt; states,</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                          <span class="keyword">const</span> std::vector&lt;double&gt; times)</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  : states_(states),</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    times_(times),</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    configuration_(false) {</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;  <span class="comment">// Warn if state/time lists are not the same length and truncate</span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  <span class="comment">// the longer one to match the smaller.</span></div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;  <span class="keywordflow">if</span> (<a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">states_</a>.size() != <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>.size()) {</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    ROS_ERROR(<span class="stringliteral">&quot;Trajectory: states/times are not the same length.&quot;</span>);</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="comment">// Resize the shorter one.</span></div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">states_</a>.size() &gt; <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>.size())</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;      <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">states_</a>.resize(<a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>.size());</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;      <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>.resize(<a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">states_</a>.size());</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;  }</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  <span class="comment">// Make sure times are sorted. Overwrite any inversions with the larger</span></div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;  <span class="comment">// time as we move left to right in the list.</span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> ii = 1; ii &lt; <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>.size(); ii++) {</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>[ii - 1] &gt; <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>[ii]) {</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;      ROS_ERROR(<span class="stringliteral">&quot;Trajectory: fixing an inversion in the list of times.&quot;</span>);</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;      <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>[ii] = <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>[ii + 1];</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    }</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  }</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;}</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="comment">// Construct from a ROS message.</span></div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> S&gt;</div>
-<div class="line"><a name="l00128"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#a3a6ddd4bde0f0c6ceb7989249d5abbe7">  128</a></span>&#160;<a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a165f407c37746de6419b84e9aef5466e">Trajectory&lt;S&gt;::Trajectory</a>(<span class="keyword">const</span> fastrack_msgs::Trajectory::ConstPtr&amp; msg)</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;  : configuration_(false) {</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;  <span class="keywordtype">size_t</span> num_elements = msg-&gt;states.size();</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  <span class="comment">// Is this a trajectory in configuration space?</span></div>
+<div class="line"><a name="l00099"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#aca0c08f1a321a87df8485fa9aef590de">   99</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#aca0c08f1a321a87df8485fa9aef590de">configuration_</a>;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;}; <span class="comment">//\class Trajectory</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="comment">// ------------------------------ IMPLEMENTATION ----------------------------- //</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> S&gt;</div>
+<div class="line"><a name="l00105"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#a695837c3c32c2b883ae22430ea5f90ee">  105</a></span>&#160;<a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a165f407c37746de6419b84e9aef5466e">Trajectory&lt;S&gt;::Trajectory</a>(<span class="keyword">const</span> std::vector&lt;S&gt; states,</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                          <span class="keyword">const</span> std::vector&lt;double&gt; times)</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;  : states_(states),</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    times_(times),</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    configuration_(false) {</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;  <span class="comment">// Warn if state/time lists are not the same length and truncate</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;  <span class="comment">// the longer one to match the smaller.</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  <span class="keywordflow">if</span> (<a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">states_</a>.size() != <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>.size()) {</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    ROS_ERROR(<span class="stringliteral">&quot;Trajectory: states/times are not the same length.&quot;</span>);</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="comment">// Resize the shorter one.</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">states_</a>.size() &gt; <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>.size())</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;      <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">states_</a>.resize(<a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>.size());</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;      <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>.resize(<a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">states_</a>.size());</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  }</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  <span class="comment">// Make sure times are sorted. Overwrite any inversions with the larger</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  <span class="comment">// time as we move left to right in the list.</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> ii = 1; ii &lt; <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>.size(); ii++) {</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>[ii - 1] &gt; <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>[ii]) {</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;      ROS_ERROR(<span class="stringliteral">&quot;Trajectory: fixing an inversion in the list of times.&quot;</span>);</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;      <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>[ii] = <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>[ii + 1];</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    }</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;  }</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;}</div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  <span class="comment">// Get size carefully.</span></div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;  <span class="keywordflow">if</span> (msg-&gt;states.size() != msg-&gt;times.size()) {</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    ROS_ERROR(<span class="stringliteral">&quot;Trajectory: states/times are not the same length.&quot;</span>);</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    num_elements = std::min(msg-&gt;states.size(), msg-&gt;times.size());</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;  }</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="comment">// Construct from a ROS message.</span></div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> S&gt;</div>
+<div class="line"><a name="l00134"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#a3a6ddd4bde0f0c6ceb7989249d5abbe7">  134</a></span>&#160;<a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a165f407c37746de6419b84e9aef5466e">Trajectory&lt;S&gt;::Trajectory</a>(<span class="keyword">const</span> fastrack_msgs::Trajectory::ConstPtr&amp; msg)</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;  : configuration_(false) {</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;  <span class="keywordtype">size_t</span> num_elements = msg-&gt;states.size();</div>
 <div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;  <span class="comment">// Unpack message.</span></div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> ii = 0; ii &lt; num_elements; ii++) {</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">states_</a>.push_back(S(msg-&gt;states[ii]));</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>.push_back(S(msg-&gt;times[ii]));</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;  <span class="comment">// Get size carefully.</span></div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;  <span class="keywordflow">if</span> (msg-&gt;states.size() != msg-&gt;times.size()) {</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    ROS_ERROR(<span class="stringliteral">&quot;Trajectory: states/times are not the same length.&quot;</span>);</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    num_elements = std::min(msg-&gt;states.size(), msg-&gt;times.size());</div>
 <div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;  }</div>
 <div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;  <span class="comment">// Is this trajectory in state space or configuration space?</span></div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;  <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#aca0c08f1a321a87df8485fa9aef590de">configuration_</a> = msg-&gt;states.front().x.size() == S::ConfigurationDimension();</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;}</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="comment">// Interpolate at a particular time.</span></div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> S&gt;</div>
-<div class="line"><a name="l00150"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#ae13cab472225cffccde2d8172f413eeb">  150</a></span>&#160;S <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#ae13cab472225cffccde2d8172f413eeb">Trajectory&lt;S&gt;::Interpolate</a>(<span class="keywordtype">double</span> t)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  <span class="comment">// Get an iterator pointing to the first element in times_ that does</span></div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;  <span class="comment">// not compare less than t.</span></div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> iter = std::lower_bound(times_.begin(), times_.end(), t);</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;  <span class="comment">// Catch case where iter points to the beginning of the list.</span></div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;  <span class="comment">// This will happen if t occurs before the first time in the list.</span></div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;  <span class="keywordflow">if</span> (iter == times_.begin()) {</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    ROS_WARN_THROTTLE(1.0, <span class="stringliteral">&quot;Trajectory: interpolating before first time.&quot;</span>);</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="keywordflow">return</span> states_.front();</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;  }</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;  <span class="comment">// Catch case where iter points to the end of the list.</span></div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;  <span class="comment">// This will happen if t occurs after the last time in the list.</span></div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;  <span class="keywordflow">if</span> (iter == times_.end()) {</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    ROS_WARN_THROTTLE(1.0, <span class="stringliteral">&quot;Trajectory: interpolating after the last time.&quot;</span>);</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <span class="keywordflow">return</span> states_.back();</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;  }</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;  <span class="comment">// Iterator definitely points to somewhere in the middle of the list.</span></div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;  <span class="comment">// Get indices sandwiching t.</span></div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">size_t</span> hi = (iter - times_.begin());</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">size_t</span> lo = hi - 1;</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;  <span class="comment">// Linearly interpolate states.</span></div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">double</span> frac = (t - times_[lo]) / (times_[hi] - times_[lo]);</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;  S interpolated = (1.0 - frac) * states_[lo] + frac * states_[hi];</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;  <span class="comment">// If this is a configuration trajectory, set non-configuration states</span></div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;  <span class="comment">// by providing a numerical derivative of configuration.</span></div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;  <span class="keywordflow">if</span> (configuration_) {</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    <span class="keyword">const</span> VectorXd configuration_dot = (times_[hi] - times_[lo] &gt; 1e-8) ?</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;      (states_[hi] - states_[lo]).Configuration() / (times_[hi] - times_[lo]) :</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;      VectorXd::Zero(S::ConfigurationDimension());</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    interpolated.SetConfigurationDot(configuration_dot);</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;  }</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;  <span class="keywordflow">return</span> interpolated;</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;}</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;<span class="comment">// Convert to a ROS message.</span></div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> S&gt;</div>
-<div class="line"><a name="l00192"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#a54d233572a29556f3d0e385d40301904">  192</a></span>&#160;fastrack_msgs::Trajectory <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a54d233572a29556f3d0e385d40301904">Trajectory&lt;S&gt;::ToRos</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;  fastrack_msgs::Trajectory msg;</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> ii = 0; ii &lt; states_.size(); ii++) {</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    msg.states.push_back(states_[ii].ToRos());</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    msg.times.push_back(times_[ii]);</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;  }</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;  <span class="keywordflow">return</span> msg;</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;}</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="comment">// Visualize this trajectory.</span></div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> S&gt;</div>
-<div class="line"><a name="l00206"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#aefab5e4ba8b555a97a10a24f7596461d">  206</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#aefab5e4ba8b555a97a10a24f7596461d">Trajectory&lt;S&gt;::Visualize</a>(<span class="keyword">const</span> ros::Publisher&amp; pub,</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;                              <span class="keyword">const</span> std::string&amp; frame)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;  <span class="keywordflow">if</span> (pub.getNumSubscribers() == 0)</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;  <span class="comment">// Set up spheres marker.</span></div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;  visualization_msgs::Marker spheres;</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;  spheres.ns = <span class="stringliteral">&quot;spheres&quot;</span>;</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;  spheres.header.frame_id = frame;</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;  spheres.header.stamp = ros::Time::now();</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;  spheres.id = 0;</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;  spheres.type = visualization_msgs::Marker::SPHERE_LIST;</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;  spheres.action = visualization_msgs::Marker::ADD;</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;  spheres.scale.x = 0.1;</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;  spheres.scale.y = 0.1;</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;  spheres.scale.z = 0.1;</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;  <span class="comment">// Set up line strip marker.</span></div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;  visualization_msgs::Marker lines;</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;  lines.ns = <span class="stringliteral">&quot;lines&quot;</span>;</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;  lines.header.frame_id = frame;</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;  lines.header.stamp = ros::Time::now();</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;  lines.id = 0;</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;  lines.type = visualization_msgs::Marker::LINE_STRIP;</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;  lines.action = visualization_msgs::Marker::ADD;</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;  lines.scale.x = 0.05;</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;  <span class="comment">// Populate markers.</span></div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> ii = 0; ii &lt; states_.size(); ii++) {</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;    geometry_msgs::Point p;</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    p.x = states_[ii].X();</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    p.y = states_[ii].Y();</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;    p.z = states_[ii].Z();</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;    <span class="keyword">const</span> std_msgs::ColorRGBA c = Colormap(times_[ii]);</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    spheres.points.push_back(p);</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    spheres.colors.push_back(c);</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    lines.points.push_back(p);</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    lines.colors.push_back(c);</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;  }</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;  <span class="comment">// Unpack message.</span></div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> ii = 0; ii &lt; num_elements; ii++) {</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">states_</a>.push_back(S(msg-&gt;states[ii]));</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">times_</a>.push_back(S(msg-&gt;times[ii]));</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  }</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;  <span class="comment">// Is this trajectory in state space or configuration space?</span></div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#aca0c08f1a321a87df8485fa9aef590de">configuration_</a> = msg-&gt;states.front().x.size() == S::ConfigurationDimension();</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;}</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="comment">// Interpolate at a particular time.</span></div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> S&gt;</div>
+<div class="line"><a name="l00156"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#ae13cab472225cffccde2d8172f413eeb">  156</a></span>&#160;S <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#ae13cab472225cffccde2d8172f413eeb">Trajectory&lt;S&gt;::Interpolate</a>(<span class="keywordtype">double</span> t)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;  <span class="comment">// Get an iterator pointing to the first element in times_ that does</span></div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;  <span class="comment">// not compare less than t.</span></div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> iter = std::lower_bound(times_.begin(), times_.end(), t);</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;  <span class="comment">// Catch case where iter points to the beginning of the list.</span></div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;  <span class="comment">// This will happen if t occurs before the first time in the list.</span></div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;  <span class="keywordflow">if</span> (iter == times_.begin()) {</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    ROS_WARN_THROTTLE(1.0, <span class="stringliteral">&quot;Trajectory: interpolating before first time.&quot;</span>);</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    <span class="keywordflow">return</span> states_.front();</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;  }</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;  <span class="comment">// Catch case where iter points to the end of the list.</span></div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;  <span class="comment">// This will happen if t occurs after the last time in the list.</span></div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;  <span class="keywordflow">if</span> (iter == times_.end()) {</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    ROS_WARN_THROTTLE(1.0, <span class="stringliteral">&quot;Trajectory: interpolating after the last time.&quot;</span>);</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keywordflow">return</span> states_.back();</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;  }</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;  <span class="comment">// Iterator definitely points to somewhere in the middle of the list.</span></div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;  <span class="comment">// Get indices sandwiching t.</span></div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">size_t</span> hi = (iter - times_.begin());</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">size_t</span> lo = hi - 1;</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;  <span class="comment">// Linearly interpolate states.</span></div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">double</span> frac = (t - times_[lo]) / (times_[hi] - times_[lo]);</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;  S interpolated = (1.0 - frac) * states_[lo] + frac * states_[hi];</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;  <span class="comment">// If this is a configuration trajectory, set non-configuration states</span></div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;  <span class="comment">// by providing a numerical derivative of configuration.</span></div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;  <span class="keywordflow">if</span> (configuration_) {</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    <span class="keyword">const</span> VectorXd configuration_dot = (times_[hi] - times_[lo] &gt; 1e-8) ?</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;      (states_[hi] - states_[lo]).Configuration() / (times_[hi] - times_[lo]) :</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;      VectorXd::Zero(S::ConfigurationDimension());</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    interpolated.SetConfigurationDot(configuration_dot);</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;  }</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;  <span class="keywordflow">return</span> interpolated;</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;}</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;<span class="comment">// Convert to a ROS message.</span></div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> S&gt;</div>
+<div class="line"><a name="l00198"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#a54d233572a29556f3d0e385d40301904">  198</a></span>&#160;fastrack_msgs::Trajectory <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#a54d233572a29556f3d0e385d40301904">Trajectory&lt;S&gt;::ToRos</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;  fastrack_msgs::Trajectory msg;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> ii = 0; ii &lt; states_.size(); ii++) {</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    msg.states.push_back(states_[ii].ToRos());</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    msg.times.push_back(times_[ii]);</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;  }</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;  <span class="keywordflow">return</span> msg;</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;}</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="comment">// Visualize this trajectory.</span></div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> S&gt;</div>
+<div class="line"><a name="l00212"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#aefab5e4ba8b555a97a10a24f7596461d">  212</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#aefab5e4ba8b555a97a10a24f7596461d">Trajectory&lt;S&gt;::Visualize</a>(<span class="keyword">const</span> ros::Publisher&amp; pub,</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;                              <span class="keyword">const</span> std::string&amp; frame)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;  <span class="keywordflow">if</span> (pub.getNumSubscribers() == 0)</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;  <span class="comment">// Set up spheres marker.</span></div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;  visualization_msgs::Marker spheres;</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;  spheres.ns = <span class="stringliteral">&quot;spheres&quot;</span>;</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;  spheres.header.frame_id = frame;</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;  spheres.header.stamp = ros::Time::now();</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;  spheres.id = 0;</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;  spheres.type = visualization_msgs::Marker::SPHERE_LIST;</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;  spheres.action = visualization_msgs::Marker::ADD;</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;  spheres.scale.x = 0.1;</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;  spheres.scale.y = 0.1;</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;  spheres.scale.z = 0.1;</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;  <span class="comment">// Set up line strip marker.</span></div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;  visualization_msgs::Marker lines;</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;  lines.ns = <span class="stringliteral">&quot;lines&quot;</span>;</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;  lines.header.frame_id = frame;</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;  lines.header.stamp = ros::Time::now();</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;  lines.id = 0;</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;  lines.type = visualization_msgs::Marker::LINE_STRIP;</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;  lines.action = visualization_msgs::Marker::ADD;</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;  lines.scale.x = 0.05;</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;  <span class="comment">// Populate markers.</span></div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> ii = 0; ii &lt; states_.size(); ii++) {</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    geometry_msgs::Point p;</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    p.x = states_[ii].X();</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    p.y = states_[ii].Y();</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    p.z = states_[ii].Z();</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    <span class="keyword">const</span> std_msgs::ColorRGBA c = Colormap(times_[ii]);</div>
 <div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;  <span class="comment">// Publish.</span></div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;  pub.publish(spheres);</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;  <span class="keywordflow">if</span> (states_.size() &gt; 1)</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;    pub.publish(lines);</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;}</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    spheres.points.push_back(p);</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;    spheres.colors.push_back(c);</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;    lines.points.push_back(p);</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;    lines.colors.push_back(c);</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;  }</div>
 <div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;<span class="comment">// Custom colormap for the given time.</span></div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> S&gt;</div>
-<div class="line"><a name="l00256"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#aeb351589f0e8785d721340fdf30e76b2">  256</a></span>&#160;std_msgs::ColorRGBA <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#aeb351589f0e8785d721340fdf30e76b2">Trajectory&lt;S&gt;::Colormap</a>(<span class="keywordtype">double</span> t)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;  std_msgs::ColorRGBA c;</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;  c.r = std::max(0.0, std::min(1.0,</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;    (t - times_.front()) / (times_.back() - times_.front())));</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;  c.g = 0.0;</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;  c.b = 1.0 - c.r;</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;  c.a = 0.9;</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;}</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;} <span class="comment">//\namespace planning</span></div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;} <span class="comment">//\namespace fastrack</span></div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_aeb351589f0e8785d721340fdf30e76b2"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#aeb351589f0e8785d721340fdf30e76b2">fastrack::trajectory::Trajectory::Colormap</a></div><div class="ttdeci">std_msgs::ColorRGBA Colormap(double t) const </div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00256">trajectory.h:256</a></div></div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;  <span class="comment">// Publish.</span></div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;  pub.publish(spheres);</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;  <span class="keywordflow">if</span> (states_.size() &gt; 1)</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    pub.publish(lines);</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;}</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="comment">// Custom colormap for the given time.</span></div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> S&gt;</div>
+<div class="line"><a name="l00262"></a><span class="lineno"><a class="line" href="classfastrack_1_1trajectory_1_1Trajectory.html#aeb351589f0e8785d721340fdf30e76b2">  262</a></span>&#160;std_msgs::ColorRGBA <a class="code" href="classfastrack_1_1trajectory_1_1Trajectory.html#aeb351589f0e8785d721340fdf30e76b2">Trajectory&lt;S&gt;::Colormap</a>(<span class="keywordtype">double</span> t)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;  std_msgs::ColorRGBA c;</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;  c.r = std::max(0.0, std::min(1.0,</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    (t - times_.front()) / (times_.back() - times_.front())));</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;  c.g = 0.0;</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;  c.b = 1.0 - c.r;</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;  c.a = 0.9;</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;}</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;} <span class="comment">//\namespace planning</span></div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;} <span class="comment">//\namespace fastrack</span></div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_ac042d835989b28f17adab87c223f5341"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#ac042d835989b28f17adab87c223f5341">fastrack::trajectory::Trajectory::FirstTime</a></div><div class="ttdeci">double FirstTime() const </div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00078">trajectory.h:78</a></div></div>
+<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_aeb351589f0e8785d721340fdf30e76b2"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#aeb351589f0e8785d721340fdf30e76b2">fastrack::trajectory::Trajectory::Colormap</a></div><div class="ttdeci">std_msgs::ColorRGBA Colormap(double t) const </div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00262">trajectory.h:262</a></div></div>
 <div class="ttc" id="types_8h_html"><div class="ttname"><a href="types_8h.html">types.h</a></div></div>
-<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_aefab5e4ba8b555a97a10a24f7596461d"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#aefab5e4ba8b555a97a10a24f7596461d">fastrack::trajectory::Trajectory::Visualize</a></div><div class="ttdeci">void Visualize(const ros::Publisher &amp;pub, const std::string &amp;frame) const </div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00206">trajectory.h:206</a></div></div>
-<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_a1312dabee0bed410f47263fab07d8fa4"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">fastrack::trajectory::Trajectory::states_</a></div><div class="ttdeci">std::vector&lt; S &gt; states_</div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00089">trajectory.h:89</a></div></div>
-<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_ae13cab472225cffccde2d8172f413eeb"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#ae13cab472225cffccde2d8172f413eeb">fastrack::trajectory::Trajectory::Interpolate</a></div><div class="ttdeci">S Interpolate(double t) const </div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00150">trajectory.h:150</a></div></div>
+<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_a191f4e3b36a45dd5a449f5abd9e1fd7d"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#a191f4e3b36a45dd5a449f5abd9e1fd7d">fastrack::trajectory::Trajectory::FirstState</a></div><div class="ttdeci">S FirstState() const </div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00076">trajectory.h:76</a></div></div>
+<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_aefab5e4ba8b555a97a10a24f7596461d"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#aefab5e4ba8b555a97a10a24f7596461d">fastrack::trajectory::Trajectory::Visualize</a></div><div class="ttdeci">void Visualize(const ros::Publisher &amp;pub, const std::string &amp;frame) const </div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00212">trajectory.h:212</a></div></div>
+<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_a1312dabee0bed410f47263fab07d8fa4"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">fastrack::trajectory::Trajectory::states_</a></div><div class="ttdeci">std::vector&lt; S &gt; states_</div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00095">trajectory.h:95</a></div></div>
+<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_ae13cab472225cffccde2d8172f413eeb"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#ae13cab472225cffccde2d8172f413eeb">fastrack::trajectory::Trajectory::Interpolate</a></div><div class="ttdeci">S Interpolate(double t) const </div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00156">trajectory.h:156</a></div></div>
+<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_ad754388b96e3eb3accd29cb7eb4c1552"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#ad754388b96e3eb3accd29cb7eb4c1552">fastrack::trajectory::Trajectory::LastTime</a></div><div class="ttdeci">double LastTime() const </div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00079">trajectory.h:79</a></div></div>
 <div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html">fastrack::trajectory::Trajectory</a></div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00061">trajectory.h:61</a></div></div>
-<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_aca0c08f1a321a87df8485fa9aef590de"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#aca0c08f1a321a87df8485fa9aef590de">fastrack::trajectory::Trajectory::configuration_</a></div><div class="ttdeci">bool configuration_</div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00093">trajectory.h:93</a></div></div>
+<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_aca0c08f1a321a87df8485fa9aef590de"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#aca0c08f1a321a87df8485fa9aef590de">fastrack::trajectory::Trajectory::configuration_</a></div><div class="ttdeci">bool configuration_</div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00099">trajectory.h:99</a></div></div>
 <div class="ttc" id="state_8h_html"><div class="ttname"><a href="state_8h.html">state.h</a></div></div>
 <div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_af67cf60d3c83ff50e4d04c1b0ba09342"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#af67cf60d3c83ff50e4d04c1b0ba09342">fastrack::trajectory::Trajectory::~Trajectory</a></div><div class="ttdeci">~Trajectory()</div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00063">trajectory.h:63</a></div></div>
 <div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_aab94b290fb0fa5011214196c51b18b44"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#aab94b290fb0fa5011214196c51b18b44">fastrack::trajectory::Trajectory::Size</a></div><div class="ttdeci">size_t Size() const </div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00070">trajectory.h:70</a></div></div>
 <div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_adda2bf5839763aca5bb4492151385d6d"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#adda2bf5839763aca5bb4492151385d6d">fastrack::trajectory::Trajectory::Duration</a></div><div class="ttdeci">double Duration() const </div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00073">trajectory.h:73</a></div></div>
-<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_a54d233572a29556f3d0e385d40301904"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#a54d233572a29556f3d0e385d40301904">fastrack::trajectory::Trajectory::ToRos</a></div><div class="ttdeci">fastrack_msgs::Trajectory ToRos() const </div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00192">trajectory.h:192</a></div></div>
-<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_a76fb322495a2400365a497126af11a91"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">fastrack::trajectory::Trajectory::times_</a></div><div class="ttdeci">std::vector&lt; double &gt; times_</div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00090">trajectory.h:90</a></div></div>
+<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_a54d233572a29556f3d0e385d40301904"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#a54d233572a29556f3d0e385d40301904">fastrack::trajectory::Trajectory::ToRos</a></div><div class="ttdeci">fastrack_msgs::Trajectory ToRos() const </div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00198">trajectory.h:198</a></div></div>
+<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_a1256c000f7a30546b683a5c5f9d195fb"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#a1256c000f7a30546b683a5c5f9d195fb">fastrack::trajectory::Trajectory::LastState</a></div><div class="ttdeci">S LastState() const </div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00077">trajectory.h:77</a></div></div>
+<div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_a76fb322495a2400365a497126af11a91"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">fastrack::trajectory::Trajectory::times_</a></div><div class="ttdeci">std::vector&lt; double &gt; times_</div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00096">trajectory.h:96</a></div></div>
 <div class="ttc" id="classfastrack_1_1trajectory_1_1Trajectory_html_a165f407c37746de6419b84e9aef5466e"><div class="ttname"><a href="classfastrack_1_1trajectory_1_1Trajectory.html#a165f407c37746de6419b84e9aef5466e">fastrack::trajectory::Trajectory::Trajectory</a></div><div class="ttdeci">Trajectory()</div><div class="ttdef"><b>Definition:</b> <a href="trajectory_8h_source.html#l00064">trajectory.h:64</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 
@@ -315,7 +325,7 @@
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Sat Mar 17 2018 23:48:34</small>
+<small>autogenerated on Mon Mar 26 2018 22:01:56</small>
 </div>
 </body>
 </html>
