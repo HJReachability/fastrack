@@ -1,7 +1,8 @@
 <map id="trajectory.h" name="trajectory.h">
-<area shape="rect" id="node2" href="$planner_8h.html" title="planner.h" alt="" coords="55,80,128,107"/>
-<area shape="rect" id="node6" href="$trajectory__interpreter_8h.html" title="trajectory_interpreter.h" alt="" coords="153,80,305,107"/>
-<area shape="rect" id="node3" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="23,155,161,181"/>
-<area shape="rect" id="node4" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="5,229,179,256"/>
-<area shape="rect" id="node5" href="$ompl__kinematic__planner__demo__node_8cpp.html" title="ompl_kinematic_planner\l_demo_node.cpp" alt="" coords="11,305,173,346"/>
+<area shape="rect" id="node2" href="$planner_8h.html" title="planner.h" alt="" coords="67,80,140,107"/>
+<area shape="rect" id="node6" href="$trajectory__interpreter_8h.html" title="trajectory_interpreter.h" alt="" coords="189,80,341,107"/>
+<area shape="rect" id="node3" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="23,163,161,189"/>
+<area shape="rect" id="node4" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="5,245,179,272"/>
+<area shape="rect" id="node5" href="$ompl__kinematic__planner__demo__node_8cpp.html" title="ompl_kinematic_planner\l_demo_node.cpp" alt="" coords="11,321,173,362"/>
+<area shape="rect" id="node7" href="$position__velocity__trajectory__interpreter__demo__node_8cpp.html" title="position_velocity_trajectory\l_interpreter_demo_node.cpp" alt="" coords="185,155,372,197"/>
 </map>
