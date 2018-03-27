@@ -91,11 +91,11 @@ private:
 
   // Service callbacks for tracking bound and planner parameters.
   inline bool TrackingBoundServer(
-    const SB::Request::ConstPtr& req, SB::Response::ConstPtr& res) const {
+    typename SB::Request& req, typename SB::Response& res) {
     res = value_.TrackingBound().ToRos();
   }
   inline bool PlannerDynamicsServer(
-    const SP::Request::ConstPtr& req, SP::Response::ConstPtr& res) const {
+     typename SP::Request& req, typename SP::Response& res) {
     res = value_.PlannerDynamics().ToRos();
   }
 

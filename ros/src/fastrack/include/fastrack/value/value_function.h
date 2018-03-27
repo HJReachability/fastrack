@@ -72,7 +72,8 @@ public:
   // Get the optimal control given the tracker state and planner state.
   inline TC OptimalControl(const TS& tracker_x, const PS& planner_x) const {
     const TS relative_x = tracker_x.RelativeTo(planner_x);
-    return tracker_dynamics_.OptimalControl(relative_x, Gradient(relative_x));
+    return tracker_dynamics_.OptimalControl(
+      relative_x, Gradient(tracker_x, planner_x));
   }
 
   // Accessors.

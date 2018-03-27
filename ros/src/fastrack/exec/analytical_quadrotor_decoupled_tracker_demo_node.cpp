@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, The Regents of the University of California (Regents).
+ * Copyright (c) 2017, The Regents of the University of California (Regents).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,49 +36,43 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Custom types.
+// Node running a Tracker based on the AnalyticalKinematicBoxQuadrotorDecoupled
+// value function.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_UTILS_TYPES_H
-#define FASTRACK_UTILS_TYPES_H
+#include <fastrack/tracking/tracker.h>
+#include <fastrack/value/analytical_kinematic_box_quadrotor_decoupled_6d.h>
+#include <fastrack/state/position_velocity.h>
+#include <fastrack/control/quadrotor_control.h>
+#include <fastrack/utils/types.h>
 
-// ------------------------------- INCLUDES -------------------------------- //
+#include <fastrack_srvs/KinematicPlannerDynamics.h>
+#include <fastrack_srvs/TrackingBoundBox.h>
 
-#include <random>
-#include <math.h>
-#include <string>
-#include <type_traits>
-#include <typeinfo>
-#include <exception>
-#include <memory>
-#include <limits>
-#include <vector>
-#include <algorithm>
-#include <random>
-#include <iostream>
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
+#include <ros/ros.h>
 
-// ------------------------------- CONSTANTS -------------------------------- //
+namespace ft = fastrack::tracking;
+namespace fs = fastrack::state;
+namespace fc = fastrack::control;
+namespace fv = fastrack::value;
 
-namespace fastrack {
-  namespace constants {
-    // Acceleration due to gravity.
-    const double G = 9.81;
-  } //\namespace constants
+int main(int argc, char** argv) {
+  ros::init(argc, argv, "TrackerDemo");
+  ros::NodeHandle n("~");
 
-  // Empty struct for setting unused/unimplemented template args.
-  struct Empty {};
-} //\namespace fastrack
+  ft::Tracker<fv::AnalyticalKinematicBoxQuadrotorDecoupled6D,
+              fs::PositionVelocity, fc::QuadrotorControl, fs::PositionVelocity,
+              fastrack_srvs::TrackingBoundBox,
+              fastrack_srvs::KinematicPlannerDynamics> tracker;
 
-// ------------------------ THIRD PARTY TYPEDEFS ---------------------------- //
+  if (!tracker.Initialize(n)) {
+    ROS_ERROR("%s: Failed to initialize tracker.",
+              ros::this_node::getName().c_str());
+    return EXIT_FAILURE;
+  }
 
-using Eigen::Matrix3d;
-using Eigen::Vector3d;
-using Eigen::Matrix4d;
-using Eigen::VectorXd;
-using Eigen::MatrixXd;
-using Eigen::Quaterniond;
+  ros::spin();
 
-#endif
+  return EXIT_SUCCESS;
+}
