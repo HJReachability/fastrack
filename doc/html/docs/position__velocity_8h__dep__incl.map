@@ -1,8 +1,9 @@
 <map id="position_velocity.h" name="position_velocity.h">
-<area shape="rect" id="node2" href="$ompl__kinematic__planner__demo__node_8cpp.html" title="ompl_kinematic_planner\l_demo_node.cpp" alt="" coords="5,81,168,122"/>
-<area shape="rect" id="node3" href="$quadrotor__coupled__6d_8h.html" title="quadrotor_coupled_6d.h" alt="" coords="192,88,351,115"/>
-<area shape="rect" id="node4" href="$quadrotor__decoupled__6d_8h.html" title="quadrotor_decoupled_6d.h" alt="" coords="377,88,551,115"/>
-<area shape="rect" id="node5" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8h.html" title="analytical_kinematic\l_box_quadrotor_decoupled_6d.h" alt="" coords="422,171,631,213"/>
-<area shape="rect" id="node7" href="$position__velocity_8cpp.html" title="position_velocity.cpp" alt="" coords="627,88,771,115"/>
-<area shape="rect" id="node6" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8cpp.html" title="analytical_kinematic\l_box_quadrotor_decoupled\l_6d.cpp" alt="" coords="438,261,615,317"/>
+<area shape="rect" id="node2" href="$analytical__quadrotor__decoupled__tracker__demo__node_8cpp.html" title="analytical_quadrotor\l_decoupled_tracker_demo\l_node.cpp" alt="" coords="56,261,230,317"/>
+<area shape="rect" id="node3" href="$ompl__kinematic__planner__demo__node_8cpp.html" title="ompl_kinematic_planner\l_demo_node.cpp" alt="" coords="33,81,196,122"/>
+<area shape="rect" id="node4" href="$quadrotor__coupled__6d_8h.html" title="quadrotor_coupled_6d.h" alt="" coords="220,88,378,115"/>
+<area shape="rect" id="node5" href="$quadrotor__decoupled__6d_8h.html" title="quadrotor_decoupled_6d.h" alt="" coords="404,88,578,115"/>
+<area shape="rect" id="node6" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8h.html" title="analytical_kinematic\l_box_quadrotor_decoupled_6d.h" alt="" coords="387,171,596,213"/>
+<area shape="rect" id="node8" href="$position__velocity_8cpp.html" title="position_velocity.cpp" alt="" coords="654,88,798,115"/>
+<area shape="rect" id="node7" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8cpp.html" title="analytical_kinematic\l_box_quadrotor_decoupled\l_6d.cpp" alt="" coords="403,261,580,317"/>
 </map>
