@@ -194,8 +194,8 @@ bool Planner<S, E, D, SD, B, SB>::LoadParameters(const ros::NodeHandle& n) {
   ros::NodeHandle nl(n);
 
   // Topics.
-  if (!nl.getParam("topics/traj", traj_topic_)) return false;
-  if (!nl.getParam("topics/replan_request", replan_request_topic_))
+  if (!nl.getParam("topic/traj", traj_topic_)) return false;
+  if (!nl.getParam("topic/replan_request", replan_request_topic_))
     return false;
 
   // Services.

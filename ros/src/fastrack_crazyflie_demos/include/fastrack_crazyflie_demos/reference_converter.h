@@ -36,29 +36,29 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Defines the ControlConverter class, which listens for new fastrack control
-// messages and immediately republishes them as crazyflie control messages.
+// Defines the ReferenceConverter class, which listens for new fastrack state
+// messages and immediately republishes them as crazyflie messages.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_CRAZYFLIE_DEMOS_CONTROL_CONVERTER_H
-#define FASTRACK_CRAZYFLIE_DEMOS_CONTROL_CONVERTER_H
+#ifndef FASTRACK_CRAZYFLIE_DEMOS_REFERENCE_CONVERTER_H
+#define FASTRACK_CRAZYFLIE_DEMOS_REFERENCE_CONVERTER_H
 
 #include <fastrack/utils/types.h>
 #include <fastrack/utils/uncopyable.h>
 
-#include <fastrack_msgs/Control.h>
-#include <crazyflie_msgs/PrioritizedControlStamped.h>
+#include <fastrack_msgs/State.h>
+#include <crazyflie_msgs/PositionVelocityStateStamped.h>
 
 #include <ros/ros.h>
 
 namespace fastrack {
 namespace crazyflie {
 
-class ControlConverter : private Uncopyable {
+class ReferenceConverter : private Uncopyable {
 public:
-  ~ControlConverter() {}
-  explicit ControlConverter()
+  ~ReferenceConverter() {}
+  explicit ReferenceConverter()
     : initialized_(false) {}
 
   // Initialize this class with all parameters and callbacks.
@@ -68,15 +68,15 @@ private:
   bool LoadParameters(const ros::NodeHandle& n);
   bool RegisterCallbacks(const ros::NodeHandle& n);
 
-  // Callback for processing new control signals.
-  void ControlCallback(const fastrack_msgs::Control::ConstPtr& msg);
+  // Callback for processing new reference signals.
+  void ReferenceCallback(const fastrack_msgs::State::ConstPtr& msg);
 
   // Publishers/subscribers and related topics.
-  ros::Publisher converted_control_pub_;
-  ros::Subscriber fastrack_control_sub_;
+  ros::Publisher raw_reference_pub_;
+  ros::Subscriber fastrack_reference_sub_;
 
-  std::string fastrack_control_topic_;
-  std::string converted_control_topic_;
+  std::string raw_reference_topic_;
+  std::string fastrack_reference_topic_;
 
   // Naming and initialization.
   std::string name_;

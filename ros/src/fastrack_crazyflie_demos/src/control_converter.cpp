@@ -88,7 +88,7 @@ bool ControlConverter::RegisterCallbacks(const ros::NodeHandle& n) {
     &ControlConverter::ControlCallback, this);
 
   // Publisher.
-  converted_control_pub_ = nl.advertise<crazyflie_msgs::Control>(
+  converted_control_pub_ = nl.advertise<crazyflie_msgs::PrioritizedControlStamped>(
     converted_control_topic_.c_str(), 1, false);
 
   return true;
@@ -103,12 +103,13 @@ ControlCallback(const fastrack_msgs::Control::ConstPtr& msg) {
     return;
   }
 
-  crazyflie_msgs::PrioritizedControl cf;
-  cf.control.roll = msg->u[1];
-  cf.control.pitch = msg->u[0];
-  cf.control.yaw_dot = msg->u[2];
-  cf.control.thrust = msg->u[3];
-  cf.priority = msg->priority;
+  crazyflie_msgs::PrioritizedControlStamped cf;
+  cf.header.stamp = ros::Time::now();
+  cf.control.control.roll = msg->u[1];
+  cf.control.control.pitch = msg->u[0];
+  cf.control.control.yaw_dot = msg->u[2];
+  cf.control.control.thrust = msg->u[3];
+  cf.control.priority = msg->priority;
 
   converted_control_pub_.publish(cf);
 }

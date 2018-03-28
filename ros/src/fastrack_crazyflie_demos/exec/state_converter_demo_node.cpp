@@ -36,54 +36,27 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Defines the ControlConverter class, which listens for new fastrack control
-// messages and immediately republishes them as crazyflie control messages.
+// Node running a StateConverter for a Crazyflie demo.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_CRAZYFLIE_DEMOS_CONTROL_CONVERTER_H
-#define FASTRACK_CRAZYFLIE_DEMOS_CONTROL_CONVERTER_H
-
-#include <fastrack/utils/types.h>
-#include <fastrack/utils/uncopyable.h>
-
-#include <fastrack_msgs/Control.h>
-#include <crazyflie_msgs/PrioritizedControlStamped.h>
+#include <fastrack_crazyflie_demos/state_converter.h>
 
 #include <ros/ros.h>
 
-namespace fastrack {
-namespace crazyflie {
+int main(int argc, char** argv) {
+  ros::init(argc, argv, "StateConverterDemo");
+  ros::NodeHandle n("~");
 
-class ControlConverter : private Uncopyable {
-public:
-  ~ControlConverter() {}
-  explicit ControlConverter()
-    : initialized_(false) {}
+  fastrack::crazyflie::StateConverter converter;
 
-  // Initialize this class with all parameters and callbacks.
-  bool Initialize(const ros::NodeHandle& n);
+  if (!converter.Initialize(n)) {
+    ROS_ERROR("%s: Failed to initialize state converter.",
+              ros::this_node::getName().c_str());
+    return EXIT_FAILURE;
+  }
 
-private:
-  bool LoadParameters(const ros::NodeHandle& n);
-  bool RegisterCallbacks(const ros::NodeHandle& n);
+  ros::spin();
 
-  // Callback for processing new control signals.
-  void ControlCallback(const fastrack_msgs::Control::ConstPtr& msg);
-
-  // Publishers/subscribers and related topics.
-  ros::Publisher converted_control_pub_;
-  ros::Subscriber fastrack_control_sub_;
-
-  std::string fastrack_control_topic_;
-  std::string converted_control_topic_;
-
-  // Naming and initialization.
-  std::string name_;
-  bool initialized_;
-};
-
-} //\namespace crazyflie
-} //\namespace fastrack
-
-#endif
+  return EXIT_SUCCESS;
+}

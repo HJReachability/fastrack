@@ -4,14 +4,26 @@
   <!-- Topics. -->
   <arg name="position_velocity_yaw_state_topic" default="/state/position_velocity_yaw" />
   <arg name="position_velocity_state_topic" default="/state/position_velocity" />
-  <arg name="reference_state_topic" default="/ref/planner" />
+  <arg name="fastrack_state_topic" default="/state/fastrack" />
+  <arg name="fastrack_reference_state_topic" default="/ref/fastrack" />
+  <arg name="reference_state_topic" default="/ref/position_velocity" />
   <arg name="in_flight_topic" default="/in_flight" />
 
   <arg name="lqr_control_topic" default="/control/lqr" />
-  <arg name="optimal_control_topic" default="/control/optimal" />
+  <arg name="fastrack_control_topic" default="/control/fastrack" />
+  <arg name="prioritized_control_topic" default="/control/prioritized" />
   <arg name="merged_control_topic" default="/control/merged" />
   <arg name="takeoff_control_topic" default="/control/takeoff" />
   <arg name="final_control_topic" default="/control/final" />
+
+  <arg name="replan_request_topic" default="/replan" />
+  <arg name="traj_topic" default="/traj" />
+  <arg name="traj_vis_topic" default="/vis/traj" />
+  <arg name="bound_vis_topic" default="/vis/bound" />
+
+  <!-- Services. -->
+  <arg name="bound_srv" default="/bound" />
+  <arg name="planner_dynamics_srv" default="/planner_dynamics" />
 
   <!-- Frames of reference. -->
   <arg name="fixed_frame" default="world" />
@@ -32,6 +44,11 @@
   <arg name="sim_init_y" default="0.0" />
   <arg name="sim_init_z" default="0.0" />
 
+  <!-- Planner velocity. -->
+  <arg name="planner_vx" default="0.5" />
+  <arg name="planner_vy" default="0.5" />
+  <arg name="planner_vz" default="0.5" />
+
   <!-- Time steps. -->
   <arg name="simulator_dt" default="0.001" />
   <arg name="estimator_dt" default="0.005" />
@@ -48,11 +65,88 @@
   <arg name="lqr_K_file" default="$(find crazyflie_lqr)/references/K_poor.txt" />
   <arg name="lqr_u_ref_file" default="$(find crazyflie_lqr)/references/u_ref_hover.txt" />
 
+  <!-- Environment parameters. -->
+  <arg name="env_max" default="10.0" />
+  <arg name="config_upper" default="[$(arg env_max), $(arg env_max), $(arg env_max)]" />
+  <arg name="config_lower" default="[-$(arg env_max), -$(arg env_max), 0.0]" />
+  <arg name="env_upper_x" default="$(arg env_max)" />
+  <arg name="env_upper_y" default="$(arg env_max)" />
+  <arg name="env_upper_z" default="$(arg env_max)" />
+  <arg name="env_lower_x" default="$(arg env_max)" />
+  <arg name="env_lower_y" default="$(arg env_max)" />
+  <arg name="env_lower_z" default="0.0" />
+  <arg name="env_num_obstacles" default="5" />
+  <arg name="env_min_radius" default="0.5" />
+  <arg name="env_max_radius" default="1.0" />
+  <arg name="seed" default="0" />
+
   <!-- Record? -->
   <arg name="record" default="false" />
 
   <!-- ========================== FaSTrack stuff. ========================== -->
+  <!-- Tracker. -->
+  <include file="$(find fastrack_crazyflie_demos)/launch/analytical_quadrotor_decoupled_tracker.launch">
+    <arg name="tracker_state_topic" value="$(arg fastrack_state_topic)" />
+    <arg name="planner_state_topic" value="$(arg fastrack_reference_state_topic)" />
+    <arg name="control_topic" value="$(arg fastrack_control_topic)" />
+    <arg name="bound_topic" value="$(arg bound_vis_topic)" />
+    <arg name="planner_frame" value="$(arg planner_frame)" />
+    <arg name="bound_srv" value="$(arg bound_srv)" />
+    <arg name="planner_dynamics_srv" value="$(arg planner_dynamics_srv)" />
+    <arg name="planner_vx" value="$(arg planner_vx)" />
+    <arg name="planner_vy" value="$(arg planner_vy)" />
+    <arg name="planner_vz" value="$(arg planner_vz)" />
+  </include>
 
+  <!-- Planner. -->
+  <include file="$(find fastrack_crazyflie_demos)/launch/ompl_kinematic_planner.launch">
+    <arg name="traj_topic" value="$(arg traj_topic)" />
+    <arg name="replan_request_topic" value="$(arg replan_request_topic)" />
+    <arg name="bound_srv" value="$(arg bound_srv)" />
+    <arg name="dynamics_srv" value="$(arg planner_dynamics_srv)" />
+    <arg name="config_upper" value="$(arg config_upper)" />
+    <arg name="config_lower" value="$(arg config_lower)" />
+    <arg name="env_upper_x" value="$(arg env_upper_x)" />
+    <arg name="env_upper_y" value="$(arg env_upper_y)" />
+    <arg name="env_upper_z" value="$(arg env_upper_z)" />
+    <arg name="env_lower_x" value="$(arg env_lower_x)" />
+    <arg name="env_lower_y" value="$(arg env_lower_y)" />
+    <arg name="env_lower_z" value="$(arg env_lower_z)" />
+    <arg name="env_num_obstacles" value="$(arg env_num_obstacles)" />
+    <arg name="env_min_radius" value="$(arg env_min_radius)" />
+    <arg name="env_max_radius" value="$(arg env_max_radius)" />
+    <arg name="seed" value="$(arg seed)" />
+  </include>
+
+  <!-- Trajectory interpreter. -->
+  <include file="$(find fastrack_crazyflie_demos)/launch/position_velocity_trajectory_interpreter.launch">
+    <arg name="in_flight_topic" value="$(arg in_flight_topic)" />
+    <arg name="traj_topic" value="$(arg traj_topic)" />
+    <arg name="replan_request_topic" value="$(arg replan_request_topic)" />
+    <arg name="ref_topic" value="$(arg fastrack_reference_state_topic)" />
+    <arg name="traj_vis" value="$(arg traj_vis_topic)" />
+    <arg name="bound_vis" value="$(arg bound_vis_topic)" />
+    <arg name="fixed_frame" value="$(arg fixed_frame)" />
+    <arg name="planner_frame" value="$(arg planner_frame)" />
+  </include>
+
+  <!-- Control converter. -->
+  <include file="$(find fastrack_crazyflie_demos)/launch/control_converter.launch">
+    <arg name="fastrack_control_topic" value="$(arg fastrack_control_topic)" />
+    <arg name="converted_control_topic" value="$(arg prioritized_control_topic)" />
+  </include>
+
+  <!-- State converter. -->
+  <include file="$(find fastrack_crazyflie_demos)/launch/state_converter.launch">
+    <arg name="fastrack_state_topic" value="$(arg fastrack_state_topic)" />
+    <arg name="raw_state_topic" value="$(arg position_velocity_state_topic)" />
+  </include>
+
+  <!-- Reference converter. -->
+  <include file="$(find fastrack_crazyflie_demos)/launch/reference_converter.launch">
+    <arg name="fastrack_reference_topic" value="$(arg fastrack_reference_state_topic)" />
+    <arg name="raw_reference_topic" value="$(arg reference_state_topic)" />
+  </include>
 
   <!-- ========================== Crazyflie stuff. ========================= -->
   <!-- Record a rosbag. -->
@@ -137,13 +231,13 @@
   <!-- Merger node. -->
   <node name="merger"
         pkg="crazyflie_control_merger"
-        type="no_yaw_merger_node"
+        type="regular_control_merger_node"
         output="screen">
 
     <param name="mode" value="$(arg merger_mode)" />
 
     <param name="topics/control" value="$(arg lqr_control_topic)" />
-    <param name="topics/prioritized_control" value="$(arg optimal_control_topic)" />
+    <param name="topics/prioritized_control" value="$(arg prioritized_control_topic)" />
     <param name="topics/merged" value="$(arg merged_control_topic)" />
     <param name="topics/in_flight" value="$(arg in_flight_topic)" />
     <param name="topics/reference" value="$(arg reference_state_topic)" />

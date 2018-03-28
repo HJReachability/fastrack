@@ -104,11 +104,9 @@ protected:
   // Keep a copy of the tracking errror bound.
   B bound_;
 
-  // Flag for whether this class has been initialized yet.
-  bool initialized_;
-
-  // Name of this class, for use in debug messages.
+  // Naming and initialization.
   std::string name_;
+  bool initialized_;
 }; //\class ValueFunction
 
 } //\namespace value

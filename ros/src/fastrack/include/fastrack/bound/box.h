@@ -69,20 +69,36 @@ struct Box : public TrackingBound<fastrack_srvs::TrackingBoundBox::Response> {
 
   // Convert from service response type SR.
   inline void FromRos(const fastrack_srvs::TrackingBoundBox::Response& res) {
-    x = res.x;
-    y = res.y;
-    z = res.z;
+    x = res.x; y = res.y; z = res.z;
   }
 
   // Convert to service response.
   inline fastrack_srvs::TrackingBoundBox::Response ToRos() const {
     fastrack_srvs::TrackingBoundBox::Response res;
-    res.x = x;
-    res.y = y;
-    res.z = z;
-
+    res.x = x; res.y = y; res.z = z;
     return res;
   }
+
+  // Visualize.
+  inline void Visualize(const ros::Publisher& pub, const std::string& frame) const {
+    visualization_msgs::Marker m;
+    m.ns = "bound";
+    m.header.frame_id = frame;
+    m.header.stamp = ros::Time::now();
+    m.id = 0;
+    m.type = visualization_msgs::Marker::CUBE;
+    m.action = visualization_msgs::Marker::ADD;
+    m.color.a = 0.3;
+    m.color.r = 0.5;
+    m.color.g = 0.1;
+    m.color.b = 0.5;
+    m.scale.x = 2.0 * x;
+    m.scale.y = 2.0 * y;
+    m.scale.z = 2.0 * z;
+
+    pub.publish(m);
+  }
+
 }; //\struct Box
 
 } //\namespace bound

@@ -46,6 +46,9 @@
 
 #include <fastrack/utils/types.h>
 
+#include <ros/ros.h>
+#include <visualization_msgs/Marker.h>
+
 namespace fastrack {
 namespace bound {
 
@@ -58,6 +61,10 @@ struct TrackingBound {
 
   // Convert to service response type SR.
   virtual SR ToRos() const = 0;
+
+  // Visualize.
+  virtual void Visualize(
+    const ros::Publisher& pub, const std::string& frame) const = 0;
 
 protected:
   explicit TrackingBound() {}

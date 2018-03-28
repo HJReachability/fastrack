@@ -91,6 +91,7 @@ LoadParameters(const ros::NodeHandle& n) {
   if (!nl.getParam("planner/vx", max_planner_speed(0))) return false;
   if (!nl.getParam("planner/vy", max_planner_speed(1))) return false;
   if (!nl.getParam("planner/vz", max_planner_speed(2))) return false;
+
   planner_dynamics_.Initialize(-max_planner_speed, max_planner_speed);
 
   // Compute maximum acceleration. Make sure all elements are positive.

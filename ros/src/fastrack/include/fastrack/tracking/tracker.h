@@ -61,6 +61,7 @@
 #include <fastrack_msgs/State.h>
 
 #include <ros/ros.h>
+#include <visualization_msgs/Marker.h>
 
 namespace fastrack {
 namespace tracking {
@@ -101,6 +102,10 @@ private:
 
   // Timer callback. Compute the optimal control and publish.
   inline void TimerCallback(const ros::TimerEvent& e) const {
+    // Publish bound.
+    value_.TrackingBound().Visualize(bound_pub_, planner_frame_);
+
+    // Publish control.
     control_pub_.publish(value_.OptimalControl(tracker_x_, planner_x_).ToRos());
   }
 
@@ -111,14 +116,19 @@ private:
   // Value function.
   V value_;
 
+  // Planner frame of reference.
+  std::string planner_frame_;
+
   // Publishers and subscribers.
   std::string tracker_state_topic_;
   std::string planner_state_topic_;
   std::string control_topic_;
+  std::string bound_topic_;
 
   ros::Subscriber tracker_state_sub_;
   ros::Subscriber planner_state_sub_;
   ros::Publisher control_pub_;
+  ros::Publisher bound_pub_;
 
   // Services.
   std::string bound_name_;
@@ -177,11 +187,16 @@ bool Tracker<V, TS, TC, PS, SB, SP>::LoadParameters(const ros::NodeHandle& n) {
   // Topics.
   if (!nl.getParam("topic/tracker_state", tracker_state_topic_)) return false;
   if (!nl.getParam("topic/planner_state", planner_state_topic_)) return false;
+  if (!nl.getParam("topic/control", control_topic_)) return false;
+  if (!nl.getParam("vis/bound", bound_topic_)) return false;
 
   // Service names.
   if (!nl.getParam("srv/bound", bound_name_)) return false;
   if (!nl.getParam("srv/planner_dynamics", planner_dynamics_name_))
     return false;
+
+  // Planner frame of reference.
+  if (!nl.getParam("frames/planner", planner_frame_)) return false;
 
   // Time step.
   if (!nl.getParam("time_step", time_step_)) return false;
@@ -207,8 +222,11 @@ bool Tracker<V, TS, TC, PS, SB, SP>::RegisterCallbacks(const ros::NodeHandle& n)
   tracker_state_sub_ = nl.subscribe(tracker_state_topic_.c_str(), 1,
     &Tracker<V, TS, TC, PS, SB, SP>::TrackerStateCallback, this);
 
-  // Publisher.
-  control_pub_ = nl.advertise<fastrack_msgs::Control>(control_topic_.c_str(), 1, false);
+  // Publishers.
+  control_pub_ = nl.advertise<fastrack_msgs::Control>(
+    control_topic_.c_str(), 1, false);
+  bound_pub_ = nl.advertise<visualization_msgs::Marker>(
+    bound_topic_.c_str(), 1, false);
 
   // Timer.
   timer_ = nl.createTimer(ros::Duration(time_step_),

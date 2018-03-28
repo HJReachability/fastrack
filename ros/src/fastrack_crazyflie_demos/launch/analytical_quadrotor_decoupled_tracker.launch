@@ -4,10 +4,15 @@
   <!-- Topics. -->
   <arg name="tracker_state_topic" default="/state/tracker" />
   <arg name="planner_state_topic" default="/state/planner" />
+  <arg name="control_topic" default="/fastrack/control" />
+  <arg name="bound_topic" default="/vis/bound" />
 
   <!-- Services. -->
   <arg name="bound_srv" default="/bound" />
   <arg name="planner_dynamics_srv" default="/planner_dynamics" />
+
+  <!-- Planner frame of reference. -->
+  <arg name="planner_frame" default="planner" />
 
   <!-- Tracker time step. -->
   <arg name="time_step" default="0.02" />
@@ -41,10 +46,13 @@
         output="screen">
     <param name="topic/tracker_state" value="$(arg tracker_state_topic)" />
     <param name="topic/planner_state" value="$(arg planner_state_topic)" />
+    <param name="topic/control" value="$(arg control_topic)" />
+    <param name="vis/bound" value="$(arg bound_topic)" />
 
     <param name="srv/bound" value="$(arg bound_srv)" />
     <param name="srv/planner_dynamics" value="$(arg planner_dynamics_srv)" />
 
+    <param name="frames/planner" value="$(arg planner_frame)" />
     <param name="time_step" value="$(arg time_step)" />
 
     <param name="tracker/upper/pitch" value="$(arg tracker_upper_pitch)" />

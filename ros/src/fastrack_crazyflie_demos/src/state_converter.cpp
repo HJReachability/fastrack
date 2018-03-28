@@ -36,54 +36,75 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Defines the ControlConverter class, which listens for new fastrack control
-// messages and immediately republishes them as crazyflie control messages.
+// Defines the StateConverter class, which listens for new crazyflie state
+// messages and immediately republishes them as fastrack state messages.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_CRAZYFLIE_DEMOS_CONTROL_CONVERTER_H
-#define FASTRACK_CRAZYFLIE_DEMOS_CONTROL_CONVERTER_H
-
-#include <fastrack/utils/types.h>
-#include <fastrack/utils/uncopyable.h>
-
-#include <fastrack_msgs/Control.h>
-#include <crazyflie_msgs/PrioritizedControlStamped.h>
-
-#include <ros/ros.h>
+#include <fastrack_crazyflie_demos/state_converter.h>
 
 namespace fastrack {
 namespace crazyflie {
 
-class ControlConverter : private Uncopyable {
-public:
-  ~ControlConverter() {}
-  explicit ControlConverter()
-    : initialized_(false) {}
+// Initialize this class with all parameters and callbacks.
+bool StateConverter::Initialize(const ros::NodeHandle& n) {
+  name_ = ros::names::append(n.getNamespace(), "StateConverter");
 
-  // Initialize this class with all parameters and callbacks.
-  bool Initialize(const ros::NodeHandle& n);
+  // Load parameters.
+  if (!LoadParameters(n)) {
+    ROS_ERROR("%s: Failed to load parameters.", name_.c_str());
+    return false;
+  }
 
-private:
-  bool LoadParameters(const ros::NodeHandle& n);
-  bool RegisterCallbacks(const ros::NodeHandle& n);
+  // Register callbacks.
+  if (!RegisterCallbacks(n)) {
+    ROS_ERROR("%s: Failed to register callbacks.", name_.c_str());
+    return false;
+  }
 
-  // Callback for processing new control signals.
-  void ControlCallback(const fastrack_msgs::Control::ConstPtr& msg);
+  initialized_ = true;
+  return true;
+}
 
-  // Publishers/subscribers and related topics.
-  ros::Publisher converted_control_pub_;
-  ros::Subscriber fastrack_control_sub_;
+// Load parameters.
+bool StateConverter::LoadParameters(const ros::NodeHandle& n) {
+  ros::NodeHandle nl(n);
 
-  std::string fastrack_control_topic_;
-  std::string converted_control_topic_;
+  // Topics.
+  if (!nl.getParam("topic/fastrack_state", fastrack_state_topic_)) return false;
+  if (!nl.getParam("topic/raw_state", raw_state_topic_)) return false;
 
-  // Naming and initialization.
-  std::string name_;
-  bool initialized_;
-};
+  return true;
+}
+
+// Register callbacks.
+bool StateConverter::RegisterCallbacks(const ros::NodeHandle& n) {
+  ros::NodeHandle nl(n);
+
+  // Subscriber.
+  raw_state_sub_ = nl.subscribe(raw_state_topic_.c_str(), 1,
+    &StateConverter::StateCallback, this);
+
+  // Publisher.
+  fastrack_state_pub_ = nl.advertise<fastrack_msgs::State>(
+    fastrack_state_topic_.c_str(), 1, false);
+
+  return true;
+}
+
+// Callback for processing new state signals.
+void StateConverter::
+StateCallback(const crazyflie_msgs::PositionVelocityStateStamped::ConstPtr& msg) {
+  fastrack_msgs::State s;
+  s.x.push_back(msg->state.x);
+  s.x.push_back(msg->state.y);
+  s.x.push_back(msg->state.z);
+  s.x.push_back(msg->state.x_dot);
+  s.x.push_back(msg->state.y_dot);
+  s.x.push_back(msg->state.z_dot);
+
+  fastrack_state_pub_.publish(s);
+}
 
 } //\namespace crazyflie
 } //\namespace fastrack
-
-#endif
