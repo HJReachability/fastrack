@@ -21,7 +21,7 @@
   <arg name="tracker_upper_pitch" default="0.1" />
   <arg name="tracker_upper_roll" default="0.1" />
   <arg name="tracker_upper_thrust" default="11.81" />
-  <arg name="tracker_lower_thrust" default="0.1" />
+  <arg name="tracker_lower_thrust" default="7.81" />
 
   <arg name="planner_vx" default="0.5" />
   <arg name="planner_vy" default="0.5" />

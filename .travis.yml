@@ -43,7 +43,7 @@ before_install:
 install:
   - echo $TRAVIS_OS_NAME
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install --yes build-essential
-    doxygen graphviz libgflags-dev libgoogle-glog-dev mercurial cmake libatlas-base-dev libmatio-dev libflann-dev; fi
+    doxygen graphviz libgflags-dev libgoogle-glog-dev mercurial cmake libatlas-base-dev libmatio-dev libflann-dev libusb-dev; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo pip install kitchen; fi
 
 #before_script:

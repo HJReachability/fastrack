@@ -265,7 +265,7 @@
         output="screen">
 
     <param name="topics/takeoff_control" value="$(arg takeoff_control_topic)" />
-    <param name="topics/commanded_control" value="$(arg merged_control_topic)" />
+    <param name="topics/commanded_control" value="$(arg lqr_control_topic)" />
     <param name="topics/final_control" value="$(arg final_control_topic)" />
     <param name="topics/in_flight" value="$(arg in_flight_topic)" />
   </node>
