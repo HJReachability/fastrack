@@ -99,6 +99,8 @@ protected:
   // Callback for processing trajectory updates.
   inline void TrajectoryCallback(const fastrack_msgs::Trajectory::ConstPtr& msg) {
     traj_ = Trajectory<S>(msg);
+    traj_.Visualize(traj_vis_pub_, fixed_frame_);
+
     waiting_for_traj_ = false;
   }
 
@@ -140,8 +142,8 @@ protected:
   std::string ready_topic_;
 
   // Frames of reference for publishing markers.
-  std::string fixed_frame_id_;
-  std::string planner_frame_id_;
+  std::string fixed_frame_;
+  std::string planner_frame_;
 
   // Transform broadcaster for planner position.
   tf2_ros::TransformBroadcaster tf_broadcaster_;
@@ -191,8 +193,8 @@ bool PlannerManager<S>::LoadParameters(const ros::NodeHandle& n) {
   if (!nl.getParam("vis/bound", bound_topic_)) return false;
 
   // Frames.
-  if (!nl.getParam("frame/fixed", fixed_frame_id_)) return false;
-  if (!nl.getParam("frame/planner", planner_frame_id_)) return false;
+  if (!nl.getParam("frame/fixed", fixed_frame_)) return false;
+  if (!nl.getParam("frame/planner", planner_frame_)) return false;
 
   // Time step.
   if (!nl.getParam("time_step", time_step_)) return false;
@@ -245,8 +247,6 @@ void PlannerManager<S>::MaybeRequestTrajectory() {
   if (waiting_for_traj_)
     return;
 
-  ROS_WARN("%s: called MaybeRequestTrajectory.", name_.c_str());
-
   // Set start and goal states.
   fastrack_msgs::ReplanRequest msg;
   msg.start = start_;
@@ -291,6 +291,22 @@ void PlannerManager<S>::TimerCallback(const ros::TimerEvent& e) {
 
   // Convert to ROS msg and publish.
   ref_pub_.publish(planner_x.ToRos());
+
+  // Broadcast transform.
+  geometry_msgs::TransformStamped tf;
+  tf.header.frame_id = fixed_frame_;
+  tf.header.stamp = ros::Time::now();
+  tf.child_frame_id = planner_frame_;
+
+  tf.transform.translation.x = planner_x.X();
+  tf.transform.translation.y = planner_x.Y();
+  tf.transform.translation.z = planner_x.Z();
+  tf.transform.rotation.x = 0;
+  tf.transform.rotation.y = 0;
+  tf.transform.rotation.z = 0;
+  tf.transform.rotation.w = 1;
+
+  tf_broadcaster_.sendTransform(tf);
 }
 
 } //\namespace planning

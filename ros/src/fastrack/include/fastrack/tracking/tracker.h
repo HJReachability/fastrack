@@ -112,11 +112,15 @@ private:
     if (!ready_)
       return;
 
+    std::cout << planner_x_.Position().transpose() << std::endl;
+    std::cout << "vs. " << tracker_x_.Position().transpose() << std::endl;
+
     // Publish bound.
     value_.TrackingBound().Visualize(bound_pub_, planner_frame_);
 
     // Publish control.
-    control_pub_.publish(value_.OptimalControl(tracker_x_, planner_x_).ToRos());
+    control_pub_.publish(value_.OptimalControl(tracker_x_, planner_x_).ToRos(
+      value_.Priority(tracker_x_, planner_x_)));
   }
 
   // Most recent tracker/planner states.

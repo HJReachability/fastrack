@@ -14,7 +14,7 @@
   <arg name="planner_frame" default="planner" />
 
   <!-- Time step for interpolating trajectory. -->
-  <arg name="time_step" default="0.1" />
+  <arg name="time_step" default="0.02" />
 
   <!-- Planner runtime, start, and goal. -->
   <arg name="planner_runtime" default="0.5" />

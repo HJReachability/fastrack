@@ -68,13 +68,13 @@ struct QuadrotorControl {
 
   // Convert to ROS message. Assume ordering [pitch, roll, yaw_rate, thrust].
   // NOTE! Set priority to 1 by default.
-  inline fastrack_msgs::Control ToRos() {
+  inline fastrack_msgs::Control ToRos(double priority=1.0) {
     fastrack_msgs::Control msg;
     msg.u.push_back(pitch);
     msg.u.push_back(roll);
     msg.u.push_back(yaw_rate);
     msg.u.push_back(thrust);
-    msg.priority = 1.0;
+    msg.priority = priority;
 
     return msg;
   }

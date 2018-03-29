@@ -216,8 +216,10 @@ fastrack_msgs::Trajectory Trajectory<S>::ToRos() const {
 template<typename S>
 void Trajectory<S>::Visualize(const ros::Publisher& pub,
                               const std::string& frame) const {
-  if (pub.getNumSubscribers() == 0)
+  if (pub.getNumSubscribers() == 0) {
+    ROS_WARN_THROTTLE(1.0, "Trajectory: I'm lonely. Please subscribe.");
     return;
+  }
 
   // Set up spheres marker.
   visualization_msgs::Marker spheres;
@@ -266,11 +268,14 @@ void Trajectory<S>::Visualize(const ros::Publisher& pub,
 template<typename S>
 std_msgs::ColorRGBA Trajectory<S>::Colormap(double t) const {
   std_msgs::ColorRGBA c;
-  c.r = std::max(0.0, std::min(1.0,
-    (t - times_.front()) / (times_.back() - times_.front())));
+
+  c.r = (Size() == 0 || Duration() < 1e-8) ? 0.0 :
+    std::max(0.0, std::min(1.0, (t - times_.front()) / Duration()));
   c.g = 0.0;
   c.b = 1.0 - c.r;
   c.a = 0.9;
+
+  return c;
 }
 
 } //\namespace planning

@@ -138,13 +138,18 @@ Value(const PositionVelocity& tracker_x,
   // Get relative state.
   const PositionVelocity relative_x =
     tracker_x.RelativeTo<PositionVelocity>(planner_x);
+  const Vector3d& rx_position = relative_x.Position();
+  const Vector3d& rx_velocity = relative_x.Velocity();
+
+  // Get the maximum allowable control in each subsystem.
+  const VectorXd max_planner_control = planner_dynamics_.MaxControl();
 
   // Value is the maximum of values in each 2D subsystem.
   double value = -std::numeric_limits<double>::infinity();
   for (size_t ii = 0; ii < 3; ii++) {
-    const double x = relative_x.Position()(ii);
-    const double v = relative_x.Velocity()(ii);
-    const double v_p = planner_dynamics_.MaxControl()(ii);
+    const double x = rx_position(ii);
+    const double v = rx_velocity(ii);
+    const double v_p = max_planner_control(ii);
 
     // Value surface A: + for x "below" convex acceleration parabola.
     const double value_A = -x - pos_exp_(ii) +
@@ -168,13 +173,18 @@ Gradient(const PositionVelocity& tracker_x,
   // Get relative state.
   const PositionVelocity relative_x =
     tracker_x.RelativeTo<PositionVelocity>(planner_x);
+  const Vector3d& rx_position = relative_x.Position();
+  const Vector3d& rx_velocity = relative_x.Velocity();
+
+  // Get the maximum allowable control in each subsystem.
+  const VectorXd max_planner_control = planner_dynamics_.MaxControl();
 
   // Loop through each subsystem and populate grad in position/velocity dims.
   Vector3d pos_grad, vel_grad;
   for (size_t ii = 0; ii < 3; ii++) {
-    const double x = relative_x.Position()(ii);
-    const double v = relative_x.Velocity()(ii);
-    const double v_p = planner_dynamics_.MaxControl()(ii);
+    const double x = rx_position(ii);
+    const double v = rx_velocity(ii);
+    const double v_p = max_planner_control(ii);
 
     // Value surface A: + for x "below" convex acceleration parabola.
     const double value_A = -x - pos_exp_(ii) +
