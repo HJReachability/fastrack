@@ -98,34 +98,51 @@
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  <span class="comment">// Convert from service response type SR.</span></div>
 <div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="structfastrack_1_1bound_1_1Box.html#a7d3de30f487be8a1469e8883465dfbbf">   71</a></span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="structfastrack_1_1bound_1_1Box.html#a7d3de30f487be8a1469e8883465dfbbf">FromRos</a>(<span class="keyword">const</span> fastrack_srvs::TrackingBoundBox::Response&amp; res) {</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <a class="code" href="structfastrack_1_1bound_1_1Box.html#a430f91701e9c70c98623cc61358b4aa3">x</a> = res.x;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <a class="code" href="structfastrack_1_1bound_1_1Box.html#a7c1a1ed0efb2662de231aa76d4758f77">y</a> = res.y;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <a class="code" href="structfastrack_1_1bound_1_1Box.html#a5f24e4def7104ceb932ae4dc4cf8d54b">z</a> = res.z;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  }</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  <span class="comment">// Convert to service response.</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="structfastrack_1_1bound_1_1Box.html#a4130597d61bf971974ef2005275c6f39">   78</a></span>&#160;  <span class="keyword">inline</span> fastrack_srvs::TrackingBoundBox::Response <a class="code" href="structfastrack_1_1bound_1_1Box.html#a4130597d61bf971974ef2005275c6f39">ToRos</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    fastrack_srvs::TrackingBoundBox::Response res;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    res.x = <a class="code" href="structfastrack_1_1bound_1_1Box.html#a430f91701e9c70c98623cc61358b4aa3">x</a>;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    res.y = <a class="code" href="structfastrack_1_1bound_1_1Box.html#a7c1a1ed0efb2662de231aa76d4758f77">y</a>;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    res.z = <a class="code" href="structfastrack_1_1bound_1_1Box.html#a5f24e4def7104ceb932ae4dc4cf8d54b">z</a>;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordflow">return</span> res;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  }</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;}; <span class="comment">//\struct Box</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;} <span class="comment">//\namespace bound</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;} <span class="comment">//\namespace fastrack</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="structfastrack_1_1bound_1_1TrackingBound_html"><div class="ttname"><a href="structfastrack_1_1bound_1_1TrackingBound.html">fastrack::bound::TrackingBound</a></div><div class="ttdef"><b>Definition:</b> <a href="tracking__bound_8h_source.html#l00053">tracking_bound.h:53</a></div></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <a class="code" href="structfastrack_1_1bound_1_1Box.html#a430f91701e9c70c98623cc61358b4aa3">x</a> = res.x; <a class="code" href="structfastrack_1_1bound_1_1Box.html#a7c1a1ed0efb2662de231aa76d4758f77">y</a> = res.y; <a class="code" href="structfastrack_1_1bound_1_1Box.html#a5f24e4def7104ceb932ae4dc4cf8d54b">z</a> = res.z;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  }</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <span class="comment">// Convert to service response.</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="structfastrack_1_1bound_1_1Box.html#a4130597d61bf971974ef2005275c6f39">   76</a></span>&#160;  <span class="keyword">inline</span> fastrack_srvs::TrackingBoundBox::Response <a class="code" href="structfastrack_1_1bound_1_1Box.html#a4130597d61bf971974ef2005275c6f39">ToRos</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    fastrack_srvs::TrackingBoundBox::Response res;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    res.x = <a class="code" href="structfastrack_1_1bound_1_1Box.html#a430f91701e9c70c98623cc61358b4aa3">x</a>; res.y = <a class="code" href="structfastrack_1_1bound_1_1Box.html#a7c1a1ed0efb2662de231aa76d4758f77">y</a>; res.z = <a class="code" href="structfastrack_1_1bound_1_1Box.html#a5f24e4def7104ceb932ae4dc4cf8d54b">z</a>;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordflow">return</span> res;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  }</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;  <span class="comment">// Visualize.</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="structfastrack_1_1bound_1_1Box.html#a188b0ddde5e54d3f9b43e720c9f7f3b5">   83</a></span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="structfastrack_1_1bound_1_1Box.html#a188b0ddde5e54d3f9b43e720c9f7f3b5">Visualize</a>(<span class="keyword">const</span> ros::Publisher&amp; pub, <span class="keyword">const</span> std::string&amp; frame)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    visualization_msgs::Marker m;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    m.ns = <span class="stringliteral">&quot;bound&quot;</span>;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    m.header.frame_id = frame;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    m.header.stamp = ros::Time::now();</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    m.id = 0;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    m.type = visualization_msgs::Marker::CUBE;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    m.action = visualization_msgs::Marker::ADD;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    m.color.a = 0.3;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    m.color.r = 0.5;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    m.color.g = 0.1;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    m.color.b = 0.5;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    m.scale.x = 2.0 * <a class="code" href="structfastrack_1_1bound_1_1Box.html#a430f91701e9c70c98623cc61358b4aa3">x</a>;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    m.scale.y = 2.0 * <a class="code" href="structfastrack_1_1bound_1_1Box.html#a7c1a1ed0efb2662de231aa76d4758f77">y</a>;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    m.scale.z = 2.0 * <a class="code" href="structfastrack_1_1bound_1_1Box.html#a5f24e4def7104ceb932ae4dc4cf8d54b">z</a>;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    pub.publish(m);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  }</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;}; <span class="comment">//\struct Box</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;} <span class="comment">//\namespace bound</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;} <span class="comment">//\namespace fastrack</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="structfastrack_1_1bound_1_1TrackingBound_html"><div class="ttname"><a href="structfastrack_1_1bound_1_1TrackingBound.html">fastrack::bound::TrackingBound</a></div><div class="ttdef"><b>Definition:</b> <a href="tracking__bound_8h_source.html#l00056">tracking_bound.h:56</a></div></div>
 <div class="ttc" id="types_8h_html"><div class="ttname"><a href="types_8h.html">types.h</a></div></div>
 <div class="ttc" id="structfastrack_1_1bound_1_1Box_html_a5f24e4def7104ceb932ae4dc4cf8d54b"><div class="ttname"><a href="structfastrack_1_1bound_1_1Box.html#a5f24e4def7104ceb932ae4dc4cf8d54b">fastrack::bound::Box::z</a></div><div class="ttdeci">double z</div><div class="ttdef"><b>Definition:</b> <a href="box_8h_source.html#l00060">box.h:60</a></div></div>
 <div class="ttc" id="tracking__bound_8h_html"><div class="ttname"><a href="tracking__bound_8h.html">tracking_bound.h</a></div></div>
 <div class="ttc" id="structfastrack_1_1bound_1_1Box_html_adb4e42a928f099e8a40acbd2955dcd58"><div class="ttname"><a href="structfastrack_1_1bound_1_1Box.html#adb4e42a928f099e8a40acbd2955dcd58">fastrack::bound::Box::Box</a></div><div class="ttdeci">Box()</div><div class="ttdef"><b>Definition:</b> <a href="box_8h_source.html#l00064">box.h:64</a></div></div>
 <div class="ttc" id="structfastrack_1_1bound_1_1Box_html_a11e5da607027b9dbc3167231b7a6f655"><div class="ttname"><a href="structfastrack_1_1bound_1_1Box.html#a11e5da607027b9dbc3167231b7a6f655">fastrack::bound::Box::Box</a></div><div class="ttdeci">Box(double xsize, double ysize, double zsize)</div><div class="ttdef"><b>Definition:</b> <a href="box_8h_source.html#l00066">box.h:66</a></div></div>
 <div class="ttc" id="structfastrack_1_1bound_1_1Box_html_a7d3de30f487be8a1469e8883465dfbbf"><div class="ttname"><a href="structfastrack_1_1bound_1_1Box.html#a7d3de30f487be8a1469e8883465dfbbf">fastrack::bound::Box::FromRos</a></div><div class="ttdeci">void FromRos(const fastrack_srvs::TrackingBoundBox::Response &amp;res)</div><div class="ttdef"><b>Definition:</b> <a href="box_8h_source.html#l00071">box.h:71</a></div></div>
-<div class="ttc" id="structfastrack_1_1bound_1_1Box_html_a4130597d61bf971974ef2005275c6f39"><div class="ttname"><a href="structfastrack_1_1bound_1_1Box.html#a4130597d61bf971974ef2005275c6f39">fastrack::bound::Box::ToRos</a></div><div class="ttdeci">fastrack_srvs::TrackingBoundBox::Response ToRos() const </div><div class="ttdef"><b>Definition:</b> <a href="box_8h_source.html#l00078">box.h:78</a></div></div>
+<div class="ttc" id="structfastrack_1_1bound_1_1Box_html_a188b0ddde5e54d3f9b43e720c9f7f3b5"><div class="ttname"><a href="structfastrack_1_1bound_1_1Box.html#a188b0ddde5e54d3f9b43e720c9f7f3b5">fastrack::bound::Box::Visualize</a></div><div class="ttdeci">void Visualize(const ros::Publisher &amp;pub, const std::string &amp;frame) const </div><div class="ttdef"><b>Definition:</b> <a href="box_8h_source.html#l00083">box.h:83</a></div></div>
+<div class="ttc" id="structfastrack_1_1bound_1_1Box_html_a4130597d61bf971974ef2005275c6f39"><div class="ttname"><a href="structfastrack_1_1bound_1_1Box.html#a4130597d61bf971974ef2005275c6f39">fastrack::bound::Box::ToRos</a></div><div class="ttdeci">fastrack_srvs::TrackingBoundBox::Response ToRos() const </div><div class="ttdef"><b>Definition:</b> <a href="box_8h_source.html#l00076">box.h:76</a></div></div>
 <div class="ttc" id="structfastrack_1_1bound_1_1Box_html_a430f91701e9c70c98623cc61358b4aa3"><div class="ttname"><a href="structfastrack_1_1bound_1_1Box.html#a430f91701e9c70c98623cc61358b4aa3">fastrack::bound::Box::x</a></div><div class="ttdeci">double x</div><div class="ttdef"><b>Definition:</b> <a href="box_8h_source.html#l00058">box.h:58</a></div></div>
 <div class="ttc" id="structfastrack_1_1bound_1_1Box_html_ab75ca30c6090eb0c0442e6c1032d1235"><div class="ttname"><a href="structfastrack_1_1bound_1_1Box.html#ab75ca30c6090eb0c0442e6c1032d1235">fastrack::bound::Box::~Box</a></div><div class="ttdeci">~Box()</div><div class="ttdef"><b>Definition:</b> <a href="box_8h_source.html#l00063">box.h:63</a></div></div>
 <div class="ttc" id="structfastrack_1_1bound_1_1Box_html_a7c1a1ed0efb2662de231aa76d4758f77"><div class="ttname"><a href="structfastrack_1_1bound_1_1Box.html#a7c1a1ed0efb2662de231aa76d4758f77">fastrack::bound::Box::y</a></div><div class="ttdeci">double y</div><div class="ttdef"><b>Definition:</b> <a href="box_8h_source.html#l00059">box.h:59</a></div></div>
@@ -136,7 +153,7 @@
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Tue Mar 27 2018 19:28:33</small>
+<small>autogenerated on Thu Mar 29 2018 21:11:10</small>
 </div>
 </body>
 </html>
