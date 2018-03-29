@@ -2,7 +2,7 @@
 
 <launch>
   <!-- Topics. -->
-  <arg name="in_flight_topic" default="/in_flight" />
+  <arg name="ready_topic" default="/ready" />
   <arg name="traj_topic" default="/traj" />
   <arg name="replan_request_topic" default="/replan" />
   <arg name="ref_topic" default="/ref" />
@@ -16,12 +16,17 @@
   <!-- Time step for interpolating trajectory. -->
   <arg name="time_step" default="0.1" />
 
-  <!-- Trajectory interpreter node.  -->
-  <node name="trajectory_interpreter"
+  <!-- Planner runtime, start, and goal. -->
+  <arg name="planner_runtime" default="0.5" />
+  <arg name="start" default="[0.0, 0.0, 0.0]" />
+  <arg name="goal" default="[1.0, 1.0, 1.0]" />
+
+  <!-- Planner manager node.  -->
+  <node name="planner_manager"
         pkg="fastrack_crazyflie_demos"
-        type="position_velocity_trajectory_interpreter_demo_node"
+        type="position_velocity_planner_manager_demo_node"
         output="screen">
-    <param name="topic/in_flight" value="$(arg in_flight_topic)" />
+    <param name="topic/ready" value="$(arg ready_topic)" />
     <param name="topic/traj" value="$(arg traj_topic)" />
     <param name="topic/ref" value="$(arg ref_topic)" />
     <param name="topic/replan_request" value="$(arg replan_request_topic)" />
@@ -32,5 +37,9 @@
     <param name="frame/planner" value="$(arg planner_frame)" />
 
     <param name="time_step" value="$(arg time_step)" />
+
+    <param name="planner_runtime" value="$(arg planner_runtime)" />
+    <rosparam param="start" subst_value="True">$(arg start)</rosparam>
+    <rosparam param="goal" subst_value="True">$(arg goal)</rosparam>
   </node>
 </launch>

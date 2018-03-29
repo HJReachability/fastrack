@@ -148,7 +148,10 @@ Trajectory<S>::Trajectory(const fastrack_msgs::Trajectory::ConstPtr& msg)
   }
 
   // Is this trajectory in state space or configuration space?
-  configuration_ = msg->states.front().x.size() == S::ConfigurationDimension();
+  if (num_elements > 0)
+    configuration_ = msg->states.front().x.size() == S::ConfigurationDimension();
+  else
+    configuration_ = false;
 }
 
 // Interpolate at a particular time.

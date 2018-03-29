@@ -44,10 +44,11 @@
   <arg name="sim_init_y" default="0.0" />
   <arg name="sim_init_z" default="0.0" />
 
-  <!-- Planner velocity. -->
+  <!-- Planner params. -->
   <arg name="planner_vx" default="0.5" />
   <arg name="planner_vy" default="0.5" />
   <arg name="planner_vz" default="0.5" />
+  <arg name="planner_runtime" default="0.5" />
 
   <!-- Time steps. -->
   <arg name="simulator_dt" default="0.001" />
@@ -72,10 +73,10 @@
   <arg name="env_upper_x" default="$(arg env_max)" />
   <arg name="env_upper_y" default="$(arg env_max)" />
   <arg name="env_upper_z" default="$(arg env_max)" />
-  <arg name="env_lower_x" default="$(arg env_max)" />
-  <arg name="env_lower_y" default="$(arg env_max)" />
+  <arg name="env_lower_x" default="-$(arg env_max)" />
+  <arg name="env_lower_y" default="-$(arg env_max)" />
   <arg name="env_lower_z" default="0.0" />
-  <arg name="env_num_obstacles" default="5" />
+  <arg name="env_num_obstacles" default="0" />
   <arg name="env_min_radius" default="0.5" />
   <arg name="env_max_radius" default="1.0" />
   <arg name="seed" default="0" />
@@ -86,6 +87,7 @@
   <!-- ========================== FaSTrack stuff. ========================== -->
   <!-- Tracker. -->
   <include file="$(find fastrack_crazyflie_demos)/launch/analytical_quadrotor_decoupled_tracker.launch">
+    <arg name="ready_topic" value="$(arg in_flight_topic)" />
     <arg name="tracker_state_topic" value="$(arg fastrack_state_topic)" />
     <arg name="planner_state_topic" value="$(arg fastrack_reference_state_topic)" />
     <arg name="control_topic" value="$(arg fastrack_control_topic)" />
@@ -104,6 +106,7 @@
     <arg name="replan_request_topic" value="$(arg replan_request_topic)" />
     <arg name="bound_srv" value="$(arg bound_srv)" />
     <arg name="dynamics_srv" value="$(arg planner_dynamics_srv)" />
+    <arg name="max_runtime" value="$(arg planner_runtime)" />
     <arg name="config_upper" value="$(arg config_upper)" />
     <arg name="config_lower" value="$(arg config_lower)" />
     <arg name="env_upper_x" value="$(arg env_upper_x)" />
@@ -118,9 +121,9 @@
     <arg name="seed" value="$(arg seed)" />
   </include>
 
-  <!-- Trajectory interpreter. -->
-  <include file="$(find fastrack_crazyflie_demos)/launch/position_velocity_trajectory_interpreter.launch">
-    <arg name="in_flight_topic" value="$(arg in_flight_topic)" />
+  <!-- Planner manager. -->
+  <include file="$(find fastrack_crazyflie_demos)/launch/position_velocity_planner_manager.launch">
+    <arg name="ready_topic" value="$(arg in_flight_topic)" />
     <arg name="traj_topic" value="$(arg traj_topic)" />
     <arg name="replan_request_topic" value="$(arg replan_request_topic)" />
     <arg name="ref_topic" value="$(arg fastrack_reference_state_topic)" />
@@ -128,6 +131,9 @@
     <arg name="bound_vis" value="$(arg bound_vis_topic)" />
     <arg name="fixed_frame" value="$(arg fixed_frame)" />
     <arg name="planner_frame" value="$(arg planner_frame)" />
+    <arg name="planner_runtime" value="$(arg planner_runtime)" />
+    <arg name="goal" value="[$(arg goal_x), $(arg goal_y), $(arg goal_z)]" />
+    <arg name="start" value="[$(arg takeoff_hover_x), $(arg takeoff_hover_y), $(arg takeoff_hover_z)]" />
   </include>
 
   <!-- Control converter. -->
@@ -265,7 +271,7 @@
         output="screen">
 
     <param name="topics/takeoff_control" value="$(arg takeoff_control_topic)" />
-    <param name="topics/commanded_control" value="$(arg lqr_control_topic)" />
+    <param name="topics/commanded_control" value="$(arg merged_control_topic)" />
     <param name="topics/final_control" value="$(arg final_control_topic)" />
     <param name="topics/in_flight" value="$(arg in_flight_topic)" />
   </node>

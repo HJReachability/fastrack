@@ -2,6 +2,7 @@
 
 <launch>
   <!-- Topics. -->
+  <arg name="ready_topic" default="/ready" />
   <arg name="tracker_state_topic" default="/state/tracker" />
   <arg name="planner_state_topic" default="/state/planner" />
   <arg name="control_topic" default="/fastrack/control" />
@@ -44,6 +45,7 @@
         pkg="fastrack_crazyflie_demos"
         type="analytical_quadrotor_decoupled_tracker_demo_node"
         output="screen">
+    <param name="topic/ready" value="$(arg ready_topic)" />
     <param name="topic/tracker_state" value="$(arg tracker_state_topic)" />
     <param name="topic/planner_state" value="$(arg planner_state_topic)" />
     <param name="topic/control" value="$(arg control_topic)" />
@@ -67,7 +69,7 @@
     <param name="disturbance/velocity/x" value="$(arg disturbance_vx)" />
     <param name="disturbance/velocity/y" value="$(arg disturbance_vy)" />
     <param name="disturbance/velocity/z" value="$(arg disturbance_vz)" />
-    <param name="disturbance/acceleration/x" value="$(arg disturbance_vx)" />
+    <param name="disturbance/acceleration/x" value="$(arg disturbance_ax)" />
     <param name="disturbance/acceleration/y" value="$(arg disturbance_ay)" />
     <param name="disturbance/acceleration/z" value="$(arg disturbance_az)" />
 

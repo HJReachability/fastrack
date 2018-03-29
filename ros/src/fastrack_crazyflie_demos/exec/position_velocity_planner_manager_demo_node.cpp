@@ -36,26 +36,26 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Node running a TrajectoryInterpreter based on the PositionVelocity state.
+// Node running a PlannerManager based on the PositionVelocity state.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <fastrack/state/position_velocity.h>
-#include <fastrack/trajectory/trajectory_interpreter.h>
+#include <fastrack/planning/planner_manager.h>
 
 #include <ros/ros.h>
 
-namespace ft = fastrack::trajectory;
+namespace fp = fastrack::planning;
 namespace fs = fastrack::state;
 
 int main(int argc, char** argv) {
-  ros::init(argc, argv, "TrajectoryInterpreterDemo");
+  ros::init(argc, argv, "PlannerManagerDemo");
   ros::NodeHandle n("~");
 
-  ft::TrajectoryInterpreter<fs::PositionVelocity> interpreter;
+  fp::PlannerManager<fs::PositionVelocity> manager;
 
-  if (!interpreter.Initialize(n)) {
-    ROS_ERROR("%s: Failed to initialize interpreter.",
+  if (!manager.Initialize(n)) {
+    ROS_ERROR("%s: Failed to initialize planner manager.",
               ros::this_node::getName().c_str());
     return EXIT_FAILURE;
   }

@@ -62,6 +62,7 @@
 
 #include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
+#include <std_msgs/Empty.h>
 
 namespace fastrack {
 namespace tracking {
@@ -72,7 +73,8 @@ class Tracker : private Uncopyable {
 public:
   ~Tracker() {}
   explicit Tracker()
-    : initialized_(false) {}
+    : ready_(false),
+      initialized_(false) {}
 
   // Initialize from a ROS NodeHandle.
   bool Initialize(const ros::NodeHandle& n);
@@ -81,6 +83,11 @@ private:
   // Load parameters and register callbacks.
   bool LoadParameters(const ros::NodeHandle& n);
   bool RegisterCallbacks(const ros::NodeHandle& n);
+
+  // Is the system ready?
+  inline void ReadyCallback(const std_msgs::Empty::ConstPtr& msg) {
+    ready_ = true;
+  }
 
   // Callback to update tracker/planner state.
   inline void TrackerStateCallback(const fastrack_msgs::State::ConstPtr& msg) {
@@ -102,6 +109,9 @@ private:
 
   // Timer callback. Compute the optimal control and publish.
   inline void TimerCallback(const ros::TimerEvent& e) const {
+    if (!ready_)
+      return;
+
     // Publish bound.
     value_.TrackingBound().Visualize(bound_pub_, planner_frame_);
 
@@ -120,11 +130,13 @@ private:
   std::string planner_frame_;
 
   // Publishers and subscribers.
+  std::string ready_topic_;
   std::string tracker_state_topic_;
   std::string planner_state_topic_;
   std::string control_topic_;
   std::string bound_topic_;
 
+  ros::Subscriber ready_sub_;
   ros::Subscriber tracker_state_sub_;
   ros::Subscriber planner_state_sub_;
   ros::Publisher control_pub_;
@@ -140,6 +152,9 @@ private:
   // Timer.
   ros::Timer timer_;
   double time_step_;
+
+  // Is the system ready for our control input?
+  bool ready_;
 
   // Flag for whether this class has been initialized yet.
   bool initialized_;
@@ -185,6 +200,7 @@ bool Tracker<V, TS, TC, PS, SB, SP>::LoadParameters(const ros::NodeHandle& n) {
   ros::NodeHandle nl(n);
 
   // Topics.
+  if (!nl.getParam("topic/ready", ready_topic_)) return false;
   if (!nl.getParam("topic/tracker_state", tracker_state_topic_)) return false;
   if (!nl.getParam("topic/planner_state", planner_state_topic_)) return false;
   if (!nl.getParam("topic/control", control_topic_)) return false;
@@ -217,6 +233,8 @@ bool Tracker<V, TS, TC, PS, SB, SP>::RegisterCallbacks(const ros::NodeHandle& n)
     &Tracker<V, TS, TC, PS, SB, SP>::PlannerDynamicsServer, this);
 
   // Subscribers.
+  ready_sub_ = nl.subscribe(ready_topic_.c_str(), 1,
+    &Tracker<V, TS, TC, PS, SB, SP>::ReadyCallback, this);
   planner_state_sub_ = nl.subscribe(planner_state_topic_.c_str(), 1,
     &Tracker<V, TS, TC, PS, SB, SP>::PlannerStateCallback, this);
   tracker_state_sub_ = nl.subscribe(tracker_state_topic_.c_str(), 1,

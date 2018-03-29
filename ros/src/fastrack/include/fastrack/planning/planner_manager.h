@@ -36,9 +36,14 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Defines the TrajectoryInterpreter class, which listens for new trajectory
+// Defines the PlannerManager class, which listens for new trajectory
 // messages and, on a timer, repeatedly queries the current trajectory and
 // publishes the corresponding reference.
+//
+// The PlannerManager is also responsible for requesting new plans.
+// This base class only calls the planner once upon takeoff; as needs will vary
+// derived classes may add further functionality such as receding
+// horizon planning.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -59,33 +64,47 @@
 #include <tf2_ros/transform_broadcaster.h>
 
 namespace fastrack {
-namespace trajectory {
+namespace planning {
+
+using trajectory::Trajectory;
 
 template<typename S>
-class TrajectoryInterpreter : private Uncopyable {
+class PlannerManager : private Uncopyable {
 public:
-  ~TrajectoryInterpreter() {}
-  explicit TrajectoryInterpreter()
-    : initialized_(false) {}
+  virtual ~PlannerManager() {}
+  explicit PlannerManager()
+    : ready_(false),
+      waiting_for_traj_(false),
+      initialized_(false) {}
 
   // Initialize this class with all parameters and callbacks.
   bool Initialize(const ros::NodeHandle& n);
 
-private:
-  bool LoadParameters(const ros::NodeHandle& n);
-  bool RegisterCallbacks(const ros::NodeHandle& n);
+protected:
+  // Load parameters and register callbacks. These may be overridden, however
+  // derived classes should still call these functions.
+  virtual bool LoadParameters(const ros::NodeHandle& n);
+  virtual bool RegisterCallbacks(const ros::NodeHandle& n);
 
-  // Callback for applying tracking controller.
-  void TimerCallback(const ros::TimerEvent& e);
+  // If not already waiting, request a new trajectory that starts along the
+  // current trajectory at the state corresponding to when the planner will
+  // return, and ends at the goal location. This may be overridden by derived
+  // classes with more specific replanning needs.
+  virtual void MaybeRequestTrajectory();
+
+  // Callback for applying tracking controller. This may be overridden, however
+  // derived classes should still call thhis function.
+  virtual void TimerCallback(const ros::TimerEvent& e);
 
   // Callback for processing trajectory updates.
   inline void TrajectoryCallback(const fastrack_msgs::Trajectory::ConstPtr& msg) {
     traj_ = Trajectory<S>(msg);
+    waiting_for_traj_ = false;
   }
 
-  // Process in flight notifications.
-  inline void InFlightCallback(const std_msgs::Empty::ConstPtr& msg) {
-    in_flight_ = true;
+  // Is the system ready?
+  inline void ReadyCallback(const std_msgs::Empty::ConstPtr& msg) {
+    ready_ = true;
   }
 
   // Current trajectory.
@@ -93,6 +112,13 @@ private:
 
   // Planner runtime -- how long does it take for the planner to run.
   double planner_runtime_;
+
+  // Are we waiting for a new trajectory?
+  bool waiting_for_traj_;
+
+  // Start/goal states.
+  fastrack_msgs::State start_;
+  fastrack_msgs::State goal_;
 
   // Set a recurring timer for a discrete-time controller.
   ros::Timer timer_;
@@ -104,14 +130,14 @@ private:
   ros::Publisher replan_request_pub_;
   ros::Publisher traj_vis_pub_;
   ros::Subscriber traj_sub_;
-  ros::Subscriber in_flight_sub_;
+  ros::Subscriber ready_sub_;
 
   std::string bound_topic_;
   std::string ref_topic_;
   std::string replan_request_topic_;
   std::string traj_vis_topic_;
   std::string traj_topic_;
-  std::string in_flight_topic_;
+  std::string ready_topic_;
 
   // Frames of reference for publishing markers.
   std::string fixed_frame_id_;
@@ -121,7 +147,7 @@ private:
   tf2_ros::TransformBroadcaster tf_broadcaster_;
 
   // Are we in flight?
-  bool in_flight_;
+  bool ready_;
 
   // Naming and initialization.
   std::string name_;
@@ -132,8 +158,8 @@ private:
 
 // Initialize this class with all parameters and callbacks.
 template<typename S>
-bool TrajectoryInterpreter<S>::Initialize(const ros::NodeHandle& n) {
-  name_ = ros::names::append(n.getNamespace(), "TrajectoryInterpreter");
+bool PlannerManager<S>::Initialize(const ros::NodeHandle& n) {
+  name_ = ros::names::append(n.getNamespace(), "PlannerManager");
 
   // Load parameters.
   if (!LoadParameters(n)) {
@@ -153,11 +179,11 @@ bool TrajectoryInterpreter<S>::Initialize(const ros::NodeHandle& n) {
 
 // Load parameters.
 template<typename S>
-bool TrajectoryInterpreter<S>::LoadParameters(const ros::NodeHandle& n) {
+bool PlannerManager<S>::LoadParameters(const ros::NodeHandle& n) {
   ros::NodeHandle nl(n);
 
   // Topics.
-  if (!nl.getParam("topic/in_flight", in_flight_topic_)) return false;
+  if (!nl.getParam("topic/ready", ready_topic_)) return false;
   if (!nl.getParam("topic/traj", traj_topic_)) return false;
   if (!nl.getParam("topic/ref", ref_topic_)) return false;
   if (!nl.getParam("topic/replan_request", replan_request_topic_)) return false;
@@ -171,20 +197,25 @@ bool TrajectoryInterpreter<S>::LoadParameters(const ros::NodeHandle& n) {
   // Time step.
   if (!nl.getParam("time_step", time_step_)) return false;
 
+  // Planner runtime, start, and goal.
+  if (!nl.getParam("planner_runtime", planner_runtime_)) return false;
+  if (!nl.getParam("start", start_.x)) return false;
+  if (!nl.getParam("goal", goal_.x)) return false;
+
   return true;
 }
 
 // Register callbacks.
 template<typename S>
-bool TrajectoryInterpreter<S>::RegisterCallbacks(const ros::NodeHandle& n) {
+bool PlannerManager<S>::RegisterCallbacks(const ros::NodeHandle& n) {
   ros::NodeHandle nl(n);
 
   // Subscribers.
-  in_flight_sub_ = nl.subscribe(in_flight_topic_.c_str(), 1,
-    &TrajectoryInterpreter<S>::InFlightCallback, this);
+  ready_sub_ = nl.subscribe(ready_topic_.c_str(), 1,
+    &PlannerManager<S>::ReadyCallback, this);
 
   traj_sub_ = nl.subscribe(traj_topic_.c_str(), 1,
-    &TrajectoryInterpreter<S>::TrajectoryCallback, this);
+    &PlannerManager<S>::TrajectoryCallback, this);
 
   // Publishers.
   ref_pub_ = nl.advertise<fastrack_msgs::State>(ref_topic_.c_str(), 1, false);
@@ -200,16 +231,58 @@ bool TrajectoryInterpreter<S>::RegisterCallbacks(const ros::NodeHandle& n) {
 
   // Timer.
   timer_ = nl.createTimer(ros::Duration(time_step_),
-    &TrajectoryInterpreter<S>::TimerCallback, this);
+    &PlannerManager<S>::TimerCallback, this);
 
   return true;
 }
 
+// If not already waiting, request a new trajectory that starts along the
+// current trajectory at the state corresponding to when the planner will
+// return, and ends at the goal location. This may be overridden by derived
+// classes with more specific replanning needs.
+template<typename S>
+void PlannerManager<S>::MaybeRequestTrajectory() {
+  if (waiting_for_traj_)
+    return;
+
+  ROS_WARN("%s: called MaybeRequestTrajectory.", name_.c_str());
+
+  // Set start and goal states.
+  fastrack_msgs::ReplanRequest msg;
+  msg.start = start_;
+  msg.goal = goal_;
+
+  // Set start time.
+  msg.start_time = ros::Time::now().toSec() + planner_runtime_;
+
+  // Reset start state for future state if we have a current trajectory.
+  if (traj_.Size() > 0) {
+    // Catch trajectory that's too short.
+    if (traj_.LastTime() < msg.start_time) {
+      ROS_ERROR("%s: Current trajectory is too short. Cannot interpolate.",
+                name_.c_str());
+      msg.start = traj_.LastState().ToRos();
+    } else {
+      msg.start = traj_.Interpolate(msg.start_time).ToRos();
+    }
+  }
+
+  // Publish request and set flag.
+  replan_request_pub_.publish(msg);
+  waiting_for_traj_ = true;
+}
+
 // Callback for applying tracking controller.
 template<typename S>
-void TrajectoryInterpreter<S>::TimerCallback(const ros::TimerEvent& e) {
+void PlannerManager<S>::TimerCallback(const ros::TimerEvent& e) {
+  if (!ready_)
+    return;
+
   if (traj_.Size() == 0) {
-    ROS_WARN_THROTTLE(1.0, "%s: No trajectory received.", name_.c_str());
+    MaybeRequestTrajectory();
+    return;
+  } else if (traj_.Size() == 0 && waiting_for_traj_) {
+    ROS_WARN_THROTTLE(1.0, "%s: Waiting for trajectory.", name_.c_str());
     return;
   }
 
@@ -220,7 +293,7 @@ void TrajectoryInterpreter<S>::TimerCallback(const ros::TimerEvent& e) {
   ref_pub_.publish(planner_x.ToRos());
 }
 
-} //\namespace trajectory
+} //\namespace planning
 } //\namespace fastrack
 
 #endif
