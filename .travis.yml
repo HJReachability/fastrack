@@ -37,6 +37,7 @@ before_install:
   - sudo apt-get install ros-$ROS_DISTRO-ros-base
   - sudo rosdep init
   - rosdep update
+  - sudo apt-get install ros-$ROS_DISTRO-tf
   - source /opt/ros/$ROS_DISTRO/setup.bash
 
 install:
