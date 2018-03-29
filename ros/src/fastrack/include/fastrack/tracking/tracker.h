@@ -112,9 +112,6 @@ private:
     if (!ready_)
       return;
 
-    std::cout << planner_x_.Position().transpose() << std::endl;
-    std::cout << "vs. " << tracker_x_.Position().transpose() << std::endl;
-
     // Publish bound.
     value_.TrackingBound().Visualize(bound_pub_, planner_frame_);
 
