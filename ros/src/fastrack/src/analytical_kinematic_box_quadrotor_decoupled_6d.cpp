@@ -83,7 +83,7 @@ LoadParameters(const ros::NodeHandle& n) {
   if (!nl.getParam("tracker/upper/thrust", qc_upper.thrust)) return false;
   if (!nl.getParam("tracker/lower/thrust", qc_lower.thrust)) return false;
   qc_lower.pitch = -qc_upper.pitch;
-  qc_lower.roll = -qc_lower.roll;
+  qc_lower.roll = -qc_upper.roll;
 
   tracker_dynamics_.Initialize(qc_lower, qc_upper);
 
