@@ -75,32 +75,40 @@
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="types_8h.html">fastrack/utils/types.h</a>&gt;</span></div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">namespace </span>fastrack {</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">namespace </span>bound {</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#include &lt;ros/ros.h&gt;</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#include &lt;visualization_msgs/Marker.h&gt;</span></div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> SR&gt;</div>
-<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="structfastrack_1_1bound_1_1TrackingBound.html">   53</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structfastrack_1_1bound_1_1TrackingBound.html">TrackingBound</a> {</div>
-<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="structfastrack_1_1bound_1_1TrackingBound.html#a3447c033d12f90a0f45c2904439a4f05">   54</a></span>&#160;  <span class="keyword">virtual</span> <a class="code" href="structfastrack_1_1bound_1_1TrackingBound.html#a3447c033d12f90a0f45c2904439a4f05">~TrackingBound</a>() {}</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="comment">// Convert from service response type SR.</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="structfastrack_1_1bound_1_1TrackingBound.html#a18c8910ba8ee72ccdefcc8dbc4bcc804">FromRos</a>(<span class="keyword">const</span> SR&amp; res) = 0;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">namespace </span>fastrack {</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">namespace </span>bound {</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> SR&gt;</div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="structfastrack_1_1bound_1_1TrackingBound.html">   56</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structfastrack_1_1bound_1_1TrackingBound.html">TrackingBound</a> {</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="structfastrack_1_1bound_1_1TrackingBound.html#a3447c033d12f90a0f45c2904439a4f05">   57</a></span>&#160;  <span class="keyword">virtual</span> <a class="code" href="structfastrack_1_1bound_1_1TrackingBound.html#a3447c033d12f90a0f45c2904439a4f05">~TrackingBound</a>() {}</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <span class="comment">// Convert to service response type SR.</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  <span class="keyword">virtual</span> SR <a class="code" href="structfastrack_1_1bound_1_1TrackingBound.html#a7d691979e7a91489038b94a653cbb6fb">ToRos</a>() <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <span class="comment">// Convert from service response type SR.</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="structfastrack_1_1bound_1_1TrackingBound.html#a18c8910ba8ee72ccdefcc8dbc4bcc804">FromRos</a>(<span class="keyword">const</span> SR&amp; res) = 0;</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="structfastrack_1_1bound_1_1TrackingBound.html#ad8592a8f318dac3c8e469857404b8585">   63</a></span>&#160;  <span class="keyword">explicit</span> <a class="code" href="structfastrack_1_1bound_1_1TrackingBound.html#ad8592a8f318dac3c8e469857404b8585">TrackingBound</a>() {}</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}; <span class="comment">//\struct Box</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;} <span class="comment">//\namespace bound</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;} <span class="comment">//\namespace fastrack</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  <span class="comment">// Convert to service response type SR.</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  <span class="keyword">virtual</span> SR <a class="code" href="structfastrack_1_1bound_1_1TrackingBound.html#a7d691979e7a91489038b94a653cbb6fb">ToRos</a>() <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  <span class="comment">// Visualize.</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="structfastrack_1_1bound_1_1TrackingBound.html#a69ebec16eb239f38abae765fc40e45a6">Visualize</a>(</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keyword">const</span> ros::Publisher&amp; pub, <span class="keyword">const</span> std::string&amp; frame) <span class="keyword">const</span> = 0;</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="structfastrack_1_1bound_1_1TrackingBound_html"><div class="ttname"><a href="structfastrack_1_1bound_1_1TrackingBound.html">fastrack::bound::TrackingBound</a></div><div class="ttdef"><b>Definition:</b> <a href="tracking__bound_8h_source.html#l00053">tracking_bound.h:53</a></div></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="structfastrack_1_1bound_1_1TrackingBound.html#ad8592a8f318dac3c8e469857404b8585">   70</a></span>&#160;  <span class="keyword">explicit</span> <a class="code" href="structfastrack_1_1bound_1_1TrackingBound.html#ad8592a8f318dac3c8e469857404b8585">TrackingBound</a>() {}</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;}; <span class="comment">//\struct Box</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;} <span class="comment">//\namespace bound</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;} <span class="comment">//\namespace fastrack</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="structfastrack_1_1bound_1_1TrackingBound_html"><div class="ttname"><a href="structfastrack_1_1bound_1_1TrackingBound.html">fastrack::bound::TrackingBound</a></div><div class="ttdef"><b>Definition:</b> <a href="tracking__bound_8h_source.html#l00056">tracking_bound.h:56</a></div></div>
 <div class="ttc" id="types_8h_html"><div class="ttname"><a href="types_8h.html">types.h</a></div></div>
-<div class="ttc" id="structfastrack_1_1bound_1_1TrackingBound_html_a3447c033d12f90a0f45c2904439a4f05"><div class="ttname"><a href="structfastrack_1_1bound_1_1TrackingBound.html#a3447c033d12f90a0f45c2904439a4f05">fastrack::bound::TrackingBound::~TrackingBound</a></div><div class="ttdeci">virtual ~TrackingBound()</div><div class="ttdef"><b>Definition:</b> <a href="tracking__bound_8h_source.html#l00054">tracking_bound.h:54</a></div></div>
+<div class="ttc" id="structfastrack_1_1bound_1_1TrackingBound_html_a3447c033d12f90a0f45c2904439a4f05"><div class="ttname"><a href="structfastrack_1_1bound_1_1TrackingBound.html#a3447c033d12f90a0f45c2904439a4f05">fastrack::bound::TrackingBound::~TrackingBound</a></div><div class="ttdeci">virtual ~TrackingBound()</div><div class="ttdef"><b>Definition:</b> <a href="tracking__bound_8h_source.html#l00057">tracking_bound.h:57</a></div></div>
 <div class="ttc" id="structfastrack_1_1bound_1_1TrackingBound_html_a18c8910ba8ee72ccdefcc8dbc4bcc804"><div class="ttname"><a href="structfastrack_1_1bound_1_1TrackingBound.html#a18c8910ba8ee72ccdefcc8dbc4bcc804">fastrack::bound::TrackingBound::FromRos</a></div><div class="ttdeci">virtual void FromRos(const SR &amp;res)=0</div></div>
-<div class="ttc" id="structfastrack_1_1bound_1_1TrackingBound_html_ad8592a8f318dac3c8e469857404b8585"><div class="ttname"><a href="structfastrack_1_1bound_1_1TrackingBound.html#ad8592a8f318dac3c8e469857404b8585">fastrack::bound::TrackingBound::TrackingBound</a></div><div class="ttdeci">TrackingBound()</div><div class="ttdef"><b>Definition:</b> <a href="tracking__bound_8h_source.html#l00063">tracking_bound.h:63</a></div></div>
+<div class="ttc" id="structfastrack_1_1bound_1_1TrackingBound_html_ad8592a8f318dac3c8e469857404b8585"><div class="ttname"><a href="structfastrack_1_1bound_1_1TrackingBound.html#ad8592a8f318dac3c8e469857404b8585">fastrack::bound::TrackingBound::TrackingBound</a></div><div class="ttdeci">TrackingBound()</div><div class="ttdef"><b>Definition:</b> <a href="tracking__bound_8h_source.html#l00070">tracking_bound.h:70</a></div></div>
+<div class="ttc" id="structfastrack_1_1bound_1_1TrackingBound_html_a69ebec16eb239f38abae765fc40e45a6"><div class="ttname"><a href="structfastrack_1_1bound_1_1TrackingBound.html#a69ebec16eb239f38abae765fc40e45a6">fastrack::bound::TrackingBound::Visualize</a></div><div class="ttdeci">virtual void Visualize(const ros::Publisher &amp;pub, const std::string &amp;frame) const =0</div></div>
 <div class="ttc" id="structfastrack_1_1bound_1_1TrackingBound_html_a7d691979e7a91489038b94a653cbb6fb"><div class="ttname"><a href="structfastrack_1_1bound_1_1TrackingBound.html#a7d691979e7a91489038b94a653cbb6fb">fastrack::bound::TrackingBound::ToRos</a></div><div class="ttdeci">virtual SR ToRos() const =0</div></div>
 </div><!-- fragment --></div><!-- contents -->
 
@@ -108,7 +116,7 @@
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Tue Mar 27 2018 19:28:33</small>
+<small>autogenerated on Thu Mar 29 2018 21:11:10</small>
 </div>
 </body>
 </html>

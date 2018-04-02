@@ -97,13 +97,13 @@
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  <span class="comment">// Convert to ROS message. Assume ordering [pitch, roll, yaw_rate, thrust].</span></div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  <span class="comment">// NOTE! Set priority to 1 by default.</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="structfastrack_1_1control_1_1QuadrotorControl.html#a16c92fbfde168f3027e2fed051c0df4b">   71</a></span>&#160;  <span class="keyword">inline</span> fastrack_msgs::Control <a class="code" href="structfastrack_1_1control_1_1QuadrotorControl.html#a16c92fbfde168f3027e2fed051c0df4b">ToRos</a>() {</div>
+<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="structfastrack_1_1control_1_1QuadrotorControl.html#aa29c5363df10a7c32330376b6909f6c8">   71</a></span>&#160;  <span class="keyword">inline</span> fastrack_msgs::Control <a class="code" href="structfastrack_1_1control_1_1QuadrotorControl.html#aa29c5363df10a7c32330376b6909f6c8">ToRos</a>(<span class="keywordtype">double</span> priority=1.0) {</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    fastrack_msgs::Control msg;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    msg.u.push_back(<a class="code" href="structfastrack_1_1control_1_1QuadrotorControl.html#a758565eceb5eb8c5cce9acd72b059cf4">pitch</a>);</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    msg.u.push_back(<a class="code" href="structfastrack_1_1control_1_1QuadrotorControl.html#ab72b479b683c91d630da8c83760cadfe">roll</a>);</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    msg.u.push_back(<a class="code" href="structfastrack_1_1control_1_1QuadrotorControl.html#a5bc32706ca95541c87d8a7797e91908c">yaw_rate</a>);</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    msg.u.push_back(<a class="code" href="structfastrack_1_1control_1_1QuadrotorControl.html#ac14845a3691e5c040d099ba7d8f639f5">thrust</a>);</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    msg.priority = 1.0;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    msg.priority = priority;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordflow">return</span> msg;</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  }</div>
@@ -116,12 +116,12 @@
 <div class="ttc" id="structfastrack_1_1control_1_1QuadrotorControl_html_a39d7ee6d1700f39fc7b5160b80dec409"><div class="ttname"><a href="structfastrack_1_1control_1_1QuadrotorControl.html#a39d7ee6d1700f39fc7b5160b80dec409">fastrack::control::QuadrotorControl::QuadrotorControl</a></div><div class="ttdeci">QuadrotorControl()</div><div class="ttdef"><b>Definition:</b> <a href="quadrotor__control_8h_source.html#l00062">quadrotor_control.h:62</a></div></div>
 <div class="ttc" id="types_8h_html"><div class="ttname"><a href="types_8h.html">types.h</a></div></div>
 <div class="ttc" id="structfastrack_1_1control_1_1QuadrotorControl_html_ab72b479b683c91d630da8c83760cadfe"><div class="ttname"><a href="structfastrack_1_1control_1_1QuadrotorControl.html#ab72b479b683c91d630da8c83760cadfe">fastrack::control::QuadrotorControl::roll</a></div><div class="ttdeci">double roll</div><div class="ttdef"><b>Definition:</b> <a href="quadrotor__control_8h_source.html#l00056">quadrotor_control.h:56</a></div></div>
-<div class="ttc" id="structfastrack_1_1control_1_1QuadrotorControl_html_a16c92fbfde168f3027e2fed051c0df4b"><div class="ttname"><a href="structfastrack_1_1control_1_1QuadrotorControl.html#a16c92fbfde168f3027e2fed051c0df4b">fastrack::control::QuadrotorControl::ToRos</a></div><div class="ttdeci">fastrack_msgs::Control ToRos()</div><div class="ttdef"><b>Definition:</b> <a href="quadrotor__control_8h_source.html#l00071">quadrotor_control.h:71</a></div></div>
 <div class="ttc" id="structfastrack_1_1control_1_1QuadrotorControl_html_ac14845a3691e5c040d099ba7d8f639f5"><div class="ttname"><a href="structfastrack_1_1control_1_1QuadrotorControl.html#ac14845a3691e5c040d099ba7d8f639f5">fastrack::control::QuadrotorControl::thrust</a></div><div class="ttdeci">double thrust</div><div class="ttdef"><b>Definition:</b> <a href="quadrotor__control_8h_source.html#l00058">quadrotor_control.h:58</a></div></div>
 <div class="ttc" id="structfastrack_1_1control_1_1QuadrotorControl_html"><div class="ttname"><a href="structfastrack_1_1control_1_1QuadrotorControl.html">fastrack::control::QuadrotorControl</a></div><div class="ttdef"><b>Definition:</b> <a href="quadrotor__control_8h_source.html#l00053">quadrotor_control.h:53</a></div></div>
 <div class="ttc" id="structfastrack_1_1control_1_1QuadrotorControl_html_a72c801e7f4287482d0fb16401dabec59"><div class="ttname"><a href="structfastrack_1_1control_1_1QuadrotorControl.html#a72c801e7f4287482d0fb16401dabec59">fastrack::control::QuadrotorControl::QuadrotorControl</a></div><div class="ttdeci">QuadrotorControl(double p, double r, double yr, double t)</div><div class="ttdef"><b>Definition:</b> <a href="quadrotor__control_8h_source.html#l00063">quadrotor_control.h:63</a></div></div>
 <div class="ttc" id="structfastrack_1_1control_1_1QuadrotorControl_html_a5bc32706ca95541c87d8a7797e91908c"><div class="ttname"><a href="structfastrack_1_1control_1_1QuadrotorControl.html#a5bc32706ca95541c87d8a7797e91908c">fastrack::control::QuadrotorControl::yaw_rate</a></div><div class="ttdeci">double yaw_rate</div><div class="ttdef"><b>Definition:</b> <a href="quadrotor__control_8h_source.html#l00057">quadrotor_control.h:57</a></div></div>
 <div class="ttc" id="structfastrack_1_1control_1_1QuadrotorControl_html_ab2dfc8657df43781be321b12939df5f4"><div class="ttname"><a href="structfastrack_1_1control_1_1QuadrotorControl.html#ab2dfc8657df43781be321b12939df5f4">fastrack::control::QuadrotorControl::~QuadrotorControl</a></div><div class="ttdeci">~QuadrotorControl()</div><div class="ttdef"><b>Definition:</b> <a href="quadrotor__control_8h_source.html#l00061">quadrotor_control.h:61</a></div></div>
+<div class="ttc" id="structfastrack_1_1control_1_1QuadrotorControl_html_aa29c5363df10a7c32330376b6909f6c8"><div class="ttname"><a href="structfastrack_1_1control_1_1QuadrotorControl.html#aa29c5363df10a7c32330376b6909f6c8">fastrack::control::QuadrotorControl::ToRos</a></div><div class="ttdeci">fastrack_msgs::Control ToRos(double priority=1.0)</div><div class="ttdef"><b>Definition:</b> <a href="quadrotor__control_8h_source.html#l00071">quadrotor_control.h:71</a></div></div>
 <div class="ttc" id="structfastrack_1_1control_1_1QuadrotorControl_html_a758565eceb5eb8c5cce9acd72b059cf4"><div class="ttname"><a href="structfastrack_1_1control_1_1QuadrotorControl.html#a758565eceb5eb8c5cce9acd72b059cf4">fastrack::control::QuadrotorControl::pitch</a></div><div class="ttdeci">double pitch</div><div class="ttdef"><b>Definition:</b> <a href="quadrotor__control_8h_source.html#l00055">quadrotor_control.h:55</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 
@@ -129,7 +129,7 @@
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Tue Mar 27 2018 19:28:33</small>
+<small>autogenerated on Thu Mar 29 2018 21:11:10</small>
 </div>
 </body>
 </html>

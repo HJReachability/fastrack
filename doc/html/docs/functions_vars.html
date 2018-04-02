@@ -36,6 +36,7 @@
       <li><a href="#index_d"><span>d</span></a></li>
       <li><a href="#index_e"><span>e</span></a></li>
       <li><a href="#index_f"><span>f</span></a></li>
+      <li><a href="#index_g"><span>g</span></a></li>
       <li><a href="#index_i"><span>i</span></a></li>
       <li><a href="#index_l"><span>l</span></a></li>
       <li><a href="#index_m"><span>m</span></a></li>
@@ -46,6 +47,7 @@
       <li><a href="#index_t"><span>t</span></a></li>
       <li><a href="#index_u"><span>u</span></a></li>
       <li><a href="#index_v"><span>v</span></a></li>
+      <li><a href="#index_w"><span>w</span></a></li>
       <li><a href="#index_x"><span>x</span></a></li>
       <li><a href="#index_y"><span>y</span></a></li>
       <li class="current"><a href="#index_z"><span>z</span></a></li>
@@ -71,7 +73,8 @@
 : <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a8f1e70e05a72c00eb6fa4121fedd8571">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
 <li>bound_pub_
-: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#add62870bff58c15517c9f27bc09b9531">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#ad2a5d60dc29a1576170d59d116ea8790">fastrack::planning::PlannerManager&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a97b6ddc525c77a3c65f979d23d61f5f3">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
 <li>bound_srv_
 : <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a9677ed727abcc371923ff31a720594cb">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
@@ -81,7 +84,8 @@
 : <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a02098fa6432f1851aa11265249319b90">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
 </li>
 <li>bound_topic_
-: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#ac0d22d047d311715863a6407b26fac8c">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a0907efe09904df0fed3d70d9a526a492">fastrack::planning::PlannerManager&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a7e4b0816109db974b3844e1014eea380">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
 </ul>
 
@@ -89,6 +93,12 @@
 <h3><a class="anchor" id="index_c"></a>- c -</h3><ul>
 <li>centers_
 : <a class="el" href="classfastrack_1_1environment_1_1BallsInBox.html#a5c4322ceeba0bf6c4b199c9d8455469e">fastrack::environment::BallsInBox</a>
+</li>
+<li>config_lower_
+: <a class="el" href="classfastrack_1_1planning_1_1Planner.html#afb1b9cc66c69576ffc70b7f0e6eb1507">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
+</li>
+<li>config_upper_
+: <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a51463b5a5dc8eb9fdc4385815f2aff5d">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
 </li>
 <li>configuration_
 : <a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#aca0c08f1a321a87df8485fa9aef590de">fastrack::trajectory::Trajectory&lt; S &gt;</a>
@@ -123,28 +133,26 @@
 
 
 <h3><a class="anchor" id="index_f"></a>- f -</h3><ul>
-<li>fixed_frame_id_
-: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#a7386973a18f2792e51e358f68fd25105">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+<li>fixed_frame_
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a01bc582dc391166a2ba0c07760ebdcbb">fastrack::planning::PlannerManager&lt; S &gt;</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_g"></a>- g -</h3><ul>
+<li>goal_
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a0139b87f5fa67b2139e1d49873897edb">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_i"></a>- i -</h3><ul>
-<li>in_flight_
-: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#a9c7661c99a3c885b65490e341cc3289a">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
-</li>
-<li>in_flight_sub_
-: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#af19d83b53614512023d676b78c50c17f">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
-</li>
-<li>in_flight_topic_
-: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#aa6bc91b84cbc812cfeb63127110b1c13">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
-</li>
 <li>initialized_
 : <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#adb8881a8ba845a6d2223b0639db98db1">fastrack::dynamics::Dynamics&lt; S, C, SR &gt;</a>
 , <a class="el" href="classfastrack_1_1environment_1_1Environment.html#a052cc4bb846df05465c450ec87d80f07">fastrack::environment::Environment</a>
 , <a class="el" href="classfastrack_1_1planning_1_1Planner.html#acc43f50af5b2bf61f4c12100becf712f">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
+, <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a175f44db3572f55a357c7d57c1137526">fastrack::planning::PlannerManager&lt; S &gt;</a>
 , <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#ad0e18a6979d11395de3b360086dbce69">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
-, <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#a10d1d6e4fd7c79ad1d1d6f478dc7c64f">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
 , <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#aa0822c97a7ac537f1ca0a0fc7d61385e">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
 </li>
 </ul>
@@ -172,8 +180,8 @@
 <li>name_
 : <a class="el" href="classfastrack_1_1environment_1_1Environment.html#a72d482cc3a1ea972740ed04c2061cd9b">fastrack::environment::Environment</a>
 , <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a72b3617551bd6f04b924080fcbfb368c">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
+, <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a2a8e6189cce393806ad5f711ff0c1391">fastrack::planning::PlannerManager&lt; S &gt;</a>
 , <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a038b1909003aad976eeecb6b1a6efb97">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
-, <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#acf584d09658861bbe01f749a4bc01cd2">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
 , <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#a25b562494e4aacded60df294cc8ed547">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
 </li>
 </ul>
@@ -192,11 +200,12 @@
 <li>planner_dynamics_srv_
 : <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#ad3fa9338cb62d3a689e2fa0deebc162a">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
-<li>planner_frame_id_
-: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#ae866ca84b6f2f2d4e4ea7e0580b9b206">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+<li>planner_frame_
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a002a5730dd52f3671a92f1145c3a0c75">fastrack::planning::PlannerManager&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a0b5452753b0ebf6973298af6bbf10dae">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
 <li>planner_runtime_
-: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#afb3e9ce133b8c5fad6520c605ca70f42">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a8a64e7f77f7b6168487dd2b0574199c2">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
 <li>planner_state_sub_
 : <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#af3730a9d397def3e3e85cb590a3bf01d">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
@@ -223,23 +232,33 @@
 <li>rd_
 : <a class="el" href="classfastrack_1_1state_1_1State.html#ae82a5cbd53e533295c81a2c2a1c7f4de">fastrack::state::State</a>
 </li>
+<li>ready_
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a5c655acee434430d5f983f24ede777ad">fastrack::planning::PlannerManager&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#ab1a980202166ac975ad8b43843bdf2ca">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
+</li>
+<li>ready_sub_
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a9f6ed94e032742ff61f4f16bee9c20af">fastrack::planning::PlannerManager&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#ab79707dd90fd287131750ecb757c7e8e">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
+</li>
+<li>ready_topic_
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a830e92ee7ea8ead096ccf4b8d5f52af7">fastrack::planning::PlannerManager&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a1b5e817da6a9d1d02bed677a7f95d216">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
+</li>
 <li>ref_pub_
-: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#a8e686e1e06a5b01450a21aee440effd1">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a718b46c8943916293ef3a983ec4cee82">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
 <li>ref_topic_
-: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#a87c013cd3a2dec9016986ffed779b2a0">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a333a4bbf53a875aa4fb943931617a3a5">fastrack::planning::PlannerManager&lt; S &gt;</a>
+</li>
+<li>replan_request_pub_
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a13e222fff992b7268c329d2bfbebe294">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
 <li>replan_request_sub_
 : <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a24c56e56c442897a2e03a5a1d3db1237">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
 </li>
 <li>replan_request_topic_
 : <a class="el" href="classfastrack_1_1planning_1_1Planner.html#aca4e001bfd778315625174f507dac082">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
-</li>
-<li>request_traj_pub_
-: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#af84cd5042499364ef68c2ebd4967512b">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
-</li>
-<li>request_traj_topic_
-: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#a7a3bf786acb147a5d01062c8ca248f62">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#ad8d3b695cd3cb5ad61b3daf93d655395">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
 <li>rng_
 : <a class="el" href="classfastrack_1_1state_1_1State.html#a874cd6168365ff5ba08ec2478020ac57">fastrack::state::State</a>
@@ -251,6 +270,9 @@
 
 
 <h3><a class="anchor" id="index_s"></a>- s -</h3><ul>
+<li>start_
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a1cb0da2016b7683b5f8d022eb2ec41d5">fastrack::planning::PlannerManager&lt; S &gt;</a>
+</li>
 <li>states_
 : <a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">fastrack::trajectory::Trajectory&lt; S &gt;</a>
 </li>
@@ -259,18 +281,18 @@
 
 <h3><a class="anchor" id="index_t"></a>- t -</h3><ul>
 <li>tf_broadcaster_
-: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#ae4204b697c5b372796a1e078722b523b">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a8a82c6f070387601dee9052c301832bd">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
 <li>thrust
 : <a class="el" href="structfastrack_1_1control_1_1QuadrotorControl.html#ac14845a3691e5c040d099ba7d8f639f5">fastrack::control::QuadrotorControl</a>
 </li>
 <li>time_step_
-: <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a421866741212f0e1447d0e16a7862401">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
-, <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#ad48e9178e42c54603dc0dc0c3c86e800">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a0d9ac463b12b9d751f04b95f80d4f166">fastrack::planning::PlannerManager&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a421866741212f0e1447d0e16a7862401">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
 <li>timer_
-: <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a970663a75a296d21b5b4973d3b075084">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
-, <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#a7cff5a7ad7df35b16b3f0ce0977dfea4">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a93a1f33444437030d47cc27636da73b0">fastrack::planning::PlannerManager&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a970663a75a296d21b5b4973d3b075084">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
 <li>times_
 : <a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#a76fb322495a2400365a497126af11a91">fastrack::trajectory::Trajectory&lt; S &gt;</a>
@@ -288,23 +310,23 @@
 : <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a16e010ab4e77c70c5e75e1ebf4e95792">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
 <li>traj_
-: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#ab889491633fab576eee517ae95ceda60">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a658ab678fcb91d763726721a073870c5">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
 <li>traj_pub_
 : <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a4551dd4ac064f565d2d21a0780709786">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
 </li>
 <li>traj_sub_
-: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#aa0915e15a630916b94391e5274a552df">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a6686d59de3fabfc1ba5cbfb7465f953b">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
 <li>traj_topic_
 : <a class="el" href="classfastrack_1_1planning_1_1Planner.html#ab0a8823c70d6aa665b848a8ef27754c1">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
-, <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#aa2e665ec123e31bb6b2e776b2597b9e8">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#af8ec8d40d3b46386caf94d90a3efbcb4">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
 <li>traj_vis_pub_
-: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#a9f36eedc098b1285d462b89e230d1538">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a760fbc8e7c17d2560309fa81da45e956">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
 <li>traj_vis_topic_
-: <a class="el" href="classfastrack_1_1trajectory_1_1TrajectoryInterpreter.html#a2f0d85abe8aeff9f44f949f28d1f0f28">fastrack::trajectory::TrajectoryInterpreter&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a9dc5e7fe665c57337f6e8b817c010797">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
 </ul>
 
@@ -339,6 +361,13 @@
 </ul>
 
 
+<h3><a class="anchor" id="index_w"></a>- w -</h3><ul>
+<li>waiting_for_traj_
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a776b32ef0f7268b71c01cd48cb6da5c8">fastrack::planning::PlannerManager&lt; S &gt;</a>
+</li>
+</ul>
+
+
 <h3><a class="anchor" id="index_x"></a>- x -</h3><ul>
 <li>x
 : <a class="el" href="structfastrack_1_1bound_1_1Box.html#a430f91701e9c70c98623cc61358b4aa3">fastrack::bound::Box</a>
@@ -367,7 +396,7 @@
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Tue Mar 27 2018 19:28:33</small>
+<small>autogenerated on Thu Mar 29 2018 21:11:11</small>
 </div>
 </body>
 </html>

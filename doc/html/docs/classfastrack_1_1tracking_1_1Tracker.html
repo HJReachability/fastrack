@@ -62,6 +62,8 @@ Private Member Functions</h2></td></tr>
 <tr class="separator:ae03b6a29e3de224905029ae8e26df50a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af03dbea1694e5c92b04835eb9a49ce56"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#af03dbea1694e5c92b04835eb9a49ce56">PlannerStateCallback</a> (const fastrack_msgs::State::ConstPtr &amp;msg)</td></tr>
 <tr class="separator:af03dbea1694e5c92b04835eb9a49ce56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3849f028eae2f05a983a136612f75004"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a3849f028eae2f05a983a136612f75004">ReadyCallback</a> (const std_msgs::Empty::ConstPtr &amp;msg)</td></tr>
+<tr class="separator:a3849f028eae2f05a983a136612f75004"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51f000fbe42c2eadd10723767409fc13"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a51f000fbe42c2eadd10723767409fc13">RegisterCallbacks</a> (const ros::NodeHandle &amp;n)</td></tr>
 <tr class="separator:a51f000fbe42c2eadd10723767409fc13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8538a9cdbe6bbb8bcd36da43918a2d96"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a8538a9cdbe6bbb8bcd36da43918a2d96">TimerCallback</a> (const ros::TimerEvent &amp;e) const </td></tr>
@@ -80,8 +82,12 @@ Private Member Functions</h2></td></tr>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a8f1e70e05a72c00eb6fa4121fedd8571"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a8f1e70e05a72c00eb6fa4121fedd8571">bound_name_</a></td></tr>
 <tr class="separator:a8f1e70e05a72c00eb6fa4121fedd8571"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97b6ddc525c77a3c65f979d23d61f5f3"><td class="memItemLeft" align="right" valign="top">ros::Publisher&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a97b6ddc525c77a3c65f979d23d61f5f3">bound_pub_</a></td></tr>
+<tr class="separator:a97b6ddc525c77a3c65f979d23d61f5f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae28b903c2074136b52c45624350d7428"><td class="memItemLeft" align="right" valign="top">ros::ServiceServer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#ae28b903c2074136b52c45624350d7428">bound_srv_</a></td></tr>
 <tr class="separator:ae28b903c2074136b52c45624350d7428"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e4b0816109db974b3844e1014eea380"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a7e4b0816109db974b3844e1014eea380">bound_topic_</a></td></tr>
+<tr class="separator:a7e4b0816109db974b3844e1014eea380"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:accab8cbcf3c41c74d01de947ed1cbedb"><td class="memItemLeft" align="right" valign="top">ros::Publisher&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#accab8cbcf3c41c74d01de947ed1cbedb">control_pub_</a></td></tr>
 <tr class="separator:accab8cbcf3c41c74d01de947ed1cbedb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfeb8f96c5d7acd38cca7f1bc91c93cb"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#acfeb8f96c5d7acd38cca7f1bc91c93cb">control_topic_</a></td></tr>
@@ -94,12 +100,20 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a8de60bce530705e4eff3a38b3517f862"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3fa9338cb62d3a689e2fa0deebc162a"><td class="memItemLeft" align="right" valign="top">ros::ServiceServer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#ad3fa9338cb62d3a689e2fa0deebc162a">planner_dynamics_srv_</a></td></tr>
 <tr class="separator:ad3fa9338cb62d3a689e2fa0deebc162a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b5452753b0ebf6973298af6bbf10dae"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a0b5452753b0ebf6973298af6bbf10dae">planner_frame_</a></td></tr>
+<tr class="separator:a0b5452753b0ebf6973298af6bbf10dae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3730a9d397def3e3e85cb590a3bf01d"><td class="memItemLeft" align="right" valign="top">ros::Subscriber&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#af3730a9d397def3e3e85cb590a3bf01d">planner_state_sub_</a></td></tr>
 <tr class="separator:af3730a9d397def3e3e85cb590a3bf01d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3f753f375f194611420e4b18308004e"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#ac3f753f375f194611420e4b18308004e">planner_state_topic_</a></td></tr>
 <tr class="separator:ac3f753f375f194611420e4b18308004e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb1f477455911d5522e4c0f936173921"><td class="memItemLeft" align="right" valign="top">PS&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#aeb1f477455911d5522e4c0f936173921">planner_x_</a></td></tr>
 <tr class="separator:aeb1f477455911d5522e4c0f936173921"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1a980202166ac975ad8b43843bdf2ca"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#ab1a980202166ac975ad8b43843bdf2ca">ready_</a></td></tr>
+<tr class="separator:ab1a980202166ac975ad8b43843bdf2ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab79707dd90fd287131750ecb757c7e8e"><td class="memItemLeft" align="right" valign="top">ros::Subscriber&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#ab79707dd90fd287131750ecb757c7e8e">ready_sub_</a></td></tr>
+<tr class="separator:ab79707dd90fd287131750ecb757c7e8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b5e817da6a9d1d02bed677a7f95d216"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a1b5e817da6a9d1d02bed677a7f95d216">ready_topic_</a></td></tr>
+<tr class="separator:a1b5e817da6a9d1d02bed677a7f95d216"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a421866741212f0e1447d0e16a7862401"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a421866741212f0e1447d0e16a7862401">time_step_</a></td></tr>
 <tr class="separator:a421866741212f0e1447d0e16a7862401"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a970663a75a296d21b5b4973d3b075084"><td class="memItemLeft" align="right" valign="top">ros::Timer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a970663a75a296d21b5b4973d3b075084">timer_</a></td></tr>
@@ -118,7 +132,7 @@ Private Attributes</h2></td></tr>
 class fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</h3>
 
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00070">70</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00072">72</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="ad31befddb6bcfee7a48c0981a90cdea7"></a>
 <div class="memitem">
@@ -143,7 +157,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00072">72</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00074">74</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -170,7 +184,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00073">73</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00075">75</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -191,7 +205,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00146">146</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00175">175</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -219,7 +233,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00174">174</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00203">203</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -257,7 +271,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00097">97</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00105">105</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -274,6 +288,34 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
           <td class="memname">void <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html">fastrack::tracking::Tracker</a>&lt; V, TS, TC, PS, SB, SP &gt;::PlannerStateCallback </td>
           <td>(</td>
           <td class="paramtype">const fastrack_msgs::State::ConstPtr &amp;&#160;</td>
+          <td class="paramname"><em>msg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00096">96</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3849f028eae2f05a983a136612f75004"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename V , typename TS , typename TC , typename PS , typename SB , typename SP &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html">fastrack::tracking::Tracker</a>&lt; V, TS, TC, PS, SB, SP &gt;::ReadyCallback </td>
+          <td>(</td>
+          <td class="paramtype">const std_msgs::Empty::ConstPtr &amp;&#160;</td>
           <td class="paramname"><em>msg</em></td><td>)</td>
           <td></td>
         </tr>
@@ -313,7 +355,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00195">195</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00230">230</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -341,7 +383,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00103">103</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00111">111</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -369,7 +411,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00085">85</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00093">93</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -407,7 +449,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00093">93</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00101">101</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -432,7 +474,31 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00124">124</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00150">150</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a97b6ddc525c77a3c65f979d23d61f5f3"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename V , typename TS , typename TC , typename PS , typename SB , typename SP &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ros::Publisher <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html">fastrack::tracking::Tracker</a>&lt; V, TS, TC, PS, SB, SP &gt;::bound_pub_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00147">147</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -456,7 +522,31 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00127">127</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00153">153</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7e4b0816109db974b3844e1014eea380"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename V , typename TS , typename TC , typename PS , typename SB , typename SP &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html">fastrack::tracking::Tracker</a>&lt; V, TS, TC, PS, SB, SP &gt;::bound_topic_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00141">141</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -480,7 +570,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00121">121</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00146">146</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -504,7 +594,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00117">117</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00140">140</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -528,7 +618,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00135">135</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00164">164</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -552,7 +642,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00138">138</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00167">167</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -576,7 +666,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00125">125</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00151">151</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -600,7 +690,31 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00128">128</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00154">154</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0b5452753b0ebf6973298af6bbf10dae"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename V , typename TS , typename TC , typename PS , typename SB , typename SP &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html">fastrack::tracking::Tracker</a>&lt; V, TS, TC, PS, SB, SP &gt;::planner_frame_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00134">134</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -624,7 +738,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00120">120</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00145">145</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -648,7 +762,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00116">116</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00139">139</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -672,7 +786,79 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00109">109</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00128">128</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab1a980202166ac975ad8b43843bdf2ca"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename V , typename TS , typename TC , typename PS , typename SB , typename SP &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html">fastrack::tracking::Tracker</a>&lt; V, TS, TC, PS, SB, SP &gt;::ready_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00161">161</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab79707dd90fd287131750ecb757c7e8e"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename V , typename TS , typename TC , typename PS , typename SB , typename SP &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ros::Subscriber <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html">fastrack::tracking::Tracker</a>&lt; V, TS, TC, PS, SB, SP &gt;::ready_sub_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00143">143</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1b5e817da6a9d1d02bed677a7f95d216"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename V , typename TS , typename TC , typename PS , typename SB , typename SP &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html">fastrack::tracking::Tracker</a>&lt; V, TS, TC, PS, SB, SP &gt;::ready_topic_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00137">137</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -696,7 +882,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00132">132</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00158">158</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -720,7 +906,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00131">131</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00157">157</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -744,7 +930,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00119">119</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00144">144</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -768,7 +954,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00115">115</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00138">138</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -792,7 +978,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00108">108</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00127">127</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -816,7 +1002,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="tracker_8h_source.html#l00112">112</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
+<p>Definition at line <a class="el" href="tracker_8h_source.html#l00131">131</a> of file <a class="el" href="tracker_8h_source.html">tracker.h</a>.</p>
 
 </div>
 </div>
@@ -829,7 +1015,7 @@ template&lt;typename V , typename TS , typename TC , typename PS , typename SB ,
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Tue Mar 27 2018 19:28:33</small>
+<small>autogenerated on Thu Mar 29 2018 21:11:11</small>
 </div>
 </body>
 </html>

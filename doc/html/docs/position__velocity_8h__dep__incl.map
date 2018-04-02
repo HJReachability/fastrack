@@ -1,10 +1,7 @@
 <map id="position_velocity.h" name="position_velocity.h">
-<area shape="rect" id="node2" href="$analytical__quadrotor__decoupled__tracker__demo__node_8cpp.html" title="analytical_quadrotor\l_decoupled_tracker_demo\l_node.cpp" alt="" coords="163,261,337,317"/>
-<area shape="rect" id="node3" href="$ompl__kinematic__planner__demo__node_8cpp.html" title="ompl_kinematic_planner\l_demo_node.cpp" alt="" coords="34,81,197,122"/>
-<area shape="rect" id="node4" href="$position__velocity__trajectory__interpreter__demo__node_8cpp.html" title="position_velocity_trajectory\l_interpreter_demo_node.cpp" alt="" coords="221,81,408,122"/>
-<area shape="rect" id="node5" href="$quadrotor__coupled__6d_8h.html" title="quadrotor_coupled_6d.h" alt="" coords="432,88,590,115"/>
-<area shape="rect" id="node6" href="$quadrotor__decoupled__6d_8h.html" title="quadrotor_decoupled_6d.h" alt="" coords="616,88,790,115"/>
-<area shape="rect" id="node7" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8h.html" title="analytical_kinematic\l_box_quadrotor_decoupled_6d.h" alt="" coords="599,171,808,213"/>
-<area shape="rect" id="node9" href="$position__velocity_8cpp.html" title="position_velocity.cpp" alt="" coords="866,88,1010,115"/>
-<area shape="rect" id="node8" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8cpp.html" title="analytical_kinematic\l_box_quadrotor_decoupled\l_6d.cpp" alt="" coords="615,261,792,317"/>
+<area shape="rect" id="node2" href="$quadrotor__coupled__6d_8h.html" title="quadrotor_coupled_6d.h" alt="" coords="5,80,164,107"/>
+<area shape="rect" id="node3" href="$quadrotor__decoupled__6d_8h.html" title="quadrotor_decoupled_6d.h" alt="" coords="190,80,364,107"/>
+<area shape="rect" id="node4" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8h.html" title="analytical_kinematic\l_box_quadrotor_decoupled_6d.h" alt="" coords="235,155,444,197"/>
+<area shape="rect" id="node6" href="$position__velocity_8cpp.html" title="position_velocity.cpp" alt="" coords="440,80,584,107"/>
+<area shape="rect" id="node5" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8cpp.html" title="analytical_kinematic\l_box_quadrotor_decoupled\l_6d.cpp" alt="" coords="251,245,428,301"/>
 </map>
