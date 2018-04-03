@@ -90,7 +90,7 @@ protected:
 
   // Update this environment with the information contained in the given
   // sensor measurement.
-  virtual void SensorCallback(const M::ConstPtr& msg) = 0;
+  virtual void SensorCallback(const typename M::ConstPtr& msg) = 0;
 
   // Generate a sensor measurement as a service response.
   virtual bool SensorServer(

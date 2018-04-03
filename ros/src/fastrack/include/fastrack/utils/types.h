@@ -66,6 +66,9 @@ namespace fastrack {
   namespace constants {
     // Acceleration due to gravity.
     const double G = 9.81;
+
+    // Small number for use in approximate equality checking.
+    const double EPSILON = 1e-4;
   } //\namespace constants
 
   // Empty struct for setting unused/unimplemented template args.

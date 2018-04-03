@@ -65,8 +65,12 @@ bool BallsInBox::IsValid(const Vector3d& position, const Box& bound) const {
     return false;
 
   // Check against each obstacle.
-  const Vector3d bound_vector(bound.x, bound.y, bound.z);
+  // NOTE! Just using a linear search here for simplicity.
+  if (centers_.size() > 100)
+    ROS_WARN_THROTTLE(1.0, "%s: Caution! Linear search may be slowing you down.",
+                      name_.c_str());
 
+  const Vector3d bound_vector(bound.x, bound.y, bound.z);
   for (size_t ii = 0; ii < centers_.size(); ii++) {
     const Vector3d& p = centers_[ii];
 
@@ -86,15 +90,75 @@ bool BallsInBox::IsValid(const Vector3d& position, const Box& bound) const {
   return true;
 }
 
+// Update this environment with the information contained in the given
+// sensor measurement.
+void BallsInBox::SensorCallback(
+  const fastrack_msgs::SensedSpheres::ConstPtr& msg) {
+  // Check list lengths.
+  if (msg->centers.size() != msg->radii.size())
+    ROS_WARN("%s: Malformed SensedSpheres msg.", name_.c_str());
+
+  const size_t num_obstacles = std::min(msg->centers.size(), msg->radii.size());
+
+  // Add each unique obstacle to list.
+  // NOTE! Just using a linear search here for simplicity.
+  if (centers_.size() > 100)
+    ROS_WARN_THROTTLE(1.0, "%s: Caution! Linear search may be slowing you down.",
+                      name_.c_str());
+
+  for (size_t ii = 0; ii < num_obstacles; ii++) {
+    const Vector3d p(msg->centers[ii].x, msg->centers[ii].y, msg->centers[ii].z);
+    const double r = msg->radii[ii];
+
+    // If not unique, discard.
+    bool unique = true;
+    for (size_t jj = 0; jj < centers_.size(); jj++) {
+      if (p.isApprox(centers_[jj], constants::EPSILON) &&
+          std::abs(r - radii_[jj]) < constants::EPSILON) {
+        unique = false;
+        break;
+      }
+    }
+
+    if (unique) {
+      centers_.push_back(p);
+      radii_.push_back(r);
+    }
+  }
+}
+
+// Generate a sensor measurement as a service response.
+bool BallsInBox::SensorServer(fastrack_srvs::SphereSensor::Request& req,
+                              fastrack_srvs::SphereSensor::Response& res) {
+  // Unpack request.
+  const Vector3d p(req.position.x, req.position.y, req.position.z);
+  const double r = req.range;
+
+  // Check each obstacle and, if in range, add to response.
+  geometry_msgs::Vector3 c;
+  for (size_t ii = 0; ii < centers_.size(); ii++) {
+    if ((p - centers_[ii]).norm() < r + radii_[ii]) {
+      c.x = centers_[ii](0);
+      c.y = centers_[ii](1);
+      c.z = centers_[ii](2);
+
+      res.obstacles.centers.push_back(c);
+      res.obstacles.radii.push_back(radii_[ii]);
+    }
+  }
+
+  return true;
+}
+
 // Derived classes must have some sort of visualization through RViz.
-void BallsInBox::Visualize(const ros::Publisher& pub, const std::string& frame) const {
-  if (pub.getNumSubscribers() <= 0)
+void BallsInBox::Visualize() const {
+  if (vis_pub_.getNumSubscribers() <= 0)
     return;
 
   // Set up box marker.
   visualization_msgs::Marker cube;
   cube.ns = "cube";
-  cube.header.frame_id = frame;
+  cube.header.frame_id = fixed_frame_;
   cube.header.stamp = ros::Time::now();
   cube.id = 0;
   cube.type = visualization_msgs::Marker::CUBE;
@@ -123,13 +187,13 @@ void BallsInBox::Visualize(const ros::Publisher& pub, const std::string& frame) 
   cube.pose.orientation.w = 1.0;
 
   // Publish cube marker.
-  pub.publish(cube);
+  vis_pub_.publish(cube);
 
   // Visualize obstacles as spheres.
   for (size_t ii = 0; ii < centers_.size(); ii++){
     visualization_msgs::Marker sphere;
     sphere.ns = "sphere";
-    sphere.header.frame_id = frame;
+    sphere.header.frame_id = fixed_frame_;
     sphere.header.stamp = ros::Time::now();
     sphere.id = static_cast<int>(ii);
     sphere.type = visualization_msgs::Marker::SPHERE;
@@ -153,7 +217,7 @@ void BallsInBox::Visualize(const ros::Publisher& pub, const std::string& frame) 
     sphere.pose.position = p;
 
     // Publish sphere marker.
-    pub.publish(sphere);
+    vis_pub_.publish(sphere);
   }
 }
 

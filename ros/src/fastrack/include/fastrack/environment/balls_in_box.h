@@ -45,14 +45,19 @@
 #define FASTRACK_ENVIRONMENT_BALLS_IN_BOX_H
 
 #include <fastrack/environment/environment.h>
+#include <fastrack_msgs/SensedSpheres.h>
+#include <fastrack_srvs/SphereSensor.h>
 
+#include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
 #include <geometry_msgs/Point.h>
+#include <geometry_msgs/Vector3.h>
 
 namespace fastrack {
 namespace environment {
 
-class BallsInBox : public Environment<> {
+class BallsInBox : public Environment<
+  fastrack_msgs::SensedSpheres, fastrack_srvs::SphereSensor> {
 public:
   ~BallsInBox() {}
   explicit BallsInBox()
@@ -64,12 +69,20 @@ public:
   bool IsValid(const Vector3d& position, const Box& bound) const;
 
   // Derived classes must have some sort of visualization through RViz.
-  void Visualize(const ros::Publisher& pub, const std::string& frame) const;
+  void Visualize() const;
 
 private:
   // Load parameters. This may be overridden by derived classes if needed
   // (they should still call this one via Environment::LoadParameters).
   bool LoadParameters(const ros::NodeHandle& n);
+
+  // Update this environment with the information contained in the given
+  // sensor measurement.
+  void SensorCallback(const fastrack_msgs::SensedSpheres::ConstPtr& msg);
+
+  // Generate a sensor measurement as a service response.
+  bool SensorServer(fastrack_srvs::SphereSensor::Request& req,
+                    fastrack_srvs::SphereSensor::Response& res);
 
   // Generate random obstacles.
   void GenerateObstacles(size_t num, double min_radius, double max_radius,
