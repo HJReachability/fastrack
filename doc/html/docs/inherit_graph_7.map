@@ -1,3 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classfastrack_1_1environment_1_1Environment.html" title="fastrack::environment\l::Environment\&lt; M, S \&gt;" alt="" coords="5,5,160,46"/>
+<area shape="rect" id="node1" href="$classfastrack_1_1environment_1_1Environment.html" title="fastrack::environment\l::Environment\&lt; fastrack\l_msgs::SensedSpheres, fastrack\l_srvs::SphereSensor \&gt;" alt="" coords="5,5,221,75"/>
+<area shape="rect" id="node2" href="$classfastrack_1_1environment_1_1BallsInBox.html" title="fastrack::environment\l::BallsInBox" alt="" coords="270,19,418,61"/>
 </map>

@@ -1,6 +1,6 @@
 <map id="balls_in_box.h" name="balls_in_box.h">
-<area shape="rect" id="node2" href="$environment_8h.html" title="fastrack/environment\l/environment.h" alt="" coords="968,81,1112,122"/>
-<area shape="rect" id="node3" href="$box_8h.html" title="fastrack/bound/box.h" alt="" coords="659,171,803,197"/>
-<area shape="rect" id="node5" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="525,344,669,371"/>
-<area shape="rect" id="node4" href="$tracking__bound_8h.html" title="fastrack/bound/tracking\l_bound.h" alt="" coords="851,246,1009,287"/>
+<area shape="rect" id="node2" href="$environment_8h.html" title="fastrack/environment\l/environment.h" alt="" coords="123,81,267,122"/>
+<area shape="rect" id="node3" href="$box_8h.html" title="fastrack/bound/box.h" alt="" coords="432,171,576,197"/>
+<area shape="rect" id="node5" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="565,344,709,371"/>
+<area shape="rect" id="node4" href="$tracking__bound_8h.html" title="fastrack/bound/tracking\l_bound.h" alt="" coords="225,246,383,287"/>
 </map>

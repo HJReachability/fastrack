@@ -95,31 +95,35 @@
 <div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="namespacefastrack_1_1constants.html">   66</a></span>&#160;  <span class="keyword">namespace </span>constants {</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="comment">// Acceleration due to gravity.</span></div>
 <div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="namespacefastrack_1_1constants.html#a32eb3d1c263ec6ff4efb9b7ee1f766d0">   68</a></span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacefastrack_1_1constants.html#a32eb3d1c263ec6ff4efb9b7ee1f766d0">G</a> = 9.81;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  } <span class="comment">//\namespace constants</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="comment">// Empty struct for setting unused/unimplemented template args.</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="structfastrack_1_1Empty.html">   72</a></span>&#160;  <span class="keyword">struct </span><a class="code" href="structfastrack_1_1Empty.html">Empty</a> {};</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;} <span class="comment">//\namespace fastrack</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="comment">// ------------------------ THIRD PARTY TYPEDEFS ---------------------------- //</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="keyword">using</span> Eigen::Matrix3d;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="keyword">using</span> Eigen::Vector3d;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keyword">using</span> Eigen::Matrix4d;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="keyword">using</span> Eigen::VectorXd;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="keyword">using</span> Eigen::MatrixXd;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="keyword">using</span> Eigen::Quaterniond;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="comment">// Small number for use in approximate equality checking.</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="namespacefastrack_1_1constants.html#ac525b436050d80f22717b4e77cbf5879">   71</a></span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacefastrack_1_1constants.html#ac525b436050d80f22717b4e77cbf5879">EPSILON</a> = 1e-4;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  } <span class="comment">//\namespace constants</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  <span class="comment">// Empty struct for setting unused/unimplemented template args.</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="structfastrack_1_1Empty.html">   75</a></span>&#160;  <span class="keyword">struct </span><a class="code" href="structfastrack_1_1Empty.html">Empty</a> {};</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;} <span class="comment">//\namespace fastrack</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="comment">// ------------------------ THIRD PARTY TYPEDEFS ---------------------------- //</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="keyword">using</span> Eigen::Matrix3d;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="keyword">using</span> Eigen::Vector3d;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="keyword">using</span> Eigen::Matrix4d;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="keyword">using</span> Eigen::VectorXd;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keyword">using</span> Eigen::MatrixXd;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="keyword">using</span> Eigen::Quaterniond;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="namespacefastrack_1_1constants_html_a32eb3d1c263ec6ff4efb9b7ee1f766d0"><div class="ttname"><a href="namespacefastrack_1_1constants.html#a32eb3d1c263ec6ff4efb9b7ee1f766d0">fastrack::constants::G</a></div><div class="ttdeci">const double G</div><div class="ttdef"><b>Definition:</b> <a href="types_8h_source.html#l00068">types.h:68</a></div></div>
-<div class="ttc" id="structfastrack_1_1Empty_html"><div class="ttname"><a href="structfastrack_1_1Empty.html">fastrack::Empty</a></div><div class="ttdef"><b>Definition:</b> <a href="types_8h_source.html#l00072">types.h:72</a></div></div>
+<div class="ttc" id="structfastrack_1_1Empty_html"><div class="ttname"><a href="structfastrack_1_1Empty.html">fastrack::Empty</a></div><div class="ttdef"><b>Definition:</b> <a href="types_8h_source.html#l00075">types.h:75</a></div></div>
+<div class="ttc" id="namespacefastrack_1_1constants_html_ac525b436050d80f22717b4e77cbf5879"><div class="ttname"><a href="namespacefastrack_1_1constants.html#ac525b436050d80f22717b4e77cbf5879">fastrack::constants::EPSILON</a></div><div class="ttdeci">const double EPSILON</div><div class="ttdef"><b>Definition:</b> <a href="types_8h_source.html#l00071">types.h:71</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 
 <br clear="all" />
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Tue Apr 3 2018 00:16:37</small>
+<small>autogenerated on Tue Apr 3 2018 16:34:04</small>
 </div>
 </body>
 </html>
