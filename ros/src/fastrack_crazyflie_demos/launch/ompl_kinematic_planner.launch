@@ -5,12 +5,11 @@
   <arg name="traj_topic" default="/traj" />
   <arg name="replan_request_topic" default="/replan" />
   <arg name="sensor_topic" default="/sensed_obstacles" />
-  <arg name="vis_topic" default="/vis/env" />
+  <arg name="vis_topic" default="/vis/known_env" />
 
   <!-- Services. -->
   <arg name="bound_srv" default="/bound" />
   <arg name="dynamics_srv" default="/planner_dynamics" />
-  <arg name="sensor_srv" default="/sensor" />
 
   <!-- Fixed frame. -->
   <arg name="fixed_frame" default="world" />
@@ -31,7 +30,7 @@
   <arg name="env_lower_y" default="10.0" />
   <arg name="env_lower_z" default="0.0" />
 
-  <arg name="env_num_obstacles" default="5" />
+  <arg name="env_num_obstacles" default="0" />
   <arg name="env_min_radius" default="0.5" />
   <arg name="env_max_radius" default="1.0" />
 
@@ -49,7 +48,6 @@
 
     <param name="srv/dynamics" value="$(arg dynamics_srv)" />
     <param name="srv/bound" value="$(arg bound_srv)" />
-    <param name="srv/sensor" value="$(arg sensor_srv)" />
 
     <param name="max_runtime" value="$(arg max_runtime)" />
 

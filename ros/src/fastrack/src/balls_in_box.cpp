@@ -131,26 +131,24 @@ void BallsInBox::SensorCallback(
 }
 
 // Generate a sensor measurement as a service response.
-bool BallsInBox::SensorServer(fastrack_srvs::SphereSensor::Request& req,
-                              fastrack_srvs::SphereSensor::Response& res) {
-  // Unpack request.
-  const Vector3d p(req.position.x, req.position.y, req.position.z);
-  const double r = req.range;
+fastrack_msgs::SensedSpheres BallsInBox::
+SimulateSensor(const SphereSensorParams& params) const {
+  fastrack_msgs::SensedSpheres msg;
 
   // Check each obstacle and, if in range, add to response.
   geometry_msgs::Vector3 c;
   for (size_t ii = 0; ii < centers_.size(); ii++) {
-    if ((p - centers_[ii]).norm() < r + radii_[ii]) {
+    if ((params.position - centers_[ii]).norm() < params.range + radii_[ii]) {
       c.x = centers_[ii](0);
       c.y = centers_[ii](1);
       c.z = centers_[ii](2);
 
-      res.obstacles.centers.push_back(c);
-      res.obstacles.radii.push_back(radii_[ii]);
+      msg.centers.push_back(c);
+      msg.radii.push_back(radii_[ii]);
     }
   }
 
-  return true;
+  return msg;
 }
 
 // Derived classes must have some sort of visualization through RViz.
@@ -228,7 +226,7 @@ void BallsInBox::Visualize() const {
 // Load parameters. This may be overridden by derived classes if needed
 // (they should still call this one via Environment::LoadParameters).
 bool BallsInBox::LoadParameters(const ros::NodeHandle& n) {
-  if (!Environment<fastrack_msgs::SensedSpheres, fastrack_srvs::SphereSensor>::
+  if (!Environment<fastrack_msgs::SensedSpheres, SphereSensorParams>::
       LoadParameters(n))
     return false;
 

@@ -36,66 +36,29 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// BallsInBox is derived from the Environment base class. This class models
-// obstacles as spheres to provide a simple demo.
+// Parameters for the SphereSensor.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_ENVIRONMENT_BALLS_IN_BOX_H
-#define FASTRACK_ENVIRONMENT_BALLS_IN_BOX_H
+#ifndef FASTRACK_SENSOR_SPHERE_SENSOR_PARAMS_H
+#define FASTRACK_SENSOR_SPHERE_SENSOR_PARAMS_H
 
-#include <fastrack/environment/environment.h>
-#include <fastrack/sensor/sphere_sensor_params.h>
-#include <fastrack_msgs/SensedSpheres.h>
+#include <fastrack/utils/types.h>
+#include <fastrack/utils/uncopyable.h>
 
 #include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
-#include <geometry_msgs/Point.h>
-#include <geometry_msgs/Vector3.h>
 
 namespace fastrack {
-namespace environment {
+namespace sensor {
 
-using sensor::SphereSensorParams;
+struct SphereSensorParams {
+  // Position and range of the sensor.
+  Vector3d position = Vector3d::Zero();
+  double range = std::numeric_limits<double>::infinity();
+}; //\struct SphereSensorParams
 
-class BallsInBox : public Environment<
-  fastrack_msgs::SensedSpheres, SphereSensorParams> {
-public:
-  ~BallsInBox() {}
-  explicit BallsInBox()
-    : Environment() {}
-
-  // Derived classes must provide a collision checker which returns true if
-  // and only if the provided position is a valid collision-free configuration.
-  // Provide a separate collision check for each type of tracking error bound.
-  bool IsValid(const Vector3d& position, const Box& bound) const;
-
-  // Generate a sensor measurement.
-  fastrack_msgs::SensedSpheres SimulateSensor(
-    const SphereSensorParams& params) const;
-
-  // Derived classes must have some sort of visualization through RViz.
-  void Visualize() const;
-
-private:
-  // Load parameters. This may be overridden by derived classes if needed
-  // (they should still call this one via Environment::LoadParameters).
-  bool LoadParameters(const ros::NodeHandle& n);
-
-  // Update this environment with the information contained in the given
-  // sensor measurement.
-  void SensorCallback(const fastrack_msgs::SensedSpheres::ConstPtr& msg);
-
-  // Generate random obstacles.
-  void GenerateObstacles(size_t num, double min_radius, double max_radius,
-                         unsigned int seed=0);
-
-  // Obstacle centers and radii.
-  std::vector<Vector3d> centers_;
-  std::vector<double> radii_;
-}; //\class Environment
-
-} //\namespace environment
+} //\namespace sensor
 } //\namespace fastrack
 
 #endif

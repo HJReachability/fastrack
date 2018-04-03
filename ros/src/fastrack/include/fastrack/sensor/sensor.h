@@ -36,90 +36,93 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base class for all environment models, providing separate collision check
-// functions for each type of tracking error bound. All environments are
-// boxes in 3D space. Environment is templated on the specific type of sensor
-// message (M) which may be generated from or incpororated into a derived class,
-// and sensor parameters (P) which may be used to generate sensor readings.
+// Base class for all sensor models. Sensors are used in simulation to generate
+// "fake" sensor measurements from a known environment.
+//
+// Sensors are templated on the type of environment (E), on the type of
+// message (M) that they publish, and on the parameter struct (P) used to
+// query the environment for sensor messages.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_ENVIRONMENT_ENVIRONMENT_H
-#define FASTRACK_ENVIRONMENT_ENVIRONMENT_H
+#ifndef FASTRACK_SENSOR_SENSOR_H
+#define FASTRACK_SENSOR_SENSOR_H
 
-#include <fastrack/bound/box.h>
 #include <fastrack/utils/types.h>
 
 #include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
+#include <geometry_msgs/TransformStamped.h>
+#include <tf2_ros/transform_listener.h>
 
 namespace fastrack {
-namespace environment {
+namespace sensor {
 
-using bound::Box;
-
-template<typename M, typename P>
-class Environment {
+template<typename E, typename M, typename P>
+class Sensor {
 public:
-  virtual ~Environment() {}
+  virtual ~Sensor() {}
 
   // Initialize from a ROS NodeHandle.
   bool Initialize(const ros::NodeHandle& n);
 
-  // Derived classes must provide a collision checker which returns true if
-  // and only if the provided position is a valid collision-free configuration.
-  // Provide a separate collision check for each type of tracking error bound.
-  virtual bool IsValid(const Vector3d& position, const Box& bound) const = 0;
-
-  // Utility for checking multiple positions.
-  bool AreValid(const std::vector<Vector3d>& positions, const Box& bound) const;
-
-  // Generate a sensor measurement.
-  virtual M SimulateSensor(const P& params) const = 0;
-
-  // Derived classes must have some sort of visualization through RViz.
-  virtual void Visualize() const = 0;
-
 protected:
-  explicit Environment()
-    : initialized_(false) {}
+  explicit Sensor()
+    : tf_listener_(tf_buffer_),
+      initialized_(false) {}
 
   // Load parameters. This may be overridden by derived classes if needed
-  // (they should still call this one via Environment::LoadParameters).
+  // (they should still call this one via Sensor::LoadParameters).
   virtual bool LoadParameters(const ros::NodeHandle& n);
 
   // Register callbacks.
   bool RegisterCallbacks(const ros::NodeHandle& n);
 
-  // Update this environment with the information contained in the given
-  // sensor measurement.
-  virtual void SensorCallback(const typename M::ConstPtr& msg) = 0;
+  // Every time the timer fires, generate a new sensor measurement.
+  void TimerCallback(const ros::TimerEvent& e);
 
-  // Upper and lower bounds.
-  Vector3d lower_;
-  Vector3d upper_;
+  // Update sensor parameters.
+  virtual void UpdateParameters() = 0;
 
-  // Publishers and subscribers.
+  // Derived classes must have some sort of visualization through RViz.
+  virtual void Visualize() const = 0;
+
+  // Ground truth environment.
+  E env_;
+
+  // Parameters.
+  P params_;
+
+  // Publishers.
   ros::Publisher vis_pub_;
-  ros::Subscriber sensor_sub_;
+  ros::Publisher sensor_pub_;
 
   std::string vis_topic_;
   std::string sensor_topic_;
 
-  // Frame in which to publish visualization.
+  // Frames of reference.
+  std::string sensor_frame_;
   std::string fixed_frame_;
+
+  // Buffer and listener to get current sensor pose.
+  tf2_ros::Buffer tf_buffer_;
+  tf2_ros::TransformListener tf_listener_;
+
+  // Timer.
+  ros::Timer timer_;
+  double time_step_;
 
   // Naming and initialization.
   std::string name_;
   bool initialized_;
-}; //\class Environment
+}; //\class Sensor
 
 // ----------------------------- IMPLEMENTATION ----------------------------- //
 
 // Initialize from a ROS NodeHandle.
-template<typename M, typename P>
-bool Environment<M, P>::Initialize(const ros::NodeHandle& n) {
-  name_ = ros::names::append(n.getNamespace(), "Environment");
+template<typename E, typename M, typename P>
+bool Sensor<E, M, P>::Initialize(const ros::NodeHandle& n) {
+  name_ = ros::names::append(n.getNamespace(), "Sensor");
 
   if (!LoadParameters(n)) {
     ROS_ERROR("%s: Failed to load parameters.", name_.c_str());
@@ -131,68 +134,66 @@ bool Environment<M, P>::Initialize(const ros::NodeHandle& n) {
     return false;
   }
 
-  // Visualize.
-  Visualize();
+  // Initialize the ground truth environment.
+  if (!env_.Initialize(n)) {
+    ROS_ERROR("%s: Failed to initialize environment.", name_.c_str());
+    return false;
+  }
 
   initialized_ = true;
   return true;
 }
 
 // Load parameters. This may be overridden by derived classes if needed
-// (they should still call this one via Environment::LoadParameters).
-template<typename M, typename P>
-bool Environment<M, P>::LoadParameters(const ros::NodeHandle& n) {
+// (they should still call this one via Sensor::LoadParameters).
+template<typename E, typename M, typename P>
+bool Sensor<E, M, P>::LoadParameters(const ros::NodeHandle& n) {
   ros::NodeHandle nl(n);
 
-  // Sensor topic/service.
+  // Topics.
   if (!nl.getParam("topic/sensor", sensor_topic_)) return false;
-  if (!nl.getParam("vis/env", vis_topic_)) return false;
+  if (!nl.getParam("vis/sensor", vis_topic_)) return false;
 
-  // Frame of reference to publish visualization in.
+  // Frames of reference.
   if (!nl.getParam("frame/fixed", fixed_frame_)) return false;
+  if (!nl.getParam("frame/sensor", sensor_frame_)) return false;
 
-  // Upper and lower bounds of the environment.
-  if (!nl.getParam("env/upper/x", upper_(0))) return false;
-  if (!nl.getParam("env/upper/y", upper_(1))) return false;
-  if (!nl.getParam("env/upper/z", upper_(2))) return false;
-
-  if (!nl.getParam("env/lower/x", lower_(0))) return false;
-  if (!nl.getParam("env/lower/y", lower_(1))) return false;
-  if (!nl.getParam("env/lower/z", lower_(2))) return false;
+  // Time step.
+  if (!nl.getParam("time_step", time_step_)) return false;
 
   return true;
 }
 
 // Register callbacks.
-template<typename M, typename P>
-bool Environment<M, P>::RegisterCallbacks(const ros::NodeHandle& n) {
+template<typename E, typename M, typename P>
+bool Sensor<E, M, P>::RegisterCallbacks(const ros::NodeHandle& n) {
   ros::NodeHandle nl(n);
 
-  // Subscribers.
-  sensor_sub_ = nl.subscribe(
-    sensor_topic_.c_str(), 1, &Environment<M, P>::SensorCallback, this);
-
   // Publishers.
+  sensor_pub_ = nl.advertise<M>(
+    sensor_topic_.c_str(), 1, false);
+
   vis_pub_ = nl.advertise<visualization_msgs::Marker>(
     vis_topic_.c_str(), 1, false);
 
-  return true;
-}
-
-// Provide auxiliary validity checkers for sets of positions.
-template<typename M, typename P>
-bool Environment<M, P>::AreValid(
-  const std::vector<Vector3d>& positions, const Box& bound) const {
-  // Return Boolean AND of all IsValid calls.
-  for (const auto& p : positions) {
-    if (!IsValid(p, bound))
-      return false;
-  }
+  // Timer.
+  timer_ = nl.createTimer(
+    ros::Duration(time_step_), &Sensor<E, M, P>::TimerCallback, this);
 
   return true;
 }
 
-} //\namespace environment
+// Every time the timer fires, generate a new sensor measurement.
+template<typename E, typename M, typename P>
+void Sensor<E, M, P>::TimerCallback(const ros::TimerEvent& e) {
+  // Get most up-to-date parameters (e.g. by reading pose from TF).
+  UpdateParameters();
+
+  // Query environment and publish.
+  sensor_pub_.publish(env_.SimulateSensor(params_));
+}
+
+} //\namespace sensor
 } //\namespace fastrack
 
 #endif
