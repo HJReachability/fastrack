@@ -1,0 +1,8 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classfastrack_1_1Uncopyable.html" title="fastrack::Uncopyable" alt="" coords="5,120,152,147"/>
+<area shape="rect" id="node2" href="$classfastrack_1_1planning_1_1PlannerManager.html" title="fastrack::planning\l::PlannerManager\&lt; S \&gt;" alt="" coords="279,5,436,46"/>
+<area shape="rect" id="node3" href="$classfastrack_1_1tracking_1_1Tracker.html" title="fastrack::tracking\l::Tracker\&lt; V, TS, TC,\l PS, SB, SP \&gt;" alt="" coords="282,69,433,125"/>
+<area shape="rect" id="node4" href="$classfastrack_1_1value_1_1ValueFunction.html" title="fastrack::value::ValueFunction\l\&lt; TS, TC, TD, PS, PC, PD, B \&gt;" alt="" coords="251,149,463,190"/>
+<area shape="rect" id="node5" href="$classfastrack_1_1value_1_1ValueFunction.html" title="fastrack::value::ValueFunction\l\&lt; PositionVelocity, QuadrotorControl,\l QuadrotorDecoupled6D, PositionVelocity,\l VectorXd, Kinematics\&lt; PositionVelocity \&gt;, Box \&gt;" alt="" coords="200,214,515,285"/>
+<area shape="rect" id="node6" href="$classfastrack_1_1value_1_1AnalyticalKinematicBoxQuadrotorDecoupled6D.html" title="fastrack::value::Analytical\lKinematicBoxQuadrotorDecoupled6D" alt="" coords="563,229,802,270"/>
+</map>

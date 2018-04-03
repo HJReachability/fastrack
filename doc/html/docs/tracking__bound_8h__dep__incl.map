@@ -1,12 +1,11 @@
 <map id="tracking_bound.h" name="tracking_bound.h">
-<area shape="rect" id="node2" href="$box_8h.html" title="box.h" alt="" coords="325,80,379,107"/>
-<area shape="rect" id="node3" href="$environment_8h.html" title="environment.h" alt="" coords="183,163,287,189"/>
-<area shape="rect" id="node10" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8h.html" title="analytical_kinematic\l_box_quadrotor_decoupled_6d.h" alt="" coords="366,155,575,197"/>
+<area shape="rect" id="node2" href="$box_8h.html" title="box.h" alt="" coords="254,80,308,107"/>
+<area shape="rect" id="node3" href="$environment_8h.html" title="environment.h" alt="" coords="139,163,243,189"/>
+<area shape="rect" id="node9" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8h.html" title="analytical_kinematic\l_box_quadrotor_decoupled_6d.h" alt="" coords="267,155,476,197"/>
 <area shape="rect" id="node4" href="$balls__in__box_8h.html" title="balls_in_box.h" alt="" coords="21,260,125,287"/>
 <area shape="rect" id="node6" href="$planner_8h.html" title="planner.h" alt="" coords="169,260,243,287"/>
-<area shape="rect" id="node9" href="$environment_8cpp.html" title="environment.cpp" alt="" coords="267,260,385,287"/>
 <area shape="rect" id="node5" href="$balls__in__box_8cpp.html" title="balls_in_box.cpp" alt="" coords="5,349,123,376"/>
 <area shape="rect" id="node7" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="148,349,287,376"/>
 <area shape="rect" id="node8" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="131,424,304,451"/>
-<area shape="rect" id="node11" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8cpp.html" title="analytical_kinematic\l_box_quadrotor_decoupled\l_6d.cpp" alt="" coords="410,245,587,301"/>
+<area shape="rect" id="node10" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8cpp.html" title="analytical_kinematic\l_box_quadrotor_decoupled\l_6d.cpp" alt="" coords="283,245,460,301"/>
 </map>

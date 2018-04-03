@@ -1,7 +1,6 @@
 <map id="environment.h" name="environment.h">
 <area shape="rect" id="node2" href="$balls__in__box_8h.html" title="balls_in_box.h" alt="" coords="31,80,136,107"/>
 <area shape="rect" id="node4" href="$planner_8h.html" title="planner.h" alt="" coords="169,80,243,107"/>
-<area shape="rect" id="node7" href="$environment_8cpp.html" title="environment.cpp" alt="" coords="267,80,385,107"/>
 <area shape="rect" id="node3" href="$balls__in__box_8cpp.html" title="balls_in_box.cpp" alt="" coords="5,155,123,181"/>
 <area shape="rect" id="node5" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="148,155,287,181"/>
 <area shape="rect" id="node6" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="131,229,304,256"/>
