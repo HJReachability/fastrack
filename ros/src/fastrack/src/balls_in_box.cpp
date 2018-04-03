@@ -125,6 +125,9 @@ void BallsInBox::SensorCallback(
       radii_.push_back(r);
     }
   }
+
+  // Visualize.
+  Visualize();
 }
 
 // Generate a sensor measurement as a service response.
@@ -218,13 +221,15 @@ void BallsInBox::Visualize() const {
 
     // Publish sphere marker.
     vis_pub_.publish(sphere);
+    ros::Duration(0.01).sleep();
   }
 }
 
 // Load parameters. This may be overridden by derived classes if needed
 // (they should still call this one via Environment::LoadParameters).
 bool BallsInBox::LoadParameters(const ros::NodeHandle& n) {
-  if (!Environment::LoadParameters(n))
+  if (!Environment<fastrack_msgs::SensedSpheres, fastrack_srvs::SphereSensor>::
+      LoadParameters(n))
     return false;
 
   ros::NodeHandle nl(n);

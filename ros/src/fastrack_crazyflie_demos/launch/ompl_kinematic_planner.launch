@@ -4,10 +4,16 @@
   <!-- Topics. -->
   <arg name="traj_topic" default="/traj" />
   <arg name="replan_request_topic" default="/replan" />
+  <arg name="sensor_topic" default="/sensed_obstacles" />
+  <arg name="vis_topic" default="/vis/env" />
 
   <!-- Services. -->
   <arg name="bound_srv" default="/bound" />
   <arg name="dynamics_srv" default="/planner_dynamics" />
+  <arg name="sensor_srv" default="/sensor" />
+
+  <!-- Fixed frame. -->
+  <arg name="fixed_frame" default="world" />
 
   <!-- Maximum planning runtime (sec). -->
   <arg name="max_runtime" default="0.5" />
@@ -38,11 +44,16 @@
         output="screen">
     <param name="topic/traj" value="$(arg traj_topic)" />
     <param name="topic/replan_request" value="$(arg replan_request_topic)" />
+    <param name="topic/sensor" value="$(arg sensor_topic)" />
+    <param name="vis/env" value="$(arg vis_topic)" />
 
     <param name="srv/dynamics" value="$(arg dynamics_srv)" />
     <param name="srv/bound" value="$(arg bound_srv)" />
+    <param name="srv/sensor" value="$(arg sensor_srv)" />
 
     <param name="max_runtime" value="$(arg max_runtime)" />
+
+    <param name="frame/fixed" value="$(arg fixed_frame)" />
 
     <rosparam param="config/upper" subst_value="True">$(arg config_upper)</rosparam>
     <rosparam param="config/lower" subst_value="True">$(arg config_lower)</rosparam>

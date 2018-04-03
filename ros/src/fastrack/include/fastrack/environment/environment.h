@@ -136,6 +136,9 @@ bool Environment<M, S>::Initialize(const ros::NodeHandle& n) {
     return false;
   }
 
+  // Visualize.
+  Visualize();
+
   initialized_ = true;
   return true;
 }
@@ -148,6 +151,7 @@ bool Environment<M, S>::LoadParameters(const ros::NodeHandle& n) {
 
   // Sensor topic/service.
   if (!nl.getParam("topic/sensor", sensor_topic_)) return false;
+  if (!nl.getParam("vis/env", vis_topic_)) return false;
   if (!nl.getParam("srv/sensor", sensor_srv_name_)) return false;
 
   // Frame of reference to publish visualization in.

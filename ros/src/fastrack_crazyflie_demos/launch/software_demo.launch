@@ -18,12 +18,15 @@
 
   <arg name="replan_request_topic" default="/replan" />
   <arg name="traj_topic" default="/traj" />
+  <arg name="sensor_topic" default="/sensed_obstacles" />
   <arg name="traj_vis_topic" default="/vis/traj" />
   <arg name="bound_vis_topic" default="/vis/bound" />
+  <arg name="known_env_vis_topic" default="/vis/known_env" />
 
   <!-- Services. -->
   <arg name="bound_srv" default="/bound" />
   <arg name="planner_dynamics_srv" default="/planner_dynamics" />
+  <arg name="sensor_srv" default="/sensor" />
 
   <!-- Frames of reference. -->
   <arg name="fixed_frame" default="world" />
@@ -76,7 +79,7 @@
   <arg name="env_lower_x" default="-$(arg env_max)" />
   <arg name="env_lower_y" default="-$(arg env_max)" />
   <arg name="env_lower_z" default="0.0" />
-  <arg name="env_num_obstacles" default="10" />
+  <arg name="env_num_obstacles" default="20" />
   <arg name="env_min_radius" default="0.5" />
   <arg name="env_max_radius" default="1.0" />
   <arg name="seed" default="0" />
@@ -104,8 +107,12 @@
   <include file="$(find fastrack_crazyflie_demos)/launch/ompl_kinematic_planner.launch">
     <arg name="traj_topic" value="$(arg traj_topic)" />
     <arg name="replan_request_topic" value="$(arg replan_request_topic)" />
+    <arg name="sensor_topic" value="$(arg sensor_topic)" />
+    <arg name="vis_topic" value="$(arg known_env_vis_topic)" />
     <arg name="bound_srv" value="$(arg bound_srv)" />
     <arg name="dynamics_srv" value="$(arg planner_dynamics_srv)" />
+    <arg name="sensor_srv" default="$(arg sensor_srv)" />
+    <arg name="fixed_frame" default="$(arg fixed_frame)" />
     <arg name="max_runtime" value="$(arg planner_runtime)" />
     <arg name="config_upper" value="$(arg config_upper)" />
     <arg name="config_lower" value="$(arg config_lower)" />
