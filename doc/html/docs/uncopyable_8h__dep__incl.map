@@ -1,7 +1,11 @@
 <map id="uncopyable.h" name="uncopyable.h">
 <area shape="rect" id="node2" href="$planner__manager_8h.html" title="planner_manager.h" alt="" coords="5,80,136,107"/>
-<area shape="rect" id="node3" href="$tracker_8h.html" title="tracker.h" alt="" coords="161,80,233,107"/>
-<area shape="rect" id="node4" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8h.html" title="analytical_kinematic\l_box_quadrotor_decoupled_6d.h" alt="" coords="215,155,424,197"/>
-<area shape="rect" id="node6" href="$value__function_8h.html" title="value_function.h" alt="" coords="309,80,425,107"/>
-<area shape="rect" id="node5" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8cpp.html" title="analytical_kinematic\l_box_quadrotor_decoupled\l_6d.cpp" alt="" coords="231,245,408,301"/>
+<area shape="rect" id="node3" href="$sphere__sensor__params_8h.html" title="sphere_sensor_params.h" alt="" coords="161,80,329,107"/>
+<area shape="rect" id="node7" href="$tracker_8h.html" title="tracker.h" alt="" coords="354,80,427,107"/>
+<area shape="rect" id="node8" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8h.html" title="analytical_kinematic\l_box_quadrotor_decoupled_6d.h" alt="" coords="409,155,617,197"/>
+<area shape="rect" id="node10" href="$value__function_8h.html" title="value_function.h" alt="" coords="503,80,619,107"/>
+<area shape="rect" id="node4" href="$balls__in__box_8h.html" title="balls_in_box.h" alt="" coords="121,163,225,189"/>
+<area shape="rect" id="node6" href="$sphere__sensor_8h.html" title="sphere_sensor.h" alt="" coords="250,163,368,189"/>
+<area shape="rect" id="node5" href="$balls__in__box_8cpp.html" title="balls_in_box.cpp" alt="" coords="114,260,232,287"/>
+<area shape="rect" id="node9" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8cpp.html" title="analytical_kinematic\l_box_quadrotor_decoupled\l_6d.cpp" alt="" coords="425,245,601,301"/>
 </map>

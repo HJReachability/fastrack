@@ -128,14 +128,16 @@
 <h3><a class="anchor" id="index_e"></a>- e -</h3><ul>
 <li>env_
 : <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a2331d6570958dacfc3a287ca8f9b6ff6">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
+, <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#a33f0c3d469b3bac265140d4d5fe9c491">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_f"></a>- f -</h3><ul>
 <li>fixed_frame_
-: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#a7a3b81ad6a5f42b06b81ae8868b71f91">fastrack::environment::Environment&lt; M, S &gt;</a>
+: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#a27cf509ef84965be14572c830d301270">fastrack::environment::Environment&lt; M, P &gt;</a>
 , <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a01bc582dc391166a2ba0c07760ebdcbb">fastrack::planning::PlannerManager&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#adda95b4eae65b1c19addd56170af394e">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
 </li>
 </ul>
 
@@ -150,9 +152,10 @@
 <h3><a class="anchor" id="index_i"></a>- i -</h3><ul>
 <li>initialized_
 : <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#adb8881a8ba845a6d2223b0639db98db1">fastrack::dynamics::Dynamics&lt; S, C, SR &gt;</a>
-, <a class="el" href="classfastrack_1_1environment_1_1Environment.html#a457ce4bd1a627f9380083ba05d9b4cd6">fastrack::environment::Environment&lt; M, S &gt;</a>
+, <a class="el" href="classfastrack_1_1environment_1_1Environment.html#ac0af321a986e3d3ea74666ba098e7e33">fastrack::environment::Environment&lt; M, P &gt;</a>
 , <a class="el" href="classfastrack_1_1planning_1_1Planner.html#acc43f50af5b2bf61f4c12100becf712f">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
 , <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a175f44db3572f55a357c7d57c1137526">fastrack::planning::PlannerManager&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#afe3fb0de46c8ff5367996afa9d1e09aa">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
 , <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#ad0e18a6979d11395de3b360086dbce69">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 , <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#aa0822c97a7ac537f1ca0a0fc7d61385e">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
 </li>
@@ -161,7 +164,7 @@
 
 <h3><a class="anchor" id="index_l"></a>- l -</h3><ul>
 <li>lower_
-: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#ad9fc3de091f8cf8ce33b287d86b1dece">fastrack::environment::Environment&lt; M, S &gt;</a>
+: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#ae807561774373a51f0a1e506da495749">fastrack::environment::Environment&lt; M, P &gt;</a>
 , <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#a509436361e8cf87f870d6d4c0054fb8a">fastrack::state::PositionVelocity</a>
 </li>
 </ul>
@@ -179,9 +182,10 @@
 
 <h3><a class="anchor" id="index_n"></a>- n -</h3><ul>
 <li>name_
-: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#a6f8f4951c0457f877339a344c68b4601">fastrack::environment::Environment&lt; M, S &gt;</a>
+: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#a4271f907c249fec7e37d46ca77283faf">fastrack::environment::Environment&lt; M, P &gt;</a>
 , <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a72b3617551bd6f04b924080fcbfb368c">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
 , <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a2a8e6189cce393806ad5f711ff0c1391">fastrack::planning::PlannerManager&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#a58934ce357bf0dfc8d4079f2fa7f9501">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
 , <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a038b1909003aad976eeecb6b1a6efb97">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 , <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#a25b562494e4aacded60df294cc8ed547">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
 </li>
@@ -189,6 +193,9 @@
 
 
 <h3><a class="anchor" id="index_p"></a>- p -</h3><ul>
+<li>params_
+: <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#a62847a04e24e14f7612e75c27cf0cf08">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
+</li>
 <li>pitch
 : <a class="el" href="structfastrack_1_1control_1_1QuadrotorControl.html#a758565eceb5eb8c5cce9acd72b059cf4">fastrack::control::QuadrotorControl</a>
 </li>
@@ -220,6 +227,9 @@
 <li>pos_exp_
 : <a class="el" href="classfastrack_1_1value_1_1AnalyticalKinematicBoxQuadrotorDecoupled6D.html#a25b95ee69ad8f2ea62f37cd8871d192f">fastrack::value::AnalyticalKinematicBoxQuadrotorDecoupled6D</a>
 </li>
+<li>position
+: <a class="el" href="structfastrack_1_1sensor_1_1SphereSensorParams.html#a624a17d6db10dd2480ee22c71aa8536d">fastrack::sensor::SphereSensorParams</a>
+</li>
 <li>position_
 : <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#ab39331a0aa648f9e1832e8c85d11f18f">fastrack::state::PositionVelocity</a>
 </li>
@@ -229,6 +239,9 @@
 <h3><a class="anchor" id="index_r"></a>- r -</h3><ul>
 <li>radii_
 : <a class="el" href="classfastrack_1_1environment_1_1BallsInBox.html#af3f711135e696e6d8e5a177716cdd701">fastrack::environment::BallsInBox</a>
+</li>
+<li>range
+: <a class="el" href="structfastrack_1_1sensor_1_1SphereSensorParams.html#a55ced1dc8a84b78c0b94514cdad5f074">fastrack::sensor::SphereSensorParams</a>
 </li>
 <li>rd_
 : <a class="el" href="classfastrack_1_1state_1_1State.html#ae82a5cbd53e533295c81a2c2a1c7f4de">fastrack::state::State</a>
@@ -271,17 +284,18 @@
 
 
 <h3><a class="anchor" id="index_s"></a>- s -</h3><ul>
-<li>sensor_srv_
-: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#af1d6847e21b55f3faa62af656ae42cbf">fastrack::environment::Environment&lt; M, S &gt;</a>
+<li>sensor_frame_
+: <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#a5b16ab71608b731706475873c08b4ce8">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
 </li>
-<li>sensor_srv_name_
-: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#affe90148bff305f0378a8b68f37ac165">fastrack::environment::Environment&lt; M, S &gt;</a>
+<li>sensor_pub_
+: <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#ace8c9518eb2b6d0ad4a1e187a5289fd1">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
 </li>
 <li>sensor_sub_
-: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#aff62b68dfce14c6dd895c89cf7e256df">fastrack::environment::Environment&lt; M, S &gt;</a>
+: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#a848e4a06f9c780ac4529dba3e27525e6">fastrack::environment::Environment&lt; M, P &gt;</a>
 </li>
 <li>sensor_topic_
-: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#aacfd3a233762e04f80dae00d28aa292f">fastrack::environment::Environment&lt; M, S &gt;</a>
+: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#a1e7a1eab2881fbfbe14d99cce05a38d9">fastrack::environment::Environment&lt; M, P &gt;</a>
+, <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#a958013fec83bb9dbd0b4042693fa2a08">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
 </li>
 <li>start_
 : <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a1cb0da2016b7683b5f8d022eb2ec41d5">fastrack::planning::PlannerManager&lt; S &gt;</a>
@@ -296,15 +310,23 @@
 <li>tf_broadcaster_
 : <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a8a82c6f070387601dee9052c301832bd">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
+<li>tf_buffer_
+: <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#a2f9af43bb03f53429a02f0bb4a1dfc0a">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
+</li>
+<li>tf_listener_
+: <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#a5f9065786cd22652de6243bec21c2034">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
+</li>
 <li>thrust
 : <a class="el" href="structfastrack_1_1control_1_1QuadrotorControl.html#ac14845a3691e5c040d099ba7d8f639f5">fastrack::control::QuadrotorControl</a>
 </li>
 <li>time_step_
 : <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a0d9ac463b12b9d751f04b95f80d4f166">fastrack::planning::PlannerManager&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#ae50e7b2132988d3a4cb08b9a1f671c7c">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
 , <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a421866741212f0e1447d0e16a7862401">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
 <li>timer_
 : <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a93a1f33444437030d47cc27636da73b0">fastrack::planning::PlannerManager&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#a79dd5b56ab6ef8e64f1685485f466f62">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
 , <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a970663a75a296d21b5b4973d3b075084">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
 <li>times_
@@ -352,7 +374,7 @@
 : <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a6fd2e7ddcc1399817c0276660e46d4f8">fastrack::dynamics::Dynamics&lt; S, C, SR &gt;</a>
 </li>
 <li>upper_
-: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#af400f5e857f4dcb32b5e6fb80179fddc">fastrack::environment::Environment&lt; M, S &gt;</a>
+: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#a90be310fa7c1c38adfc83dd211081335">fastrack::environment::Environment&lt; M, P &gt;</a>
 , <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#ad224389639aa4f857df33e38310986bb">fastrack::state::PositionVelocity</a>
 </li>
 </ul>
@@ -372,10 +394,12 @@
 : <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#a24c82957ba6db7ac9dda11fedbcf7dcb">fastrack::state::PositionVelocity</a>
 </li>
 <li>vis_pub_
-: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#a112f69b768504ba6f4d71419886911be">fastrack::environment::Environment&lt; M, S &gt;</a>
+: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#a4434fb3e77973e73ad06d596ae41b3ed">fastrack::environment::Environment&lt; M, P &gt;</a>
+, <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#a13e644e2eaf662a50352ae16bd29c931">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
 </li>
 <li>vis_topic_
-: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#a988e8bd821e98a0c40a3e71e3a725935">fastrack::environment::Environment&lt; M, S &gt;</a>
+: <a class="el" href="classfastrack_1_1environment_1_1Environment.html#a0e174cf3a693e64ee310c2e92658bca4">fastrack::environment::Environment&lt; M, P &gt;</a>
+, <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#a6a82def2ce3ecdf0f299b9c862f211bf">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
 </li>
 </ul>
 
@@ -415,7 +439,7 @@
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Tue Apr 3 2018 16:34:04</small>
+<small>autogenerated on Tue Apr 3 2018 23:53:03</small>
 </div>
 </body>
 </html>
