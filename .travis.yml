@@ -11,8 +11,6 @@ env:
     # Set the python path manually to include /usr/-/python2.7/dist-packages
     # as this is where apt-get installs python packages.
     - PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages:/usr/local/lib/python2.7/dist-packages
-#    secure:
-      # SSH authorization so that travis can push documentation to the repository.
 
 language: cpp
 
@@ -78,16 +76,8 @@ install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir crazyflie_clean && cd crazyflie_clean; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then git clone https://github.com/HJReachability/crazyflie_clean; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd crazyflie_clean/ros; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then catkin_make install; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then catkin_make && source ./devel/setup.bash; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd ../../..; fi
 
 script:
   - bash ./deploy.sh
-
-after_success:
-  # Make and publish documentation.
-#  - git config credential.helper "store --file=.git/credentials"
-#  - echo "https://${PA_TOKEN}:@github.com" > .git/credentials
-#  - make documentation
-#  - cd ..
-#  - ./documentation/publish_documentation.sh

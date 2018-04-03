@@ -56,6 +56,9 @@
 #include <fastrack_msgs/ReplanRequest.h>
 #include <fastrack_msgs/Trajectory.h>
 
+#include <ros/ros.h>
+#include <visualization_msgs/Marker.h>
+
 namespace fastrack {
 namespace planning {
 
@@ -109,7 +112,7 @@ protected:
   std::vector<double> config_upper_;
   std::vector<double> config_lower_;
 
-  // Publisher and subscriber.
+  // Publishers and subscriber.
   ros::Subscriber replan_request_sub_;
   ros::Publisher traj_pub_;
 

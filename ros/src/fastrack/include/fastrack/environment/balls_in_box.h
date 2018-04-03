@@ -52,7 +52,7 @@
 namespace fastrack {
 namespace environment {
 
-class BallsInBox : public Environment {
+class BallsInBox : public Environment<> {
 public:
   ~BallsInBox() {}
   explicit BallsInBox()
