@@ -9,6 +9,7 @@ Panels:
         - /Grid1
         - /TF1
         - /TF1/Frames1
+        - /Sensor Radius1
         - /Camera1
         - /Camera1/Visibility1
       Splitter Ratio: 0.5
@@ -58,37 +59,51 @@ Visualization Manager:
       Frame Timeout: 10000
       Frames:
         All Enabled: false
+        planner:
+          Value: true
+        tracker:
+          Value: true
+        tracker/base_link:
+          Value: true
+        world:
+          Value: true
       Marker Scale: 2
       Name: TF
       Show Arrows: false
       Show Axes: true
       Show Names: false
       Tree:
-        {}
+        world:
+          planner:
+            {}
+          tracker:
+            tracker/base_link:
+              {}
       Update Interval: 0
       Value: true
     - Class: rviz/Marker
-      Enabled: true
+      Enabled: false
       Marker Topic: /vis/true_env
       Name: True Map
-      Namespaces:
-        {}
-      Queue Size: 100
-      Value: true
-    - Class: rviz/Marker
-      Enabled: false
-      Marker Topic: /vis/known_env
-      Name: Known Map
       Namespaces:
         {}
       Queue Size: 100
       Value: false
     - Class: rviz/Marker
       Enabled: true
+      Marker Topic: /vis/known_env
+      Name: Known Map
+      Namespaces:
+        cube: true
+        sphere: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/Marker
+      Enabled: true
       Marker Topic: /vis/bound
       Name: Tracking Bound
       Namespaces:
-        {}
+        bound: true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -96,17 +111,18 @@ Visualization Manager:
       Marker Topic: /vis/traj
       Name: Trajectory
       Namespaces:
-        {}
+        lines: true
+        spheres: true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
-      Enabled: false
+      Enabled: true
       Marker Topic: /vis/sensor
       Name: Sensor Radius
       Namespaces:
-        {}
+        sensor: true
       Queue Size: 100
-      Value: false
+      Value: true
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
@@ -173,7 +189,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 11.0022
+      Distance: 21.7164
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -185,10 +201,10 @@ Visualization Manager:
         Z: 0
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.325399
+      Pitch: 0.270399
       Target Frame: world
       Value: ThirdPersonFollower (rviz)
-      Yaw: 2.27541
+      Yaw: 0.955406
     Saved: ~
 Window Geometry:
   Camera:

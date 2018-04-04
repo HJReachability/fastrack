@@ -149,7 +149,7 @@ bool Environment<M, P>::LoadParameters(const ros::NodeHandle& n) {
   ros::NodeHandle nl(n);
 
   // Sensor topic/service.
-  if (!nl.getParam("topic/sensor", sensor_topic_)) return false;
+  if (!nl.getParam("topic/sensor_sub", sensor_topic_)) return false;
   if (!nl.getParam("topic/updated_env", updated_topic_)) return false;
   if (!nl.getParam("vis/env", vis_topic_)) return false;
 

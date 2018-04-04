@@ -151,7 +151,7 @@ bool Sensor<E, M, P>::LoadParameters(const ros::NodeHandle& n) {
   ros::NodeHandle nl(n);
 
   // Topics.
-  if (!nl.getParam("topic/sensor", sensor_topic_)) return false;
+  if (!nl.getParam("topic/sensor_pub", sensor_topic_)) return false;
   if (!nl.getParam("vis/sensor", vis_topic_)) return false;
 
   // Frames of reference.
@@ -191,6 +191,9 @@ void Sensor<E, M, P>::TimerCallback(const ros::TimerEvent& e) {
 
   // Query environment and publish.
   sensor_pub_.publish(env_.SimulateSensor(params_));
+
+  // Visualize.
+  Visualize();
 }
 
 } //\namespace sensor

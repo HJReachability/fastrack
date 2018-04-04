@@ -255,7 +255,7 @@ bool PlannerManager<S>::RegisterCallbacks(const ros::NodeHandle& n) {
 // classes with more specific replanning needs.
 template<typename S>
 void PlannerManager<S>::MaybeRequestTrajectory() {
-  if (waiting_for_traj_)
+  if (!ready_ || waiting_for_traj_)
     return;
 
   // Set start and goal states.

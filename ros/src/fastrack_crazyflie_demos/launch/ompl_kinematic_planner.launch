@@ -4,7 +4,7 @@
   <!-- Topics. -->
   <arg name="traj_topic" default="/traj" />
   <arg name="replan_request_topic" default="/replan" />
-  <arg name="sensor_topic" default="/sensed_obstacles" />
+  <arg name="sensor_sub_topic" default="/sensor" />
   <arg name="updated_env_topic" default="/updated_env" />
   <arg name="vis_topic" default="/vis/known_env" />
 
@@ -44,7 +44,7 @@
         output="screen">
     <param name="topic/traj" value="$(arg traj_topic)" />
     <param name="topic/replan_request" value="$(arg replan_request_topic)" />
-    <param name="topic/sensor" value="$(arg sensor_topic)" />
+    <param name="topic/sensor_sub" value="$(arg sensor_sub_topic)" />
     <param name="topic/updated_env" value="$(arg updated_env_topic)" />
     <param name="vis/env" value="$(arg vis_topic)" />
 

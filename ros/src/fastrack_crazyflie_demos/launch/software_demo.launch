@@ -117,7 +117,7 @@
   <include file="$(find fastrack_crazyflie_demos)/launch/ompl_kinematic_planner.launch">
     <arg name="traj_topic" value="$(arg traj_topic)" />
     <arg name="replan_request_topic" value="$(arg replan_request_topic)" />
-    <arg name="sensor_topic" value="$(arg sensor_topic)" />
+    <arg name="sensor_sub_topic" value="$(arg sensor_topic)" />
     <arg name="updated_env_topic" value="$(arg updated_env_topic)" />
     <arg name="vis_topic" value="$(arg known_env_vis_topic)" />
     <arg name="bound_srv" value="$(arg bound_srv)" />
@@ -155,7 +155,8 @@
 
   <!-- Sphere sensor. -->
   <include file="$(find fastrack_crazyflie_demos)/launch/sphere_sensor.launch">
-    <arg name="sensor_topic" value="$(arg junk_sensor_topic)" />
+    <arg name="sensor_sub_topic" value="$(arg sensor_topic)" />
+    <arg name="sensor_pub_topic" value="$(arg sensor_topic)" />
     <arg name="updated_env_topic" value="$(arg junk_updated_env_topic)" />
     <arg name="sensor_vis_topic" value="$(arg sensor_vis_topic)" />
     <arg name="env_vis_topic" value="$(arg true_env_vis_topic)" />

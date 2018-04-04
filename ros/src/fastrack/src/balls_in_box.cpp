@@ -107,6 +107,7 @@ void BallsInBox::SensorCallback(
     ROS_WARN_THROTTLE(1.0, "%s: Caution! Linear search may be slowing you down.",
                       name_.c_str());
 
+  bool any_unique = false;
   for (size_t ii = 0; ii < num_obstacles; ii++) {
     const Vector3d p(msg->centers[ii].x, msg->centers[ii].y, msg->centers[ii].z);
     const double r = msg->radii[ii];
@@ -122,16 +123,19 @@ void BallsInBox::SensorCallback(
     }
 
     if (unique) {
+      any_unique = true;
       centers_.push_back(p);
       radii_.push_back(r);
     }
   }
 
-  // Visualize.
-  Visualize();
+  if (any_unique) {
+    // Let the system know this environment has been updated.
+    updated_pub_.publish(std_msgs::Empty());
 
-  // Let the system know this environment has been updated.
-  updated_pub_.publish(std_msgs::Empty());
+    // Visualize.
+    Visualize();
+  }
 }
 
 // Generate a sensor measurement as a service response.
