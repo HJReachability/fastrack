@@ -68,6 +68,8 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:acb59860d665ac48616a8bc5d58054e05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac86b58a71a7a0e2a04167203282ef122"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#ac86b58a71a7a0e2a04167203282ef122">TrajectoryCallback</a> (const fastrack_msgs::Trajectory::ConstPtr &amp;msg)</td></tr>
 <tr class="separator:ac86b58a71a7a0e2a04167203282ef122"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad512caa77ae2e94494e5b7a255a63013"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#ad512caa77ae2e94494e5b7a255a63013">UpdatedEnvironmentCallback</a> (const std_msgs::Empty::ConstPtr &amp;msg)</td></tr>
+<tr class="separator:ad512caa77ae2e94494e5b7a255a63013"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -119,6 +121,10 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a760fbc8e7c17d2560309fa81da45e956"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9dc5e7fe665c57337f6e8b817c010797"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a9dc5e7fe665c57337f6e8b817c010797">traj_vis_topic_</a></td></tr>
 <tr class="separator:a9dc5e7fe665c57337f6e8b817c010797"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d43f7789739ad8c4076ee8e1b03ed13"><td class="memItemLeft" align="right" valign="top">ros::Subscriber&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a9d43f7789739ad8c4076ee8e1b03ed13">updated_env_sub_</a></td></tr>
+<tr class="separator:a9d43f7789739ad8c4076ee8e1b03ed13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a276ea31454a9203ae000ee61fba252f5"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a276ea31454a9203ae000ee61fba252f5">updated_env_topic_</a></td></tr>
+<tr class="separator:a276ea31454a9203ae000ee61fba252f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a776b32ef0f7268b71c01cd48cb6da5c8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a776b32ef0f7268b71c01cd48cb6da5c8">waiting_for_traj_</a></td></tr>
 <tr class="separator:a776b32ef0f7268b71c01cd48cb6da5c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -208,7 +214,7 @@ template&lt;typename S &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00163">163</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00170">170</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -236,7 +242,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00184">184</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00191">191</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -263,7 +269,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00246">246</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00257">257</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -319,7 +325,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00212">212</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00220">220</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -347,7 +353,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00277">277</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00288">288</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -379,6 +385,34 @@ template&lt;typename S &gt; </div>
 
 </div>
 </div>
+<a class="anchor" id="ad512caa77ae2e94494e5b7a255a63013"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename S &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html">fastrack::planning::PlannerManager</a>&lt; S &gt;::UpdatedEnvironmentCallback </td>
+          <td>(</td>
+          <td class="paramtype">const std_msgs::Empty::ConstPtr &amp;&#160;</td>
+          <td class="paramname"><em>msg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00113">113</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a class="anchor" id="ad2a5d60dc29a1576170d59d116ea8790"></a>
 <div class="memitem">
@@ -400,7 +434,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00130">130</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00135">135</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -424,7 +458,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00137">137</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00143">143</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -448,7 +482,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00145">145</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00152">152</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -472,7 +506,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00123">123</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00128">128</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -496,7 +530,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00156">156</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00163">163</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -520,7 +554,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00155">155</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00162">162</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -544,7 +578,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00146">146</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00153">153</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -568,7 +602,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00116">116</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00121">121</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -592,7 +626,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00152">152</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00159">159</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -616,7 +650,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00135">135</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00140">140</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -640,7 +674,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00142">142</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00148">148</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -664,7 +698,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00131">131</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00136">136</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -688,7 +722,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00138">138</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00144">144</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -712,7 +746,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00132">132</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00137">137</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -736,7 +770,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00139">139</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00145">145</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -760,7 +794,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00122">122</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00127">127</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -784,7 +818,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00149">149</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00156">156</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -808,7 +842,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00127">127</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00132">132</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -832,7 +866,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00126">126</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00131">131</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -856,7 +890,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00113">113</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00118">118</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -880,7 +914,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00134">134</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00139">139</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -904,7 +938,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00141">141</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00147">147</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -928,7 +962,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00133">133</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00138">138</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -952,7 +986,55 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00140">140</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00146">146</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9d43f7789739ad8c4076ee8e1b03ed13"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename S &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ros::Subscriber <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html">fastrack::planning::PlannerManager</a>&lt; S &gt;::updated_env_sub_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00141">141</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a276ea31454a9203ae000ee61fba252f5"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename S &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html">fastrack::planning::PlannerManager</a>&lt; S &gt;::updated_env_topic_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00149">149</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -976,7 +1058,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00119">119</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
+<p>Definition at line <a class="el" href="planner__manager_8h_source.html#l00124">124</a> of file <a class="el" href="planner__manager_8h_source.html">planner_manager.h</a>.</p>
 
 </div>
 </div>
@@ -989,7 +1071,7 @@ template&lt;typename S &gt; </div>
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Tue Apr 3 2018 23:53:03</small>
+<small>autogenerated on Wed Apr 4 2018 19:06:39</small>
 </div>
 </body>
 </html>

@@ -1,8 +1,8 @@
 <map id="planner.h" name="planner.h">
-<area shape="rect" id="node2" href="$environment_8h.html" title="fastrack/environment\l/environment.h" alt="" coords="993,81,1137,122"/>
+<area shape="rect" id="node2" href="$environment_8h.html" title="fastrack/environment\l/environment.h" alt="" coords="1003,81,1147,122"/>
 <area shape="rect" id="node5" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="525,360,669,387"/>
-<area shape="rect" id="node23" href="$trajectory_8h.html" title="fastrack/trajectory\l/trajectory.h" alt="" coords="1415,171,1541,213"/>
+<area shape="rect" id="node24" href="$trajectory_8h.html" title="fastrack/trajectory\l/trajectory.h" alt="" coords="1413,171,1539,213"/>
 <area shape="rect" id="node3" href="$box_8h.html" title="fastrack/bound/box.h" alt="" coords="633,179,777,205"/>
 <area shape="rect" id="node4" href="$tracking__bound_8h.html" title="fastrack/bound/tracking\l_bound.h" alt="" coords="877,262,1035,303"/>
-<area shape="rect" id="node24" href="$state_8h.html" title="fastrack/state/state.h" alt="" coords="1313,269,1460,296"/>
+<area shape="rect" id="node25" href="$state_8h.html" title="fastrack/state/state.h" alt="" coords="1313,269,1460,296"/>
 </map>
