@@ -109,6 +109,11 @@ protected:
     ready_ = true;
   }
 
+  // Generate a new trajectory request when environment has been updated.
+  inline void UpdatedEnvironmentCallback(const std_msgs::Empty::ConstPtr& msg) {
+    MaybeRequestTrajectory();
+  }
+
   // Current trajectory.
   Trajectory<S> traj_;
 
@@ -133,6 +138,7 @@ protected:
   ros::Publisher traj_vis_pub_;
   ros::Subscriber traj_sub_;
   ros::Subscriber ready_sub_;
+  ros::Subscriber updated_env_sub_;
 
   std::string bound_topic_;
   std::string ref_topic_;
@@ -140,6 +146,7 @@ protected:
   std::string traj_vis_topic_;
   std::string traj_topic_;
   std::string ready_topic_;
+  std::string updated_env_topic_;
 
   // Frames of reference for publishing markers.
   std::string fixed_frame_;
@@ -189,6 +196,7 @@ bool PlannerManager<S>::LoadParameters(const ros::NodeHandle& n) {
   if (!nl.getParam("topic/traj", traj_topic_)) return false;
   if (!nl.getParam("topic/ref", ref_topic_)) return false;
   if (!nl.getParam("topic/replan_request", replan_request_topic_)) return false;
+  if (!nl.getParam("topic/updated_env", updated_env_topic_)) return false;
   if (!nl.getParam("vis/traj", traj_vis_topic_)) return false;
   if (!nl.getParam("vis/bound", bound_topic_)) return false;
 
@@ -218,6 +226,9 @@ bool PlannerManager<S>::RegisterCallbacks(const ros::NodeHandle& n) {
 
   traj_sub_ = nl.subscribe(traj_topic_.c_str(), 1,
     &PlannerManager<S>::TrajectoryCallback, this);
+
+  updated_env_sub_ = nl.subscribe(updated_env_topic_.c_str(), 1,
+    &PlannerManager<S>::UpdatedEnvironmentCallback, this);
 
   // Publishers.
   ref_pub_ = nl.advertise<fastrack_msgs::State>(ref_topic_.c_str(), 1, false);

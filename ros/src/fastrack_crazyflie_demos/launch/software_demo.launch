@@ -19,11 +19,16 @@
   <arg name="replan_request_topic" default="/replan" />
   <arg name="traj_topic" default="/traj" />
   <arg name="sensor_topic" default="/sensor" />
+  <arg name="updated_env_topic" default="/updated_env" />
   <arg name="sensor_vis_topic" default="/vis/sensor" />
   <arg name="traj_vis_topic" default="/vis/traj" />
   <arg name="bound_vis_topic" default="/vis/bound" />
   <arg name="known_env_vis_topic" default="/vis/known_env" />
   <arg name="true_env_vis_topic" default="/vis/true_env" />
+
+  <!-- Dummy topics that should not get published on or subscribed to. -->
+  <arg name="junk_sensor_topic" default="/junk/sensor" />
+  <arg name="junk_updated_env_topic" default="/junk/updated_env" />
 
   <!-- Services. -->
   <arg name="bound_srv" default="/bound" />
@@ -113,6 +118,7 @@
     <arg name="traj_topic" value="$(arg traj_topic)" />
     <arg name="replan_request_topic" value="$(arg replan_request_topic)" />
     <arg name="sensor_topic" value="$(arg sensor_topic)" />
+    <arg name="updated_env_topic" value="$(arg updated_env_topic)" />
     <arg name="vis_topic" value="$(arg known_env_vis_topic)" />
     <arg name="bound_srv" value="$(arg bound_srv)" />
     <arg name="dynamics_srv" value="$(arg planner_dynamics_srv)" />
@@ -149,7 +155,8 @@
 
   <!-- Sphere sensor. -->
   <include file="$(find fastrack_crazyflie_demos)/launch/sphere_sensor.launch">
-    <arg name="sensor_topic" value="$(arg sensor_topic)" />
+    <arg name="sensor_topic" value="$(arg junk_sensor_topic)" />
+    <arg name="updated_env_topic" value="$(arg junk_updated_env_topic)" />
     <arg name="sensor_vis_topic" value="$(arg sensor_vis_topic)" />
     <arg name="env_vis_topic" value="$(arg true_env_vis_topic)" />
     <arg name="fixed_frame" value="$(arg fixed_frame)" />

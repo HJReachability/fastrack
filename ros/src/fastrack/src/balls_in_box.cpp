@@ -92,6 +92,7 @@ bool BallsInBox::IsValid(const Vector3d& position, const Box& bound) const {
 
 // Update this environment with the information contained in the given
 // sensor measurement.
+// NOTE! This function needs to publish on `updated_topic_`.
 void BallsInBox::SensorCallback(
   const fastrack_msgs::SensedSpheres::ConstPtr& msg) {
   // Check list lengths.
@@ -128,6 +129,9 @@ void BallsInBox::SensorCallback(
 
   // Visualize.
   Visualize();
+
+  // Let the system know this environment has been updated.
+  updated_pub_.publish(std_msgs::Empty());
 }
 
 // Generate a sensor measurement as a service response.

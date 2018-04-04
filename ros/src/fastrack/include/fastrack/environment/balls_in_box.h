@@ -84,6 +84,7 @@ private:
 
   // Update this environment with the information contained in the given
   // sensor measurement.
+  // NOTE! This function needs to publish on `updated_topic_`.
   void SensorCallback(const fastrack_msgs::SensedSpheres::ConstPtr& msg);
 
   // Generate random obstacles.

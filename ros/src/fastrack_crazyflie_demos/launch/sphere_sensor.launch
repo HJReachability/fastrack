@@ -4,6 +4,7 @@
   <!-- Topics. -->
   <arg name="sensor_topic" default="/sensor" />
   <arg name="sensor_vis_topic" default="/vis/sensor" />
+  <arg name="updated_env_topic" default="/updated_env" />
   <arg name="env_vis_topic" default="/vis/true_env" />
 
   <!-- Frames. -->
@@ -39,6 +40,7 @@
     <param name="topic/sensor" value="$(arg sensor_topic)" />
     <param name="vis/sensor" value="$(arg sensor_vis_topic)" />
     <param name="vis/env" value="$(arg env_vis_topic)" />
+    <param name="topic/updated_env" value="$(arg updated_env_topic)" />
     <param name="frame/fixed" value="$(arg fixed_frame)" />
     <param name="frame/sensor" value="$(arg sensor_frame)" />
     <param name="time_step" value="$(arg time_step)" />

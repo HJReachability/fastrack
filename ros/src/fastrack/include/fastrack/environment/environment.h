@@ -52,6 +52,7 @@
 
 #include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
+#include <std_msgs/Empty.h>
 
 namespace fastrack {
 namespace environment {
@@ -93,6 +94,7 @@ protected:
 
   // Update this environment with the information contained in the given
   // sensor measurement.
+  // NOTE! This function needs to publish on `updated_topic_`.
   virtual void SensorCallback(const typename M::ConstPtr& msg) = 0;
 
   // Upper and lower bounds.
@@ -101,9 +103,11 @@ protected:
 
   // Publishers and subscribers.
   ros::Publisher vis_pub_;
+  ros::Publisher updated_pub_;
   ros::Subscriber sensor_sub_;
 
   std::string vis_topic_;
+  std::string updated_topic_;
   std::string sensor_topic_;
 
   // Frame in which to publish visualization.
@@ -146,6 +150,7 @@ bool Environment<M, P>::LoadParameters(const ros::NodeHandle& n) {
 
   // Sensor topic/service.
   if (!nl.getParam("topic/sensor", sensor_topic_)) return false;
+  if (!nl.getParam("topic/updated_env", updated_topic_)) return false;
   if (!nl.getParam("vis/env", vis_topic_)) return false;
 
   // Frame of reference to publish visualization in.
@@ -175,6 +180,9 @@ bool Environment<M, P>::RegisterCallbacks(const ros::NodeHandle& n) {
   // Publishers.
   vis_pub_ = nl.advertise<visualization_msgs::Marker>(
     vis_topic_.c_str(), 1, false);
+
+  updated_pub_ = nl.advertise<std_msgs::Empty>(
+    updated_topic_.c_str(), 1, false);
 
   return true;
 }
