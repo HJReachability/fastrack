@@ -36,41 +36,70 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base class for all kinematic planners. Geometric planners are planners that
-// operate directly in the configuration space and use only kinematics instead
-// of dynamics.
+// Base class for all graph-based dynamic planners. These planners are all
+// guaranteed to generate recursively feasible trajectories constructed
+// using sampling-based logic.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_PLANNING_KINEMATIC_PLANNER_H
-#define FASTRACK_PLANNING_KINEMATIC_PLANNER_H
+#ifndef FASTRACK_PLANNING_GRAPH_DYNAMIC_PLANNER_H
+#define FASTRACK_PLANNING_GRAPH_DYNAMIC_PLANNER_H
 
 #include <fastrack/planning/planner.h>
-#include <fastrack/dynamics/kinematics.h>
-
-#include <fastrack_srvs/KinematicPlannerDynamics.h>
+#include <fastrack/dynamics/dynamics.h>
 
 namespace fastrack {
 namespace planning {
 
-using dynamics::Kinematics;
+using dynamics::Dynamics;
 
-template<typename S, typename E, typename B, typename SB>
-class KinematicPlanner : public Planner< S, E,
-  Kinematics<S>, fastrack_srvs::KinematicPlannerDynamics, B, SB > {
+template<typename S, typename E,
+         typename D, typename SD, typename B, typename SB>
+class GraphDynamicPlanner : public Planner< S, E, D, SD, B, SB > {
 public:
-  virtual ~KinematicPlanner() {}
+  virtual ~GraphDynamicPlanner() {}
 
 protected:
-  explicit KinematicPlanner()
-    : Planner<S, E, Kinematics<S>, fastrack_srvs::KinematicPlannerDynamics, B, SB>() {}
+  explicit GraphDynamicPlanner()
+    : Planner<S, E, D, SD, B, SB>() {}
 
   // Plan a trajectory from the given start to goal states starting
   // at the given time.
-  // NOTE! The states in the output trajectory are essentially configurations.
-  virtual Trajectory<S> Plan(
+  inline Trajectory<S> Plan(
+    const S& start, const S& goal, double start_time=0.0) const {
+    return RecursivePlan(start, {goal}, start_time, true);
+  }
+
+  // Recursive version of Plan() that plans outbound and return trajectories.
+  // High level recursive feasibility logic is here.
+  Trajectory<S> RecursivePlan(
+    const S& start, const S& goal, double start_time, bool outbound,
+    SearhableSet<S>& viable_states, SearchableSet<S>& undecided_states);
+
+  // Generate a sub-plan that connects two states and is dynamically feasible
+  // (but not necessarily recursively feasible).
+  virtual Trajectory<S> SubPlan(
     const S& start, const S& goal, double start_time=0.0) const = 0;
-}; //\class KinematicPlanner
+}; //\class GraphDynamicPlanner
+
+// ----------------------------- IMPLEMENTATION ----------------------------- //
+
+// Recursive version of Plan() that plans outbound and return trajectories.
+// High level recursive feasibility logic is here.
+template<typename S, typename E,
+         typename D, typename SD, typename B, typename SB>
+Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::
+RecursivePlan(const S& start, const S& goal, double start_time, bool outbound) {
+  bool done = false;
+
+  // Searchable sets of viable and potentially unviable nodes.
+  SearchableSet<S> viable_states;
+  SearchableSet<S> undecided_states;
+
+  while (!done) {
+    // Sample a new point.
+  }
+}
 
 } //\namespace planning
 } //\namespace fastrack

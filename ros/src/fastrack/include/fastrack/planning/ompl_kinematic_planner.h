@@ -73,12 +73,12 @@ public:
     ompl::msg::setLogLevel(ompl::msg::LogLevel::LOG_ERROR);
   }
 
+private:
   // Plan a trajectory from the given start to goal states starting
   // at the given time.
   // NOTE! The states in the output trajectory are essentially configurations.
   Trajectory<S> Plan(const S& start, const S& goal, double start_time=0.0) const;
 
-private:
   // Convert between OMPL states and configurations.
   S FromOmplState(const ob::State* state) const;
 }; //\class KinematicPlanner
