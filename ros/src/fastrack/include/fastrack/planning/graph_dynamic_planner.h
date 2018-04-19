@@ -46,7 +46,9 @@
 #define FASTRACK_PLANNING_GRAPH_DYNAMIC_PLANNER_H
 
 #include <fastrack/planning/planner.h>
-#include <fastrack/dynamics/dynamics.h>
+#include <fastrack/planning/searchable_set.h>
+#include <fastrack/trajectory/trajectory.h>
+#include <fastrack/utils/types.h>
 
 namespace fastrack {
 namespace planning {
@@ -67,19 +69,59 @@ protected:
   // at the given time.
   inline Trajectory<S> Plan(
     const S& start, const S& goal, double start_time=0.0) const {
-    return RecursivePlan(start, {goal}, start_time, true);
+    return RecursivePlan(
+      start, SearchableSet< Node<S>, S >(goal), start_time, true);
   }
 
   // Recursive version of Plan() that plans outbound and return trajectories.
   // High level recursive feasibility logic is here.
   Trajectory<S> RecursivePlan(
     const S& start, const S& goal, double start_time, bool outbound,
-    SearhableSet<S>& viable_states, SearchableSet<S>& undecided_states);
+    SearchableSet< Node<S>, S >& viable_states,
+    SearchableSet< Node<S>, S >& undecided_states);
 
   // Generate a sub-plan that connects two states and is dynamically feasible
   // (but not necessarily recursively feasible).
   virtual Trajectory<S> SubPlan(
     const S& start, const S& goal, double start_time=0.0) const = 0;
+
+  // Node in implicit planning graph, templated on state type.
+  // NOTE! To avoid memory leaks, Nodes are constructed using a static
+  // factory method that returns a shared pointer.
+  template<typename S>
+  struct Node<S> {
+    S state;
+    Node<S>::ConstPtr child;
+    Trajectory<S> traj;
+
+    // Typedefs.
+    typedef std::shared_ptr< Node<S> > Ptr;
+    typedef std::shared_ptr< const Node<S> > ConstPtr;
+
+    // Factory methods.
+    static Ptr Create();
+    static Ptr Create(const S& state,
+                      const ConstPtr& child,
+                      const Trajectory<S>& traj);
+
+  private:
+    explicit Node<S>() {}
+    explicit Node<S>(const S& state,
+                     const ConstPtr& child,
+                     const Trajectory<S>& traj) {}
+  }; //\struct Node<S>
+
+  // Implementation of static factory methods for constructing a Node.
+  template<typename S>
+  Node<S>::Ptr Node<S>::Create() { return Node<S>::Ptr(new Node<S>()); }
+
+  template<typename S>
+  Node<S>::Ptr Node<S>::Create(const S& state,
+                               const Node<S>::ConstPtr& child,
+                               const Trajectory<S>& traj) {
+    return Node<S>::Ptr(new Node<S>(state, child, traj));
+  }
+
 }; //\class GraphDynamicPlanner
 
 // ----------------------------- IMPLEMENTATION ----------------------------- //
@@ -93,8 +135,8 @@ RecursivePlan(const S& start, const S& goal, double start_time, bool outbound) {
   bool done = false;
 
   // Searchable sets of viable and potentially unviable nodes.
-  SearchableSet<S> viable_states;
-  SearchableSet<S> undecided_states;
+  SearchableSet< Node<S>, S > viable_states;
+  SearchableSet< Node<S>, S > undecided_states;
 
   while (!done) {
     // Sample a new point.
