@@ -37,47 +37,50 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Defines SearchableSet class, which is a wrapper around the FLANN library's
-// fast kdtree index. SearchableSets are templated on the type of
+// fast kdtree index. SearchableSets store a collection of nodes (N) which are
+// themselves templated on the state type (S) and allow for nearest neighbor
+// and radius searches.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef META_PLANNER_FLANN_TREE_H
-#define META_PLANNER_FLANN_TREE_H
+#ifndef FASTRACK_PLANNING_SEARCHABLE_SET_H
+#define FASTRACK_PLANNING_SEARCHABLE_SET_H
 
-#include <meta_planner/waypoint.h>
 #include <utils/types.h>
 #include <utils/uncopyable.h>
 
 #include <ros/ros.h>
 #include <flann/flann.h>
-#include <memory>
-#include <vector>
-#include <math.h>
 
-namespace meta {
+namespace fastrack {
+namespace planning {
 
-class FlannTree : private Uncopyable {
+template<typename N, typename S>
+class SearchableSet : private Uncopyable {
 public:
-  explicit FlannTree() {}
-  ~FlannTree();
+  ~SearchableSet();
+  explicit SearchableSet() {}
+  explicit SearchableSet(const N::ConstPtr& node);
+  explicit SearchableSet(const S& state);
 
-  // Insert a new Waypoint into the tree.
-  bool Insert(const Waypoint::ConstPtr& waypoint);
+  // Insert a new node into the set.
+  bool Insert(const N::ConstPtr& node);
 
   // Nearest neighbor search.
-  std::vector<Waypoint::ConstPtr> KnnSearch(Vector3d& query, size_t k) const;
+  std::vector<N::ConstPtr> KnnSearch(const S& query, size_t k) const;
 
   // Radius search.
-  std::vector<Waypoint::ConstPtr> RadiusSearch(Vector3d& query, double r) const;
+  std::vector<N::ConstPtr> RadiusSearch(const S& query, double r) const;
 
 private:
-  // A Flann kdtree. Searches in this tree return indices, which are then mapped
-  // to Waypoint pointers in an array.
+  // A Flann kdtree. Searches in this index return indices, which are then mapped
+  // to node pointers in an array.
   // TODO: fix the distance metric to be something more intelligent.
   std::unique_ptr< flann::KDTreeIndex< flann::L2<double> > > index_;
-  std::vector<Waypoint::ConstPtr> registry_;
+  std::vector<N::ConstPtr> registry_;
 };
 
-} //\namespace meta
+} //\namespace planning
+} //\namespace fastrack
 
 #endif
