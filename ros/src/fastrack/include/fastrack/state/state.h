@@ -69,6 +69,10 @@ public:
   // be generalized to a collection of generic obstacles.
   virtual std::vector<Vector3d> OccupiedPositions() const = 0;
 
+  // Convert from/to VectorXd.
+  virtual void FromVector(const VectorXd& x) = 0;
+  virtual VectorXd ToVector() const = 0;
+
   // Convert from/to ROS message.
   virtual void FromRos(const fastrack_msgs::State::ConstPtr& msg) = 0;
   virtual fastrack_msgs::State ToRos() const = 0;

@@ -163,6 +163,34 @@ void PositionVelocity::SetConfigurationBounds(
   upper_(2) = upper[2];
 }
 
+// Convert from VectorXd. Assume State is [x, y, z, vx, vy, vz].
+void PositionVelocity::FromVector(const VectorXd& x) {
+  if (x.size() == 6) {
+    position_(0) = x(0);
+    position_(1) = x(1);
+    position_(2) = x(2);
+    velocity_(0) = x(3);
+    velocity_(1) = x(4);
+    velocity_(2) = x(5);
+    return;
+  }
+
+  ROS_ERROR("PositionVelocity: vector is of the wrong size.");\
+}
+
+// Convert to VectorXd. Assume State is [x, y, z, vx, vy, vz].
+VectorXd PositionVelocity::ToVector() const {
+  VectorXd x(6);
+  x(0) = position_(0);
+  x(1) = position_(1);
+  x(2) = position_(2);
+  x(3) = velocity_(0);
+  x(4) = velocity_(1);
+  x(5) = velocity_(2);
+
+  return x;
+}
+
 // Convert from ROS message. Assume State is [x, y, z, vx, vy, vz] or
 // configuration only.
 void PositionVelocity::FromRos(const fastrack_msgs::State::ConstPtr& msg) {

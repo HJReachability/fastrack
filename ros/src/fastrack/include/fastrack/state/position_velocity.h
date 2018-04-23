@@ -111,6 +111,10 @@ public:
   // be generalized to a collection of generic obstacles.
   std::vector<Vector3d> OccupiedPositions() const;
 
+  // Convert from/to VectorXd. Assume State is [x, y, z, vx, vy, vz]
+  void FromVector(const VectorXd& x);
+  VectorXd ToVector() const;
+
   // Convert from/to ROS message. Assume State is [x, y, z, vx, vy, vz]
   // or configuration only.
   void FromRos(const fastrack_msgs::State::ConstPtr& msg);
