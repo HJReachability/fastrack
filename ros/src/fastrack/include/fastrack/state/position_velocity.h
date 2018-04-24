@@ -124,16 +124,19 @@ public:
   static constexpr size_t StateDimension() { return 6; }
   static constexpr size_t ConfigurationDimension() { return 3; }
 
-  // Set/get bounds of the configuration space.
-  static void SetConfigurationBounds(
-    const VectorXd& lower, const VectorXd& upper);
-  static void SetConfigurationBounds(
+  // Set/get bounds of the state/configuration space.
+  static void SetBounds(
+    const PositionVelocity& lower, const PositionVelocity& upper);
+  static void SetBounds(
     const std::vector<double>& lower, const std::vector<double>& upper);
   static VectorXd GetConfigurationLower();
   static VectorXd GetConfigurationUpper();
 
   // Sample from the configuration space associated with this state space.
   static VectorXd Sample();
+
+  // Sample from the state space itself.
+  static PositionVelocity Sample();
 
   // Compound assignment operators.
   PositionVelocity& operator+=(const PositionVelocity& rhs);
@@ -155,9 +158,9 @@ private:
   Vector3d position_;
   Vector3d velocity_;
 
-  // Static configuration space bounds for this state space.
-  static VectorXd lower_;
-  static VectorXd upper_;
+  // Static state space bounds for this state space.
+  static PositionVelocity lower_;
+  static PositionVelocity upper_;
 }; //\class PositionVelocity
 
 } //\namespace state

@@ -48,8 +48,10 @@ namespace fastrack {
 namespace state {
 
 // Initialize static configuration space bounds.
-VectorXd PositionVelocity::lower_ = VectorXd::Zero(ConfigurationDimension());
-VectorXd PositionVelocity::upper_ = VectorXd::Ones(ConfigurationDimension());
+PositionVelocity PositionVelocity::lower_ =
+  PositionVelocity(Vector3d::Zero(), Vector3d::Zero());
+PositionVelocity PositionVelocity::upper_ =
+  PositionVelocity(Vector3d::Zero(), Vector3d::Zero());
 
 // Constructors.
 PositionVelocity::PositionVelocity(double x, double y, double z,
@@ -110,21 +112,42 @@ void PositionVelocity::SetConfigurationDot(const VectorXd& configuration_dot) {
 VectorXd PositionVelocity::Sample() {
   const size_t kConfigurationSpaceDimension = 3;
 
-  // Make sure bounds are of the right size.
-  if (lower_.size() != kConfigurationSpaceDimension ||
-      upper_.size() != kConfigurationSpaceDimension) {
-    throw std::runtime_error("PositionVelocity: invalid configuration space bounds.");
-  }
-
   // Initialize a uniform random distribution in (0, 1).
   std::uniform_real_distribution<double> unif(0.0, 1.0);
+
+  // Extract lower/upper configuration bounds.
+  const VectorXd lower_config = PositionVelocity::GetConfigurationLower();
+  const VectorXd upper_config = PositionVelocity::GetConfigurationUpper();
 
   // Generate random sample.
   VectorXd sample(kConfigurationSpaceDimension);
   for (size_t ii = 0; ii < kConfigurationSpaceDimension; ii++)
-    sample(ii) = lower_(ii) + (upper_(ii) - lower_(ii)) * unif(rng_);
+    sample(ii) = lower_config(ii) +
+      (upper_config(ii) - lower_config(ii)) * unif(rng_);
 
   return sample;
+}
+
+// Sample from the state space itself.
+PositionVelocity PositionVelocity::Sample() {
+  // Initialize a uniform random distribution in (0, 1).
+  std::uniform_real_distribution<double> unif(0.0, 1.0);
+
+  // Generate random sample.
+  const double x =
+    lower_.position_(0) + (upper_.position_(0) - lower_.position_(0)) * unif(rng_);
+  const double y =
+    lower_.position_(1) + (upper_.position_(1) - lower_.position_(1)) * unif(rng_);
+  const double z =
+    lower_.position_(2) + (upper_.position_(2) - lower_.position_(2)) * unif(rng_);
+  const double vx =
+    lower_.velocity_(0) + (upper_.velocity_(0) - lower_.velocity_(0)) * unif(rng_);
+  const double vy =
+    lower_.velocity_(1) + (upper_.velocity_(1) - lower_.velocity_(1)) * unif(rng_);
+  const double vz =
+    lower_.velocity_(2) + (upper_.velocity_(2) - lower_.velocity_(2)) * unif(rng_);
+
+  return PositionVelocity(x, y, z, vx, vy, vz);
 }
 
 // For a given configuration, what are the corresponding positions in
@@ -135,32 +158,34 @@ std::vector<Vector3d> PositionVelocity::OccupiedPositions() const {
   return std::vector<Vector3d>({ position_ });
 }
 
-// Set bounds of the configuration space.
-void PositionVelocity::SetConfigurationBounds(
-  const VectorXd& lower, const VectorXd& upper) {
-  // Catch incorrect dimensions.
-  if (lower.size() != ConfigurationDimension() ||
-      upper.size() != ConfigurationDimension())
-    throw std::runtime_error("PositionVelocity: incorrect bound dimensions.");
-
+// Set bounds of the state space.
+void PositionVelocity::SetBounds(
+  const PositionVelocity& lower, const PositionVelocity& upper) {
   lower_ = lower;
   upper_ = upper;
 }
 
-void PositionVelocity::SetConfigurationBounds(
+// Set state space bounds from std vectors. Layout is assumed to be
+// [x, y, z, vx, vy, vz].
+void PositionVelocity::SetBounds(
   const std::vector<double>& lower, const std::vector<double>& upper) {
-  // Catch incorrect dimensions.
-  if (lower.size() != ConfigurationDimension() ||
-      upper.size() != ConfigurationDimension())
-    throw std::runtime_error("PositionVelocity: incorrect bound dimensions.");
+  // Check dimensions.
+  if (lower.size() != 6 || upper.size() != 6)
+    throw new std::runtime_error("PositionVelocity: bad bound dimension.");
 
-  lower_(0) = lower[0];
-  lower_(1) = lower[1];
-  lower_(2) = lower[2];
+  lower_.position_(0) = lower[0];
+  lower_.position_(1) = lower[1];
+  lower_.position_(2) = lower[2];
+  lower_.velocity_(0) = lower[3];
+  lower_.velocity_(1) = lower[4];
+  lower_.velocity_(2) = lower[5];
 
-  upper_(0) = upper[0];
-  upper_(1) = upper[1];
-  upper_(2) = upper[2];
+  upper_.position_(0) = upper[0];
+  upper_.position_(1) = upper[1];
+  upper_.position_(2) = upper[2];
+  upper_.velocity_(0) = upper[3];
+  upper_.velocity_(1) = upper[4];
+  upper_.velocity_(2) = upper[5];
 }
 
 // Convert from VectorXd. Assume State is [x, y, z, vx, vy, vz].
@@ -226,8 +251,8 @@ fastrack_msgs::State PositionVelocity::ToRos() const {
 
 
 // Get bounds of configuration space.
-VectorXd PositionVelocity::GetConfigurationLower() { return lower_; }
-VectorXd PositionVelocity::GetConfigurationUpper() { return upper_; }
+VectorXd PositionVelocity::GetConfigurationLower() { return lower_.Position(); }
+VectorXd PositionVelocity::GetConfigurationUpper() { return upper_.Position(); }
 
 // Compound assignment operators.
 PositionVelocity& PositionVelocity::operator+=(const PositionVelocity& rhs) {

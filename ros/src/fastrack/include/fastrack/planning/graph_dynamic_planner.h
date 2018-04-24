@@ -91,24 +91,35 @@ protected:
   template<typename S>
   struct Node<S> {
     S state;
-    Node<S>::ConstPtr child;
-    Trajectory<S> traj;
+    bool is_viable;
+    Node<S>::ConstPtr parent;
+    std::vector< Node<S>::ConstPtr > children;
+    std::vector< Trajectory<S> > trajs_to_children;
 
     // Typedefs.
     typedef std::shared_ptr< Node<S> > Ptr;
     typedef std::shared_ptr< const Node<S> > ConstPtr;
 
     // Factory methods.
-    static Ptr Create();
-    static Ptr Create(const S& state,
-                      const ConstPtr& child,
-                      const Trajectory<S>& traj);
+    static Node<S>::Ptr Create();
+    static Node<S>::Ptr Create(const S& state,
+                      bool is_viable,
+                      const Node<S>::ConstPtr& parent,
+                      const std::vector< Node<S>::ConstPtr >& children,
+                      const std::vector< Trajectory<S> >& trajs_to_children);
 
   private:
     explicit Node<S>() {}
     explicit Node<S>(const S& state,
-                     const ConstPtr& child,
-                     const Trajectory<S>& traj) {}
+                     bool is_viable,
+                     const Node<S>::ConstPtr& parent,
+                     const std::vector< Node<S>::ConstPtr >& children,
+                     const std::vector< Trajectory<S> >& trajs_to_children)
+    : this->state(state),
+      this->is_viable(is_viable),
+      this->parent(parent),
+      this->children(children),
+      this->trajs_to_children(trajs_to_children) {}
   }; //\struct Node<S>
 
   // Implementation of static factory methods for constructing a Node.
@@ -116,10 +127,14 @@ protected:
   Node<S>::Ptr Node<S>::Create() { return Node<S>::Ptr(new Node<S>()); }
 
   template<typename S>
-  Node<S>::Ptr Node<S>::Create(const S& state,
-                               const Node<S>::ConstPtr& child,
-                               const Trajectory<S>& traj) {
-    return Node<S>::Ptr(new Node<S>(state, child, traj));
+  Node<S>::Ptr Node<S>::
+  Create(const S& state,
+         bool is_viable,
+         const Node<S>::ConstPtr& parent,
+         const std::vector< Node<S>::ConstPtr >& children,
+         const std::vector< Trajectory<S> >& trajs_to_children) {
+    return Node<S>::Ptr(
+      new Node<S>(state, is_viable, parent, children, trajs_to_children));
   }
 
 }; //\class GraphDynamicPlanner
@@ -134,12 +149,17 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::
 RecursivePlan(const S& start, const S& goal, double start_time, bool outbound) {
   bool done = false;
 
-  // Searchable sets of viable and potentially unviable nodes.
-  SearchableSet< Node<S>, S > viable_states;
-  SearchableSet< Node<S>, S > undecided_states;
+  // Searchable sets of all nodes we've ever explored. Initialize with a node
+  // generated from the starting state.
+  // NOTE! This might cause a compiler error.
+  SearchableSet< Node<S>, S > graph(
+    Node<S>::Create(start, true, nullptr, {}, {}));
 
   while (!done) {
-    // Sample a new point.
+    // (1) Sample a new point.
+    const S S::Sample(lower, upper);
+
+    // (2)
   }
 }
 
