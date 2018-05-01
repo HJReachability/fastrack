@@ -65,25 +65,40 @@ protected:
   explicit GraphDynamicPlanner()
     : Planner<S, E, D, SD, B, SB>() {}
 
+  // Load parameters.
+  virtual bool LoadParameters(const ros::NodeHandle& n);
+
   // Plan a trajectory from the given start to goal states starting
   // at the given time.
   inline Trajectory<S> Plan(
     const S& start, const S& goal, double start_time=0.0) const {
-    return RecursivePlan(
-      start, SearchableSet< Node<S>, S >(goal), start_time, true);
+    return RecursivePlan(SearchableSet< Node<S>, S >(start),
+                         SearchableSet< Node<S>, S >(goal),
+                         start_time, true, true);
   }
 
   // Recursive version of Plan() that plans outbound and return trajectories.
-  // High level recursive feasibility logic is here.
-  Trajectory<S> RecursivePlan(
-    const S& start, const S& goal, double start_time, bool outbound,
-    SearchableSet< Node<S>, S >& viable_states,
-    SearchableSet< Node<S>, S >& undecided_states);
+  // High level recursive feasibility logic is here. Keep track of the
+  // graph of explored states, a set of goal states, the start time,
+  // whether or not this is an outbound or return trip, and whether
+  // or not to extract a trajectory at the end (if not, returns an empty one.)
+  Trajectory<S> RecursivePlan(SearchableSet< Node<S>, S >& graph,
+                              const SearchableSet< Node<S>, S >& goals,
+                              double start_time,
+                              bool outbound,
+                              bool extract_traj) const;
 
   // Generate a sub-plan that connects two states and is dynamically feasible
   // (but not necessarily recursively feasible).
   virtual Trajectory<S> SubPlan(
     const S& start, const S& goal, double start_time=0.0) const = 0;
+
+  // Cost functional. Defaults to time, but can be overridden.
+  virtual double Cost(const Trajectory<S>& traj) const { return traj.Duration(); }
+
+  // Member variables.
+  size_t num_neighbors_;
+  double search_radius_;
 
   // Node in implicit planning graph, templated on state type.
   // NOTE! To avoid memory leaks, Nodes are constructed using a static
@@ -91,8 +106,10 @@ protected:
   template<typename S>
   struct Node<S> {
     S state;
+    double time;
+    double cost_to_come;
     bool is_viable;
-    Node<S>::ConstPtr parent;
+    Node<S>::ConstPtr best_parent;
     std::vector< Node<S>::ConstPtr > children;
     std::vector< Trajectory<S> > trajs_to_children;
 
@@ -102,22 +119,29 @@ protected:
 
     // Factory methods.
     static Node<S>::Ptr Create();
-    static Node<S>::Ptr Create(const S& state,
-                      bool is_viable,
-                      const Node<S>::ConstPtr& parent,
-                      const std::vector< Node<S>::ConstPtr >& children,
-                      const std::vector< Trajectory<S> >& trajs_to_children);
+    static Node<S>::Ptr Create(
+      const S& state,
+      double time,
+      double cost_to_come,
+      bool is_viable,
+      const Node<S>::ConstPtr& best_parent,
+      const std::vector< Node<S>::ConstPtr >& children,
+      const std::vector< Trajectory<S> >& trajs_to_children);
 
   private:
     explicit Node<S>() {}
     explicit Node<S>(const S& state,
+                     double time,
+                     double cost_to_come,
                      bool is_viable,
-                     const Node<S>::ConstPtr& parent,
+                     const Node<S>::ConstPtr& best_parent,
                      const std::vector< Node<S>::ConstPtr >& children,
                      const std::vector< Trajectory<S> >& trajs_to_children)
     : this->state(state),
+      this->time(time),
+      this->cost_to_come(cost_to_come),
       this->is_viable(is_viable),
-      this->parent(parent),
+      this->best_parent(best_parent),
       this->children(children),
       this->trajs_to_children(trajs_to_children) {}
   }; //\struct Node<S>
@@ -130,11 +154,18 @@ protected:
   Node<S>::Ptr Node<S>::
   Create(const S& state,
          bool is_viable,
-         const Node<S>::ConstPtr& parent,
+         double time,
+         double cost_to_come,
+         const Node<S>::ConstPtr& best_parent,
          const std::vector< Node<S>::ConstPtr >& children,
          const std::vector< Trajectory<S> >& trajs_to_children) {
-    return Node<S>::Ptr(
-      new Node<S>(state, is_viable, parent, children, trajs_to_children));
+    return Node<S>::Ptr(new Node<S>(state,
+                                    time,
+                                    cost_to_come,
+                                    is_viable,
+                                    best_parent,
+                                    children,
+                                    trajs_to_children));
   }
 
 }; //\class GraphDynamicPlanner
@@ -146,22 +177,125 @@ protected:
 template<typename S, typename E,
          typename D, typename SD, typename B, typename SB>
 Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::
-RecursivePlan(const S& start, const S& goal, double start_time, bool outbound) {
+RecursivePlan(SearchableSet< Node<S>, S >& graph,
+              const SearchableSet< Node<S>, S >& goals,
+              double start_time,
+              bool outbound,
+              bool extract_traj) const {
   bool done = false;
-
-  // Searchable sets of all nodes we've ever explored. Initialize with a node
-  // generated from the starting state.
-  // NOTE! This might cause a compiler error.
-  SearchableSet< Node<S>, S > graph(
-    Node<S>::Create(start, true, nullptr, {}, {}));
 
   while (!done) {
     // (1) Sample a new point.
-    const S S::Sample(lower, upper);
+    const S sample = S::Sample(lower, upper);
 
-    // (2)
+    // (2) Get k nearest neighbors.
+    const std::vector< Node<S>::Ptr > neighbors =
+      graph.KnnSearch(sample, num_neighbors_);
+
+    Node<S>::Ptr parent = nullptr;
+    for (const auto& neighbor : neighbors) {
+      // Reject this neighbor if it's too close to the sample.
+      if ((neighbor->state.ToVector() - sample.ToVector()).norm() <
+          constants::EPSILON)
+        continue;
+
+      // (3) Plan a sub-path from this neighbor to sampled state.
+      const Trajectory<S> sub_plan =
+        SubPlan(neighbor->state, sample, neighbor->time);
+
+      if (sub_plan.Size() > 0) {
+        parent = neighhor;
+        break;
+      }
+    }
+
+    // Sample a new point if there was no good way to get here.
+    if (parent == nullptr)
+      continue;
+
+    // Add to graph.
+    Node<S>::Ptr sample_node = Node<S>::Create();
+    sample_node->state = sample;
+    sample_node->time = parent->time + sub_plan.Duration();
+    sample_node->cost_to_come = parent->cost_to_come + Cost(sub_plan);
+    sample_node->is_viable = false;
+    sample_node->best_parent = parent;
+    sample_node->children = {};
+    sample_node->trajs_to_children = {};
+
+    // Update parent.
+    parent->children.push_back(sample_node);
+    parent->trajs_to_children.push_back(sub_plan);
+
+    // (4) Connect to one of the k nearest goal states if possible.
+    std::vector< Node<S>::Ptr > neighboring_goals =
+      goals.RadiusSearch(sample, search_radius_);
+
+    Node<S>::Ptr child = nullptr;
+    for (const auto& goal : neighboring_goals) {
+      // Check if this is a viable node.
+      if (!goal->is_viable)
+        continue;
+
+      // Try to connect.
+      const Trajectory<S> sub_plan = SubPlan(goal->state, sample, goal->time);
+
+      if (sub_plan.Size() > 0) {
+        child = goal;
+        break;
+      }
+    }
+
+    if (child == nullptr) {
+      // (5) If outbound, make a recursive call.
+      if (outbound) {
+        RecursivePlan(graph, graph, sample_node->time, false, false);
+      }
+    } else {
+      // Reached the goal. Update goal to ensure it always has the
+      // best parent.
+      if (child->best_parent == nullptr ||
+          child->best_parent->cost_to_come > sample_node->cost_to_come) {
+        // I'm yo daddy.
+        child->best_parent = sample_node;
+
+        // TODO! Breath first search to update time / cost to come.
+      }
+
+      // Make sure all ancestors are viable.
+      // NOTE! Worst parents are not going to get updated.
+      Node<S>::Ptr parent = sample_node;
+      while (parent != nullptr && !parent->is_viable) {
+        parent->is_viable = true;
+        parent = parent->best_parent;
+      }
+
+      if (extract_traj) {
+        // TODO! Extract trajectory.
+      }
+    }
   }
 }
+
+// Load parameters.
+template<typename S, typename E,
+         typename D, typename SD, typename B, typename SB>
+bool GraphDynamicPlanner<S, E, D, SD, B, SB>::
+LoadParameters(const ros::NodeHandle& n) {
+  if (!Planner<S, E, D, SD, B, SB>::LoadParameters(n))
+    return false;
+
+  ros::NodeHandle nl(n);
+
+  // Search parameters.
+  int k;
+  if (!nl.getParam("planner/search_radius", search_radius_)) return false;
+  if (!nl.getParam("planner/num_neighbors", k)) return false;
+  num_neighbors_ = static_cast<size_t>(k);
+
+  return true;
+}
+
 
 } //\namespace planning
 } //\namespace fastrack
