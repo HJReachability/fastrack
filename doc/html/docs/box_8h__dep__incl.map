@@ -1,10 +1,11 @@
 <map id="box.h" name="box.h">
-<area shape="rect" id="node2" href="$environment_8h.html" title="environment.h" alt="" coords="139,88,243,115"/>
-<area shape="rect" id="node8" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8h.html" title="analytical_kinematic\l_box_quadrotor_decoupled_6d.h" alt="" coords="267,81,476,122"/>
-<area shape="rect" id="node3" href="$balls__in__box_8h.html" title="balls_in_box.h" alt="" coords="21,185,125,212"/>
-<area shape="rect" id="node5" href="$planner_8h.html" title="planner.h" alt="" coords="169,185,243,212"/>
+<area shape="rect" id="node2" href="$environment_8h.html" title="environment.h" alt="" coords="144,88,248,115"/>
+<area shape="rect" id="node9" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8h.html" title="analytical_kinematic\l_box_quadrotor_decoupled_6d.h" alt="" coords="273,81,481,122"/>
+<area shape="rect" id="node3" href="$balls__in__box_8h.html" title="balls_in_box.h" alt="" coords="29,185,133,212"/>
+<area shape="rect" id="node5" href="$planner_8h.html" title="planner.h" alt="" coords="175,185,248,212"/>
 <area shape="rect" id="node4" href="$balls__in__box_8cpp.html" title="balls_in_box.cpp" alt="" coords="5,275,123,301"/>
-<area shape="rect" id="node6" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="148,275,287,301"/>
-<area shape="rect" id="node7" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="131,349,304,376"/>
-<area shape="rect" id="node9" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8cpp.html" title="analytical_kinematic\l_box_quadrotor_decoupled\l_6d.cpp" alt="" coords="283,171,460,227"/>
+<area shape="rect" id="node6" href="$dynamic__planner_8h.html" title="dynamic_planner.h" alt="" coords="147,275,276,301"/>
+<area shape="rect" id="node7" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="301,275,440,301"/>
+<area shape="rect" id="node8" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="284,349,457,376"/>
+<area shape="rect" id="node10" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8cpp.html" title="analytical_kinematic\l_box_quadrotor_decoupled\l_6d.cpp" alt="" coords="289,171,465,227"/>
 </map>

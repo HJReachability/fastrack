@@ -1,6 +1,7 @@
 <map id="trajectory.h" name="trajectory.h">
-<area shape="rect" id="node2" href="$planner_8h.html" title="planner.h" alt="" coords="55,80,128,107"/>
-<area shape="rect" id="node5" href="$planner__manager_8h.html" title="planner_manager.h" alt="" coords="154,80,285,107"/>
-<area shape="rect" id="node3" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="23,155,161,181"/>
-<area shape="rect" id="node4" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="5,229,179,256"/>
+<area shape="rect" id="node2" href="$planner_8h.html" title="planner.h" alt="" coords="111,80,184,107"/>
+<area shape="rect" id="node6" href="$planner__manager_8h.html" title="planner_manager.h" alt="" coords="210,80,341,107"/>
+<area shape="rect" id="node3" href="$dynamic__planner_8h.html" title="dynamic_planner.h" alt="" coords="4,155,133,181"/>
+<area shape="rect" id="node4" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="159,155,297,181"/>
+<area shape="rect" id="node5" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="141,229,315,256"/>
 </map>
