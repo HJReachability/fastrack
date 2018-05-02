@@ -62,8 +62,8 @@ class Trajectory {
 public:
   ~Trajectory() {}
   explicit Trajectory() {}
-  explicit Trajectory(const std::vector<S> states,
-                      const std::vector<double> times);
+  explicit Trajectory(const std::vector<S>& states,
+                      const std::vector<double>& times);
   explicit Trajectory(const fastrack_msgs::Trajectory::ConstPtr& msg);
 
   // Size (number of states in this Trajectory).
@@ -102,8 +102,8 @@ private:
 // ------------------------------ IMPLEMENTATION ----------------------------- //
 
 template<typename S>
-Trajectory<S>::Trajectory(const std::vector<S> states,
-                          const std::vector<double> times)
+Trajectory<S>::Trajectory(const std::vector<S>& states,
+                          const std::vector<double>& times)
   : states_(states),
     times_(times),
     configuration_(false) {
