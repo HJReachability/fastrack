@@ -56,8 +56,6 @@ Public Member Functions</h2></td></tr>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a0798e8df6b3b52d897e1ea21d6bec93f"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#a0798e8df6b3b52d897e1ea21d6bec93f">LoadParameters</a> (const ros::NodeHandle &amp;n)</td></tr>
 <tr class="separator:a0798e8df6b3b52d897e1ea21d6bec93f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3da9071ae9e89e8234348525964cdac7"><td class="memItemLeft" align="right" valign="top">Trajectory&lt; S &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#a3da9071ae9e89e8234348525964cdac7">Plan</a> (const S &amp;start, const S &amp;goal, double start_time=0.0) const =0</td></tr>
-<tr class="separator:a3da9071ae9e89e8234348525964cdac7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ca2e5b65cf1d4cfefa57aad8453aa67"><td class="memItemLeft" align="right" valign="top">virtual Trajectory&lt; S &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#a7ca2e5b65cf1d4cfefa57aad8453aa67">Plan</a> (const S &amp;start, const S &amp;goal, double start_time=0.0) const =0</td></tr>
 <tr class="separator:a7ca2e5b65cf1d4cfefa57aad8453aa67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2af957dc9654c9401faf20d0679afcc3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#a2af957dc9654c9401faf20d0679afcc3">Planner</a> ()</td></tr>
@@ -180,7 +178,7 @@ template&lt;typename S , typename E , typename D , typename SD , typename B , ty
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00144">144</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00139">139</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -208,51 +206,7 @@ template&lt;typename S , typename E , typename D , typename SD , typename B , ty
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00201">201</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a3da9071ae9e89e8234348525964cdac7"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename S, typename E, typename D, typename SD, typename B, typename SB&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">Trajectory&lt;S&gt; <a class="el" href="classfastrack_1_1planning_1_1Planner.html">fastrack::planning::Planner</a>&lt; S, E, D, SD, B, SB &gt;::Plan </td>
-          <td>(</td>
-          <td class="paramtype">const S &amp;&#160;</td>
-          <td class="paramname"><em>start</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const S &amp;&#160;</td>
-          <td class="paramname"><em>goal</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>start_time</em> = <code>0.0</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implemented in <a class="el" href="classfastrack_1_1planning_1_1OmplKinematicPlanner.html#aa5f894990da384f1b0bf35f47bd2ebcc">fastrack::planning::OmplKinematicPlanner&lt; P, S, E, B, SB &gt;</a>, <a class="el" href="classfastrack_1_1planning_1_1KinematicPlanner.html#a294815183d275beaff7f2a535425824b">fastrack::planning::KinematicPlanner&lt; S, E, B, SB &gt;</a>, and <a class="el" href="classfastrack_1_1planning_1_1GraphDynamicPlanner.html#ab9d5edcec2c806663e174700120cec1b">fastrack::planning::GraphDynamicPlanner&lt; S, E, D, SD, B, SB &gt;</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00196">196</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -324,7 +278,7 @@ template&lt;typename S , typename E , typename D , typename SD , typename B , ty
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00226">226</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00221">221</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -352,7 +306,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00093">93</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00088">88</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -377,7 +331,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00110">110</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00105">105</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -401,7 +355,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00129">129</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00124">124</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -425,7 +379,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00132">132</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00127">127</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -449,7 +403,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00118">118</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00113">113</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -473,7 +427,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00117">117</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00112">112</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -497,7 +451,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00109">109</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00104">104</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -521,7 +475,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00128">128</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00123">123</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -545,7 +499,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00131">131</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00126">126</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -569,7 +523,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00111">111</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00106">106</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -593,7 +547,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00136">136</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00131">131</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -617,7 +571,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00114">114</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00109">109</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -641,7 +595,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00135">135</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00130">130</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -665,7 +619,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00121">121</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00116">116</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -689,7 +643,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00124">124</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00119">119</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -713,7 +667,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00122">122</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00117">117</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -737,7 +691,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00125">125</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00120">120</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -750,7 +704,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Wed May 2 2018 17:10:26</small>
+<small>autogenerated on Mon May 14 2018 22:00:25</small>
 </div>
 </body>
 </html>
