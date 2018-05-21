@@ -1,10 +1,10 @@
 #!/bin/bash
 # Build workspace.
 cd ros
-catkin_make -j4
+catkin_make -j4 || { echo 'Build failed.'; exit 1; }
 
 # Run tests.
-catkin_make run_tests
+catkin_make run_tests || { echo 'Unit tests failed.'; exit 1; }
 
 # Build docs.
 cd ..
