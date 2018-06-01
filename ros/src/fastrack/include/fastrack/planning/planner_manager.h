@@ -47,8 +47,8 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_TRAJECTORY_INTERPRETER_H
-#define FASTRACK_TRAJECTORY_INTERPRETER_H
+#ifndef FASTRACK_PLANNING_PLANNER_MANAGER_H
+#define FASTRACK_PLANNING_PLANNER_MANAGER_H
 
 #include <fastrack/trajectory/trajectory.h>
 #include <fastrack/utils/types.h>

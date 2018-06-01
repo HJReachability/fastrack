@@ -53,7 +53,9 @@
 #include <fastrack/trajectory/trajectory.h>
 #include <fastrack/utils/types.h>
 
-#include <fastrack_msgs/ReplanRequest.h>
+#include <fastrack_srvs/Replan.h>
+#include <fastrack_srvs/ReplanRequest.h>
+#include <fastrack_srvs/ReplanResponse.h>
 #include <fastrack_msgs/Trajectory.h>
 
 #include <ros/ros.h>
@@ -85,14 +87,18 @@ protected:
   virtual bool RegisterCallbacks(const ros::NodeHandle& n);
 
   // Callback to handle replanning requests.
-  inline void ReplanRequestCallback(
-    const fastrack_msgs::ReplanRequest::ConstPtr& msg) const {
+  inline bool ReplanServer(
+    fastrack_srvs::ReplanRequest& req, fastrack_srvs::ReplanResponse& res) {
     // Unpack start/stop states.
-    const S start(msg->start);
-    const S goal(msg->goal);
+    const S start(req.req.start);
+    const S goal(req.req.goal);
 
-    // Plan and publish.
-    traj_pub_.publish(Plan(start, goal, msg->start_time).ToRos());
+    // Plan.
+    const Trajectory<S> traj = Plan(start, goal, req.req.start_time);
+
+    // Return whether or not planning was successful.
+    res.traj = traj.ToRos();
+    return traj.Size() > 0;
   }
 
   // Plan a trajectory from the given start to goal states starting
@@ -112,12 +118,9 @@ protected:
   std::vector<double> config_upper_;
   std::vector<double> config_lower_;
 
-  // Publishers and subscriber.
-  ros::Subscriber replan_request_sub_;
-  ros::Publisher traj_pub_;
-
-  std::string replan_request_topic_;
-  std::string traj_topic_;
+  // Replanning server.
+  ros::ServiceServer replan_srv_;
+  std::string replan_srv_name_;
 
   // Services for loading dynamics and bound.
   ros::ServiceClient dynamics_srv_;
@@ -196,12 +199,8 @@ template<typename S, typename E,
 bool Planner<S, E, D, SD, B, SB>::LoadParameters(const ros::NodeHandle& n) {
   ros::NodeHandle nl(n);
 
-  // Topics.
-  if (!nl.getParam("topic/traj", traj_topic_)) return false;
-  if (!nl.getParam("topic/replan_request", replan_request_topic_))
-    return false;
-
   // Services.
+  if (!nl.getParam("srv/replan", replan_srv_name_)) return false;
   if (!nl.getParam("srv/dynamics", dynamics_srv_name_)) return false;
   if (!nl.getParam("srv/bound", bound_srv_name_)) return false;
 
@@ -221,15 +220,10 @@ template<typename S, typename E,
 bool Planner<S, E, D, SD, B, SB>::RegisterCallbacks(const ros::NodeHandle& n) {
   ros::NodeHandle nl(n);
 
-  // Subscribers.
-  replan_request_sub_ = nl.subscribe(
-    replan_request_topic_.c_str(), 1, &Planner::ReplanRequestCallback, this);
-
-  // Publishers.
-  traj_pub_ = nl.advertise<fastrack_msgs::Trajectory>(
-    traj_topic_.c_str(), 1, false);
-
   // Services.
+  replan_srv_ = nl.advertiseService(replan_srv_name_.c_str(),
+    &Planner<S, E, D, SD, B, SB>::ReplanServer, this);
+
   ros::service::waitForService(dynamics_srv_name_);
   dynamics_srv_ = nl.serviceClient<SD>(dynamics_srv_name_.c_str(), true);
 

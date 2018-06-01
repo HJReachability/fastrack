@@ -1,0 +1,5 @@
+# Replan request message.
+fastrack_msgs/ReplanRequest req
+---
+# Trajectory message.
+fastrack_msgs/Trajectory traj

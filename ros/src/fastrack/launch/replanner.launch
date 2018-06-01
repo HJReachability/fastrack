@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<launch>
+  <!-- Topics. -->
+  <arg name="traj_topic" default="/traj" />
+  <arg name="replan_request_topic" default="/replan" />
+
+  <!-- Services. -->
+  <arg name="replan_srv" default="/replan" />
+
+  <!-- Replanner node.  -->
+  <node name="replanner"
+        pkg="fastrack"
+        type="replanner_node"
+        output="screen">
+    <param name="topic/traj" value="$(arg traj_topic)" />
+    <param name="topic/replan_request" value="$(arg replan_request_topic)" />
+    <param name="srv/replan" value="$(arg replan_srv)" />
+  </node>
+</launch>

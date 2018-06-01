@@ -4,6 +4,8 @@
   <!-- Topics. -->
   <arg name="position_velocity_yaw_state_topic" default="/state/position_velocity_yaw" />
   <arg name="position_velocity_state_topic" default="/state/position_velocity" />
+  <arg name="replan_request_topic" default="/replan" />
+  <arg name="traj_topic" default="/traj" />
   <arg name="fastrack_state_topic" default="/state/fastrack" />
   <arg name="fastrack_reference_state_topic" default="/ref/fastrack" />
   <arg name="reference_state_topic" default="/ref/position_velocity" />
@@ -16,8 +18,6 @@
   <arg name="takeoff_control_topic" default="/control/takeoff" />
   <arg name="final_control_topic" default="/control/final" />
 
-  <arg name="replan_request_topic" default="/replan" />
-  <arg name="traj_topic" default="/traj" />
   <arg name="sensor_topic" default="/sensor" />
   <arg name="updated_env_topic" default="/updated_env" />
   <arg name="sensor_vis_topic" default="/vis/sensor" />
@@ -31,6 +31,7 @@
   <arg name="junk_updated_env_topic" default="/junk/updated_env" />
 
   <!-- Services. -->
+  <arg name="replan_srv" default="/replan" />
   <arg name="bound_srv" default="/bound" />
   <arg name="planner_dynamics_srv" default="/planner_dynamics" />
 
@@ -115,11 +116,10 @@
 
   <!-- Planner. -->
   <include file="$(find fastrack_crazyflie_demos)/launch/ompl_kinematic_planner.launch">
-    <arg name="traj_topic" value="$(arg traj_topic)" />
-    <arg name="replan_request_topic" value="$(arg replan_request_topic)" />
     <arg name="sensor_sub_topic" value="$(arg sensor_topic)" />
     <arg name="updated_env_topic" value="$(arg updated_env_topic)" />
     <arg name="vis_topic" value="$(arg known_env_vis_topic)" />
+    <arg name="replan_srv" value="$(arg replan_srv)" />
     <arg name="bound_srv" value="$(arg bound_srv)" />
     <arg name="dynamics_srv" value="$(arg planner_dynamics_srv)" />
     <arg name="fixed_frame" default="$(arg fixed_frame)" />
@@ -151,6 +151,13 @@
     <arg name="planner_runtime" value="$(arg planner_runtime)" />
     <arg name="goal" value="[$(arg goal_x), $(arg goal_y), $(arg goal_z)]" />
     <arg name="start" value="[$(arg takeoff_hover_x), $(arg takeoff_hover_y), $(arg takeoff_hover_z)]" />
+  </include>
+
+  <!-- Replanner. -->
+  <include file="$(find fastrack)/launch/replanner.launch">
+    <arg name="traj_topic" value="$(arg traj_topic)" />
+    <arg name="replan_request_topic" value="$(arg replan_request_topic)" />
+    <arg name="replan_srv" value="$(arg replan_srv)" />
   </include>
 
   <!-- Sphere sensor. -->
