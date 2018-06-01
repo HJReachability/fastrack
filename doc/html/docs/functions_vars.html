@@ -155,6 +155,7 @@
 , <a class="el" href="classfastrack_1_1environment_1_1Environment.html#ac0af321a986e3d3ea74666ba098e7e33">fastrack::environment::Environment&lt; M, P &gt;</a>
 , <a class="el" href="classfastrack_1_1planning_1_1Planner.html#acc43f50af5b2bf61f4c12100becf712f">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
 , <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a175f44db3572f55a357c7d57c1137526">fastrack::planning::PlannerManager&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1planning_1_1Replanner.html#a0d3bbad49b4e5eb199f70d8f17b9a956">fastrack::planning::Replanner</a>
 , <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#afe3fb0de46c8ff5367996afa9d1e09aa">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
 , <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#ad0e18a6979d11395de3b360086dbce69">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 , <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#aa0822c97a7ac537f1ca0a0fc7d61385e">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
@@ -185,6 +186,7 @@
 : <a class="el" href="classfastrack_1_1environment_1_1Environment.html#a4271f907c249fec7e37d46ca77283faf">fastrack::environment::Environment&lt; M, P &gt;</a>
 , <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a72b3617551bd6f04b924080fcbfb368c">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
 , <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a2a8e6189cce393806ad5f711ff0c1391">fastrack::planning::PlannerManager&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1planning_1_1Replanner.html#ac613bc09b4cb37a1b1067441601d341f">fastrack::planning::Replanner</a>
 , <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#a58934ce357bf0dfc8d4079f2fa7f9501">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
 , <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a038b1909003aad976eeecb6b1a6efb97">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 , <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#a25b562494e4aacded60df294cc8ed547">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
@@ -268,11 +270,19 @@
 : <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a13e222fff992b7268c329d2bfbebe294">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
 <li>replan_request_sub_
-: <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a24c56e56c442897a2e03a5a1d3db1237">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
+: <a class="el" href="classfastrack_1_1planning_1_1Replanner.html#a01d8e154ec33d0d35fd290622b23c2b5">fastrack::planning::Replanner</a>
 </li>
 <li>replan_request_topic_
-: <a class="el" href="classfastrack_1_1planning_1_1Planner.html#aca4e001bfd778315625174f507dac082">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
-, <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#ad8d3b695cd3cb5ad61b3daf93d655395">fastrack::planning::PlannerManager&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#ad8d3b695cd3cb5ad61b3daf93d655395">fastrack::planning::PlannerManager&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1planning_1_1Replanner.html#a8d110a2887e95e1d31455e1db41b76b9">fastrack::planning::Replanner</a>
+</li>
+<li>replan_srv_
+: <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a226b428e943aa4d7dc7c0f00d6822161">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
+, <a class="el" href="classfastrack_1_1planning_1_1Replanner.html#a54a0afc04ab8e5266d86babf5553c6b7">fastrack::planning::Replanner</a>
+</li>
+<li>replan_srv_name_
+: <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a644be3b571de56e745ffdafdc454b461">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
+, <a class="el" href="classfastrack_1_1planning_1_1Replanner.html#a9cc384b362341bac1be6da9773863421">fastrack::planning::Replanner</a>
 </li>
 <li>rng_
 : <a class="el" href="classfastrack_1_1state_1_1State.html#a874cd6168365ff5ba08ec2478020ac57">fastrack::state::State</a>
@@ -348,14 +358,14 @@
 : <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a658ab678fcb91d763726721a073870c5">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
 <li>traj_pub_
-: <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a4551dd4ac064f565d2d21a0780709786">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
+: <a class="el" href="classfastrack_1_1planning_1_1Replanner.html#a631a538e7a472946ff8da91696a1cc49">fastrack::planning::Replanner</a>
 </li>
 <li>traj_sub_
 : <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a6686d59de3fabfc1ba5cbfb7465f953b">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
 <li>traj_topic_
-: <a class="el" href="classfastrack_1_1planning_1_1Planner.html#ab0a8823c70d6aa665b848a8ef27754c1">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
-, <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#af8ec8d40d3b46386caf94d90a3efbcb4">fastrack::planning::PlannerManager&lt; S &gt;</a>
+: <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#af8ec8d40d3b46386caf94d90a3efbcb4">fastrack::planning::PlannerManager&lt; S &gt;</a>
+, <a class="el" href="classfastrack_1_1planning_1_1Replanner.html#ab6fd7437d10ad6af38c1e0417cb63d35">fastrack::planning::Replanner</a>
 </li>
 <li>traj_vis_pub_
 : <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a760fbc8e7c17d2560309fa81da45e956">fastrack::planning::PlannerManager&lt; S &gt;</a>
@@ -451,7 +461,7 @@
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Mon May 21 2018 00:25:14</small>
+<small>autogenerated on Fri Jun 1 2018 03:29:34</small>
 </div>
 </body>
 </html>

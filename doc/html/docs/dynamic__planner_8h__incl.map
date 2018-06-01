@@ -1,10 +1,10 @@
 <map id="dynamic_planner.h" name="dynamic_planner.h">
-<area shape="rect" id="node2" href="$planner_8h.html" title="fastrack/planning/planner.h" alt="" coords="879,80,1058,107"/>
-<area shape="rect" id="node32" href="$dynamics_8h.html" title="fastrack/dynamics/dynamics.h" alt="" coords="1468,80,1667,107"/>
-<area shape="rect" id="node3" href="$environment_8h.html" title="fastrack/environment\l/environment.h" alt="" coords="475,155,619,197"/>
-<area shape="rect" id="node6" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="1299,435,1443,461"/>
-<area shape="rect" id="node25" href="$trajectory_8h.html" title="fastrack/trajectory\l/trajectory.h" alt="" coords="1189,246,1315,287"/>
-<area shape="rect" id="node4" href="$box_8h.html" title="fastrack/bound/box.h" alt="" coords="438,253,582,280"/>
-<area shape="rect" id="node5" href="$tracking__bound_8h.html" title="fastrack/bound/tracking\l_bound.h" alt="" coords="529,337,687,378"/>
-<area shape="rect" id="node26" href="$state_8h.html" title="fastrack/state/state.h" alt="" coords="1608,344,1755,371"/>
+<area shape="rect" id="node2" href="$planner_8h.html" title="fastrack/planning/planner.h" alt="" coords="708,80,886,107"/>
+<area shape="rect" id="node34" href="$dynamics_8h.html" title="fastrack/dynamics/dynamics.h" alt="" coords="232,80,430,107"/>
+<area shape="rect" id="node3" href="$environment_8h.html" title="fastrack/environment\l/environment.h" alt="" coords="1453,155,1597,197"/>
+<area shape="rect" id="node6" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="849,435,993,461"/>
+<area shape="rect" id="node25" href="$trajectory_8h.html" title="fastrack/trajectory\l/trajectory.h" alt="" coords="539,246,665,287"/>
+<area shape="rect" id="node4" href="$box_8h.html" title="fastrack/bound/box.h" alt="" coords="1369,253,1513,280"/>
+<area shape="rect" id="node5" href="$tracking__bound_8h.html" title="fastrack/bound/tracking\l_bound.h" alt="" coords="1111,337,1269,378"/>
+<area shape="rect" id="node26" href="$state_8h.html" title="fastrack/state/state.h" alt="" coords="300,344,446,371"/>
 </map>

@@ -1,7 +1,10 @@
 <map id="trajectory.h" name="trajectory.h">
-<area shape="rect" id="node2" href="$planner_8h.html" title="planner.h" alt="" coords="111,80,184,107"/>
-<area shape="rect" id="node6" href="$planner__manager_8h.html" title="planner_manager.h" alt="" coords="210,80,341,107"/>
-<area shape="rect" id="node3" href="$dynamic__planner_8h.html" title="dynamic_planner.h" alt="" coords="4,155,133,181"/>
-<area shape="rect" id="node4" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="159,155,297,181"/>
-<area shape="rect" id="node5" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="141,229,315,256"/>
+<area shape="rect" id="node2" href="$planner_8h.html" title="planner.h" alt="" coords="167,80,240,107"/>
+<area shape="rect" id="node6" href="$planner__manager_8h.html" title="planner_manager.h" alt="" coords="266,80,397,107"/>
+<area shape="rect" id="node7" href="$replanner_8h.html" title="replanner.h" alt="" coords="422,80,508,107"/>
+<area shape="rect" id="node3" href="$dynamic__planner_8h.html" title="dynamic_planner.h" alt="" coords="5,155,135,181"/>
+<area shape="rect" id="node4" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="160,155,299,181"/>
+<area shape="rect" id="node5" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="143,229,316,256"/>
+<area shape="rect" id="node8" href="$replanner__node_8cpp.html" title="replanner_node.cpp" alt="" coords="373,155,507,181"/>
+<area shape="rect" id="node9" href="$replanner_8cpp.html" title="replanner.cpp" alt="" coords="531,155,631,181"/>
 </map>
