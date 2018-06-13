@@ -72,9 +72,21 @@ protected:
   // at the given time.
   inline Trajectory<S> Plan(
     const S& start, const S& goal, double start_time=0.0) const {
-    return RecursivePlan(SearchableSet< Node<S>, S >(start),
-                         SearchableSet< Node<S>, S >(goal),
-                         start_time, true, true);
+    // Keep track of initial time.
+    const ros::Time initial_call_time = ros::Time::now();
+
+    // Generate trajectory.
+    const Trajectory<S> traj =
+      RecursivePlan(SearchableSet< Node<S>, S >(start),
+                    SearchableSet< Node<S>, S >(goal),
+                    start_time, true, true, initial_call_time);
+
+    // Wait around if we finish early.
+    const double elapsed_time = (ros::Time::now() - initial_call_time).toSec();
+    if (elapsed_time < max_runtime_)
+      ros::Duration(max_runtime_ - elapsed_time).sleep();
+
+    return traj;
   }
 
   // Recursive version of Plan() that plans outbound and return trajectories.
@@ -86,7 +98,8 @@ protected:
                               const SearchableSet< Node<S>, S >& goals,
                               double start_time,
                               bool outbound,
-                              bool extract_traj) const;
+                              bool extract_traj,
+                              const ros::Time& initial_call_time) const;
 
   // Generate a sub-plan that connects two states and is dynamically feasible
   // (but not necessarily recursively feasible).
@@ -181,10 +194,10 @@ RecursivePlan(SearchableSet< Node<S>, S >& graph,
               const SearchableSet< Node<S>, S >& goals,
               double start_time,
               bool outbound,
-              bool extract_traj) const {
-  bool done = false;
-
-  while (!done) {
+              bool extract_traj,
+              const ros::Time& initial_call_time) const {
+  // Loop until we run out of time.
+  while ((ros::Time::now() - initial_call_time).toSec() < max_runtime_) {
     // (1) Sample a new point.
     const S sample = S::Sample(lower, upper);
 
@@ -248,9 +261,9 @@ RecursivePlan(SearchableSet< Node<S>, S >& graph,
 
     if (child == nullptr) {
       // (5) If outbound, make a recursive call.
-      if (outbound) {
-        RecursivePlan(graph, graph, sample_node->time, false, false);
-      }
+      if (outbound)
+        RecursivePlan(graph, graph, sample_node->time,
+                      false, false, initial_call_time);
     } else {
       // Reached the goal. Update goal to ensure it always has the
       // best parent.
@@ -275,6 +288,10 @@ RecursivePlan(SearchableSet< Node<S>, S >& graph,
       }
     }
   }
+
+  // Ran out of time. Return an empty trajectory to indicate failure.
+  ROS_ERROR("%s: Planner ran out of time.", name_.c_str());
+  return Trajectory<S>();
 }
 
 // Load parameters.
