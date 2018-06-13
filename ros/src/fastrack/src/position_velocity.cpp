@@ -109,7 +109,7 @@ void PositionVelocity::SetConfigurationDot(const VectorXd& configuration_dot) {
 // Static function to sample from the configuration space associated
 // with this state space. Pass in the lower and upper bounds from
 // which to sample.
-VectorXd PositionVelocity::Sample() {
+VectorXd PositionVelocity::SampleConfiguration() {
   const size_t kConfigurationSpaceDimension = 3;
 
   // Initialize a uniform random distribution in (0, 1).

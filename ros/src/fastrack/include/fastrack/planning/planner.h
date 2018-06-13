@@ -78,11 +78,6 @@ protected:
   explicit Planner()
     : initialized_(false) {}
 
-  // Plan a trajectory from the given start to goal states starting
-  // at the given time.
-  Trajectory<S> Plan(
-    const S& start, const S& goal, double start_time=0.0) const = 0;
-
   // Load parameters and register callbacks. These may be overridden
   // by derived classes if needed (they should still call these functions
   // via Planner::LoadParameters and Planner::RegisterCallbacks).

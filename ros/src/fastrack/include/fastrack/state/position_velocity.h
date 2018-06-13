@@ -133,7 +133,7 @@ public:
   static VectorXd GetConfigurationUpper();
 
   // Sample from the configuration space associated with this state space.
-  static VectorXd Sample();
+  static VectorXd SampleConfiguration();
 
   // Sample from the state space itself.
   static PositionVelocity Sample();
