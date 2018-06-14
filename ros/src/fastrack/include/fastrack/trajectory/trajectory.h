@@ -62,6 +62,7 @@ class Trajectory {
 public:
   ~Trajectory() {}
   explicit Trajectory() {}
+  explicit Trajectory(const std::list< Trajectory<S> >& trajs);
   explicit Trajectory(const std::vector<S> states,
                       const std::vector<double> times);
   explicit Trajectory(const fastrack_msgs::Trajectory::ConstPtr& msg);
@@ -100,6 +101,18 @@ private:
 }; //\class Trajectory
 
 // ------------------------------ IMPLEMENTATION ----------------------------- //
+
+template<typename S>
+Trajectory<S>::Trajectory(const std::list< Trajectory<S> >& trajs)
+  : configuration_(false) {
+  for (const auto& traj : trajs) {
+    if (times_.size() == 0 || times_.back() <= traj.times_.front()) {
+      states_.insert(states_.end(), traj.states_.begin(), traj.states_.end());
+      times_.insert(times_.end(), traj.times_.begin(), traj.times_.end());
+      configuration_ |= traj.configuration_;
+    }
+  }
+}
 
 template<typename S>
 Trajectory<S>::Trajectory(const std::vector<S> states,

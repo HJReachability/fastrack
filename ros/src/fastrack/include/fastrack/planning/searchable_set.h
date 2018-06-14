@@ -59,8 +59,10 @@ template<typename N, typename S>
 class SearchableSet : private Uncopyable {
 public:
   ~SearchableSet();
-  explicit SearchableSet() {}
   explicit SearchableSet(const typename N::ConstPtr& node);
+
+  // Access the initial node.
+  inline typename N::ConstPtr InitialNode() const { return registry_.front(); }
 
   // Insert a new node into the set.
   bool Insert(const typename N::ConstPtr& node);

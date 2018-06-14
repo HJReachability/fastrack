@@ -32,6 +32,7 @@
  *
  * Please contact the author(s) of this library if you have any questions.
  * Authors: David Fridovich-Keil   ( dfk@eecs.berkeley.edu )
+ *          Jaime Fisac            ( jfisac@eecs.berkeley.edu )
  */
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -109,6 +110,11 @@ protected:
   // Cost functional. Defaults to time, but can be overridden.
   virtual double Cost(const Trajectory<S>& traj) const { return traj.Duration(); }
 
+  // Extract a trajectory from goal node to start node if one exists.
+  // Returns empty trajectory if none exists.
+  Trajectory<S> ExtractTrajectory(const Node<S>::ConstPtr& start,
+                                  const Node<S>::ConstPtr& goal) const;
+
   // Member variables.
   size_t num_neighbors_;
   double search_radius_;
@@ -118,6 +124,7 @@ protected:
   // factory method that returns a shared pointer.
   template<typename S>
   struct Node<S> {
+    // Member variables.
     S state;
     double time;
     double cost_to_come;
@@ -218,6 +225,21 @@ RecursivePlan(SearchableSet< Node<S>, S >& graph,
 
       if (sub_plan.Size() > 0) {
         parent = neighhor;
+
+        // Add to graph.
+        Node<S>::Ptr sample_node = Node<S>::Create();
+        sample_node->state = sample;
+        sample_node->time = parent->time + sub_plan.Duration();
+        sample_node->cost_to_come = parent->cost_to_come + Cost(sub_plan);
+        sample_node->is_viable = false;
+        sample_node->best_parent = parent;
+        sample_node->children = {};
+        sample_node->trajs_to_children = {};
+
+        // Update parent.
+        parent->children.push_back(sample_node);
+        parent->trajs_to_children.push_back(sub_plan);
+
         break;
       }
     }
@@ -225,20 +247,6 @@ RecursivePlan(SearchableSet< Node<S>, S >& graph,
     // Sample a new point if there was no good way to get here.
     if (parent == nullptr)
       continue;
-
-    // Add to graph.
-    Node<S>::Ptr sample_node = Node<S>::Create();
-    sample_node->state = sample;
-    sample_node->time = parent->time + sub_plan.Duration();
-    sample_node->cost_to_come = parent->cost_to_come + Cost(sub_plan);
-    sample_node->is_viable = false;
-    sample_node->best_parent = parent;
-    sample_node->children = {};
-    sample_node->trajs_to_children = {};
-
-    // Update parent.
-    parent->children.push_back(sample_node);
-    parent->trajs_to_children.push_back(sub_plan);
 
     // (4) Connect to one of the k nearest goal states if possible.
     std::vector< Node<S>::Ptr > neighboring_goals =
@@ -251,10 +259,18 @@ RecursivePlan(SearchableSet< Node<S>, S >& graph,
         continue;
 
       // Try to connect.
-      const Trajectory<S> sub_plan = SubPlan(goal->state, sample, goal->time);
+      const Trajectory<S> sub_plan =
+        SubPlan(sample, goal->state, sample_node->time);
 
+      // Upon success, set child to point to goal and update sample node to
+      // include child node and corresponding trajectory.
       if (sub_plan.Size() > 0) {
         child = goal;
+
+        // Update sample node to point to child.
+        sample_node->children.push_back(child);
+        sample_node->trajs_to_children.push_back(sub_plan);
+
         break;
       }
     }
@@ -262,8 +278,9 @@ RecursivePlan(SearchableSet< Node<S>, S >& graph,
     if (child == nullptr) {
       // (5) If outbound, make a recursive call.
       if (outbound)
-        RecursivePlan(graph, graph, sample_node->time,
-                      false, false, initial_call_time);
+        const Trajectory<S> ignore =
+          RecursivePlan(graph, graph, sample_node->time,
+                        false, false, initial_call_time);
     } else {
       // Reached the goal. Update goal to ensure it always has the
       // best parent.
@@ -283,15 +300,65 @@ RecursivePlan(SearchableSet< Node<S>, S >& graph,
         parent = parent->best_parent;
       }
 
-      if (extract_traj) {
-        // TODO! Extract trajectory.
-      }
+      // Extract trajectory. Always walk backward from the initial node of the
+      // goal set to that of the start set.
+      // Else, return a dummy trajectory since it will be ignored anyway.
+      if (extract_traj)
+        return ExtractTrajectory(graph.InitialNode(), goals.InitialNode())
+      else
+        return Trajectory<S>();
     }
   }
 
-  // Ran out of time. Return an empty trajectory to indicate failure.
+  // Ran out of time.
   ROS_ERROR("%s: Planner ran out of time.", name_.c_str());
-  return Trajectory<S>();
+
+  // Return a viable loop if we found one.
+  const Node<S>::ConstPtr start = graph.InitialNode();
+  if (start->best_parent == nullptr) {
+    ROS_ERROR("%s: No viable loops available.", name_.c_str());
+    return Trajectory<S>();
+  }
+
+  ROS_INFO("%s: Found a viable loop.", name_.c_str());
+  return ExtractTrajectory(start, start);
+}
+
+// Extract a trajectory from goal node to start node if one exists.
+// Returns empty trajectory if none exists.
+template<typename S, typename E,
+         typename D, typename SD, typename B, typename SB>
+Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::
+ExtractTrajectory(const Node<S>::ConstPtr& start,
+                  const Node<S>::ConstPtr& goal) const {
+  // Accumulate trajectories in a list.
+  std::list< Trajectory<S> > trajs;
+
+  Node<S>::Ptr node = goal;
+  while (node != start || (node == start && trajs.size() == 0)) {
+    const Node<S>::Ptr parent = node->best_parent;
+
+    if (parent == nullptr) {
+      ROS_ERROR("%s: Parent was null.", name_.c_str());
+      break;
+    }
+
+    // Find node as child of parent.
+    // NOTE! Could avoid this by replacing parallel std::vectors
+    //       an std::unordered_map.
+    for (size_t ii = 0; ii < parent->children.size(); ii++) {
+      if (parent->children[ii] == node) {
+        trajs.push_front(parent->trajs_to_children[ii]);
+        break;
+      }
+
+      if (ii == parent->children.size() - 1)
+        ROS_ERROR("%s: Parent/child inconsistency.", name_.c_str());
+    }
+  }
+
+  // Concatenate into a single trajectory.
+  return Trajectory<S>(trajs);
 }
 
 // Load parameters.
@@ -312,7 +379,6 @@ LoadParameters(const ros::NodeHandle& n) {
 
   return true;
 }
-
 
 } //\namespace planning
 } //\namespace fastrack
