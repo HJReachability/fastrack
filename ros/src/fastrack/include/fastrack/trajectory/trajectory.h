@@ -62,9 +62,17 @@ class Trajectory {
 public:
   ~Trajectory() {}
   explicit Trajectory() {}
-  explicit Trajectory(const std::list< Trajectory<S> >& trajs);
+
+  // Construct from a list of trajectories.
+  // NOTE! Not const because we will automatically time-shift trajectories
+  //       to splice them together.
+  explicit Trajectory(std::list< Trajectory<S> >& trajs);
+
+  // Construct from lists of states and times.
   explicit Trajectory(const std::vector<S> states,
                       const std::vector<double> times);
+
+  // Construct from a ROS message.
   explicit Trajectory(const fastrack_msgs::Trajectory::ConstPtr& msg);
 
   // Size (number of states in this Trajectory).
@@ -81,6 +89,9 @@ public:
 
   // Interpolate at a particular time.
   S Interpolate(double t) const;
+
+  // Reset first time and update all other times to preserve the deltas.
+  void ResetFirstTime(double t);
 
   // Convert to a ROS message.
   fastrack_msgs::Trajectory ToRos() const;
@@ -102,18 +113,27 @@ private:
 
 // ------------------------------ IMPLEMENTATION ----------------------------- //
 
+// Construct from a list of trajectories.
+// NOTE! Not const because we will automatically time-shift trajectories
+//       to splice them together.
 template<typename S>
-Trajectory<S>::Trajectory(const std::list< Trajectory<S> >& trajs)
+Trajectory<S>::Trajectory(std::list< Trajectory<S> >& trajs)
   : configuration_(false) {
-  for (const auto& traj : trajs) {
-    if (times_.size() == 0 || times_.back() <= traj.times_.front()) {
-      states_.insert(states_.end(), traj.states_.begin(), traj.states_.end());
-      times_.insert(times_.end(), traj.times_.begin(), traj.times_.end());
-      configuration_ |= traj.configuration_;
-    }
+  for (auto& traj : trajs) {
+    // Reset first time to match last time of previous trajectory.
+    if (times_.size() > 0)
+      traj.ResetFirstTime(times_.back());
+
+    // Concatenate states and times to existing lists.
+    states_.insert(states_.end(), traj.states_.begin(), traj.states_.end());
+    times_.insert(times_.end(), traj.times_.begin(), traj.times_.end());
+
+    // Set configuration to true if any trajectory is in configuration space.
+    configuration_ |= traj.configuration_;
   }
 }
 
+// Construct from lists of states and times.
 template<typename S>
 Trajectory<S>::Trajectory(const std::vector<S> states,
                           const std::vector<double> times)
@@ -211,8 +231,21 @@ S Trajectory<S>::Interpolate(double t) const {
   return interpolated;
 }
 
+// Reset first time and update all other times to preserve the deltas.
+template<typename S>
+void Trajectory<S>::ResetFirstTime(double t) {
+  if (times_.size() == 0) {
+    ROS_ERROR("Trajectory: Tried to reset first time of empty trajectory.");
+    return;
+  }
+
+  const double constant_shift = t - times_.front();
+  for (size_t ii = 0; ii < times_.size(); ii++)
+    times_[ii] += constant_shift;
+}
+
 // Convert to a ROS message.
-template <typename S>
+template<typename S>
 fastrack_msgs::Trajectory Trajectory<S>::ToRos() const {
   fastrack_msgs::Trajectory msg;
 

@@ -71,24 +71,7 @@ protected:
 
   // Plan a trajectory from the given start to goal states starting
   // at the given time.
-  inline Trajectory<S> Plan(
-    const S& start, const S& goal, double start_time=0.0) const {
-    // Keep track of initial time.
-    const ros::Time initial_call_time = ros::Time::now();
-
-    // Generate trajectory.
-    const Trajectory<S> traj =
-      RecursivePlan(SearchableSet< Node<S>, S >(start),
-                    SearchableSet< Node<S>, S >(goal),
-                    start_time, true, true, initial_call_time);
-
-    // Wait around if we finish early.
-    const double elapsed_time = (ros::Time::now() - initial_call_time).toSec();
-    if (elapsed_time < max_runtime_)
-      ros::Duration(max_runtime_ - elapsed_time).sleep();
-
-    return traj;
-  }
+  Trajectory<S> Plan(const S& start, const S& goal, double start_time=0.0) const;
 
   // Recursive version of Plan() that plans outbound and return trajectories.
   // High level recursive feasibility logic is here. Keep track of the
@@ -115,6 +98,9 @@ protected:
   Trajectory<S> ExtractTrajectory(const Node<S>::ConstPtr& start,
                                   const Node<S>::ConstPtr& goal) const;
 
+  // Update cost to come, time, and all traj_to_child times recursively.
+  void UpdateChildren(const Node<S>::Ptr& node) const;
+
   // Member variables.
   size_t num_neighbors_;
   double search_radius_;
@@ -126,11 +112,11 @@ protected:
   struct Node<S> {
     // Member variables.
     S state;
-    double time;
-    double cost_to_come;
-    bool is_viable;
-    Node<S>::ConstPtr best_parent;
-    std::vector< Node<S>::ConstPtr > children;
+    double time = constants::INFINITY;
+    double cost_to_come = constants::INFINITY;
+    bool is_viable = false;
+    Node<S>::ConstPtr best_parent = nullptr;
+    std::vector< Node<S>::Ptr > children;
     std::vector< Trajectory<S> > trajs_to_children;
 
     // Typedefs.
@@ -144,8 +130,8 @@ protected:
       double time,
       double cost_to_come,
       bool is_viable,
-      const Node<S>::ConstPtr& best_parent,
-      const std::vector< Node<S>::ConstPtr >& children,
+      const Node<S>::Ptr& best_parent,
+      const std::vector< Node<S>::Ptr >& children,
       const std::vector< Trajectory<S> >& trajs_to_children);
 
   private:
@@ -154,8 +140,8 @@ protected:
                      double time,
                      double cost_to_come,
                      bool is_viable,
-                     const Node<S>::ConstPtr& best_parent,
-                     const std::vector< Node<S>::ConstPtr >& children,
+                     const Node<S>::Ptr& best_parent,
+                     const std::vector< Node<S>::Ptr >& children,
                      const std::vector< Trajectory<S> >& trajs_to_children)
     : this->state(state),
       this->time(time),
@@ -176,8 +162,8 @@ protected:
          bool is_viable,
          double time,
          double cost_to_come,
-         const Node<S>::ConstPtr& best_parent,
-         const std::vector< Node<S>::ConstPtr >& children,
+         const Node<S>::Ptr& best_parent,
+         const std::vector< Node<S>::Ptr >& children,
          const std::vector< Trajectory<S> >& trajs_to_children) {
     return Node<S>::Ptr(new Node<S>(state,
                                     time,
@@ -191,6 +177,43 @@ protected:
 }; //\class GraphDynamicPlanner
 
 // ----------------------------- IMPLEMENTATION ----------------------------- //
+
+// Plan a trajectory from the given start to goal states starting
+// at the given time.
+template<typename S, typename E,
+         typename D, typename SD, typename B, typename SB>
+Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::
+Plan(const S& start, const S& goal, double start_time=0.0) const {
+  // Keep track of initial time.
+  const ros::Time initial_call_time = ros::Time::now();
+
+  // Set up start and goal nodes.
+  Node<S>::Ptr start_node;
+  start_node->state = start;
+  start_node->time = start_time;
+  start_node->cost_to_come = 0.0;
+  start_node->is_viable = true;
+
+  Node<S>::Ptr goal_node;
+  goal_node->state = goal;
+  goal_node->time = constants::INFINITY;
+  goal_node->cost_to_come = constants::INFINITY;
+  goal_node->is_viable = true;
+
+  // Generate trajectory.
+  const Trajectory<S> traj =
+    RecursivePlan(SearchableSet< Node<S>, S >(start_node),
+                  SearchableSet< Node<S>, S >(goal_node),
+                  start_time, true, true, initial_call_time);
+
+  // Wait around if we finish early.
+  const double elapsed_time = (ros::Time::now() - initial_call_time).toSec();
+  if (elapsed_time < max_runtime_)
+    ros::Duration(max_runtime_ - elapsed_time).sleep();
+
+  return traj;
+}
+
 
 // Recursive version of Plan() that plans outbound and return trajectories.
 // High level recursive feasibility logic is here.
@@ -289,7 +312,8 @@ RecursivePlan(SearchableSet< Node<S>, S >& graph,
         // I'm yo daddy.
         child->best_parent = sample_node;
 
-        // TODO! Breath first search to update time / cost to come.
+        // Breath first search to update time / cost to come.
+        UpdateChildren(sample_node);
       }
 
       // Make sure all ancestors are viable.
@@ -379,6 +403,47 @@ LoadParameters(const ros::NodeHandle& n) {
 
   return true;
 }
+
+// Update cost to come, time, and all traj_to_child times recursively.
+template<typename S, typename E,
+         typename D, typename SD, typename B, typename SB>
+void GraphDynamicPlanner<S, E, D, SD, B, SB>::
+UpdateChildren(const Node<S>::Ptr& node) const {
+  // Run breadth-first search.
+  // Initialize a queue with 'node' inside.
+  std::list< Node<S>::Ptr > queue = { node };
+
+  while (queue.size() > 0) {
+    // Pop oldest node.
+    const Node<S>::Ptr current_node = queue.front();
+    queue.pop_front();
+
+    for (size_t ii = 0; ii < current_node->children.size(); ii++) {
+      const Node<S>::Ptr child = current_node->children[ii];
+
+      // Push child onto the queue.
+      queue.push_back(child);
+
+      // Update trajectory to child.
+      // NOTE! This could be removed since trajectory timing is adjusted
+      //       again upon concatenation and extraction.
+      current_node->trajs_to_children[ii].ResetFirstTime(current_node->time);
+
+      // Maybe update child's best parent to be the current node.
+      // If so, also update time and cost to come.
+      if (child->best_parent != nullptr ||
+          child->best_parent->cost_to_come > current_node->cost_to_come) {
+        child->best_parent = current_node;
+
+        child->time = current_node->time +
+          current_node->trajs_to_children[ii].Duration();
+        child->cost_to_come = current_node->cost_to_come +
+          Cost(current_node->trajs_to_children[ii]);
+      }
+    }
+  }
+}
+
 
 } //\namespace planning
 } //\namespace fastrack
