@@ -82,7 +82,6 @@ protected:
                               const SearchableSet< Node<S>, S >& goals,
                               double start_time,
                               bool outbound,
-                              bool extract_traj,
                               const ros::Time& initial_call_time) const;
 
   // Generate a sub-plan that connects two states and is dynamically feasible
@@ -99,7 +98,8 @@ protected:
                                   const Node<S>::ConstPtr& goal) const;
 
   // Update cost to come, time, and all traj_to_child times recursively.
-  void UpdateChildren(const Node<S>::Ptr& node) const;
+  void UpdateDescendants(const Node<S>::Ptr& node,
+                         const Node<S>::ConstPtr& start) const;
 
   // Member variables.
   size_t num_neighbors_;
@@ -112,8 +112,8 @@ protected:
   struct Node<S> {
     // Member variables.
     S state;
-    double time = constants::INFINITY;
-    double cost_to_come = constants::INFINITY;
+    double time = constants::kInfinity;
+    double cost_to_come = constants::kInfinity;
     bool is_viable = false;
     Node<S>::ConstPtr best_parent = nullptr;
     std::vector< Node<S>::Ptr > children;
@@ -196,15 +196,15 @@ Plan(const S& start, const S& goal, double start_time=0.0) const {
 
   Node<S>::Ptr goal_node;
   goal_node->state = goal;
-  goal_node->time = constants::INFINITY;
-  goal_node->cost_to_come = constants::INFINITY;
+  goal_node->time = constants::kInfinity;
+  goal_node->cost_to_come = constants::kInfinity;
   goal_node->is_viable = true;
 
   // Generate trajectory.
   const Trajectory<S> traj =
     RecursivePlan(SearchableSet< Node<S>, S >(start_node),
                   SearchableSet< Node<S>, S >(goal_node),
-                  start_time, true, true, initial_call_time);
+                  start_time, true, initial_call_time);
 
   // Wait around if we finish early.
   const double elapsed_time = (ros::Time::now() - initial_call_time).toSec();
@@ -224,7 +224,6 @@ RecursivePlan(SearchableSet< Node<S>, S >& graph,
               const SearchableSet< Node<S>, S >& goals,
               double start_time,
               bool outbound,
-              bool extract_traj,
               const ros::Time& initial_call_time) const {
   // Loop until we run out of time.
   while ((ros::Time::now() - initial_call_time).toSec() < max_runtime_) {
@@ -239,7 +238,7 @@ RecursivePlan(SearchableSet< Node<S>, S >& graph,
     for (const auto& neighbor : neighbors) {
       // Reject this neighbor if it's too close to the sample.
       if ((neighbor->state.ToVector() - sample.ToVector()).norm() <
-          constants::EPSILON)
+          constants::kEpsilon)
         continue;
 
       // (3) Plan a sub-path from this neighbor to sampled state.
@@ -303,7 +302,7 @@ RecursivePlan(SearchableSet< Node<S>, S >& graph,
       if (outbound)
         const Trajectory<S> ignore =
           RecursivePlan(graph, graph, sample_node->time,
-                        false, false, initial_call_time);
+                        false, initial_call_time);
     } else {
       // Reached the goal. Update goal to ensure it always has the
       // best parent.
@@ -313,7 +312,7 @@ RecursivePlan(SearchableSet< Node<S>, S >& graph,
         child->best_parent = sample_node;
 
         // Breath first search to update time / cost to come.
-        UpdateChildren(sample_node);
+        UpdateDescendants(sample_node);
       }
 
       // Make sure all ancestors are viable.
@@ -327,7 +326,7 @@ RecursivePlan(SearchableSet< Node<S>, S >& graph,
       // Extract trajectory. Always walk backward from the initial node of the
       // goal set to that of the start set.
       // Else, return a dummy trajectory since it will be ignored anyway.
-      if (extract_traj)
+      if (outbound)
         return ExtractTrajectory(graph.InitialNode(), goals.InitialNode())
       else
         return Trajectory<S>();
@@ -336,6 +335,10 @@ RecursivePlan(SearchableSet< Node<S>, S >& graph,
 
   // Ran out of time.
   ROS_ERROR("%s: Planner ran out of time.", name_.c_str());
+
+  // Don't return a trajectory if not outbound.
+  if (!outbound)
+    return Trajectory<S>();
 
   // Return a viable loop if we found one.
   const Node<S>::ConstPtr start = graph.InitialNode();
@@ -408,7 +411,8 @@ LoadParameters(const ros::NodeHandle& n) {
 template<typename S, typename E,
          typename D, typename SD, typename B, typename SB>
 void GraphDynamicPlanner<S, E, D, SD, B, SB>::
-UpdateChildren(const Node<S>::Ptr& node) const {
+UpdateDescendants(const Node<S>::Ptr& node,
+                  const Node<S>::ConstPtr& start) const {
   // Run breadth-first search.
   // Initialize a queue with 'node' inside.
   std::list< Node<S>::Ptr > queue = { node };
@@ -417,6 +421,10 @@ UpdateChildren(const Node<S>::Ptr& node) const {
     // Pop oldest node.
     const Node<S>::Ptr current_node = queue.front();
     queue.pop_front();
+
+    // Skip this one if it's the start node.
+    if (current_node == start)
+      continue;
 
     for (size_t ii = 0; ii < current_node->children.size(); ii++) {
       const Node<S>::Ptr child = current_node->children[ii];

@@ -97,10 +97,12 @@ SearchableSet<N, S>::~SearchableSet() {
 
 // Construct from a single node.
 template<typename N, typename S>
-SearchableSet<N, S>::SearchableSet(const typename N::ConstPtr& node)
-  : SearchableSet<N, S>() {
-  // Insert node directly.
-  Insert(node);
+SearchableSet<N, S>::SearchableSet(const typename N::ConstPtr& node) {
+  if (!node.get()) {
+    ROS_WARN("SearchableSet: Constructing without initial node.");
+  } else {
+    Insert(node);
+  }
 }
 
 // Insert a new node into the set.

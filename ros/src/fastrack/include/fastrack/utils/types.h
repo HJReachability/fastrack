@@ -68,10 +68,10 @@ namespace fastrack {
     const double G = 9.81;
 
     // Small number for use in approximate equality checking.
-    const double EPSILON = 1e-4;
+    const double kEpsilon = 1e-4;
 
     // Double precision infinity.
-    const double INFINITY = std::numeric_limits<double>::infinity();
+    const double kInfinity = std::numeric_limits<double>::infinity();
   } //\namespace constants
 
   // Empty struct for setting unused/unimplemented template args.
