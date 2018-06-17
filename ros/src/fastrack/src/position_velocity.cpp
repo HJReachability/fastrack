@@ -49,25 +49,19 @@ namespace state {
 
 // Initialize static configuration space bounds.
 PositionVelocity PositionVelocity::lower_ =
-  PositionVelocity(Vector3d::Zero(), Vector3d::Zero());
+    PositionVelocity(Vector3d::Zero(), Vector3d::Zero());
 PositionVelocity PositionVelocity::upper_ =
-  PositionVelocity(Vector3d::Zero(), Vector3d::Zero());
+    PositionVelocity(Vector3d::Zero(), Vector3d::Zero());
 
 // Constructors.
-PositionVelocity::PositionVelocity(double x, double y, double z,
-                                   double vx, double vy, double vz)
-  : State(),
-    position_(Vector3d(x, y, z)),
-    velocity_(Vector3d(vx, vy, vz)) {}
-PositionVelocity::PositionVelocity(const Vector3d& position,
-                                   const Vector3d& velocity)
-  : State(),
-    position_(position),
-    velocity_(velocity) {}
-PositionVelocity::PositionVelocity(const fastrack_msgs::State& msg)
-  : State(),
-    position_(Vector3d::Zero()),
-    velocity_(Vector3d::Zero()) {
+PositionVelocity::PositionVelocity(double x, double y, double z, double vx,
+                                   double vy, double vz)
+    : State(), position_(Vector3d(x, y, z)), velocity_(Vector3d(vx, vy, vz)) {}
+PositionVelocity::PositionVelocity(const Vector3d &position,
+                                   const Vector3d &velocity)
+    : State(), position_(position), velocity_(velocity) {}
+PositionVelocity::PositionVelocity(const fastrack_msgs::State &msg)
+    : State(), position_(Vector3d::Zero()), velocity_(Vector3d::Zero()) {
   // Check dimensions.
   if (msg.x.size() == StateDimension()) {
     position_(0) = msg.x[0];
@@ -83,10 +77,8 @@ PositionVelocity::PositionVelocity(const fastrack_msgs::State& msg)
   } else
     ROS_ERROR("PositionVelocity: msg dimension is incorrect.");
 }
-PositionVelocity::PositionVelocity(const VectorXd& config)
-  : State(),
-    position_(Vector3d::Zero()),
-    velocity_(Vector3d::Zero()) {
+PositionVelocity::PositionVelocity(const VectorXd &config)
+    : State(), position_(Vector3d::Zero()), velocity_(Vector3d::Zero()) {
   // Check dimensions.
   if (config.size() != ConfigurationDimension())
     throw std::runtime_error("PositionVelocity: incorrect config dimension.");
@@ -97,9 +89,10 @@ PositionVelocity::PositionVelocity(const VectorXd& config)
 }
 
 // Set non-configuration dimensions to match the given config derivative.
-void PositionVelocity::SetConfigurationDot(const VectorXd& configuration_dot) {
+void PositionVelocity::SetConfigurationDot(const VectorXd &configuration_dot) {
   if (configuration_dot.size() != ConfigurationDimension())
-    throw std::runtime_error("PositionVelocity: invalid configuration_dot dim.");
+    throw std::runtime_error(
+        "PositionVelocity: invalid configuration_dot dim.");
 
   velocity_(0) = configuration_dot(0);
   velocity_(1) = configuration_dot(1);
@@ -122,8 +115,8 @@ VectorXd PositionVelocity::SampleConfiguration() {
   // Generate random sample.
   VectorXd sample(kConfigurationSpaceDimension);
   for (size_t ii = 0; ii < kConfigurationSpaceDimension; ii++)
-    sample(ii) = lower_config(ii) +
-      (upper_config(ii) - lower_config(ii)) * unif(rng_);
+    sample(ii) =
+        lower_config(ii) + (upper_config(ii) - lower_config(ii)) * unif(rng_);
 
   return sample;
 }
@@ -134,18 +127,18 @@ PositionVelocity PositionVelocity::Sample() {
   std::uniform_real_distribution<double> unif(0.0, 1.0);
 
   // Generate random sample.
-  const double x =
-    lower_.position_(0) + (upper_.position_(0) - lower_.position_(0)) * unif(rng_);
-  const double y =
-    lower_.position_(1) + (upper_.position_(1) - lower_.position_(1)) * unif(rng_);
-  const double z =
-    lower_.position_(2) + (upper_.position_(2) - lower_.position_(2)) * unif(rng_);
-  const double vx =
-    lower_.velocity_(0) + (upper_.velocity_(0) - lower_.velocity_(0)) * unif(rng_);
-  const double vy =
-    lower_.velocity_(1) + (upper_.velocity_(1) - lower_.velocity_(1)) * unif(rng_);
-  const double vz =
-    lower_.velocity_(2) + (upper_.velocity_(2) - lower_.velocity_(2)) * unif(rng_);
+  const double x = lower_.position_(0) +
+                   (upper_.position_(0) - lower_.position_(0)) * unif(rng_);
+  const double y = lower_.position_(1) +
+                   (upper_.position_(1) - lower_.position_(1)) * unif(rng_);
+  const double z = lower_.position_(2) +
+                   (upper_.position_(2) - lower_.position_(2)) * unif(rng_);
+  const double vx = lower_.velocity_(0) +
+                    (upper_.velocity_(0) - lower_.velocity_(0)) * unif(rng_);
+  const double vy = lower_.velocity_(1) +
+                    (upper_.velocity_(1) - lower_.velocity_(1)) * unif(rng_);
+  const double vz = lower_.velocity_(2) +
+                    (upper_.velocity_(2) - lower_.velocity_(2)) * unif(rng_);
 
   return PositionVelocity(x, y, z, vx, vy, vz);
 }
@@ -155,20 +148,20 @@ PositionVelocity PositionVelocity::Sample() {
 // NOTE! For simplicity, this is a finite set. In future, this could
 // be generalized to a collection of generic obstacles.
 std::vector<Vector3d> PositionVelocity::OccupiedPositions() const {
-  return std::vector<Vector3d>({ position_ });
+  return std::vector<Vector3d>({position_});
 }
 
 // Set bounds of the state space.
-void PositionVelocity::SetBounds(
-  const PositionVelocity& lower, const PositionVelocity& upper) {
+void PositionVelocity::SetBounds(const PositionVelocity &lower,
+                                 const PositionVelocity &upper) {
   lower_ = lower;
   upper_ = upper;
 }
 
 // Set state space bounds from std vectors. Layout is assumed to be
 // [x, y, z, vx, vy, vz].
-void PositionVelocity::SetBounds(
-  const std::vector<double>& lower, const std::vector<double>& upper) {
+void PositionVelocity::SetBounds(const std::vector<double> &lower,
+                                 const std::vector<double> &upper) {
   // Check dimensions.
   if (lower.size() != 6 || upper.size() != 6)
     throw new std::runtime_error("PositionVelocity: bad bound dimension.");
@@ -189,7 +182,7 @@ void PositionVelocity::SetBounds(
 }
 
 // Convert from VectorXd. Assume State is [x, y, z, vx, vy, vz].
-void PositionVelocity::FromVector(const VectorXd& x) {
+void PositionVelocity::FromVector(const VectorXd &x) {
   if (x.size() == 6) {
     position_(0) = x(0);
     position_(1) = x(1);
@@ -200,7 +193,7 @@ void PositionVelocity::FromVector(const VectorXd& x) {
     return;
   }
 
-  ROS_ERROR("PositionVelocity: vector is of the wrong size.");\
+  ROS_ERROR("PositionVelocity: vector is of the wrong size.");
 }
 
 // Convert to VectorXd. Assume State is [x, y, z, vx, vy, vz].
@@ -218,7 +211,7 @@ VectorXd PositionVelocity::ToVector() const {
 
 // Convert from ROS message. Assume State is [x, y, z, vx, vy, vz] or
 // configuration only.
-void PositionVelocity::FromRos(const fastrack_msgs::State::ConstPtr& msg) {
+void PositionVelocity::FromRos(const fastrack_msgs::State::ConstPtr &msg) {
   if (msg->x.size() == 6) {
     // Message contains full state.
     position_(0) = msg->x[0];
@@ -249,66 +242,13 @@ fastrack_msgs::State PositionVelocity::ToRos() const {
   return msg;
 }
 
-
 // Get bounds of configuration space.
-VectorXd PositionVelocity::GetConfigurationLower() { return lower_.Position(); }
-VectorXd PositionVelocity::GetConfigurationUpper() { return upper_.Position(); }
-
-// Compound assignment operators.
-PositionVelocity& PositionVelocity::operator+=(const PositionVelocity& rhs) {
-  position_ += rhs.position_;
-  velocity_ += rhs.velocity_;
-  return *this;
+VectorXd PositionVelocity::GetConfigurationLower() {
+  return lower_.Configuration();
+}
+VectorXd PositionVelocity::GetConfigurationUpper() {
+  return upper_.Configuration();
 }
 
-PositionVelocity& PositionVelocity::operator-=(const PositionVelocity& rhs) {
-  position_ -= rhs.position_;
-  velocity_ -= rhs.velocity_;
-  return *this;
-}
-
-PositionVelocity& PositionVelocity::operator*=(double s) {
-  position_ *= s;
-  velocity_ *= s;
-  return *this;
-}
-
-PositionVelocity& PositionVelocity::operator/=(double s) {
-  position_ /= s;
-  velocity_ /= s;
-  return *this;
-}
-
-// Binary operators.
-PositionVelocity operator+(PositionVelocity lhs, const PositionVelocity& rhs) {
-  lhs += rhs;
-  return lhs;
-}
-
-PositionVelocity operator-(PositionVelocity lhs, const PositionVelocity& rhs) {
-  lhs -= rhs;
-  return lhs;
-}
-
-PositionVelocity operator*(PositionVelocity lhs, double s) {
-  lhs *= s;
-  return lhs;
-}
-
-PositionVelocity operator*(double s, PositionVelocity rhs) {
-  rhs *= s;
-  return rhs;
-}
-
-PositionVelocity operator/(PositionVelocity lhs, double s) {
-  lhs /= s;
-  return lhs;
-}
-
-PositionVelocity operator/(double s, PositionVelocity rhs) {
-  rhs /= s;
-  return rhs;
-}
-
-} //\namespace state
-} //\namespace fastrack
+} // namespace state
+} // namespace fastrack

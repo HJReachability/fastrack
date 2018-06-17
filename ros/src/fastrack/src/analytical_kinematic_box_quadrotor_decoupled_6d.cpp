@@ -136,8 +136,7 @@ double AnalyticalKinematicBoxQuadrotorDecoupled6D::
 Value(const PositionVelocity& tracker_x,
       const PositionVelocity& planner_x) const {
   // Get relative state.
-  const PositionVelocity relative_x =
-    tracker_x.RelativeTo<PositionVelocity>(planner_x);
+  const PositionVelocity relative_x = tracker_x.RelativeTo(planner_x);
   const Vector3d& rx_position = relative_x.Position();
   const Vector3d& rx_velocity = relative_x.Velocity();
 
@@ -171,8 +170,7 @@ PositionVelocity AnalyticalKinematicBoxQuadrotorDecoupled6D::
 Gradient(const PositionVelocity& tracker_x,
          const PositionVelocity& planner_x) const {
   // Get relative state.
-  const PositionVelocity relative_x =
-    tracker_x.RelativeTo<PositionVelocity>(planner_x);
+  const PositionVelocity relative_x = tracker_x.RelativeTo(planner_x);
   const Vector3d& rx_position = relative_x.Position();
   const Vector3d& rx_velocity = relative_x.Velocity();
 

@@ -36,61 +36,48 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Custom types.
+// Defines the RelativeDynamics class, which encodes relative dynamcis between
+// the tracker and the planner. Templated on both state types, and also the
+// control types for each system.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_UTILS_TYPES_H
-#define FASTRACK_UTILS_TYPES_H
+#ifndef FASTRACK_DYNAMICS_RELATIVE_DYNAMICS_H
+#define FASTRACK_DYNAMICS_RELATIVE_DYNAMICS_H
 
-// ------------------------------- INCLUDES -------------------------------- //
-
-#include <random>
-#include <math.h>
-#include <string>
-#include <type_traits>
-#include <typeinfo>
-#include <exception>
-#include <memory>
-#include <limits>
-#include <vector>
-#include <algorithm>
-#include <random>
-#include <iostream>
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
-
-// ------------------------------- CONSTANTS -------------------------------- //
+#include <fastrack/control/control_bound.h>
+#include <fastrack/state/relative_state.h>
+#include <fastrack/utils/types.h>
 
 namespace fastrack {
-  namespace constants {
-    // Acceleration due to gravity.
-    const double G = 9.81;
+namespace dynamics {
 
-    // Small number for use in approximate equality checking.
-    const double kEpsilon = 1e-4;
+template <typename TS, typename TC, typename PS, typename PC>
+class RelativeDynamics {
+public:
+  // Destructor.
+  virtual ~RelativeDynamics() {}
 
-    // Double precision infinity.
-    const double kInfinity = std::numeric_limits<double>::infinity();
+  // Derived classes must be able to give the time derivative of relative state
+  // as a function of current state and control of each system.
+  virtual RelativeState<TS, PS> Evaluate(const TS &tracker_x,
+                                         const TC &tracker_u,
+                                         const PS &planner_x,
+                                         const PC &planner_u) const = 0;
 
-    // Default speed of 1 m/s.
-    const double kDefaultSpeed = 1.0;
+  // Derived classes must be able to compute an optimal control given
+  // the gradient of the value function at the relative state specified
+  // by the given system states, provided abstract control bounds.
+  virtual TC OptimalControl(const TS &tracker_x, const PS &planner_x,
+                            const RelativeState<TS, PS> &value_gradient,
+                            const ControlBound<TC> &tracker_u_bound,
+                            const ControlBound<PC> &planner_u_bound) const = 0;
 
-    // Default height (e.g. for planar state space models).
-    const double kDefaultHeight = 1.0;
-  } //\namespace constants
+protected:
+  explicit RelativeDynamics() {}
+}; //\class RelativeDynamics
 
-  // Empty struct for setting unused/unimplemented template args.
-  struct Empty {};
-} //\namespace fastrack
-
-// ------------------------ THIRD PARTY TYPEDEFS ---------------------------- //
-
-using Eigen::Matrix3d;
-using Eigen::Vector3d;
-using Eigen::Matrix4d;
-using Eigen::VectorXd;
-using Eigen::MatrixXd;
-using Eigen::Quaterniond;
+} // namespace dynamics
+} // namespace fastrack
 
 #endif

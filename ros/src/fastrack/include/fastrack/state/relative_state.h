@@ -36,61 +36,29 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Custom types.
+// Base class for all relative state types. Relative states are computed from
+// two State types and are used for representing value function gradients and
+// relative dynamics.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_UTILS_TYPES_H
-#define FASTRACK_UTILS_TYPES_H
+#ifndef FASTRACK_STATE_RELATIVE_STATE_H
+#define FASTRACK_STATE_RELATIVE_STATE_H
 
-// ------------------------------- INCLUDES -------------------------------- //
-
-#include <random>
-#include <math.h>
-#include <string>
-#include <type_traits>
-#include <typeinfo>
-#include <exception>
-#include <memory>
-#include <limits>
-#include <vector>
-#include <algorithm>
-#include <random>
-#include <iostream>
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
-
-// ------------------------------- CONSTANTS -------------------------------- //
+#include <fastrack/utils/types.h>
 
 namespace fastrack {
-  namespace constants {
-    // Acceleration due to gravity.
-    const double G = 9.81;
+namespace state {
 
-    // Small number for use in approximate equality checking.
-    const double kEpsilon = 1e-4;
+template <typename TS, typename PS> class RelativeState {
+public:
+  virtual ~RelativeState() {}
 
-    // Double precision infinity.
-    const double kInfinity = std::numeric_limits<double>::infinity();
+protected:
+  explicit RelativeState() {}
+}; //\class RelativeState
 
-    // Default speed of 1 m/s.
-    const double kDefaultSpeed = 1.0;
-
-    // Default height (e.g. for planar state space models).
-    const double kDefaultHeight = 1.0;
-  } //\namespace constants
-
-  // Empty struct for setting unused/unimplemented template args.
-  struct Empty {};
-} //\namespace fastrack
-
-// ------------------------ THIRD PARTY TYPEDEFS ---------------------------- //
-
-using Eigen::Matrix3d;
-using Eigen::Vector3d;
-using Eigen::Matrix4d;
-using Eigen::VectorXd;
-using Eigen::MatrixXd;
-using Eigen::Quaterniond;
+} // namespace state
+} // namespace fastrack
 
 #endif

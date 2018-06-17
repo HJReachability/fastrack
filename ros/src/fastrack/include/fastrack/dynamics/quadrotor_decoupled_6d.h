@@ -45,35 +45,35 @@
 #ifndef FASTRACK_DYNAMICS_QUADROTOR_DECOUPLED_6D_H
 #define FASTRACK_DYNAMICS_QUADROTOR_DECOUPLED_6D_H
 
+#include <fastrack/control/quadrotor_control.h>
 #include <fastrack/dynamics/dynamics.h>
 #include <fastrack/state/position_velocity.h>
-#include <fastrack/control/quadrotor_control.h>
 
 #include <math.h>
 
 namespace fastrack {
 namespace dynamics {
 
-using state::PositionVelocity;
 using control::QuadrotorControl;
+using state::PositionVelocity;
 
-class QuadrotorDecoupled6D :
-    public Dynamics<PositionVelocity, QuadrotorControl, Empty> {
+class QuadrotorDecoupled6D
+    : public Dynamics<PositionVelocity, QuadrotorControl, Empty> {
 public:
   ~QuadrotorDecoupled6D() {}
-  explicit QuadrotorDecoupled6D()
-    : Dynamics() {}
-  explicit QuadrotorDecoupled6D(const QuadrotorControl& u_lower,
-                                const QuadrotorControl& u_upper)
-    : Dynamics(u_lower, u_upper) {}
+  explicit QuadrotorDecoupled6D() : Dynamics() {}
+  explicit QuadrotorDecoupled6D(const QuadrotorControl &u_lower,
+                                const QuadrotorControl &u_upper)
+      : Dynamics(u_lower, u_upper) {}
 
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
-  inline PositionVelocity Evaluate(
-    const PositionVelocity& x, const QuadrotorControl& u) const {
+  inline PositionVelocity Evaluate(const PositionVelocity &x,
+                                   const QuadrotorControl &u) const {
     // Check initialization.
     if (!initialized_)
-      throw std::runtime_error("QuadrotorDecoupled6D: uninitialized call to Evaluate.");
+      throw std::runtime_error(
+          "QuadrotorDecoupled6D: uninitialized call to Evaluate.");
 
     // Position derivatives are just velocity.
     const Vector3d position_dot(x.Velocity());
@@ -92,11 +92,13 @@ public:
   // the gradient of the value function at the specified state.
   // In this case (linear dynamics), the state is irrelevant given the
   // gradient of the value function at that state.
-  inline QuadrotorControl OptimalControl(
-    const PositionVelocity& x, const PositionVelocity& value_gradient) const {
+  inline QuadrotorControl
+  OptimalControl(const PositionVelocity &x,
+                 const PositionVelocity &value_gradient) const {
     // Check initialization.
     if (!initialized_)
-      throw std::runtime_error("QuadrotorDecoupled6D: uninitialized call to OptimalControl.");
+      throw std::runtime_error(
+          "QuadrotorDecoupled6D: uninitialized call to OptimalControl.");
 
     // Set each dimension of optimal control to upper/lower bound depending
     // on the sign of the gradient in that dimension. We want to minimize the
@@ -118,13 +120,13 @@ public:
   }
 
   // Convert from the appropriate service response type.
-  inline void FromRos(const Empty& res) {
+  inline void FromRos(const Empty &res) {
     throw std::runtime_error("QuadrotorDecoupled6D: FromRos is unimplemented.");
   }
 
 }; //\class QuadrotorDecoupled6D
 
-} //\namespace dynamics
-} //\namespace fastrack
+} // namespace dynamics
+} // namespace fastrack
 
 #endif

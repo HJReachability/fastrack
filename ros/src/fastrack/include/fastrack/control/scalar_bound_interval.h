@@ -36,61 +36,35 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Custom types.
+// Abstract class specifying generic control bounds. Examples include spheres,
+// boxes, and cylinders.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_UTILS_TYPES_H
-#define FASTRACK_UTILS_TYPES_H
+#ifndef FASTRACK_CONTROL_CONTROL_BOUND_H
+#define FASTRACK_CONTROL_CONTROL_BOUND_H
 
-// ------------------------------- INCLUDES -------------------------------- //
-
-#include <random>
-#include <math.h>
-#include <string>
-#include <type_traits>
-#include <typeinfo>
-#include <exception>
-#include <memory>
-#include <limits>
-#include <vector>
-#include <algorithm>
-#include <random>
-#include <iostream>
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
-
-// ------------------------------- CONSTANTS -------------------------------- //
+#include <fastrack/utils/types.h>
 
 namespace fastrack {
-  namespace constants {
-    // Acceleration due to gravity.
-    const double G = 9.81;
+namespace control {
 
-    // Small number for use in approximate equality checking.
-    const double kEpsilon = 1e-4;
+template <typename C> class ControlBound {
+public:
+  virtual ~ControlBound() {}
 
-    // Double precision infinity.
-    const double kInfinity = std::numeric_limits<double>::infinity();
+  // Derived classes must be able to check whether a query is inside the bound.
+  virtual bool Contains(const C& query) const = 0;
 
-    // Default speed of 1 m/s.
-    const double kDefaultSpeed = 1.0;
+  // Derived classes must be able to compute the projection of a vector
+  // (represented as the templated type) onto the surface of the bound.
+  virtual C ProjectToSurface(const C &direction) const = 0;
 
-    // Default height (e.g. for planar state space models).
-    const double kDefaultHeight = 1.0;
-  } //\namespace constants
+protected:
+  explicit ControlBound() {}
+}; //\class ControlBound
 
-  // Empty struct for setting unused/unimplemented template args.
-  struct Empty {};
-} //\namespace fastrack
-
-// ------------------------ THIRD PARTY TYPEDEFS ---------------------------- //
-
-using Eigen::Matrix3d;
-using Eigen::Vector3d;
-using Eigen::Matrix4d;
-using Eigen::VectorXd;
-using Eigen::MatrixXd;
-using Eigen::Quaterniond;
+} // namespace control
+} // namespace fastrack
 
 #endif
