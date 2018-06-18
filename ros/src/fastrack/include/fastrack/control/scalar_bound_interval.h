@@ -36,32 +36,38 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Abstract class specifying generic control bounds. Examples include spheres,
-// boxes, and cylinders.
+// Class to specify an interval constraint on a scalar control variable.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_CONTROL_CONTROL_BOUND_H
-#define FASTRACK_CONTROL_CONTROL_BOUND_H
+#ifndef FASTRACK_CONTROL_SCALAR_BOUND_INTERVAL_H
+#define FASTRACK_CONTROL_SCALAR_BOUND_INTERVAL_H
 
-#include <fastrack/utils/types.h>
+#include <fastrack/control/control_bound.h>
 
 namespace fastrack {
 namespace control {
 
-template <typename C> class ControlBound {
+class ScalarBoundInterval : public ControlBound<double> {
 public:
-  virtual ~ControlBound() {}
+  ~ScalarBoundInterval() {}
+  explicit ScalarBoundInterval(double min, double max)
+      : ControlBound(), min_(min), max_(max) {}
 
   // Derived classes must be able to check whether a query is inside the bound.
-  virtual bool Contains(const C& query) const = 0;
+  inline bool Contains(const double &query) const {
+    return min_ <= query && query <= max_;
+  }
 
   // Derived classes must be able to compute the projection of a vector
   // (represented as the templated type) onto the surface of the bound.
-  virtual C ProjectToSurface(const C &direction) const = 0;
+  inline double ProjectToSurface(const double &query) const {
+    return (query >= 0.5 * (max_ + min_)) ? max_ : min_;
+  }
 
-protected:
-  explicit ControlBound() {}
+private:
+  // Min and max interval values.
+  const double min_, max_;
 }; //\class ControlBound
 
 } // namespace control

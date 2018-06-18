@@ -54,11 +54,11 @@ public:
   virtual ~ControlBound() {}
 
   // Derived classes must be able to check whether a query is inside the bound.
-  virtual bool Contains(const C& query) const = 0;
+  virtual bool Contains(const C &query) const = 0;
 
   // Derived classes must be able to compute the projection of a vector
   // (represented as the templated type) onto the surface of the bound.
-  virtual C ProjectToSurface(const C &direction) const = 0;
+  virtual C ProjectToSurface(const C &query) const = 0;
 
 protected:
   explicit ControlBound() {}

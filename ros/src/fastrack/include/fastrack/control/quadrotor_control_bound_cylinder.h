@@ -36,32 +36,60 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Abstract class specifying generic control bounds. Examples include spheres,
-// boxes, and cylinders.
+// Cylindrical bound for quadrotor controls. Circle in (pitch, roll), and
+// intervals in yaw_rate and thrust.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_CONTROL_CONTROL_BOUND_H
-#define FASTRACK_CONTROL_CONTROL_BOUND_H
+#ifndef FASTRACK_CONTROL_QUADROTOR_CONTROL_BOUND_CYLINDER_H
+#define FASTRACK_CONTROL_QUADROTOR_CONTROL_BOUND_CYLINDER_H
 
-#include <fastrack/utils/types.h>
+#include <fastrack/control/control_bound.h>
+#include <fastrack/control/quadrotor_control.h>
+#include <fastrack/control/scalar_bound_interval.h>
+
+#include <math.h>
 
 namespace fastrack {
 namespace control {
 
-template <typename C> class ControlBound {
+class QuadrotorControlBoundCylinder : public ControlBound<QuadrotorControl> {
 public:
-  virtual ~ControlBound() {}
+  ~QuadrotorControlBoundCylinder() {}
+  explicit QuadrotorControlBoundCylinder(double radius,
+                                         double ScalarBoundInterval &yaw_rate,
+                                         double ScalarBoundInterval &thrust)
+      : pitch_roll_radius_(radius), yaw_rate_interval_(yaw_rate),
+        thrust_interval_(thrust) {}
 
-  // Derived classes must be able to check whether a query is inside the bound.
-  virtual bool Contains(const C& query) const = 0;
+  // Derived classes must be able to check whether a query is inside the
+  // bound.
+  inline bool Contains(const QuadrotorControl &query) const {
+    return std::hypot(query.pitch, query.roll) < pitch_roll_radius_ &&
+           yaw_rate_interval_.Contains(query.yaw_rate) &&
+           thrust_interval_.Contains(query.thrust);
+  }
 
   // Derived classes must be able to compute the projection of a vector
   // (represented as the templated type) onto the surface of the bound.
-  virtual C ProjectToSurface(const C &direction) const = 0;
+  inline QuadrotorControl
+  ProjectToSurface(const QuadrotorControl &query) const {
+    // Compute scaling to project (pitch, roll) onto the cylinder.
+    const double scaling =
+        pitch_roll_radius_ / std::hypot(query.pitch, query.roll);
 
-protected:
-  explicit ControlBound() {}
+    return QuadrotorControl(scaling * query.pitch, scaling * query.roll,
+                            yaw_rate_interval_.ProjectToSurface(query.yaw_rate),
+                            thrust_interval_.ProjectToSurface(query.thrust));
+  }
+
+private:
+  // Radius in (pitch, roll) dimensions.
+  const double pitch_roll_radius_;
+
+  // Intervals in yaw_rate and thrust.
+  const ScalarBoundInterval yaw_rate_interval_;
+  const ScalarBoundInterval thrust_interval_;
 }; //\class ControlBound
 
 } // namespace control
