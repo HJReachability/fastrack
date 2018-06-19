@@ -36,60 +36,70 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Defines the Dynamics class. Templated on the state type and control type,
-// as well as the type of service response (SR) which encodes these dynamics.
+// Class to specify a box constraint on a vector-valued control variable.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_DYNAMICS_DYNAMICS_H
-#define FASTRACK_DYNAMICS_DYNAMICS_H
+#ifndef FASTRACK_CONTROL_VECTOR_BOUND_BOX_H
+#define FASTRACK_CONTROL_VECTOR_BOUND_BOX_H
 
 #include <fastrack/control/control_bound.h>
-#include <fastrack/utils/types.h>
+#include <fastrack/control/scalar_bound_interval.h>
 
 namespace fastrack {
-namespace dynamics {
+namespace control {
 
-template <typename S, typename C, typename SR> class Dynamics {
+class VectorBoundBox : public ControlBound<VectorXd> {
 public:
-  // Destructor.
-  virtual ~Dynamics() {}
+  ~VectorBoundBox() {}
+  explicit VectorBoundBox(const VectorXd &min, const VectorXd &max)
+      : ControlBound(), min_(min), max_(max) {
+    if (min_.size() != max_.size()) {
+      ROS_ERROR("VectorBoundBox: inconsistent bound dimensions.");
 
-  // Initialize with control bounds.
-  void Initialize(const ControlBound<C> &bound) {
-    control_bound_ = std::make_unique<ControlBound<C>>(bound);
-    initialized_ = true;
+      const size_t dim = std::min(min_.size(), max_.size());
+      min_.resize(dim);
+      max_.resize(dim);
+    }
   }
 
-  // Derived classes must be able to give the time derivative of state
-  // as a function of current state and control.
-  virtual S Evaluate(const S &x, const C &u) const = 0;
+  // Derived classes must be able to check whether a query is inside the bound.
+  inline bool Contains(const VectorXd &query) const {
+    if (min_.size() != query.size()) {
+      ROS_ERROR("VectorBoundBox: incorrect query dimension.");
+      return false;
+    }
 
-  // Derived classes must be able to compute an optimal control given
-  // the gradient of the value function at the specified state.
-  virtual C OptimalControl(const S &x, const S &value_gradient) const = 0;
+    for (size_t ii = 0; ii < min_.size(); ii++) {
+      if (min_(ii) > query(ii) || query(ii) > max_(ii))
+        return false;
+    }
 
-  // Accessor for control bound.
-  const ControlBound<C> &ControlBound() { return *control_bound_; }
+    return true;
+  }
 
-  // Convert to the appropriate service response type.
-  virtual SR ToRos() const = 0;
+  // Derived classes must be able to compute the projection of a vector
+  // (represented as the templated type) onto the surface of the bound.
+  inline VectorXd ProjectToSurface(const VectorXd &query) const {
+    if (min_.size() != query.size()) {
+      ROS_ERROR("VectorBoundBox: incorrect query dimension.");
+      return VectorXd::Zero(min_.size());
+    }
 
-  // Convert from the appropriate service response type.
-  virtual void FromRos(const SR &res) = 0;
+    VectorXd projection(min_.size());
+    for (size_t ii = 0; ii < min_.size(); ii++)
+      projection(ii) =
+          (query(ii) >= 0.5 * (max_(ii) + min_(ii))) ? max_(ii) : min_(ii);
 
-protected:
-  explicit Dynamics() : initialized_(false) {}
-  explicit Dynamics(const ControlBound<C> &bound) { Initialize(bound); }
+    return projection;
+  }
 
-  // Control bound.
-  std::unique_ptr<ControlBound<C>> control_bound_;
+private:
+  // Lower and upper bounds..
+  const VectorXd min_, max_;
+}; //\class ControlBound
 
-  // Initialization.
-  bool initialized_;
-}; //\class Dynamics
-
-} // namespace dynamics
+} // namespace control
 } // namespace fastrack
 
 #endif
