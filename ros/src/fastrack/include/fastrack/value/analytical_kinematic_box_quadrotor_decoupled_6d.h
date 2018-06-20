@@ -46,54 +46,57 @@
 #ifndef FASTRACK_VALUE_ANALYTICAL_KINEMATIC_BOX_QUADROTOR_DECOUPLED_6D_H
 #define FASTRACK_VALUE_ANLAYTICAL_KINEMATIC_BOX_QUADROTOR_DECOUPLED_6D_H
 
-#include <fastrack/value/value_function.h>
-#include <fastrack/state/position_velocity.h>
-#include <fastrack/control/quadrotor_control.h>
-#include <fastrack/dynamics/quadrotor_decoupled_6d.h>
-#include <fastrack/dynamics/kinematics.h>
 #include <fastrack/bound/box.h>
+#include <fastrack/control/quadrotor_control.h>
+#include <fastrack/dynamics/kinematics.h>
+#include <fastrack/dynamics/quadrotor_decoupled_6d.h>
+#include <fastrack/state/position_velocity.h>
+#include <fastrack/state/position_velocity_rel_position_velocity.h>
 #include <fastrack/utils/types.h>
 #include <fastrack/utils/uncopyable.h>
+#include <fastrack/value/value_function.h>
 
 #include <ros/ros.h>
 
 namespace fastrack {
 namespace value {
 
-using control::QuadrotorControl;
-using state::PositionVelocity;
-using dynamics::QuadrotorDecoupled6D;
-using dynamics::Kinematics;
 using bound::Box;
+using control::QuadrotorControl;
+using dynamics::Kinematics;
+using dynamics::QuadrotorDecoupled6D;
+using state::PositionVelocity;
 
-class AnalyticalKinematicBoxQuadrotorDecoupled6D : public ValueFunction<
-  PositionVelocity, QuadrotorControl, QuadrotorDecoupled6D,
-  PositionVelocity, VectorXd, Kinematics<PositionVelocity>, Box> {
+class AnalyticalKinematicBoxQuadrotorDecoupled6D
+    : public ValueFunction<PositionVelocity, QuadrotorControl,
+                           QuadrotorDecoupled6D, PositionVelocity, VectorXd,
+                           Kinematics<PositionVelocity>, Box> {
 public:
   ~AnalyticalKinematicBoxQuadrotorDecoupled6D() {}
-  explicit AnalyticalKinematicBoxQuadrotorDecoupled6D()
-    : ValueFunction() {}
+  explicit AnalyticalKinematicBoxQuadrotorDecoupled6D() : ValueFunction() {}
 
   // Initialize from a ROS NodeHandle.
-  bool Initialize(const ros::NodeHandle& n);
+  bool Initialize(const ros::NodeHandle &n);
 
   // Value and gradient at particular relative states.
-  double Value(const PositionVelocity& vehicle_x,
-               const PositionVelocity& planner_x) const;
-  PositionVelocity Gradient(const PositionVelocity& vehicle_x,
-                            const PositionVelocity& planner_x) const;
+  double Value(const PositionVelocity &vehicle_x,
+               const PositionVelocity &planner_x) const;
+
+  PositionVelocityRelPositionVelocity
+  Gradient(const PositionVelocity &vehicle_x,
+           const PositionVelocity &planner_x) const;
 
   // Priority of the optimal control at the given vehicle and planner states.
   // This is a number between 0 and 1, where 1 means the final control signal
   // should be exactly the optimal control signal computed by this
   // value function.
-  double Priority(const PositionVelocity& vehicle_x,
-                  const PositionVelocity& planner_x) const;
+  double Priority(const PositionVelocity &vehicle_x,
+                  const PositionVelocity &planner_x) const;
 
 private:
   // Load parameters and register callbacks.
-  bool LoadParameters(const ros::NodeHandle& n);
-  bool RegisterCallbacks(const ros::NodeHandle& n);
+  bool LoadParameters(const ros::NodeHandle &n);
+  bool RegisterCallbacks(const ros::NodeHandle &n);
 
   // Maximum acceleration.
   Vector3d max_acc_;
@@ -107,7 +110,7 @@ private:
   Vector3d vel_exp_;
 }; //\class AnalyticalKinematicBoxQuadrotorDecoupled6D
 
-} //\namespace value
-} //\namespace fastrack
+} // namespace value
+} // namespace fastrack
 
 #endif

@@ -118,7 +118,7 @@ S Kinematics<S>::Evaluate(const S &x, const VectorXd &u) const {
 // Convert to the appropriate service response type.
 template <typename S>
 fastrack_srvs::KinematicPlannerDynamics::Response Kinematics<S>::ToRos() const {
-  if (!this->initialized_)
+  if (!this->initsialized_)
     throw std::runtime_error("Kinematics: uninitialized call to ToRos.");
 
   fastrack_srvs::KinematicPlannerDynamics::Response res;

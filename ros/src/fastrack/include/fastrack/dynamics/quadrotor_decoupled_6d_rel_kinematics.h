@@ -36,20 +36,19 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Defines the QuadrotorDecoupled6D class, which uses PositionVelocity as the
-// state and QuadrotorControl as the control, and models the dynamics as a
-// three decoupled 2D systems.
+// Defines the relative dynamics between a 6D decoupled quadrotor model and a
+// 3D kinematic point model.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_DYNAMICS_QUADROTOR_DECOUPLED_PLANAR_DUBINS_H
-#define FASTRACK_DYNAMICS_QUADROTOR_DECOUPLED_PLANAR_DUBINS_H
+#ifndef FASTRACK_DYNAMICS_QUADROTOR_DECOUPLED_6D_REL_KINEMATICS_H
+#define FASTRACK_DYNAMICS_QUADROTOR_DECOUPLED_6D_REL_KINEMATICS_H
 
 #include <fastrack/control/quadrotor_control.h>
 #include <fastrack/dynamics/dynamics.h>
-#include <fastrack/state/planar_dubins_3d.h>
+#include <fastrack/dynamics/kinematics.h>
 #include <fastrack/state/position_velocity.h>
-#include <fastrack/state/position_velocity_rel_planar_dubins_3d.h>
+#include <fastrack/state/position_velocity_rel_position_velocity.h>
 
 #include <math.h>
 
@@ -57,48 +56,33 @@ namespace fastrack {
 namespace dynamics {
 
 using control::QuadrotorControl;
-using state::PlanarDubins3D;
+using dynamics::Kinematics;
+using dynamics::QuadrotorDecoupled6D;
 using state::PositionVelocity;
-using state::PositionVelocityRelPlanarDubins3D;
+using state::PositionVelocityRelPositionVelocity;
 
-class QuadrotorDecoupledPlanarDubins
+class QuadrotorDecoupled6DRelKinematics
     : public RelativeDynamics<PositionVelocity, QuadrotorControl,
-                              PlanarDubins3D, double> {
+                              PositionVelocity, VectorXd> {
 public:
-  ~QuadrotorDecoupled6D() {}
-  explicit QuadrotorDecoupled6D() : Dynamics() {}
+  ~QuadrotorDecoupled6DRelKinematics() {}
+  explicit QuadrotorDecoupled6DRelKinematics() : Dynamics() {}
 
   // Derived classes must be able to give the time derivative of relative state
   // as a function of current state and control of each system.
-  inline PositionVelocityRelPlanarDubins3D
+  inline PositionVelocityRelPositionVelocity
   Evaluate(const PositionVelocity &tracker_x, const QuadrotorControl &tracker_u,
-           const PlanarDubins3D &planner_x, const double &planner_u) const {
-    const auto relative_x = tracker_x.RelativeTo(planner_x);
+           const PositionVelocity &planner_x, const VectorXd &planner_u) const {
+    if (planner_u.size() != PositionVelocity::ConfigurationDimension()) {
+      std::runtime_error("Bad planner control size.");
+    }
 
-    // TODO(@jaime): Check these calculations.
-    // Relative distance derivative.
-    distance_dot =
-        relative_x.TangentVelocity() * std::cos(relative_x.Bearing()) +
-        relative_x.NormalVelocity() * std::sin(relative_x.Bearing());
-
-    // Relative bearing derivative.
-    bearing_dot =
-        -planner_u -
-        relative_x.TangentVelocity() * std::sin(relative_x.Bearing()) +
-        relative_x.NormalVelocity() * std::cos(relative_x.Bearing());
-
-    // Relative tangent and normal velocity derivatives.
-    // NOTE! Must rotate roll/pitch into planner frame.
-    const double c = std::cos(planner_x.Theta());
-    const double s = std::sin(planner_x.Theta());
-
-    tangent_velocity_dot = tracker_u.pitch * c - tracker_u.roll * s +
-                           planner_u * relative_x.TangentVelocity();
-    normal_velocity_dot = -tracker_u.pitch * s - tracker_u.roll * c -
-                          planner_u * relative_x.TangentVelocity();
-
-    return PositionVelocityRelPlanarDubins3D(
-        distance_dot, bearing_dot, tangent_velocity_dot, normal_velocity_dot);
+    // TODO(@jaime): confirm that this works. I set things up so things like
+    // this should work.
+    const QuadrotorDecoupled6D quad_dynamics;
+    const Kinematics<PositionVelocity> quad_kinematics;
+    return quad_dynamics.Evaluate(tracker_x, tracker_u)
+        .RelativeTo(quad_kinematics.Evaluate(planner_x, planner_u));
   }
 
   // Derived classes must be able to compute an optimal control given
@@ -106,13 +90,30 @@ public:
   // by the given system states, provided abstract control bounds.
   inline QuadrotorControl
   OptimalControl(const PositionVelocity &tracker_x,
-                 const PlanarDubins3D &planner_x,
-                 const PositionVelocityRelPlanarDubins3D &value_gradient,
-                 const QuadrotorControlBoundCylinder &tracker_u_bound,
-                 const ScalarBoundInterval &planner_u_bound) const {
-    // TODO(@dfk, @jaime): figure this part out.
+                 const PositionVelocity &planner_x,
+                 const PositionVelocityRelPositionVelocity &value_gradient,
+                 const QuadrotorControlBoundBox &tracker_u_bound,
+                 const VectorBoundBox &planner_u_bound) const {
+    // Check initialization.
+    if (!initialized_)
+      throw std::runtime_error("Uninitialized call to OptimalControl.");
+
+    // Get internal state of value gradient and map tracker control (negative)
+    // coefficients to QuadrotorControl, so we get a  negative gradient.
+    const auto &grad = value_gradient.State();
+    QuadrotorControl negative_grad;
+    negative_grad.yaw_rate = 0.0;
+    negative_grad.pitch = -grad.Vx();
+    negative_grad.roll = grad.Vy();
+    negative_grad.thrust = -grad.Vz();
+
+    // Project onto tracker control bound and make sure to zero out yaw_rate.
+    QuadrotorControl c = tracker_u_bound.ProjectToSurface(negative_grad);
+    c.yaw_rate = 0.0;
+
+    return c;
   }
-}; //\class QuadrotorDecoupledPlanarDubins
+}; //\class QuadrotorDecoupled6D
 
 } // namespace dynamics
 } // namespace fastrack
