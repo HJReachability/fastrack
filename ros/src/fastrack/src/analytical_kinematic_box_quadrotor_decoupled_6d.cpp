@@ -95,6 +95,9 @@ LoadParameters(const ros::NodeHandle& n) {
   planner_dynamics_.Initialize(VectorBoundBox(
     -max_planner_speed, max_planner_speed));
 
+  // Set relative dynamics.
+  relative_dynamics_.reset(new QuadrotorDecoupled6DRelKinematics);
+
   // Compute maximum acceleration. Make sure all elements are positive.
   max_acc_ = tracker_dynamics_.Evaluate(
     PositionVelocity(Vector3d::Zero(), Vector3d::Zero()), qc_upper).Velocity();

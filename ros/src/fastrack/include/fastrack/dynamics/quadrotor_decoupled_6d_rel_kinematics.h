@@ -66,7 +66,9 @@ class QuadrotorDecoupled6DRelKinematics
                               PositionVelocity, VectorXd> {
 public:
   ~QuadrotorDecoupled6DRelKinematics() {}
-  explicit QuadrotorDecoupled6DRelKinematics() : Dynamics() {}
+  explicit QuadrotorDecoupled6DRelKinematics()
+      : RelativeDynamics<PositionVelocity, QuadrotorControl, PositionVelocity,
+                         VectorXd>() {}
 
   // Derived classes must be able to give the time derivative of relative state
   // as a function of current state and control of each system.

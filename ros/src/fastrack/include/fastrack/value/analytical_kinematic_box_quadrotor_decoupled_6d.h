@@ -50,6 +50,7 @@
 #include <fastrack/control/quadrotor_control.h>
 #include <fastrack/dynamics/kinematics.h>
 #include <fastrack/dynamics/quadrotor_decoupled_6d.h>
+#include <fastrack/dynamics/quadrotor_decoupled_6d_rel_kinematics.h>
 #include <fastrack/state/position_velocity.h>
 #include <fastrack/state/position_velocity_rel_position_velocity.h>
 #include <fastrack/utils/types.h>
@@ -65,6 +66,7 @@ using bound::Box;
 using control::QuadrotorControl;
 using dynamics::Kinematics;
 using dynamics::QuadrotorDecoupled6D;
+using dynamics::QuadrotorDecoupled6DRelKinematics;
 using state::PositionVelocity;
 using state::PositionVelocityRelPositionVelocity;
 
