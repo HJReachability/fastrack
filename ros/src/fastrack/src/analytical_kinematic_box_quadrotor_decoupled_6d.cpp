@@ -85,14 +85,15 @@ LoadParameters(const ros::NodeHandle& n) {
   qc_lower.pitch = -qc_upper.pitch;
   qc_lower.roll = -qc_upper.roll;
 
-  tracker_dynamics_.Initialize(qc_lower, qc_upper);
+  tracker_dynamics_.Initialize(QuadrotorControlBoundBox(qc_lower, qc_upper));
 
   VectorXd max_planner_speed(3);
   if (!nl.getParam("planner/vx", max_planner_speed(0))) return false;
   if (!nl.getParam("planner/vy", max_planner_speed(1))) return false;
   if (!nl.getParam("planner/vz", max_planner_speed(2))) return false;
 
-  planner_dynamics_.Initialize(-max_planner_speed, max_planner_speed);
+  planner_dynamics_.Initialize(VectorBoundBox(
+    -max_planner_speed, max_planner_speed));
 
   // Compute maximum acceleration. Make sure all elements are positive.
   max_acc_ = tracker_dynamics_.Evaluate(
@@ -136,12 +137,12 @@ double AnalyticalKinematicBoxQuadrotorDecoupled6D::
 Value(const PositionVelocity& tracker_x,
       const PositionVelocity& planner_x) const {
   // Get relative state.
-  const PositionVelocity relative_x = tracker_x.RelativeTo(planner_x);
-  const Vector3d& rx_position = relative_x.Position();
-  const Vector3d& rx_velocity = relative_x.Velocity();
+  const auto relative_x = tracker_x.RelativeTo(planner_x);
+  const Vector3d& rx_position = relative_x.State().Position();
+  const Vector3d& rx_velocity = relative_x.State().Velocity();
 
   // Get the maximum allowable control in each subsystem.
-  const VectorXd max_planner_control = planner_dynamics_.MaxControl();
+  const VectorXd max_planner_control = planner_dynamics_.ControlBound().Max();
 
   // Value is the maximum of values in each 2D subsystem.
   double value = -std::numeric_limits<double>::infinity();
@@ -170,12 +171,12 @@ PositionVelocity AnalyticalKinematicBoxQuadrotorDecoupled6D::
 Gradient(const PositionVelocity& tracker_x,
          const PositionVelocity& planner_x) const {
   // Get relative state.
-  const PositionVelocity relative_x = tracker_x.RelativeTo(planner_x);
-  const Vector3d& rx_position = relative_x.Position();
-  const Vector3d& rx_velocity = relative_x.Velocity();
+  const auto relative_x = tracker_x.RelativeTo(planner_x);
+  const Vector3d& rx_position = relative_x.State().Position();
+  const Vector3d& rx_velocity = relative_x.State().Velocity();
 
   // Get the maximum allowable control in each subsystem.
-  const VectorXd max_planner_control = planner_dynamics_.MaxControl();
+  const VectorXd max_planner_control = planner_dynamics_.ControlBound().Max();
 
   // Loop through each subsystem and populate grad in position/velocity dims.
   Vector3d pos_grad, vel_grad;

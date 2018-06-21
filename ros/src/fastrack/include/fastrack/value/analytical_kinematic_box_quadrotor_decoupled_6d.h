@@ -66,6 +66,7 @@ using control::QuadrotorControl;
 using dynamics::Kinematics;
 using dynamics::QuadrotorDecoupled6D;
 using state::PositionVelocity;
+using state::PositionVelocityRelPositionVelocity;
 
 class AnalyticalKinematicBoxQuadrotorDecoupled6D
     : public ValueFunction<PositionVelocity, QuadrotorControl,
