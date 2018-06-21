@@ -36,71 +36,57 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Class to specify a box constraint on a vector-valued control variable.
+// Box bound for quadrotor controls.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_CONTROL_VECTOR_BOUND_BOX_H
-#define FASTRACK_CONTROL_VECTOR_BOUND_BOX_H
+#ifndef FASTRACK_CONTROL_QUADROTOR_CONTROL_BOUND_BOX_H
+#define FASTRACK_CONTROL_QUADROTOR_CONTROL_BOUND_BOX_H
 
 #include <fastrack/control/control_bound.h>
+#include <fastrack/control/quadrotor_control.h>
 #include <fastrack/control/scalar_bound_interval.h>
+
+#include <math.h>
 
 namespace fastrack {
 namespace control {
 
-class VectorBoundBox : public ControlBound<VectorXd> {
+class QuadrotorControlBoundBox : public ControlBound<QuadrotorControl> {
 public:
-  ~VectorBoundBox() {}
-  explicit VectorBoundBox(const VectorXd &min, const VectorXd &max)
-      : ControlBound(), min_(min), max_(max) {
-    if (min_.size() != max_.size()) {
-      ROS_ERROR("VectorBoundBox: inconsistent bound dimensions.");
+  ~QuadrotorControlBoundBox() {}
+  explicit QuadrotorControlBoundBox(const QuadrotorControl &min,
+                                    const QuadrotorControl &max)
+      : pitch_interval_(min.pitch, max.pitch),
+        roll_interval_(min.roll, max.roll),
+        yaw_dot_interval_(min.yaw_dot, max.yaw_dot),
+        thrust_interval_(min.thrust, max.thrust) {}
 
-      const size_t dim = std::min(min_.size(), max_.size());
-      min_.resize(dim);
-      max_.resize(dim);
-    }
-  }
-
-  // Accessors.
-  inline const VectorXd& Min() { return min_; }
-  inline const VectorXd& Max() { return max_; }
-
-  // Derived classes must be able to check whether a query is inside the bound.
-  inline bool Contains(const VectorXd &query) const {
-    if (min_.size() != query.size()) {
-      ROS_ERROR("VectorBoundBox: incorrect query dimension.");
-      return false;
-    }
-
-    for (size_t ii = 0; ii < min_.size(); ii++) {
-      if (min_(ii) > query(ii) || query(ii) > max_(ii))
-        return false;
-    }
-
-    return true;
+  // Derived classes must be able to check whether a query is inside the
+  // bound.
+  inline bool Contains(const QuadrotorControl &query) const {
+    return pitch_interval_.Contains(query.pitch) &&
+           roll_interval_.Contains(query.roll) &&
+           yaw_rate_interval_.Contains(query.yaw_rate) &&
+           thrust_interval_.Contains(query.thrust);
   }
 
   // Derived classes must be able to compute the projection of a vector
   // (represented as the templated type) onto the surface of the bound.
-  inline VectorXd ProjectToSurface(const VectorXd &query) const {
-    if (min_.size() != query.size()) {
-      ROS_ERROR("VectorBoundBox: incorrect query dimension.");
-      return VectorXd::Zero(min_.size());
-    }
-
-    VectorXd projection(min_.size());
-    for (size_t ii = 0; ii < min_.size(); ii++)
-      projection(ii) =
-          (query(ii) >= 0.5 * (max_(ii) + min_(ii))) ? max_(ii) : min_(ii);
-
-    return projection;
+  inline QuadrotorControl
+  ProjectToSurface(const QuadrotorControl &query) const {
+    return QuadrotorControl(pitch_interval_.ProjectToSurface(query.pitch),
+                            roll_interval_.ProjectToSurface(query.roll),
+                            yaw_rate_interval_.ProjectToSurface(query.yaw_rate),
+                            thrust_interval_.ProjectToSurface(query.thrust));
   }
 
 private:
-  // Lower and upper bounds..
-  const VectorXd min_, max_;
+  // ScalarBoundIntervals for each control variable.
+  const ScalarBoundInterval pitch_interval_;
+  const ScalarBoundInterval roll_interval_;
+  const ScalarBoundInterval yaw_dot_interval_;
+  const ScalarBoundInterval thrust_interval_;
 }; //\class ControlBound
 
 } // namespace control

@@ -99,10 +99,10 @@ public:
       throw std::runtime_error("Uninitialized call to OptimalControl.");
 
     // Get internal state of value gradient and map tracker control (negative)
-    // coefficients to QuadrotorControl, so we get a  negative gradient.
+    // coefficients to QuadrotorControl, so we get a negative gradient.
     const auto &grad = value_gradient.State();
     QuadrotorControl negative_grad;
-    negative_grad.yaw_rate = 0.0;
+    negative_grad.yaw_dot = 0.0;
     negative_grad.pitch = -grad.Vx();
     negative_grad.roll = grad.Vy();
     negative_grad.thrust = -grad.Vz();

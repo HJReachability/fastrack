@@ -83,7 +83,7 @@ protected:
   explicit Dynamics(const ControlBound<C> &bound) { Initialize(bound); }
 
   // Control bound.
-  std::unique_ptr<ControlBound<C>> control_bound_;
+  std::unique_ptr<const ControlBound<C>> control_bound_;
 
   // Initialization.
   bool initialized_;
