@@ -56,6 +56,8 @@
 namespace fastrack {
 namespace dynamics {
 
+using control::VectorBoundBox;
+
 template <typename S>
 class Kinematics
     : public Dynamics<S, VectorXd,
@@ -71,7 +73,8 @@ public:
   explicit Kinematics(const VectorXd &u_lower, const VectorXd &u_upper)
       : Dynamics<S, VectorXd,
                  fastrack_srvs::KinematicPlannerDynamics::Response>(
-            VectorBoundBox(u_lower, u_upper)) {}
+            std::unique_ptr<ControlBound<VectorXd>>(
+                new VectorBoundBox(u_lower, u_upper))) {}
 
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
@@ -121,8 +124,10 @@ fastrack_srvs::KinematicPlannerDynamics::Response Kinematics<S>::ToRos() const {
   if (!this->initialized_)
     throw std::runtime_error("Kinematics: uninitialized call to ToRos.");
 
-  const auto &lower_bound = this->control_bound_->Min();
-  const auto &upper_bound = this->control_bound_->Max();
+  const auto &lower_bound =
+      static_cast<const VectorBoundBox *>(this->control_bound_.get())->Min();
+  const auto &upper_bound =
+      static_cast<const VectorBoundBox *>(this->control_bound_.get())->Max();
 
   fastrack_srvs::KinematicPlannerDynamics::Response res;
   for (size_t ii = 0; ii < lower_bound.size(); ii++) {
@@ -169,8 +174,12 @@ double Kinematics<S>::BestPossibleTime(const S &x1, const S &x2) const {
   for (size_t ii = 0; ii < S::ConfigurationDimension(); ii++) {
     const double time_this_dim =
         (c2(ii) >= c1(ii))
-            ? (c2(ii) - c1(ii)) / this->control_bound_->Max()(ii)
-            : (c2(ii) - c1(ii)) / this->control_bound_->Min()(ii);
+            ? (c2(ii) - c1(ii)) / static_cast<const VectorBoundBox *>(
+                                      this->control_bound_.get())
+                                      ->Max()(ii)
+            : (c2(ii) - c1(ii)) / static_cast<const VectorBoundBox *>(
+                                      this->control_bound_.get())
+                                      ->Min()(ii);
     time = std::max(time, time_this_dim);
   }
 

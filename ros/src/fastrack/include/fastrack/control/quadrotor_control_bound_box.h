@@ -59,7 +59,7 @@ public:
                                     const QuadrotorControl &max)
       : pitch_interval_(min.pitch, max.pitch),
         roll_interval_(min.roll, max.roll),
-        yaw_dot_interval_(min.yaw_dot, max.yaw_dot),
+        yaw_rate_interval_(min.yaw_rate, max.yaw_rate),
         thrust_interval_(min.thrust, max.thrust) {}
 
   // Derived classes must be able to check whether a query is inside the
@@ -85,7 +85,7 @@ private:
   // ScalarBoundIntervals for each control variable.
   const ScalarBoundInterval pitch_interval_;
   const ScalarBoundInterval roll_interval_;
-  const ScalarBoundInterval yaw_dot_interval_;
+  const ScalarBoundInterval yaw_rate_interval_;
   const ScalarBoundInterval thrust_interval_;
 }; //\class ControlBound
 

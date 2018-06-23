@@ -47,8 +47,12 @@
 #include <fastrack/control/control_bound.h>
 #include <fastrack/utils/types.h>
 
+#include <memory>
+
 namespace fastrack {
 namespace dynamics {
+
+using control::ControlBound;
 
 template <typename S, typename C, typename SR> class Dynamics {
 public:
@@ -56,8 +60,8 @@ public:
   virtual ~Dynamics() {}
 
   // Initialize with control bounds.
-  void Initialize(const ControlBound<C> &bound) {
-    control_bound_ = std::make_unique<ControlBound<C>>(bound);
+  void Initialize(std::unique_ptr<ControlBound<C>> bound) {
+    control_bound_ = std::move(bound);
     initialized_ = true;
   }
 
@@ -70,7 +74,7 @@ public:
   virtual C OptimalControl(const S &x, const S &value_gradient) const = 0;
 
   // Accessor for control bound.
-  const ControlBound<C> &ControlBound() { return *control_bound_; }
+  const ControlBound<C> &GetControlBound() const { return *control_bound_; }
 
   // Convert to the appropriate service response type.
   virtual SR ToRos() const = 0;
@@ -80,7 +84,8 @@ public:
 
 protected:
   explicit Dynamics() : initialized_(false) {}
-  explicit Dynamics(const ControlBound<C> &bound) { Initialize(bound); }
+  explicit Dynamics(std::unique_ptr<ControlBound<C>> bound)
+      : control_bound_(bound.release()), initialized_(true) {}
 
   // Control bound.
   std::unique_ptr<const ControlBound<C>> control_bound_;

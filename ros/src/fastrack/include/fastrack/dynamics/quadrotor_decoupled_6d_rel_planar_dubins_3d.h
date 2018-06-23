@@ -65,14 +65,17 @@ class QuadrotorDecoupled6DRelPlanarDubins3D
                               PlanarDubins3D, double> {
 public:
   ~QuadrotorDecoupled6DRelPlanarDubins3D() {}
-  explicit QuadrotorDecoupled6DRelPlanarDubins3D() : Dynamics() {}
+  explicit QuadrotorDecoupled6DRelPlanarDubins3D()
+      : RelativeDynamics<PositionVelocity, QuadrotorControl, PlanarDubins3D,
+                         double>() {}
 
   // Derived classes must be able to give the time derivative of relative state
   // as a function of current state and control of each system.
-  inline PositionVelocityRelPlanarDubins3D
+  inline std::unique_ptr<RelativeState<PositionVelocity, PlanarDubins3D>>
   Evaluate(const PositionVelocity &tracker_x, const QuadrotorControl &tracker_u,
            const PlanarDubins3D &planner_x, const double &planner_u) const {
-    const auto relative_x = tracker_x.RelativeTo(planner_x);
+    // Compute relative state.
+    const PositionVelocityRelPlanarDubins3D relative_x(tracker_x, planner_x);
 
     // TODO(@jaime): Check these calculations.
     // Relative distance derivative.
@@ -96,19 +99,19 @@ public:
     normal_velocity_dot = -tracker_u.pitch * s - tracker_u.roll * c -
                           planner_u * relative_x.TangentVelocity();
 
-    return PositionVelocityRelPlanarDubins3D(
-        distance_dot, bearing_dot, tangent_velocity_dot, normal_velocity_dot);
+    return std::unique_ptr<PositionVelocityRelPlanarDubins3D>(
+        new PositionVelocityRelPlanarDubins3D() distance_dot, bearing_dot,
+        tangent_velocity_dot, normal_velocity_dot));
   }
 
   // Derived classes must be able to compute an optimal control given
   // the gradient of the value function at the relative state specified
   // by the given system states, provided abstract control bounds.
-  inline QuadrotorControl
-  OptimalControl(const PositionVelocity &tracker_x,
-                 const PlanarDubins3D &planner_x,
-                 const PositionVelocityRelPlanarDubins3D &value_gradient,
-                 const QuadrotorControlBoundCylinder &tracker_u_bound,
-                 const ScalarBoundInterval &planner_u_bound) const {
+  inline QuadrotorControl OptimalControl(
+      const PositionVelocity &tracker_x, const PlanarDubins3D &planner_x,
+      const RelativeState<PositionVelocity, PlanarDubins3D> &value_gradient,
+      const QuadrotorControlBoundCylinder &tracker_u_bound,
+      const ScalarBoundInterval &planner_u_bound) const {
     // TODO(@dfk, @jaime): figure this part out.
   }
 }; //\class QuadrotorDecoupledPlanarDubins

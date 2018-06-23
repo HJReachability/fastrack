@@ -52,6 +52,8 @@
 namespace fastrack {
 namespace dynamics {
 
+using state::RelativeState;
+
 template <typename TS, typename TC, typename PS, typename PC>
 class RelativeDynamics {
 public:
@@ -60,10 +62,9 @@ public:
 
   // Derived classes must be able to give the time derivative of relative state
   // as a function of current state and control of each system.
-  virtual RelativeState<TS, PS> Evaluate(const TS &tracker_x,
-                                         const TC &tracker_u,
-                                         const PS &planner_x,
-                                         const PC &planner_u) const = 0;
+  virtual std::unique_ptr<RelativeState<TS, PS>>
+  Evaluate(const TS &tracker_x, const TC &tracker_u, const PS &planner_x,
+           const PC &planner_u) const = 0;
 
   // Derived classes must be able to compute an optimal control given
   // the gradient of the value function at the relative state specified

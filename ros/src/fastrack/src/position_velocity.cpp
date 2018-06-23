@@ -250,5 +250,61 @@ VectorXd PositionVelocity::GetConfigurationUpper() {
   return upper_.Configuration();
 }
 
+// Compound assignment operators.
+PositionVelocity &PositionVelocity::operator+=(const PositionVelocity &rhs) {
+  position_ += rhs.position_;
+  velocity_ += rhs.velocity_;
+  return *this;
+}
+
+PositionVelocity &PositionVelocity::operator-=(const PositionVelocity &rhs) {
+  position_ -= rhs.position_;
+  velocity_ -= rhs.velocity_;
+  return *this;
+}
+
+PositionVelocity &PositionVelocity::operator*=(double s) {
+  position_ *= s;
+  velocity_ *= s;
+  return *this;
+}
+
+PositionVelocity &PositionVelocity::operator/=(double s) {
+  position_ /= s;
+  velocity_ /= s;
+  return *this;
+}
+
+// Binary operators.
+PositionVelocity operator+(PositionVelocity lhs, const PositionVelocity &rhs) {
+  lhs += rhs;
+  return lhs;
+}
+
+PositionVelocity operator-(PositionVelocity lhs, const PositionVelocity &rhs) {
+  lhs -= rhs;
+  return lhs;
+}
+
+PositionVelocity operator*(PositionVelocity lhs, double s) {
+  lhs *= s;
+  return lhs;
+}
+
+PositionVelocity operator*(double s, PositionVelocity rhs) {
+  rhs *= s;
+  return rhs;
+}
+
+PositionVelocity operator/(PositionVelocity lhs, double s) {
+  lhs /= s;
+  return lhs;
+}
+
+PositionVelocity operator/(double s, PositionVelocity rhs) {
+  rhs /= s;
+  return rhs;
+}
+
 } // namespace state
 } // namespace fastrack

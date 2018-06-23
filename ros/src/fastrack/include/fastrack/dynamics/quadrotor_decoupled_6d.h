@@ -68,7 +68,8 @@ public:
   explicit QuadrotorDecoupled6D(const QuadrotorControl &u_lower,
                                 const QuadrotorControl &u_upper)
       : Dynamics<PositionVelocity, QuadrotorControl, Empty>(
-            QuadrotorControlBoundBox(u_lower, u_upper)) {}
+            std::unique_ptr<ControlBound<QuadrotorControl>>(
+                new QuadrotorControlBoundBox(u_lower, u_upper))) {}
 
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
@@ -102,7 +103,7 @@ public:
     // Map the negative value gradient's control coefficients to
     // QuadrotorControl, so we get a negative gradient.
     QuadrotorControl negative_grad;
-    negative_grad.yaw_dot = 0.0;
+    negative_grad.yaw_rate = 0.0;
     negative_grad.pitch = -value_gradient.Vx();
     negative_grad.roll = value_gradient.Vy();
     negative_grad.thrust = -value_gradient.Vz();

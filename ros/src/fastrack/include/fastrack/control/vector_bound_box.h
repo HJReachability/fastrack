@@ -54,18 +54,13 @@ public:
   ~VectorBoundBox() {}
   explicit VectorBoundBox(const VectorXd &min, const VectorXd &max)
       : ControlBound(), min_(min), max_(max) {
-    if (min_.size() != max_.size()) {
-      ROS_ERROR("VectorBoundBox: inconsistent bound dimensions.");
-
-      const size_t dim = std::min(min_.size(), max_.size());
-      min_.resize(dim);
-      max_.resize(dim);
-    }
+    if (min_.size() != max_.size())
+      throw std::runtime_error("Inconsistent bound dimensions.");
   }
 
   // Accessors.
-  inline const VectorXd& Min() { return min_; }
-  inline const VectorXd& Max() { return max_; }
+  inline const VectorXd& Min() const { return min_; }
+  inline const VectorXd& Max() const { return max_; }
 
   // Derived classes must be able to check whether a query is inside the bound.
   inline bool Contains(const VectorXd &query) const {

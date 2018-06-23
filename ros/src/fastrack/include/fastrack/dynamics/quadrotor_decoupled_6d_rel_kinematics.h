@@ -47,8 +47,10 @@
 #include <fastrack/control/quadrotor_control.h>
 #include <fastrack/dynamics/dynamics.h>
 #include <fastrack/dynamics/kinematics.h>
+#include <fastrack/dynamics/relative_dynamics.h>
 #include <fastrack/state/position_velocity.h>
 #include <fastrack/state/position_velocity_rel_position_velocity.h>
+#include <fastrack/state/relative_state.h>
 
 #include <math.h>
 
@@ -60,6 +62,7 @@ using dynamics::Kinematics;
 using dynamics::QuadrotorDecoupled6D;
 using state::PositionVelocity;
 using state::PositionVelocityRelPositionVelocity;
+using state::RelativeState;
 
 class QuadrotorDecoupled6DRelKinematics
     : public RelativeDynamics<PositionVelocity, QuadrotorControl,
@@ -72,39 +75,38 @@ public:
 
   // Derived classes must be able to give the time derivative of relative state
   // as a function of current state and control of each system.
-  inline PositionVelocityRelPositionVelocity
+  inline std::unique_ptr<RelativeState<PositionVelocity, PositionVelocity>>
   Evaluate(const PositionVelocity &tracker_x, const QuadrotorControl &tracker_u,
            const PositionVelocity &planner_x, const VectorXd &planner_u) const {
-    if (planner_u.size() != PositionVelocity::ConfigurationDimension()) {
+    if (planner_u.size() != PositionVelocity::ConfigurationDimension())
       std::runtime_error("Bad planner control size.");
-    }
 
     // TODO(@jaime): confirm that this works. I set things up so things like
     // this should work.
     const QuadrotorDecoupled6D quad_dynamics;
     const Kinematics<PositionVelocity> quad_kinematics;
-    return quad_dynamics.Evaluate(tracker_x, tracker_u)
-        .RelativeTo(quad_kinematics.Evaluate(planner_x, planner_u));
+    return std::unique_ptr<PositionVelocityRelPositionVelocity>(
+        new PositionVelocityRelPositionVelocity(
+            quad_dynamics.Evaluate(tracker_x, tracker_u),
+            quad_kinematics.Evaluate(planner_x, planner_u)));
   }
 
   // Derived classes must be able to compute an optimal control given
   // the gradient of the value function at the relative state specified
   // by the given system states, provided abstract control bounds.
-  inline QuadrotorControl
-  OptimalControl(const PositionVelocity &tracker_x,
-                 const PositionVelocity &planner_x,
-                 const PositionVelocityRelPositionVelocity &value_gradient,
-                 const QuadrotorControlBoundBox &tracker_u_bound,
-                 const VectorBoundBox &planner_u_bound) const {
-    // Check initialization.
-    if (!initialized_)
-      throw std::runtime_error("Uninitialized call to OptimalControl.");
-
+  inline QuadrotorControl OptimalControl(
+      const PositionVelocity &tracker_x, const PositionVelocity &planner_x,
+      const RelativeState<PositionVelocity, PositionVelocity> &value_gradient,
+      const ControlBound<QuadrotorControl> &tracker_u_bound,
+      const ControlBound<VectorXd> &planner_u_bound) const {
     // Get internal state of value gradient and map tracker control (negative)
     // coefficients to QuadrotorControl, so we get a negative gradient.
-    const auto &grad = value_gradient.State();
+    const auto &cast = static_cast<const PositionVelocityRelPositionVelocity &>(
+        value_gradient);
+
+    const auto &grad = cast.State();
     QuadrotorControl negative_grad;
-    negative_grad.yaw_dot = 0.0;
+    negative_grad.yaw_rate = 0.0;
     negative_grad.pitch = -grad.Vx();
     negative_grad.roll = grad.Vy();
     negative_grad.thrust = -grad.Vz();
@@ -115,7 +117,7 @@ public:
 
     return c;
   }
-}; //\class QuadrotorDecoupled6D
+}; //\class QuadrotorDecoupled6DRelKinematics
 
 } // namespace dynamics
 } // namespace fastrack

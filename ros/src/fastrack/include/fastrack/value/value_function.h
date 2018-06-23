@@ -57,6 +57,8 @@ namespace fastrack {
 namespace value {
 
 using dynamics::Dynamics;
+using dynamics::RelativeDynamics;
+using state::RelativeState;
 
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename B>
@@ -69,22 +71,29 @@ public:
 
   // Value and gradient at particular relative states.
   virtual double Value(const TS &tracker_x, const PS &planner_x) const = 0;
-  virtual RelativeState<TS, PS> Gradient(const TS &tracker_x,
-                                         const PS &planner_x) const = 0;
+  virtual std::unique_ptr<RelativeState<TS, PS>>
+  Gradient(const TS &tracker_x, const PS &planner_x) const = 0;
 
   // Get the optimal control given the tracker state and planner state.
   inline TC OptimalControl(const TS &tracker_x, const PS &planner_x) const {
-    return relative_dynamics_.OptimalControl(
-        tracker_x, planner_x, Gradient(tracker_x, planner_x),
-        tracker_dynamics_.ControlBound(), planner_dynamics_.ControlBound());
+    if (!initialized_)
+      throw std::runtime_error("Uninitialized call to OptimalControl.");
+
+    return relative_dynamics_->OptimalControl(
+        tracker_x, planner_x, *Gradient(tracker_x, planner_x),
+        tracker_dynamics_.GetControlBound(),
+        planner_dynamics_.GetControlBound());
   }
 
   // Accessors.
   inline const B &TrackingBound() const { return bound_; }
   inline const TD &TrackerDynamics() const { return tracker_dynamics_; }
   inline const PD &PlannerDynamics() const { return planner_dynamics_; }
-  inline const RelativeDynamics<TS, TC, PS, PC> &RelativeDynamics() const {
-    return relative_dynamics_;
+  inline const RelativeDynamics<TS, TC, PS, PC> &GetRelativeDynamics() const {
+    if (!initialized_)
+      throw std::runtime_error("Uninitialized call to GetRelativeDynamics.");
+
+    return *relative_dynamics_;
   }
 
   // Priority of the optimal control at the given tracker and planner states.

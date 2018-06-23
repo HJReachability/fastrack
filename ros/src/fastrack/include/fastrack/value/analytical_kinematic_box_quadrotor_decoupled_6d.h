@@ -64,6 +64,8 @@ namespace value {
 
 using bound::Box;
 using control::QuadrotorControl;
+using control::QuadrotorControlBoundBox;
+using control::VectorBoundBox;
 using dynamics::Kinematics;
 using dynamics::QuadrotorDecoupled6D;
 using dynamics::QuadrotorDecoupled6DRelKinematics;
@@ -85,7 +87,7 @@ public:
   double Value(const PositionVelocity &vehicle_x,
                const PositionVelocity &planner_x) const;
 
-  PositionVelocityRelPositionVelocity
+  std::unique_ptr<RelativeState<PositionVelocity, PositionVelocity>>
   Gradient(const PositionVelocity &vehicle_x,
            const PositionVelocity &planner_x) const;
 

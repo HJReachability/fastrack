@@ -52,7 +52,7 @@
 namespace fastrack {
 namespace state {
 
-class PositionVelocityRelPlanarDubins3D
+class PositionVelocityRelPositionVelocity
     : public RelativeState<PositionVelocity, PositionVelocity> {
 public:
   ~PositionVelocityRelPositionVelocity() {}
@@ -61,16 +61,18 @@ public:
   // class SHOULD be initialized from the two corresponding states.
   explicit PositionVelocityRelPositionVelocity(
       const PositionVelocity &tracker_x, const PositionVelocity &planner_x)
-      : x_(tracker_x.Position() - planner_x.Position(),
+      : RelativeState<PositionVelocity, PositionVelocity>(),
+        x_(tracker_x.Position() - planner_x.Position(),
            tracker_x.Velocity() - planner_x.Velocity()) {}
 
   // Construct from a PositionVelocity, or from separate position
   // and velocity vectors.
   explicit PositionVelocityRelPositionVelocity(const PositionVelocity &other)
-      : x_(other) {}
+      : RelativeState<PositionVelocity, PositionVelocity>(), x_(other) {}
   explicit PositionVelocityRelPositionVelocity(const Vector3d &position,
                                                const Vector3d &velocity)
-      : x_(position, velocity) {}
+      : RelativeState<PositionVelocity, PositionVelocity>(),
+        x_(position, velocity) {}
 
   // Dimension of the state space.
   static constexpr size_t StateDimension() { return 6; }

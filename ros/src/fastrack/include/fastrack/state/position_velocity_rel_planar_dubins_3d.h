@@ -47,9 +47,9 @@
 #ifndef FASTRACK_STATE_POSITION_VELOCITY_REL_PLANAR_DUBINS_3D_H
 #define FASTRACK_STATE_POSITION_VELOCITY_REL_PLANAR_DUBINS_3D_H
 
-#include <fastrack/state/planar_dubins_3d.h>
-#include <fastrack/state/position_velocity.h>
 #include <fastrack/state/relative_state.h>
+#include <fastrack/state/position_velocity.h>
+#include <fastrack/state/planar_dubins_3d.h>
 
 namespace fastrack {
 namespace state {

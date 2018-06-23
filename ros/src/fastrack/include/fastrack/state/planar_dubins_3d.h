@@ -52,9 +52,9 @@ class PlanarDubins3D : public State {
 public:
   ~PlanarDubins3D() {}
   explicit PlanarDubins3D()
-      : State(), x_(0.0), y_(0.0), theta_(0.0), v_(kDefaultSpeed) {}
+      : State(), x_(0.0), y_(0.0), theta_(0.0), v_(constants::kDefaultSpeed) {}
   explicit PlanarDubins3D(double x, double y, double theta)
-      : State(), x_(x), y_(y), theta_(theta), v_(kDefaultSpeed) {}
+      : State(), x_(x), y_(y), theta_(theta), v_(constants::kDefaultSpeed) {}
   explicit PlanarDubins3D(double x, double y, double theta, double v)
       : State(), x_(x), y_(y), theta_(theta), v_(v) {}
   explicit PlanarDubins3D(const fastrack_msgs::State &msg);
@@ -74,7 +74,7 @@ public:
 
   inline Vector3d Position() const { return Vector3d(x_, y_, z_); }
   inline Vector3d Velocity() const { return Vector3d(Vx(), Vy(), Vz()); }
-  inline inline VectorXd Configuration() const {
+  inline VectorXd Configuration() const {
     VectorXd config(2);
     config(0) = x_;
     config(1) = y_;
@@ -91,22 +91,6 @@ public:
 
   // Set non-configuration dimensions to match the given config derivative.
   void SetConfigurationDot(const VectorXd &configuration_dot);
-
-  // Compute the relative state to a particular planner state.
-  // NOTE! We require separate implementations for every possible planning
-  //       state type we might want to use with this tracking state.
-  PlanarDubins3D RelativeTo(const PlanarDubins3D &planner_x) const {
-    // TODO! Implement this and any other relative state computations we need.
-    throw std::runtime_error(
-        "PlanarDubins3D: RelativeTo(PlanarDubins3D) is not implemented.");
-
-    return PlanarDubins3D();
-  }
-
-  // Compute the relative state to a particular configuration.
-  PlanarDubins3D RelativeTo(const VectorXd &planner_config) const {
-    return RelativeTo(PlanarDubins3D(planner_config));
-  }
 
   // What are the positions that the system occupies at the current state.
   // NOTE! For simplicity, this is a finite set. In future, this could
@@ -140,6 +124,22 @@ public:
   // Sample from the state space itself.
   // NOTE! Sets v_ to default value.
   static PlanarDubins3D Sample();
+
+  // Compound assignment operators.
+  PlanarDubins3D& operator+=(const PlanarDubins3D& rhs);
+  PlanarDubins3D& operator-=(const PlanarDubins3D& rhs);
+  PlanarDubins3D& operator*=(double s);
+  PlanarDubins3D& operator/=(double s);
+
+  // Binary operators.
+  friend PlanarDubins3D operator+(PlanarDubins3D lhs,
+                                    const PlanarDubins3D& rhs);
+  friend PlanarDubins3D operator-(PlanarDubins3D lhs,
+                                    const PlanarDubins3D& rhs);
+  friend PlanarDubins3D operator*(PlanarDubins3D lhs, double s);
+  friend PlanarDubins3D operator*(double s, PlanarDubins3D rhs);
+  friend PlanarDubins3D operator/(PlanarDubins3D lhs, double s);
+  friend PlanarDubins3D operator/(double s, PlanarDubins3D rhs);
 
 private:
   // (x, y) position, and heading angle theta.

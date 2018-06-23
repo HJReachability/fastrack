@@ -44,8 +44,6 @@
 #define FASTRACK_STATE_POSITION_VELOCITY_H
 
 #include <fastrack/state/planar_dubins_3d.h>
-#include <fastrack/state/position_velocity_rel_planar_dubins_3d.h>
-#include <fastrack/state/position_velocity_rel_position_velocity.h>
 #include <fastrack/state/state.h>
 
 namespace fastrack {
@@ -95,22 +93,6 @@ public:
   // Set non-configuration dimensions to match the given config derivative.
   void SetConfigurationDot(const VectorXd &configuration_dot);
 
-  // Compute the relative state to a particular planner state.
-  // NOTE! We require separate implementations for every possible planning
-  //       state type we might want to use with this tracking state.
-  PositionVelocity RelativeTo(const PositionVelocity &planner_x) const {
-    return PositionVelocityRelPositionVelocity(*this, planner_x);
-  }
-  PositionVelocityRelPlanarDubins3D
-  RelativeTo(const PlanarDubins3D &planner_x) const {
-    return PositionVelocityRelPlanarDubins3D(*this, planner_x);
-  }
-
-  // Compute the relative state to a particular configuration.
-  PositionVelocity RelativeTo(const VectorXd &planner_config) const {
-    return RelativeTo(PositionVelocity(planner_config));
-  }
-
   // What are the positions that the system occupies at the current state.
   // NOTE! For simplicity, this is a finite set. In future, this could
   // be generalized to a collection of generic obstacles.
@@ -142,6 +124,22 @@ public:
 
   // Sample from the state space itself.
   static PositionVelocity Sample();
+
+  // Compound assignment operators.
+  PositionVelocity& operator+=(const PositionVelocity& rhs);
+  PositionVelocity& operator-=(const PositionVelocity& rhs);
+  PositionVelocity& operator*=(double s);
+  PositionVelocity& operator/=(double s);
+
+  // Binary operators.
+  friend PositionVelocity operator+(PositionVelocity lhs,
+                                    const PositionVelocity& rhs);
+  friend PositionVelocity operator-(PositionVelocity lhs,
+                                    const PositionVelocity& rhs);
+  friend PositionVelocity operator*(PositionVelocity lhs, double s);
+  friend PositionVelocity operator*(double s, PositionVelocity rhs);
+  friend PositionVelocity operator/(PositionVelocity lhs, double s);
+  friend PositionVelocity operator/(double s, PositionVelocity rhs);
 
 private:
   Vector3d position_;
