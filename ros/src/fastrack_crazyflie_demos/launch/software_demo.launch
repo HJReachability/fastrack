@@ -80,9 +80,9 @@
   <arg name="env_max" default="10.0" />
   <arg name="vel_max" default="10.0" />
   <arg name="state_upper" default="[$(arg env_max), $(arg env_max), $(arg env_max),
-                                    $(arg vel_max), $(arg vel_max), $(arg vel_max]" />
+                                    $(arg vel_max), $(arg vel_max), $(arg vel_max)]" />
   <arg name="state_lower" default="[-$(arg env_max), -$(arg env_max), 0.0,
-                                    -$(arg vel_max), -$(arg vel_max), -$(arg vel_max]" />
+                                    -$(arg vel_max), -$(arg vel_max), -$(arg vel_max)]" />
   <arg name="env_upper_x" default="$(arg env_max)" />
   <arg name="env_upper_y" default="$(arg env_max)" />
   <arg name="env_upper_z" default="$(arg env_max)" />
