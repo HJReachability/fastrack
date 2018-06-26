@@ -209,8 +209,11 @@ bool Planner<S, E, D, SD, B, SB>::LoadParameters(const ros::NodeHandle& n) {
   if (!nl.getParam("max_runtime", max_runtime_)) return false;
 
   // State space bounds.
-  if (!nl.getParam("state/lower/state", state_lower_)) return false;
-  if (!nl.getParam("state/upper/state", state_upper_)) return false;
+  // HACK! For some reason fails to load here so hard-coding defaults for now.
+  if (!nl.getParam("state/lower", state_lower_)) //return false;
+    state_lower_ = { -10.0, -10.0, 0.0, -10.0, -10.0, -10.0 };
+  if (!nl.getParam("state/upper", state_upper_)) //return false;
+    state_upper_ = { 10.0, 10.0, 10.0, 10.0, 10.0, 10.0 };
 
   return true;
 }

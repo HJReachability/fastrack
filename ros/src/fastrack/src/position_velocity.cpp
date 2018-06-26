@@ -164,7 +164,7 @@ void PositionVelocity::SetBounds(const std::vector<double> &lower,
                                  const std::vector<double> &upper) {
   // Check dimensions.
   if (lower.size() != 6 || upper.size() != 6)
-    throw new std::runtime_error("PositionVelocity: bad bound dimension.");
+    throw std::runtime_error("PositionVelocity: bad bound dimension.");
 
   lower_.position_(0) = lower[0];
   lower_.position_(1) = lower[1];

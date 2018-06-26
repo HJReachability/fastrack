@@ -76,10 +76,13 @@
   <arg name="lqr_K_file" default="$(find crazyflie_lqr)/references/K_poor.txt" />
   <arg name="lqr_u_ref_file" default="$(find crazyflie_lqr)/references/u_ref_hover.txt" />
 
-  <!-- Environment parameters. -->
+  <!-- Environment parameters and state space bounds. -->
   <arg name="env_max" default="10.0" />
-  <arg name="config_upper" default="[$(arg env_max), $(arg env_max), $(arg env_max)]" />
-  <arg name="config_lower" default="[-$(arg env_max), -$(arg env_max), 0.0]" />
+  <arg name="vel_max" default="10.0" />
+  <arg name="state_upper" default="[$(arg env_max), $(arg env_max), $(arg env_max),
+                                    $(arg vel_max), $(arg vel_max), $(arg vel_max]" />
+  <arg name="state_lower" default="[-$(arg env_max), -$(arg env_max), 0.0,
+                                    -$(arg vel_max), -$(arg vel_max), -$(arg vel_max]" />
   <arg name="env_upper_x" default="$(arg env_max)" />
   <arg name="env_upper_y" default="$(arg env_max)" />
   <arg name="env_upper_z" default="$(arg env_max)" />
@@ -124,8 +127,8 @@
     <arg name="dynamics_srv" value="$(arg planner_dynamics_srv)" />
     <arg name="fixed_frame" default="$(arg fixed_frame)" />
     <arg name="max_runtime" value="$(arg planner_runtime)" />
-    <arg name="config_upper" value="$(arg config_upper)" />
-    <arg name="config_lower" value="$(arg config_lower)" />
+    <arg name="state_upper" value="$(arg state_upper)" />
+    <arg name="state_lower" value="$(arg state_lower)" />
     <arg name="env_upper_x" value="$(arg env_upper_x)" />
     <arg name="env_upper_y" value="$(arg env_upper_y)" />
     <arg name="env_upper_z" value="$(arg env_upper_z)" />

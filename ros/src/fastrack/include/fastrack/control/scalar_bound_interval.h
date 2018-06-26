@@ -61,8 +61,11 @@ public:
 
   // Derived classes must be able to compute the projection of a vector
   // (represented as the templated type) onto the surface of the bound.
+  // NOTE: We will treat this vector as emanating from the natural origin
+  // of the bound so that it constitutes a meaningful direction with respect
+  // to that origin.
   inline double ProjectToSurface(const double &query) const {
-    return (query >= 0.5 * (max_ + min_)) ? max_ : min_;
+    return (query >= 0.0) ? max_ : min_;
   }
 
 private:

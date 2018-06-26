@@ -59,8 +59,8 @@ public:
   }
 
   // Accessors.
-  inline const VectorXd& Min() const { return min_; }
-  inline const VectorXd& Max() const { return max_; }
+  inline const VectorXd &Min() const { return min_; }
+  inline const VectorXd &Max() const { return max_; }
 
   // Derived classes must be able to check whether a query is inside the bound.
   inline bool Contains(const VectorXd &query) const {
@@ -79,6 +79,9 @@ public:
 
   // Derived classes must be able to compute the projection of a vector
   // (represented as the templated type) onto the surface of the bound.
+  // NOTE: We will treat this vector as emanating from the natural origin
+  // of the bound so that it constitutes a meaningful direction with respect
+  // to that origin.
   inline VectorXd ProjectToSurface(const VectorXd &query) const {
     if (min_.size() != query.size()) {
       ROS_ERROR("VectorBoundBox: incorrect query dimension.");
@@ -87,8 +90,7 @@ public:
 
     VectorXd projection(min_.size());
     for (size_t ii = 0; ii < min_.size(); ii++)
-      projection(ii) =
-          (query(ii) >= 0.5 * (max_(ii) + min_(ii))) ? max_(ii) : min_(ii);
+      projection(ii) = (query(ii) >= 0.0) ? max_(ii) : min_(ii);
 
     return projection;
   }
