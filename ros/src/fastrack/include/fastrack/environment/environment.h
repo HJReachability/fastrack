@@ -39,7 +39,7 @@
 // Base class for all environment models, providing separate collision check
 // functions for each type of tracking error bound. All environments are
 // boxes in 3D space. Environment is templated on the specific type of sensor
-// message (M) which may be generated from or incpororated into a derived class,
+// message (M) which may be generated from or incorporated into a derived class,
 // and sensor parameters (P) which may be used to generate sensor readings.
 //
 ///////////////////////////////////////////////////////////////////////////////
