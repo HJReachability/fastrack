@@ -44,59 +44,57 @@
 #ifndef FASTRACK_DYNAMICS_DYNAMICS_H
 #define FASTRACK_DYNAMICS_DYNAMICS_H
 
+#include <fastrack/control/control_bound.h>
 #include <fastrack/utils/types.h>
+
+#include <memory>
 
 namespace fastrack {
 namespace dynamics {
 
-template<typename S, typename C, typename SR>
-class Dynamics {
+using control::ControlBound;
+
+template <typename S, typename C, typename SR> class Dynamics {
 public:
   // Destructor.
   virtual ~Dynamics() {}
 
   // Initialize with control bounds.
-  void Initialize(const C& u_lower, const C& u_upper) {
-    u_lower_ = u_lower;
-    u_upper_ = u_upper;
+  void Initialize(std::unique_ptr<ControlBound<C>> bound) {
+    control_bound_ = std::move(bound);
     initialized_ = true;
   }
 
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
-  virtual S Evaluate(const S& x, const C& u) const = 0;
+  virtual S Evaluate(const S &x, const C &u) const = 0;
 
   // Derived classes must be able to compute an optimal control given
   // the gradient of the value function at the specified state.
-  virtual C OptimalControl(const S& x, const S& value_gradient) const = 0;
+  virtual C OptimalControl(const S &x, const S &value_gradient) const = 0;
 
-  // Get the min and max controls.
-  inline const C& MinControl() const { return u_lower_; }
-  inline const C& MaxControl() const { return u_upper_; }
+  // Accessor for control bound.
+  const ControlBound<C> &GetControlBound() const { return *control_bound_; }
 
   // Convert to the appropriate service response type.
   virtual SR ToRos() const = 0;
 
   // Convert from the appropriate service response type.
-  virtual void FromRos(const SR& res) = 0;
+  virtual void FromRos(const SR &res) = 0;
 
 protected:
-  explicit Dynamics()
-    : initialized_(false) {}
-  explicit Dynamics(const C& u_lower, const C& u_upper)
-    : u_lower_(u_lower),
-      u_upper_(u_upper),
-      initialized_(true) {}
+  explicit Dynamics() : initialized_(false) {}
+  explicit Dynamics(std::unique_ptr<ControlBound<C>> bound)
+      : control_bound_(bound.release()), initialized_(true) {}
 
-  // Lower and upper bounds for control variable.
-  C u_lower_;
-  C u_upper_;
+  // Control bound.
+  std::unique_ptr<const ControlBound<C>> control_bound_;
 
   // Initialization.
   bool initialized_;
 }; //\class Dynamics
 
-} //\namespace dynamics
-} //\namespace fastrack
+} // namespace dynamics
+} // namespace fastrack
 
 #endif

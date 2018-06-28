@@ -36,59 +36,38 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base class for all state types. All states must be able to output a position
-// in 3D space and an arbitrary-dimensional configuration. This configuration
-// will be used for geometric planning.
+// Abstract class specifying generic control bounds. Examples include spheres,
+// boxes, and cylinders.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_STATE_STATE_H
-#define FASTRACK_STATE_STATE_H
+#ifndef FASTRACK_CONTROL_CONTROL_BOUND_H
+#define FASTRACK_CONTROL_CONTROL_BOUND_H
 
 #include <fastrack/utils/types.h>
-#include <fastrack_msgs/State.h>
 
 namespace fastrack {
-namespace state {
+namespace control {
 
-class State {
+template <typename C> class ControlBound {
 public:
-  virtual ~State() {}
+  virtual ~ControlBound() {}
 
-  // Accessors. All states must be able to output a position in 3D space
-  // and an arbitrary-dimensional configuration. This configuration will
-  // be used for geometric planning.
-  virtual double X() const = 0;
-  virtual double Y() const = 0;
-  virtual double Z() const = 0;
-  virtual Vector3d Position() const = 0;
-  virtual VectorXd Configuration() const = 0;
+  // Derived classes must be able to check whether a query is inside the bound.
+  virtual bool Contains(const C &query) const = 0;
 
-  // What are the positions that the system occupies at the current state.
-  // NOTE! For simplicity, this is a finite set. In future, this could
-  // be generalized to a collection of generic obstacles.
-  virtual std::vector<Vector3d> OccupiedPositions() const = 0;
-
-  // Convert from/to VectorXd.
-  virtual void FromVector(const VectorXd& x) = 0;
-  virtual VectorXd ToVector() const = 0;
-
-  // Convert from/to ROS message.
-  virtual void FromRos(const fastrack_msgs::State::ConstPtr& msg) = 0;
-  virtual fastrack_msgs::State ToRos() const = 0;
-
-  // Re-seed the random engine.
-  static inline void Seed(unsigned int seed) { rng_.seed(seed); }
+  // Derived classes must be able to compute the projection of a vector
+  // (represented as the templated type) onto the surface of the bound.
+  // NOTE: We will treat this vector as emanating from the natural origin
+  // of the bound so that it constitutes a meaningful direction with respect
+  // to that origin.
+  virtual C ProjectToSurface(const C &query) const = 0;
 
 protected:
-  explicit State() {}
+  explicit ControlBound() {}
+}; //\class ControlBound
 
-  // Random number generator shared across all instances of states.
-  static std::random_device rd_;
-  static std::default_random_engine rng_;
-}; //\class State
-
-} //\namespace state
-} //\namespace fastrack
+} // namespace control
+} // namespace fastrack
 
 #endif

@@ -36,59 +36,29 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base class for all state types. All states must be able to output a position
-// in 3D space and an arbitrary-dimensional configuration. This configuration
-// will be used for geometric planning.
+// Base class for all relative state types. Relative states are computed from
+// two State types and are used for representing value function gradients and
+// relative dynamics.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_STATE_STATE_H
-#define FASTRACK_STATE_STATE_H
+#ifndef FASTRACK_STATE_RELATIVE_STATE_H
+#define FASTRACK_STATE_RELATIVE_STATE_H
 
 #include <fastrack/utils/types.h>
-#include <fastrack_msgs/State.h>
 
 namespace fastrack {
 namespace state {
 
-class State {
+template <typename TS, typename PS> class RelativeState {
 public:
-  virtual ~State() {}
-
-  // Accessors. All states must be able to output a position in 3D space
-  // and an arbitrary-dimensional configuration. This configuration will
-  // be used for geometric planning.
-  virtual double X() const = 0;
-  virtual double Y() const = 0;
-  virtual double Z() const = 0;
-  virtual Vector3d Position() const = 0;
-  virtual VectorXd Configuration() const = 0;
-
-  // What are the positions that the system occupies at the current state.
-  // NOTE! For simplicity, this is a finite set. In future, this could
-  // be generalized to a collection of generic obstacles.
-  virtual std::vector<Vector3d> OccupiedPositions() const = 0;
-
-  // Convert from/to VectorXd.
-  virtual void FromVector(const VectorXd& x) = 0;
-  virtual VectorXd ToVector() const = 0;
-
-  // Convert from/to ROS message.
-  virtual void FromRos(const fastrack_msgs::State::ConstPtr& msg) = 0;
-  virtual fastrack_msgs::State ToRos() const = 0;
-
-  // Re-seed the random engine.
-  static inline void Seed(unsigned int seed) { rng_.seed(seed); }
+  virtual ~RelativeState() {}
 
 protected:
-  explicit State() {}
+  explicit RelativeState() {}
+}; //\class RelativeState
 
-  // Random number generator shared across all instances of states.
-  static std::random_device rd_;
-  static std::default_random_engine rng_;
-}; //\class State
-
-} //\namespace state
-} //\namespace fastrack
+} // namespace state
+} // namespace fastrack
 
 #endif

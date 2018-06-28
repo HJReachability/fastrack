@@ -47,6 +47,7 @@
 #ifndef FASTRACK_DYNAMICS_KINEMATICS_H
 #define FASTRACK_DYNAMICS_KINEMATICS_H
 
+#include <fastrack/control/vector_bound_box.h>
 #include <fastrack/dynamics/dynamics.h>
 #include <fastrack_srvs/KinematicPlannerDynamics.h>
 
@@ -55,23 +56,33 @@
 namespace fastrack {
 namespace dynamics {
 
-template<typename S>
-class Kinematics : public Dynamics<
-  S, VectorXd, fastrack_srvs::KinematicPlannerDynamics::Response> {
+using control::VectorBoundBox;
+
+template <typename S>
+class Kinematics
+    : public Dynamics<S, VectorXd,
+                      fastrack_srvs::KinematicPlannerDynamics::Response> {
 public:
   ~Kinematics() {}
   explicit Kinematics()
-    : Dynamics<S, VectorXd, fastrack_srvs::KinematicPlannerDynamics::Response>() {}
-  explicit Kinematics(const VectorXd& u_lower, const VectorXd& u_upper)
-    : Dynamics<S, VectorXd, fastrack_srvs::KinematicPlannerDynamics::Response>(u_lower, u_upper) {}
+      : Dynamics<S, VectorXd,
+                 fastrack_srvs::KinematicPlannerDynamics::Response>() {}
+  explicit Kinematics(const VectorBoundBox &bound)
+      : Dynamics<S, VectorXd,
+                 fastrack_srvs::KinematicPlannerDynamics::Response>(bound) {}
+  explicit Kinematics(const VectorXd &u_lower, const VectorXd &u_upper)
+      : Dynamics<S, VectorXd,
+                 fastrack_srvs::KinematicPlannerDynamics::Response>(
+            std::unique_ptr<ControlBound<VectorXd>>(
+                new VectorBoundBox(u_lower, u_upper))) {}
 
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
-  inline S Evaluate(const S& x, const VectorXd& u) const;
+  inline S Evaluate(const S &x, const VectorXd &u) const;
 
   // Since this function does not really make sense for kinematics,
   // we will throw an error here.
-  inline VectorXd OptimalControl(const S& x, const S& value_gradient) const {
+  inline VectorXd OptimalControl(const S &x, const S &value_gradient) const {
     throw std::runtime_error("Kinematics: OptimalControl is not implemented.");
   }
 
@@ -79,11 +90,12 @@ public:
   inline fastrack_srvs::KinematicPlannerDynamics::Response ToRos() const;
 
   // Convert from the appropriate service response type.
-  inline void FromRos(const fastrack_srvs::KinematicPlannerDynamics::Response& res);
+  inline void
+  FromRos(const fastrack_srvs::KinematicPlannerDynamics::Response &res);
 
   // How much time will it take us to go between two configurations if we move
   // at max velocity between them in each dimension.
-  double BestPossibleTime(const S& x1, const S& x2) const;
+  double BestPossibleTime(const S &x1, const S &x2) const;
 }; //\class Kinematics
 
 // ----------------------------- IMPLEMENTATION ----------------------------- //
@@ -92,8 +104,8 @@ public:
 // as a function of current state and control.
 // NOTE! To access the member variables from Dynamics we will need to
 // use the 'this' keyword (this is a consequence of our template structure).
-template<typename S>
-S Kinematics<S>::Evaluate(const S& x, const VectorXd& u) const {
+template <typename S>
+S Kinematics<S>::Evaluate(const S &x, const VectorXd &u) const {
   if (!this->initialized_)
     throw std::runtime_error("Kinematics: uninitialized call to Evaluate.");
 
@@ -107,43 +119,51 @@ S Kinematics<S>::Evaluate(const S& x, const VectorXd& u) const {
 }
 
 // Convert to the appropriate service response type.
-template<typename S>
+template <typename S>
 fastrack_srvs::KinematicPlannerDynamics::Response Kinematics<S>::ToRos() const {
   if (!this->initialized_)
     throw std::runtime_error("Kinematics: uninitialized call to ToRos.");
 
+  const auto &lower_bound =
+      static_cast<const VectorBoundBox *>(this->control_bound_.get())->Min();
+  const auto &upper_bound =
+      static_cast<const VectorBoundBox *>(this->control_bound_.get())->Max();
+
   fastrack_srvs::KinematicPlannerDynamics::Response res;
-  for (size_t ii = 0; ii < this->u_upper_.size(); ii++) {
-    res.max_speed.push_back(this->u_upper_(ii));
-    res.min_speed.push_back(this->u_lower_(ii));
+  for (size_t ii = 0; ii < lower_bound.size(); ii++) {
+    res.min_speed.push_back(lower_bound(ii));
+    res.max_speed.push_back(upper_bound(ii));
   }
 
   return res;
 }
 
 // Convert from the appropriate service response type.
-template<typename S>
-void Kinematics<S>::FromRos(const fastrack_srvs::KinematicPlannerDynamics::Response& res) {
+template <typename S>
+void Kinematics<S>::FromRos(
+    const fastrack_srvs::KinematicPlannerDynamics::Response &res) {
   if (res.max_speed.size() != res.min_speed.size())
     throw std::runtime_error("Kinematics: invalid service response.");
 
   // Populate control bounds.
-  this->u_upper_.resize(res.max_speed.size());
-  this->u_lower_.resize(res.max_speed.size());
-  for (size_t ii = 0; ii < res.max_speed.size(); ii++) {
-    this->u_upper_(ii) = res.max_speed[ii];
-    this->u_lower_(ii) = res.min_speed[ii];
+  VectorXd lower_bound(res.min_speed.size());
+  VectorXd upper_bound(res.min_speed.size());
+  for (size_t ii = 0; ii < res.min_speed.size(); ii++) {
+    lower_bound(ii) = res.min_speed[ii];
+    upper_bound(ii) = res.max_speed[ii];
   }
 
+  this->control_bound_.reset(new VectorBoundBox(lower_bound, upper_bound));
   this->initialized_ = true;
 }
 
 // How much time will it take us to go between two configurations if we move
 // at max velocity between them in each dimension.
-template<typename S>
-double Kinematics<S>::BestPossibleTime(const S& x1, const S& x2) const {
+template <typename S>
+double Kinematics<S>::BestPossibleTime(const S &x1, const S &x2) const {
   if (!this->initialized_)
-    throw std::runtime_error("Kinematics: uninitialized call to BestPossibleTime.");
+    throw std::runtime_error(
+        "Kinematics: uninitialized call to BestPossibleTime.");
 
   // Unpack into configurations.
   const VectorXd c1 = x1.Configuration();
@@ -152,16 +172,21 @@ double Kinematics<S>::BestPossibleTime(const S& x1, const S& x2) const {
   // Take the maximum of the times in each dimension.
   double time = -std::numeric_limits<double>::infinity();
   for (size_t ii = 0; ii < S::ConfigurationDimension(); ii++) {
-    if (c2(ii) >= c1(ii))
-      time = std::max(time, (c2(ii) - c1(ii)) / this->u_upper_(ii));
-    else
-      time = std::max(time, (c2(ii) - c1(ii)) / this->u_lower_(ii));
+    const double time_this_dim =
+        (c2(ii) >= c1(ii))
+            ? (c2(ii) - c1(ii)) / static_cast<const VectorBoundBox *>(
+                                      this->control_bound_.get())
+                                      ->Max()(ii)
+            : (c2(ii) - c1(ii)) / static_cast<const VectorBoundBox *>(
+                                      this->control_bound_.get())
+                                      ->Min()(ii);
+    time = std::max(time, time_this_dim);
   }
 
   return time;
 }
 
-} //\namespace dynamics
-} //\namespace fastrack
+} // namespace dynamics
+} // namespace fastrack
 
 #endif

@@ -45,36 +45,36 @@
 #ifndef FASTRACK_DYNAMICS_QUADROTOR_DECOUPLED_6D_H
 #define FASTRACK_DYNAMICS_QUADROTOR_DECOUPLED_6D_H
 
+#include <fastrack/control/quadrotor_control.h>
+#include <fastrack/control/quadrotor_control_bound_box.h>
 #include <fastrack/dynamics/dynamics.h>
 #include <fastrack/state/position_velocity.h>
-#include <fastrack/control/quadrotor_control.h>
 
 #include <math.h>
 
 namespace fastrack {
 namespace dynamics {
 
-using state::PositionVelocity;
 using control::QuadrotorControl;
+using control::QuadrotorControlBoundBox;
+using state::PositionVelocity;
 
-class QuadrotorDecoupled6D :
-    public Dynamics<PositionVelocity, QuadrotorControl, Empty> {
+class QuadrotorDecoupled6D
+    : public Dynamics<PositionVelocity, QuadrotorControl, Empty> {
 public:
   ~QuadrotorDecoupled6D() {}
   explicit QuadrotorDecoupled6D()
-    : Dynamics() {}
-  explicit QuadrotorDecoupled6D(const QuadrotorControl& u_lower,
-                                const QuadrotorControl& u_upper)
-    : Dynamics(u_lower, u_upper) {}
+      : Dynamics<PositionVelocity, QuadrotorControl, Empty>() {}
+  explicit QuadrotorDecoupled6D(const QuadrotorControl &u_lower,
+                                const QuadrotorControl &u_upper)
+      : Dynamics<PositionVelocity, QuadrotorControl, Empty>(
+            std::unique_ptr<ControlBound<QuadrotorControl>>(
+                new QuadrotorControlBoundBox(u_lower, u_upper))) {}
 
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
-  inline PositionVelocity Evaluate(
-    const PositionVelocity& x, const QuadrotorControl& u) const {
-    // Check initialization.
-    if (!initialized_)
-      throw std::runtime_error("QuadrotorDecoupled6D: uninitialized call to Evaluate.");
-
+  inline PositionVelocity Evaluate(const PositionVelocity &x,
+                                   const QuadrotorControl &u) const {
     // Position derivatives are just velocity.
     const Vector3d position_dot(x.Velocity());
 
@@ -92,21 +92,25 @@ public:
   // the gradient of the value function at the specified state.
   // In this case (linear dynamics), the state is irrelevant given the
   // gradient of the value function at that state.
-  inline QuadrotorControl OptimalControl(
-    const PositionVelocity& x, const PositionVelocity& value_gradient) const {
+  inline QuadrotorControl
+  OptimalControl(const PositionVelocity &x,
+                 const PositionVelocity &value_gradient) const {
     // Check initialization.
     if (!initialized_)
-      throw std::runtime_error("QuadrotorDecoupled6D: uninitialized call to OptimalControl.");
+      throw std::runtime_error(
+          "QuadrotorDecoupled6D: uninitialized call to OptimalControl.");
 
-    // Set each dimension of optimal control to upper/lower bound depending
-    // on the sign of the gradient in that dimension. We want to minimize the
-    // inner product between the projected gradient and control.
-    // If the gradient is 0, then sets control to zero by default.
-    QuadrotorControl c;
+    // Map the negative value gradient's control coefficients to
+    // QuadrotorControl, so we get a negative gradient.
+    QuadrotorControl negative_grad;
+    negative_grad.yaw_rate = 0.0;
+    negative_grad.pitch = -value_gradient.Vx();
+    negative_grad.roll = value_gradient.Vy();
+    negative_grad.thrust = -value_gradient.Vz();
+
+    // Project onto control bound and make sure to zero out yaw_rate.
+    QuadrotorControl c = control_bound_->ProjectToSurface(negative_grad);
     c.yaw_rate = 0.0;
-    c.pitch = (value_gradient.Vx() < 0.0) ? u_upper_.pitch : u_lower_.pitch;
-    c.roll = (value_gradient.Vy() > 0.0) ? u_upper_.roll : u_lower_.roll;
-    c.thrust = (value_gradient.Vz() < 0.0) ? u_upper_.thrust : u_lower_.thrust;
 
     return c;
   }
@@ -118,13 +122,13 @@ public:
   }
 
   // Convert from the appropriate service response type.
-  inline void FromRos(const Empty& res) {
+  inline void FromRos(const Empty &res) {
     throw std::runtime_error("QuadrotorDecoupled6D: FromRos is unimplemented.");
   }
 
 }; //\class QuadrotorDecoupled6D
 
-} //\namespace dynamics
-} //\namespace fastrack
+} // namespace dynamics
+} // namespace fastrack
 
 #endif

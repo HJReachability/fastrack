@@ -36,59 +36,71 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base class for all state types. All states must be able to output a position
-// in 3D space and an arbitrary-dimensional configuration. This configuration
-// will be used for geometric planning.
+// Class to specify a box constraint on a vector-valued control variable.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_STATE_STATE_H
-#define FASTRACK_STATE_STATE_H
+#ifndef FASTRACK_CONTROL_VECTOR_BOUND_BOX_H
+#define FASTRACK_CONTROL_VECTOR_BOUND_BOX_H
 
-#include <fastrack/utils/types.h>
-#include <fastrack_msgs/State.h>
+#include <fastrack/control/control_bound.h>
+#include <fastrack/control/scalar_bound_interval.h>
 
 namespace fastrack {
-namespace state {
+namespace control {
 
-class State {
+class VectorBoundBox : public ControlBound<VectorXd> {
 public:
-  virtual ~State() {}
+  ~VectorBoundBox() {}
+  explicit VectorBoundBox(const VectorXd &min, const VectorXd &max)
+      : ControlBound(), min_(min), max_(max) {
+    if (min_.size() != max_.size())
+      throw std::runtime_error("Inconsistent bound dimensions.");
+  }
 
-  // Accessors. All states must be able to output a position in 3D space
-  // and an arbitrary-dimensional configuration. This configuration will
-  // be used for geometric planning.
-  virtual double X() const = 0;
-  virtual double Y() const = 0;
-  virtual double Z() const = 0;
-  virtual Vector3d Position() const = 0;
-  virtual VectorXd Configuration() const = 0;
+  // Accessors.
+  inline const VectorXd &Min() const { return min_; }
+  inline const VectorXd &Max() const { return max_; }
 
-  // What are the positions that the system occupies at the current state.
-  // NOTE! For simplicity, this is a finite set. In future, this could
-  // be generalized to a collection of generic obstacles.
-  virtual std::vector<Vector3d> OccupiedPositions() const = 0;
+  // Derived classes must be able to check whether a query is inside the bound.
+  inline bool Contains(const VectorXd &query) const {
+    if (min_.size() != query.size()) {
+      ROS_ERROR("VectorBoundBox: incorrect query dimension.");
+      return false;
+    }
 
-  // Convert from/to VectorXd.
-  virtual void FromVector(const VectorXd& x) = 0;
-  virtual VectorXd ToVector() const = 0;
+    for (size_t ii = 0; ii < min_.size(); ii++) {
+      if (min_(ii) > query(ii) || query(ii) > max_(ii))
+        return false;
+    }
 
-  // Convert from/to ROS message.
-  virtual void FromRos(const fastrack_msgs::State::ConstPtr& msg) = 0;
-  virtual fastrack_msgs::State ToRos() const = 0;
+    return true;
+  }
 
-  // Re-seed the random engine.
-  static inline void Seed(unsigned int seed) { rng_.seed(seed); }
+  // Derived classes must be able to compute the projection of a vector
+  // (represented as the templated type) onto the surface of the bound.
+  // NOTE: We will treat this vector as emanating from the natural origin
+  // of the bound so that it constitutes a meaningful direction with respect
+  // to that origin.
+  inline VectorXd ProjectToSurface(const VectorXd &query) const {
+    if (min_.size() != query.size()) {
+      ROS_ERROR("VectorBoundBox: incorrect query dimension.");
+      return VectorXd::Zero(min_.size());
+    }
 
-protected:
-  explicit State() {}
+    VectorXd projection(min_.size());
+    for (size_t ii = 0; ii < min_.size(); ii++)
+      projection(ii) = (query(ii) >= 0.0) ? max_(ii) : min_(ii);
 
-  // Random number generator shared across all instances of states.
-  static std::random_device rd_;
-  static std::default_random_engine rng_;
-}; //\class State
+    return projection;
+  }
 
-} //\namespace state
-} //\namespace fastrack
+private:
+  // Lower and upper bounds..
+  const VectorXd min_, max_;
+}; //\class ControlBound
+
+} // namespace control
+} // namespace fastrack
 
 #endif

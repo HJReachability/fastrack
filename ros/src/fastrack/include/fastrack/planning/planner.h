@@ -114,9 +114,9 @@ protected:
   // Max amount of time for planning to run each time.
   double max_runtime_;
 
-  // Configration space bounds.
-  std::vector<double> config_upper_;
-  std::vector<double> config_lower_;
+  // State space bounds.
+  std::vector<double> state_upper_;
+  std::vector<double> state_lower_;
 
   // Replanning server.
   ros::ServiceServer replan_srv_;
@@ -187,7 +187,7 @@ bool Planner<S, E, D, SD, B, SB>::Initialize(const ros::NodeHandle& n) {
   dynamics_.FromRos(d.response);
 
   // Set configuration space bounds.
-  S::SetConfigurationBounds(config_lower_, config_upper_);
+  S::SetBounds(state_lower_, state_upper_);
 
   initialized_ = true;
   return true;
@@ -207,9 +207,9 @@ bool Planner<S, E, D, SD, B, SB>::LoadParameters(const ros::NodeHandle& n) {
   // Max runtime per call.
   if (!nl.getParam("max_runtime", max_runtime_)) return false;
 
-  // Configuration space bounds.
-  if (!nl.getParam("config/lower", config_lower_)) return false;
-  if (!nl.getParam("config/upper", config_upper_)) return false;
+  // State space bounds.
+  if (!nl.getParam("state/lower", state_lower_)) return false;
+  if (!nl.getParam("state/upper", state_upper_)) return false;
 
   return true;
 }

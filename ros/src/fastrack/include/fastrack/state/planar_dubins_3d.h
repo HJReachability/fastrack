@@ -40,55 +40,54 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_STATE_POSITION_VELOCITY_H
-#define FASTRACK_STATE_POSITION_VELOCITY_H
+#ifndef FASTRACK_STATE_PLANAR_DUBINS_3D_H
+#define FASTRACK_STATE_PLANAR_DUBINS_3D_H
 
-#include <fastrack/state/planar_dubins_3d.h>
 #include <fastrack/state/state.h>
 
 namespace fastrack {
 namespace state {
 
-class PositionVelocity : public State {
+class PlanarDubins3D : public State {
 public:
-  ~PositionVelocity() {}
-  explicit PositionVelocity()
-      : position_(Vector3d::Zero()), velocity_(Vector3d::Zero()) {}
-  explicit PositionVelocity(double x, double y, double z, double vx, double vy,
-                            double vz);
-  explicit PositionVelocity(const Vector3d &position, const Vector3d &velocity);
-  explicit PositionVelocity(const fastrack_msgs::State &msg);
-  explicit PositionVelocity(const VectorXd &config);
+  ~PlanarDubins3D() {}
+  explicit PlanarDubins3D()
+      : State(), x_(0.0), y_(0.0), theta_(0.0), v_(constants::kDefaultSpeed) {}
+  explicit PlanarDubins3D(double x, double y, double theta)
+      : State(), x_(x), y_(y), theta_(theta), v_(constants::kDefaultSpeed) {}
+  explicit PlanarDubins3D(double x, double y, double theta, double v)
+      : State(), x_(x), y_(y), theta_(theta), v_(v) {}
+  explicit PlanarDubins3D(const fastrack_msgs::State &msg);
+  explicit PlanarDubins3D(const VectorXd &config);
 
   // Accessors.
-  inline double X() const { return position_(0); }
-  inline double Y() const { return position_(1); }
-  inline double Z() const { return position_(2); }
-  inline double Vx() const { return velocity_(0); }
-  inline double Vy() const { return velocity_(1); }
-  inline double Vz() const { return velocity_(2); }
+  // NOTE! Since this is planar, we assume that Z is a fixed
+  //       static variable.
+  inline double X() const { return x_; }
+  inline double Y() const { return y_; }
+  inline double Z() const { return z_; }
+  inline double Theta() const { return theta_; }
+  inline double V() const { return v_; }
+  inline double Vx() const { return v_ * std::cos(theta_); }
+  inline double Vy() const { return v_ * std::sin(theta_); }
+  inline double Vz() const { return 0.0; }
 
-  inline Vector3d Position() const { return position_; }
-  inline Vector3d Velocity() const { return velocity_; }
+  inline Vector3d Position() const { return Vector3d(x_, y_, z_); }
+  inline Vector3d Velocity() const { return Vector3d(Vx(), Vy(), Vz()); }
   inline VectorXd Configuration() const {
-    VectorXd config(3);
-    config(0) = position_(0);
-    config(1) = position_(1);
-    config(2) = position_(2);
+    VectorXd config(2);
+    config(0) = x_;
+    config(1) = y_;
 
     return config;
   }
 
   // Setters.
-  inline double &X() { return position_(0); }
-  inline double &Y() { return position_(1); }
-  inline double &Z() { return position_(2); }
-  inline double &Vx() { return velocity_(0); }
-  inline double &Vy() { return velocity_(1); }
-  inline double &Vz() { return velocity_(2); }
-
-  inline Vector3d &Position() { return position_; }
-  inline Vector3d &Velocity() { return velocity_; }
+  inline double &X() { return x_; }
+  inline double &Y() { return y_; }
+  inline double &Z() { return z_; }
+  inline double &Theta() { return theta_; }
+  inline double &V() { return v_; }
 
   // Set non-configuration dimensions to match the given config derivative.
   void SetConfigurationDot(const VectorXd &configuration_dot);
@@ -112,8 +111,8 @@ public:
   static constexpr size_t ConfigurationDimension() { return 3; }
 
   // Set/get bounds of the state/configuration space.
-  static void SetBounds(const PositionVelocity &lower,
-                        const PositionVelocity &upper);
+  static void SetBounds(const PlanarDubins3D &lower,
+                        const PlanarDubins3D &upper);
   static void SetBounds(const std::vector<double> &lower,
                         const std::vector<double> &upper);
   static VectorXd GetConfigurationLower();
@@ -123,32 +122,42 @@ public:
   static VectorXd SampleConfiguration();
 
   // Sample from the state space itself.
-  static PositionVelocity Sample();
+  // NOTE! Sets v_ to default value.
+  static PlanarDubins3D Sample();
 
   // Compound assignment operators.
-  PositionVelocity& operator+=(const PositionVelocity& rhs);
-  PositionVelocity& operator-=(const PositionVelocity& rhs);
-  PositionVelocity& operator*=(double s);
-  PositionVelocity& operator/=(double s);
+  PlanarDubins3D& operator+=(const PlanarDubins3D& rhs);
+  PlanarDubins3D& operator-=(const PlanarDubins3D& rhs);
+  PlanarDubins3D& operator*=(double s);
+  PlanarDubins3D& operator/=(double s);
 
   // Binary operators.
-  friend PositionVelocity operator+(PositionVelocity lhs,
-                                    const PositionVelocity& rhs);
-  friend PositionVelocity operator-(PositionVelocity lhs,
-                                    const PositionVelocity& rhs);
-  friend PositionVelocity operator*(PositionVelocity lhs, double s);
-  friend PositionVelocity operator*(double s, PositionVelocity rhs);
-  friend PositionVelocity operator/(PositionVelocity lhs, double s);
-  friend PositionVelocity operator/(double s, PositionVelocity rhs);
+  friend PlanarDubins3D operator+(PlanarDubins3D lhs,
+                                    const PlanarDubins3D& rhs);
+  friend PlanarDubins3D operator-(PlanarDubins3D lhs,
+                                    const PlanarDubins3D& rhs);
+  friend PlanarDubins3D operator*(PlanarDubins3D lhs, double s);
+  friend PlanarDubins3D operator*(double s, PlanarDubins3D rhs);
+  friend PlanarDubins3D operator/(PlanarDubins3D lhs, double s);
+  friend PlanarDubins3D operator/(double s, PlanarDubins3D rhs);
 
 private:
-  Vector3d position_;
-  Vector3d velocity_;
+  // (x, y) position, and heading angle theta.
+  double x_;
+  double y_;
+  double theta_;
+
+  // Parameter for speed.
+  // NOTE! This is NOT a state.
+  double v_;
+
+  // Static height z.
+  static double z_;
 
   // Static state space bounds for this state space.
-  static PositionVelocity lower_;
-  static PositionVelocity upper_;
-}; //\class PositionVelocity
+  static PlanarDubins3D lower_;
+  static PlanarDubins3D upper_;
+}; //\class PlanarDubins3D
 
 } // namespace state
 } // namespace fastrack

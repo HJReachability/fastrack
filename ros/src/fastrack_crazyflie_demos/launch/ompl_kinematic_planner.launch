@@ -17,10 +17,10 @@
   <!-- Maximum planning runtime (sec). -->
   <arg name="max_runtime" default="0.5" />
 
-  <!-- Configuration space dimension.
+  <!-- State space bounds [x, y, z, vx, vy, vz].
        NOTE! These should agree with the upper and lower environment bounds. -->
-  <arg name="config_upper" default="[10.0, 10.0, 10.0]" />
-  <arg name="config_lower" default="[-10.0, -10.0, 0.0]" />
+  <arg name="state_upper" default="[10.0, 10.0, 10.0, 10.0, 10.0, 10.0]" />
+  <arg name="state_lower" default="[-10.0, -10.0, 0.0, -10.0, -10.0, -10.0]" />
 
   <!-- Environment parameters. -->
   <arg name="env_upper_x" default="10.0" />
@@ -53,8 +53,8 @@
 
     <param name="frame/fixed" value="$(arg fixed_frame)" />
 
-    <rosparam param="config/upper" subst_value="True">$(arg config_upper)</rosparam>
-    <rosparam param="config/lower" subst_value="True">$(arg config_lower)</rosparam>
+    <rosparam param="state/upper" subst_value="True">$(arg state_upper)</rosparam>
+    <rosparam param="state/lower" subst_value="True">$(arg state_lower)</rosparam>
 
     <param name="env/upper/x" value="$(arg env_upper_x)" />
     <param name="env/upper/y" value="$(arg env_upper_y)" />

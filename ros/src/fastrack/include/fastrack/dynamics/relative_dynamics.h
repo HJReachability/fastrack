@@ -36,59 +36,49 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base class for all state types. All states must be able to output a position
-// in 3D space and an arbitrary-dimensional configuration. This configuration
-// will be used for geometric planning.
+// Defines the RelativeDynamics class, which encodes relative dynamcis between
+// the tracker and the planner. Templated on both state types, and also the
+// control types for each system.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_STATE_STATE_H
-#define FASTRACK_STATE_STATE_H
+#ifndef FASTRACK_DYNAMICS_RELATIVE_DYNAMICS_H
+#define FASTRACK_DYNAMICS_RELATIVE_DYNAMICS_H
 
+#include <fastrack/control/control_bound.h>
+#include <fastrack/state/relative_state.h>
 #include <fastrack/utils/types.h>
-#include <fastrack_msgs/State.h>
 
 namespace fastrack {
-namespace state {
+namespace dynamics {
 
-class State {
+using state::RelativeState;
+
+template <typename TS, typename TC, typename PS, typename PC>
+class RelativeDynamics {
 public:
-  virtual ~State() {}
+  // Destructor.
+  virtual ~RelativeDynamics() {}
 
-  // Accessors. All states must be able to output a position in 3D space
-  // and an arbitrary-dimensional configuration. This configuration will
-  // be used for geometric planning.
-  virtual double X() const = 0;
-  virtual double Y() const = 0;
-  virtual double Z() const = 0;
-  virtual Vector3d Position() const = 0;
-  virtual VectorXd Configuration() const = 0;
+  // Derived classes must be able to give the time derivative of relative state
+  // as a function of current state and control of each system.
+  virtual std::unique_ptr<RelativeState<TS, PS>>
+  Evaluate(const TS &tracker_x, const TC &tracker_u, const PS &planner_x,
+           const PC &planner_u) const = 0;
 
-  // What are the positions that the system occupies at the current state.
-  // NOTE! For simplicity, this is a finite set. In future, this could
-  // be generalized to a collection of generic obstacles.
-  virtual std::vector<Vector3d> OccupiedPositions() const = 0;
-
-  // Convert from/to VectorXd.
-  virtual void FromVector(const VectorXd& x) = 0;
-  virtual VectorXd ToVector() const = 0;
-
-  // Convert from/to ROS message.
-  virtual void FromRos(const fastrack_msgs::State::ConstPtr& msg) = 0;
-  virtual fastrack_msgs::State ToRos() const = 0;
-
-  // Re-seed the random engine.
-  static inline void Seed(unsigned int seed) { rng_.seed(seed); }
+  // Derived classes must be able to compute an optimal control given
+  // the gradient of the value function at the relative state specified
+  // by the given system states, provided abstract control bounds.
+  virtual TC OptimalControl(const TS &tracker_x, const PS &planner_x,
+                            const RelativeState<TS, PS> &value_gradient,
+                            const ControlBound<TC> &tracker_u_bound,
+                            const ControlBound<PC> &planner_u_bound) const = 0;
 
 protected:
-  explicit State() {}
+  explicit RelativeDynamics() {}
+}; //\class RelativeDynamics
 
-  // Random number generator shared across all instances of states.
-  static std::random_device rd_;
-  static std::default_random_engine rng_;
-}; //\class State
-
-} //\namespace state
-} //\namespace fastrack
+} // namespace dynamics
+} // namespace fastrack
 
 #endif

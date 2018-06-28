@@ -11,6 +11,7 @@
 
 # Emacs stuff.
 .clang_complete
+cscope*
 
 # ROS stuff.
 *.catkin_workspace

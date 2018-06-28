@@ -36,59 +36,56 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base class for all state types. All states must be able to output a position
-// in 3D space and an arbitrary-dimensional configuration. This configuration
-// will be used for geometric planning.
+// Class for relative state computed between two PositionVelocity states.
+//
+// NOTE! Because this is a relative state, we do NOT support
+// sampling or configuration space conversions.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_STATE_STATE_H
-#define FASTRACK_STATE_STATE_H
+#ifndef FASTRACK_STATE_POSITION_VELOCITY_REL_POSITION_VELOCITY_H
+#define FASTRACK_STATE_POSITION_VELOCITY_REL_POSITION_VELOCITY_H
 
-#include <fastrack/utils/types.h>
-#include <fastrack_msgs/State.h>
+#include <fastrack/state/position_velocity.h>
+#include <fastrack/state/relative_state.h>
 
 namespace fastrack {
 namespace state {
 
-class State {
+class PositionVelocityRelPositionVelocity
+    : public RelativeState<PositionVelocity, PositionVelocity> {
 public:
-  virtual ~State() {}
+  ~PositionVelocityRelPositionVelocity() {}
 
-  // Accessors. All states must be able to output a position in 3D space
-  // and an arbitrary-dimensional configuration. This configuration will
-  // be used for geometric planning.
-  virtual double X() const = 0;
-  virtual double Y() const = 0;
-  virtual double Z() const = 0;
-  virtual Vector3d Position() const = 0;
-  virtual VectorXd Configuration() const = 0;
+  // NOTE! We do NOT provide a default constructor. Objects from this
+  // class SHOULD be initialized from the two corresponding states.
+  explicit PositionVelocityRelPositionVelocity(
+      const PositionVelocity &tracker_x, const PositionVelocity &planner_x)
+      : RelativeState<PositionVelocity, PositionVelocity>(),
+        x_(tracker_x.Position() - planner_x.Position(),
+           tracker_x.Velocity() - planner_x.Velocity()) {}
 
-  // What are the positions that the system occupies at the current state.
-  // NOTE! For simplicity, this is a finite set. In future, this could
-  // be generalized to a collection of generic obstacles.
-  virtual std::vector<Vector3d> OccupiedPositions() const = 0;
+  // Construct from a PositionVelocity, or from separate position
+  // and velocity vectors.
+  explicit PositionVelocityRelPositionVelocity(const PositionVelocity &other)
+      : RelativeState<PositionVelocity, PositionVelocity>(), x_(other) {}
+  explicit PositionVelocityRelPositionVelocity(const Vector3d &position,
+                                               const Vector3d &velocity)
+      : RelativeState<PositionVelocity, PositionVelocity>(),
+        x_(position, velocity) {}
 
-  // Convert from/to VectorXd.
-  virtual void FromVector(const VectorXd& x) = 0;
-  virtual VectorXd ToVector() const = 0;
+  // Dimension of the state space.
+  static constexpr size_t StateDimension() { return 6; }
 
-  // Convert from/to ROS message.
-  virtual void FromRos(const fastrack_msgs::State::ConstPtr& msg) = 0;
-  virtual fastrack_msgs::State ToRos() const = 0;
+  // Accessors.
+  inline const PositionVelocity &State() const { return x_; }
 
-  // Re-seed the random engine.
-  static inline void Seed(unsigned int seed) { rng_.seed(seed); }
+private:
+  // Relative state is just a single PositionVelocity.
+  const PositionVelocity x_;
+}; //\class PositionVelocityRelPositionVelocity
 
-protected:
-  explicit State() {}
-
-  // Random number generator shared across all instances of states.
-  static std::random_device rd_;
-  static std::default_random_engine rng_;
-}; //\class State
-
-} //\namespace state
-} //\namespace fastrack
+} // namespace state
+} // namespace fastrack
 
 #endif

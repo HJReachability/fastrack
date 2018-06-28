@@ -45,43 +45,58 @@
 
 // ------------------------------- INCLUDES -------------------------------- //
 
-#include <random>
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
+#include <algorithm>
+#include <exception>
+#include <iostream>
+#include <limits>
 #include <math.h>
+#include <memory>
+#include <random>
 #include <string>
 #include <type_traits>
 #include <typeinfo>
-#include <exception>
-#include <memory>
-#include <limits>
 #include <vector>
-#include <algorithm>
-#include <random>
-#include <iostream>
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
 
 // ------------------------------- CONSTANTS -------------------------------- //
 
 namespace fastrack {
-  namespace constants {
-    // Acceleration due to gravity.
-    const double G = 9.81;
+namespace constants {
+// Acceleration due to gravity.
+const double G = 9.81;
 
-    // Small number for use in approximate equality checking.
-    const double EPSILON = 1e-4;
-  } //\namespace constants
+// Small number for use in approximate equality checking.
+const double kEpsilon = 1e-4;
 
-  // Empty struct for setting unused/unimplemented template args.
-  struct Empty {};
-} //\namespace fastrack
+// Double precision infinity.
+const double kInfinity = std::numeric_limits<double>::infinity();
+
+// Default speed of 1 m/s.
+const double kDefaultSpeed = 1.0;
+
+// Default height (e.g. for planar state space models).
+const double kDefaultHeight = 1.0;
+} // namespace constants
+
+// Empty struct for setting unused/unimplemented template args.
+struct Empty {};
+} // namespace fastrack
+
+// ---------------------------- SIMPLE FUNCTIONS ---------------------------- //
+
+template <typename T, typename... Args>
+std::unique_ptr<T> make_unique(Args &&... args) {
+  return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
 
 // ------------------------ THIRD PARTY TYPEDEFS ---------------------------- //
 
 using Eigen::Matrix3d;
-using Eigen::Vector3d;
 using Eigen::Matrix4d;
-using Eigen::VectorXd;
 using Eigen::MatrixXd;
 using Eigen::Quaterniond;
+using Eigen::Vector3d;
+using Eigen::VectorXd;
 
 #endif

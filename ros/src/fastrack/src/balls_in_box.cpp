@@ -115,8 +115,8 @@ void BallsInBox::SensorCallback(
     // If not unique, discard.
     bool unique = true;
     for (size_t jj = 0; jj < centers_.size(); jj++) {
-      if (p.isApprox(centers_[jj], constants::EPSILON) &&
-          std::abs(r - radii_[jj]) < constants::EPSILON) {
+      if (p.isApprox(centers_[jj], constants::kEpsilon) &&
+          std::abs(r - radii_[jj]) < constants::kEpsilon) {
         unique = false;
         break;
       }
