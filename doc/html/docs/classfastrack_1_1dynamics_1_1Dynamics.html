@@ -44,12 +44,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ad6157358423604058e080363c3870e87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37b57a7048112cad962b4056d6308759"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a37b57a7048112cad962b4056d6308759">FromRos</a> (const SR &amp;res)=0</td></tr>
 <tr class="separator:a37b57a7048112cad962b4056d6308759"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21eb656cf6a6b34ae6de461e4b607de2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a21eb656cf6a6b34ae6de461e4b607de2">Initialize</a> (const C &amp;u_lower, const C &amp;u_upper)</td></tr>
-<tr class="separator:a21eb656cf6a6b34ae6de461e4b607de2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f2ecc10ef3e69d4d558b60b70576cee"><td class="memItemLeft" align="right" valign="top">const C &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a0f2ecc10ef3e69d4d558b60b70576cee">MaxControl</a> () const </td></tr>
-<tr class="separator:a0f2ecc10ef3e69d4d558b60b70576cee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a52e23e6caa8b8ae84415c25a1ff0ec83"><td class="memItemLeft" align="right" valign="top">const C &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a52e23e6caa8b8ae84415c25a1ff0ec83">MinControl</a> () const </td></tr>
-<tr class="separator:a52e23e6caa8b8ae84415c25a1ff0ec83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a400b260e0acd10b234482e3e6d85dc39"><td class="memItemLeft" align="right" valign="top">const ControlBound&lt; C &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a400b260e0acd10b234482e3e6d85dc39">GetControlBound</a> () const </td></tr>
+<tr class="separator:a400b260e0acd10b234482e3e6d85dc39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28e0e955d10dbb771f8fc7a27bf7c0b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a28e0e955d10dbb771f8fc7a27bf7c0b3">Initialize</a> (std::unique_ptr&lt; ControlBound&lt; C &gt;&gt; bound)</td></tr>
+<tr class="separator:a28e0e955d10dbb771f8fc7a27bf7c0b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9e448508379b3ec2d1a27251a9d09ce2"><td class="memItemLeft" align="right" valign="top">virtual C&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a9e448508379b3ec2d1a27251a9d09ce2">OptimalControl</a> (const S &amp;x, const S &amp;value_gradient) const =0</td></tr>
 <tr class="separator:a9e448508379b3ec2d1a27251a9d09ce2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6cdf1deb2aef37983498d36e747e4b6d"><td class="memItemLeft" align="right" valign="top">virtual SR&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a6cdf1deb2aef37983498d36e747e4b6d">ToRos</a> () const =0</td></tr>
@@ -61,24 +59,23 @@ Public Member Functions</h2></td></tr>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a587368aef37dd6f58602b6fe1cda8c83"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a587368aef37dd6f58602b6fe1cda8c83">Dynamics</a> ()</td></tr>
 <tr class="separator:a587368aef37dd6f58602b6fe1cda8c83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af263e1d4a24bbe0769506dbab35d0483"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#af263e1d4a24bbe0769506dbab35d0483">Dynamics</a> (const C &amp;u_lower, const C &amp;u_upper)</td></tr>
-<tr class="separator:af263e1d4a24bbe0769506dbab35d0483"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e26e2b3966a31d74d855e6e008be29d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a0e26e2b3966a31d74d855e6e008be29d">Dynamics</a> (std::unique_ptr&lt; ControlBound&lt; C &gt;&gt; bound)</td></tr>
+<tr class="separator:a0e26e2b3966a31d74d855e6e008be29d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
+<tr class="memitem:a4fa32c21a4fd7aa4185dd72b4354980e"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; const <br class="typebreak"/>
+ControlBound&lt; C &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a4fa32c21a4fd7aa4185dd72b4354980e">control_bound_</a></td></tr>
+<tr class="separator:a4fa32c21a4fd7aa4185dd72b4354980e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb8881a8ba845a6d2223b0639db98db1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#adb8881a8ba845a6d2223b0639db98db1">initialized_</a></td></tr>
 <tr class="separator:adb8881a8ba845a6d2223b0639db98db1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af00b40cfd1e8bc00542934b580a16319"><td class="memItemLeft" align="right" valign="top">C&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#af00b40cfd1e8bc00542934b580a16319">u_lower_</a></td></tr>
-<tr class="separator:af00b40cfd1e8bc00542934b580a16319"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6fd2e7ddcc1399817c0276660e46d4f8"><td class="memItemLeft" align="right" valign="top">C&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a6fd2e7ddcc1399817c0276660e46d4f8">u_upper_</a></td></tr>
-<tr class="separator:a6fd2e7ddcc1399817c0276660e46d4f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename S, typename C, typename SR&gt;<br/>
 class fastrack::dynamics::Dynamics&lt; S, C, SR &gt;</h3>
 
 
-<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00053">53</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
+<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00057">57</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="ad9995829614153b305998d3d5d23eaa4"></a>
 <div class="memitem">
@@ -103,7 +100,7 @@ template&lt;typename S, typename C, typename SR&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00056">56</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
+<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00060">60</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
 
 </div>
 </div>
@@ -130,11 +127,11 @@ template&lt;typename S, typename C, typename SR&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00084">84</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
+<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00086">86</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="af263e1d4a24bbe0769506dbab35d0483"></a>
+<a class="anchor" id="a0e26e2b3966a31d74d855e6e008be29d"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -146,19 +143,9 @@ template&lt;typename S, typename C, typename SR&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html">fastrack::dynamics::Dynamics</a>&lt; S, C, SR &gt;::<a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html">Dynamics</a> </td>
           <td>(</td>
-          <td class="paramtype">const C &amp;&#160;</td>
-          <td class="paramname"><em>u_lower</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">std::unique_ptr&lt; ControlBound&lt; C &gt;&gt;&#160;</td>
+          <td class="paramname"><em>bound</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">const C &amp;&#160;</td>
-          <td class="paramname"><em>u_upper</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -168,7 +155,7 @@ template&lt;typename S, typename C, typename SR&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00086">86</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
+<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00087">87</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
 
 </div>
 </div>
@@ -207,7 +194,7 @@ template&lt;typename S, typename C, typename SR&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classfastrack_1_1dynamics_1_1QuadrotorCoupled6D.html#ab8dc08de020a9e32714a1b086a8d14ed">fastrack::dynamics::QuadrotorCoupled6D</a>, <a class="el" href="classfastrack_1_1dynamics_1_1QuadrotorDecoupled6D.html#abc386eb31f10c6551168e25eb6143bf8">fastrack::dynamics::QuadrotorDecoupled6D</a>, and <a class="el" href="classfastrack_1_1dynamics_1_1Kinematics.html#a154d94cb4d6d8744a5792b021116d496">fastrack::dynamics::Kinematics&lt; S &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfastrack_1_1dynamics_1_1Kinematics.html#a154d94cb4d6d8744a5792b021116d496">fastrack::dynamics::Kinematics&lt; S &gt;</a>, and <a class="el" href="classfastrack_1_1dynamics_1_1QuadrotorDecoupled6D.html#abc386eb31f10c6551168e25eb6143bf8">fastrack::dynamics::QuadrotorDecoupled6D</a>.</p>
 
 </div>
 </div>
@@ -235,11 +222,38 @@ template&lt;typename S, typename C, typename SR&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classfastrack_1_1dynamics_1_1QuadrotorCoupled6D.html#aac19034d4e317f82ebbf6fc956c2ab45">fastrack::dynamics::QuadrotorCoupled6D</a>, <a class="el" href="classfastrack_1_1dynamics_1_1QuadrotorDecoupled6D.html#ac2f9aaa750809299fad1a30fdd2f402b">fastrack::dynamics::QuadrotorDecoupled6D</a>, and <a class="el" href="classfastrack_1_1dynamics_1_1Kinematics.html#ae5181b1d3a9ec0d7ea10124fecc24908">fastrack::dynamics::Kinematics&lt; S &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfastrack_1_1dynamics_1_1QuadrotorDecoupled6D.html#ac2f9aaa750809299fad1a30fdd2f402b">fastrack::dynamics::QuadrotorDecoupled6D</a>, and <a class="el" href="classfastrack_1_1dynamics_1_1Kinematics.html#ae5181b1d3a9ec0d7ea10124fecc24908">fastrack::dynamics::Kinematics&lt; S &gt;</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a21eb656cf6a6b34ae6de461e4b607de2"></a>
+<a class="anchor" id="a400b260e0acd10b234482e3e6d85dc39"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename S, typename C, typename SR&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const ControlBound&lt;C&gt;&amp; <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html">fastrack::dynamics::Dynamics</a>&lt; S, C, SR &gt;::GetControlBound </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00077">77</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a28e0e955d10dbb771f8fc7a27bf7c0b3"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -251,19 +265,9 @@ template&lt;typename S, typename C, typename SR&gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html">fastrack::dynamics::Dynamics</a>&lt; S, C, SR &gt;::Initialize </td>
           <td>(</td>
-          <td class="paramtype">const C &amp;&#160;</td>
-          <td class="paramname"><em>u_lower</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">std::unique_ptr&lt; ControlBound&lt; C &gt;&gt;&#160;</td>
+          <td class="paramname"><em>bound</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">const C &amp;&#160;</td>
-          <td class="paramname"><em>u_upper</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -273,61 +277,7 @@ template&lt;typename S, typename C, typename SR&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00059">59</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a0f2ecc10ef3e69d4d558b60b70576cee"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename S, typename C, typename SR&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const C&amp; <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html">fastrack::dynamics::Dynamics</a>&lt; S, C, SR &gt;::MaxControl </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00075">75</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a52e23e6caa8b8ae84415c25a1ff0ec83"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename S, typename C, typename SR&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const C&amp; <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html">fastrack::dynamics::Dynamics</a>&lt; S, C, SR &gt;::MinControl </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00074">74</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
+<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00063">63</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
 
 </div>
 </div>
@@ -365,7 +315,7 @@ template&lt;typename S, typename C, typename SR&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classfastrack_1_1dynamics_1_1QuadrotorCoupled6D.html#a305e1cb77c37638b628a2bcb799d08a0">fastrack::dynamics::QuadrotorCoupled6D</a>, <a class="el" href="classfastrack_1_1dynamics_1_1QuadrotorDecoupled6D.html#a7613fe36f3d81fd32e040aa10773356c">fastrack::dynamics::QuadrotorDecoupled6D</a>, and <a class="el" href="classfastrack_1_1dynamics_1_1Kinematics.html#ad2d0273e1bd89fdf724dd723b2ab6531">fastrack::dynamics::Kinematics&lt; S &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfastrack_1_1dynamics_1_1QuadrotorDecoupled6D.html#a7613fe36f3d81fd32e040aa10773356c">fastrack::dynamics::QuadrotorDecoupled6D</a>, and <a class="el" href="classfastrack_1_1dynamics_1_1Kinematics.html#ad2d0273e1bd89fdf724dd723b2ab6531">fastrack::dynamics::Kinematics&lt; S &gt;</a>.</p>
 
 </div>
 </div>
@@ -392,11 +342,35 @@ template&lt;typename S, typename C, typename SR&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classfastrack_1_1dynamics_1_1QuadrotorCoupled6D.html#acdeaee78f51ef3015b0770e3bdb5a1f0">fastrack::dynamics::QuadrotorCoupled6D</a>, <a class="el" href="classfastrack_1_1dynamics_1_1QuadrotorDecoupled6D.html#a66bcf29c66db952b517e961523be34c7">fastrack::dynamics::QuadrotorDecoupled6D</a>, and <a class="el" href="classfastrack_1_1dynamics_1_1Kinematics.html#a9af4fe6d0e1445ca652d1aca3dbbfda0">fastrack::dynamics::Kinematics&lt; S &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfastrack_1_1dynamics_1_1QuadrotorDecoupled6D.html#a66bcf29c66db952b517e961523be34c7">fastrack::dynamics::QuadrotorDecoupled6D</a>, and <a class="el" href="classfastrack_1_1dynamics_1_1Kinematics.html#a9af4fe6d0e1445ca652d1aca3dbbfda0">fastrack::dynamics::Kinematics&lt; S &gt;</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a4fa32c21a4fd7aa4185dd72b4354980e"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename S, typename C, typename SR&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;const ControlBound&lt;C&gt; &gt; <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html">fastrack::dynamics::Dynamics</a>&lt; S, C, SR &gt;::control_bound_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00091">91</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="adb8881a8ba845a6d2223b0639db98db1"></a>
 <div class="memitem">
 <div class="memproto">
@@ -417,55 +391,7 @@ template&lt;typename S, typename C, typename SR&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00096">96</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="af00b40cfd1e8bc00542934b580a16319"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename S, typename C, typename SR&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">C <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html">fastrack::dynamics::Dynamics</a>&lt; S, C, SR &gt;::u_lower_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00092">92</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a6fd2e7ddcc1399817c0276660e46d4f8"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename S, typename C, typename SR&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">C <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html">fastrack::dynamics::Dynamics</a>&lt; S, C, SR &gt;::u_upper_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00093">93</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
+<p>Definition at line <a class="el" href="dynamics_8h_source.html#l00094">94</a> of file <a class="el" href="dynamics_8h_source.html">dynamics.h</a>.</p>
 
 </div>
 </div>
@@ -478,7 +404,7 @@ template&lt;typename S, typename C, typename SR&gt; </div>
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Fri Jun 1 2018 03:29:34</small>
+<small>autogenerated on Fri Jul 6 2018 05:33:35</small>
 </div>
 </body>
 </html>

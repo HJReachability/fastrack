@@ -1,4 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classfastrack_1_1dynamics_1_1Dynamics.html" title="fastrack::dynamics\l::Dynamics\&lt; S, VectorXd,\l fastrack_srvs::KinematicPlanner\lDynamics::Response \&gt;" alt="" coords="6,5,221,75"/>
-<area shape="rect" id="node2" href="$classfastrack_1_1dynamics_1_1Kinematics.html" title="fastrack::dynamics\l::Kinematics\&lt; S \&gt;" alt="" coords="269,19,403,61"/>
+<area shape="rect" id="node1" href="$classfastrack_1_1control_1_1ControlBound.html" title="fastrack::control::\lControlBound\&lt; VectorXd \&gt;" alt="" coords="5,5,184,46"/>
+<area shape="rect" id="node2" href="$classfastrack_1_1control_1_1VectorBoundBox.html" title="fastrack::control::\lVectorBoundBox" alt="" coords="233,5,357,46"/>
 </map>

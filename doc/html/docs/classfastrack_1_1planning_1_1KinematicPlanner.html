@@ -79,10 +79,6 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a9677ed727abcc371923ff31a720594cb inherit pro_attribs_classfastrack_1_1planning_1_1Planner"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02098fa6432f1851aa11265249319b90 inherit pro_attribs_classfastrack_1_1planning_1_1Planner"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#a02098fa6432f1851aa11265249319b90">bound_srv_name_</a></td></tr>
 <tr class="separator:a02098fa6432f1851aa11265249319b90 inherit pro_attribs_classfastrack_1_1planning_1_1Planner"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb1b9cc66c69576ffc70b7f0e6eb1507 inherit pro_attribs_classfastrack_1_1planning_1_1Planner"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#afb1b9cc66c69576ffc70b7f0e6eb1507">config_lower_</a></td></tr>
-<tr class="separator:afb1b9cc66c69576ffc70b7f0e6eb1507 inherit pro_attribs_classfastrack_1_1planning_1_1Planner"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51463b5a5dc8eb9fdc4385815f2aff5d inherit pro_attribs_classfastrack_1_1planning_1_1Planner"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#a51463b5a5dc8eb9fdc4385815f2aff5d">config_upper_</a></td></tr>
-<tr class="separator:a51463b5a5dc8eb9fdc4385815f2aff5d inherit pro_attribs_classfastrack_1_1planning_1_1Planner"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3463e807718fa64262d5fd606b2fae83 inherit pro_attribs_classfastrack_1_1planning_1_1Planner"><td class="memItemLeft" align="right" valign="top">Kinematics&lt; S &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#a3463e807718fa64262d5fd606b2fae83">dynamics_</a></td></tr>
 <tr class="separator:a3463e807718fa64262d5fd606b2fae83 inherit pro_attribs_classfastrack_1_1planning_1_1Planner"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa95611b8124bf20abf9cb843e00cb26f inherit pro_attribs_classfastrack_1_1planning_1_1Planner"><td class="memItemLeft" align="right" valign="top">ros::ServiceClient&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#aa95611b8124bf20abf9cb843e00cb26f">dynamics_srv_</a></td></tr>
@@ -101,6 +97,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a226b428e943aa4d7dc7c0f00d6822161 inherit pro_attribs_classfastrack_1_1planning_1_1Planner"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a644be3b571de56e745ffdafdc454b461 inherit pro_attribs_classfastrack_1_1planning_1_1Planner"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#a644be3b571de56e745ffdafdc454b461">replan_srv_name_</a></td></tr>
 <tr class="separator:a644be3b571de56e745ffdafdc454b461 inherit pro_attribs_classfastrack_1_1planning_1_1Planner"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a124fd26d1fe55c6c567a027e06f04677 inherit pro_attribs_classfastrack_1_1planning_1_1Planner"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#a124fd26d1fe55c6c567a027e06f04677">state_lower_</a></td></tr>
+<tr class="separator:a124fd26d1fe55c6c567a027e06f04677 inherit pro_attribs_classfastrack_1_1planning_1_1Planner"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52b935e37552356ec54489c454bfc5a6 inherit pro_attribs_classfastrack_1_1planning_1_1Planner"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#a52b935e37552356ec54489c454bfc5a6">state_upper_</a></td></tr>
+<tr class="separator:a52b935e37552356ec54489c454bfc5a6 inherit pro_attribs_classfastrack_1_1planning_1_1Planner"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename S, typename E, typename B, typename SB&gt;<br/>
@@ -219,7 +219,7 @@ template&lt;typename S , typename E , typename B , typename SB &gt; </div>
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Fri Jun 1 2018 03:29:34</small>
+<small>autogenerated on Fri Jul 6 2018 05:33:35</small>
 </div>
 </body>
 </html>

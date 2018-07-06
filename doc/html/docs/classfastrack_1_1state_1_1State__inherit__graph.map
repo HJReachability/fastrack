@@ -1,3 +1,4 @@
 <map id="fastrack::state::State" name="fastrack::state::State">
-<area shape="rect" id="node2" href="$classfastrack_1_1state_1_1PositionVelocity.html" title="fastrack::state::Position\lVelocity" alt="" coords="5,81,165,122"/>
+<area shape="rect" id="node2" href="$classfastrack_1_1state_1_1PlanarDubins3D.html" title="fastrack::state::PlanarDubins3D" alt="" coords="5,88,213,115"/>
+<area shape="rect" id="node3" href="$classfastrack_1_1state_1_1PositionVelocity.html" title="fastrack::state::Position\lVelocity" alt="" coords="238,81,399,122"/>
 </map>

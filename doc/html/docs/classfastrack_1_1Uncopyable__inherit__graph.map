@@ -1,8 +1,9 @@
 <map id="fastrack::Uncopyable" name="fastrack::Uncopyable">
 <area shape="rect" id="node2" href="$classfastrack_1_1planning_1_1PlannerManager.html" title="fastrack::planning\l::PlannerManager\&lt; S \&gt;" alt="" coords="279,5,436,46"/>
 <area shape="rect" id="node3" href="$classfastrack_1_1planning_1_1Replanner.html" title="fastrack::planning\l::Replanner" alt="" coords="295,70,420,111"/>
-<area shape="rect" id="node4" href="$classfastrack_1_1tracking_1_1Tracker.html" title="fastrack::tracking\l::Tracker\&lt; V, TS, TC,\l PS, SB, SP \&gt;" alt="" coords="282,135,433,191"/>
-<area shape="rect" id="node5" href="$classfastrack_1_1value_1_1ValueFunction.html" title="fastrack::value::ValueFunction\l\&lt; TS, TC, TD, PS, PC, PD, B \&gt;" alt="" coords="251,214,463,255"/>
-<area shape="rect" id="node6" href="$classfastrack_1_1value_1_1ValueFunction.html" title="fastrack::value::ValueFunction\l\&lt; PositionVelocity, QuadrotorControl,\l QuadrotorDecoupled6D, PositionVelocity,\l VectorXd, Kinematics\&lt; PositionVelocity \&gt;, Box \&gt;" alt="" coords="200,279,515,350"/>
-<area shape="rect" id="node7" href="$classfastrack_1_1value_1_1AnalyticalKinematicBoxQuadrotorDecoupled6D.html" title="fastrack::value::Analytical\lKinematicBoxQuadrotorDecoupled6D" alt="" coords="563,294,802,335"/>
+<area shape="rect" id="node4" href="$classfastrack_1_1planning_1_1SearchableSet.html" title="fastrack::planning\l::SearchableSet\&lt; N, S \&gt;" alt="" coords="274,135,441,177"/>
+<area shape="rect" id="node5" href="$classfastrack_1_1tracking_1_1Tracker.html" title="fastrack::tracking\l::Tracker\&lt; V, TS, TC,\l PS, SB, SP \&gt;" alt="" coords="282,200,433,256"/>
+<area shape="rect" id="node6" href="$classfastrack_1_1value_1_1ValueFunction.html" title="fastrack::value::ValueFunction\l\&lt; TS, TC, TD, PS, PC, PD, B \&gt;" alt="" coords="251,279,463,321"/>
+<area shape="rect" id="node7" href="$classfastrack_1_1value_1_1ValueFunction.html" title="fastrack::value::ValueFunction\l\&lt; PositionVelocity, QuadrotorControl,\l QuadrotorDecoupled6D, PositionVelocity,\l VectorXd, Kinematics\&lt; PositionVelocity \&gt;, Box \&gt;" alt="" coords="200,345,515,415"/>
+<area shape="rect" id="node8" href="$classfastrack_1_1value_1_1AnalyticalKinematicBoxQuadrotorDecoupled6D.html" title="fastrack::value::Analytical\lKinematicBoxQuadrotorDecoupled6D" alt="" coords="563,359,802,401"/>
 </map>

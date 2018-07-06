@@ -47,8 +47,12 @@ Inheritance diagram for fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, P
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ab77e36f2feda883796de8d7d8f0ff46c"><td class="memItemLeft" align="right" valign="top">virtual TS&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#ab77e36f2feda883796de8d7d8f0ff46c">Gradient</a> (const TS &amp;tracker_x, const PS &amp;planner_x) const =0</td></tr>
-<tr class="separator:ab77e36f2feda883796de8d7d8f0ff46c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51f971d4d03f9a4a20ccfefbf14cdc0b"><td class="memItemLeft" align="right" valign="top">const RelativeDynamics&lt; TS, TC, <br class="typebreak"/>
+PS, PC &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#a51f971d4d03f9a4a20ccfefbf14cdc0b">GetRelativeDynamics</a> () const </td></tr>
+<tr class="separator:a51f971d4d03f9a4a20ccfefbf14cdc0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf3a8904d605dcdd0a8a72703ffbe67e"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr<br class="typebreak"/>
+&lt; RelativeState&lt; TS, PS &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#acf3a8904d605dcdd0a8a72703ffbe67e">Gradient</a> (const TS &amp;tracker_x, const PS &amp;planner_x) const =0</td></tr>
+<tr class="separator:acf3a8904d605dcdd0a8a72703ffbe67e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a926b6e2b7a36d387173b72e1c44677c7"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#a926b6e2b7a36d387173b72e1c44677c7">Initialize</a> (const ros::NodeHandle &amp;n)=0</td></tr>
 <tr class="separator:a926b6e2b7a36d387173b72e1c44677c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33189c1d3c4abdb2caf9076556f97fd4"><td class="memItemLeft" align="right" valign="top">TC&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#a33189c1d3c4abdb2caf9076556f97fd4">OptimalControl</a> (const TS &amp;tracker_x, const PS &amp;planner_x) const </td></tr>
@@ -85,6 +89,10 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a25b562494e4aacded60df294cc8ed547"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab643aa4d509bcd20438ab24253e3592c"><td class="memItemLeft" align="right" valign="top">PD&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#ab643aa4d509bcd20438ab24253e3592c">planner_dynamics_</a></td></tr>
 <tr class="separator:ab643aa4d509bcd20438ab24253e3592c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fc70fdd165f3c419ae3aab6796f0525"><td class="memItemLeft" align="right" valign="top">std::unique_ptr<br class="typebreak"/>
+&lt; RelativeDynamics&lt; TS, TC, PS, <br class="typebreak"/>
+PC &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#a9fc70fdd165f3c419ae3aab6796f0525">relative_dynamics_</a></td></tr>
+<tr class="separator:a9fc70fdd165f3c419ae3aab6796f0525"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a089d460b07f522874d1ece0090e01865"><td class="memItemLeft" align="right" valign="top">TD&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#a089d460b07f522874d1ece0090e01865">tracker_dynamics_</a></td></tr>
 <tr class="separator:a089d460b07f522874d1ece0090e01865"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -101,7 +109,7 @@ Additional Inherited Members</h2></td></tr>
 class fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</h3>
 
 
-<p>Definition at line <a class="el" href="value__function_8h_source.html#l00061">61</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
+<p>Definition at line <a class="el" href="value__function_8h_source.html#l00065">65</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a4af7f8a0e1bd75ec92b8423b5be6d281"></a>
 <div class="memitem">
@@ -126,7 +134,7 @@ template&lt;typename TS, typename TC, typename TD, typename PS, typename PC, typ
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="value__function_8h_source.html#l00063">63</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
+<p>Definition at line <a class="el" href="value__function_8h_source.html#l00067">67</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
 
 </div>
 </div>
@@ -153,12 +161,12 @@ template&lt;typename TS, typename TC, typename TD, typename PS, typename PC, typ
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="value__function_8h_source.html#l00091">91</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
+<p>Definition at line <a class="el" href="value__function_8h_source.html#l00106">106</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="ab77e36f2feda883796de8d7d8f0ff46c"></a>
+<a class="anchor" id="a51f971d4d03f9a4a20ccfefbf14cdc0b"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -168,7 +176,34 @@ template&lt;typename TS, typename TC, typename TD, typename PS, typename PC, typ
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual TS <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html">fastrack::value::ValueFunction</a>&lt; TS, TC, TD, PS, PC, PD, B &gt;::Gradient </td>
+          <td class="memname">const RelativeDynamics&lt;TS, TC, PS, PC&gt;&amp; <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html">fastrack::value::ValueFunction</a>&lt; TS, TC, TD, PS, PC, PD, B &gt;::GetRelativeDynamics </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="value__function_8h_source.html#l00092">92</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="acf3a8904d605dcdd0a8a72703ffbe67e"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename TS, typename TC, typename TD, typename PS, typename PC, typename PD, typename B&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::unique_ptr&lt;RelativeState&lt;TS, PS&gt; &gt; <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html">fastrack::value::ValueFunction</a>&lt; TS, TC, TD, PS, PC, PD, B &gt;::Gradient </td>
           <td>(</td>
           <td class="paramtype">const TS &amp;&#160;</td>
           <td class="paramname"><em>tracker_x</em>, </td>
@@ -192,7 +227,7 @@ template&lt;typename TS, typename TC, typename TD, typename PS, typename PC, typ
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classfastrack_1_1value_1_1AnalyticalKinematicBoxQuadrotorDecoupled6D.html#a582d91bc00e75db50f208c3db91c4828">fastrack::value::AnalyticalKinematicBoxQuadrotorDecoupled6D</a>.</p>
+<p>Implemented in <a class="el" href="classfastrack_1_1value_1_1AnalyticalKinematicBoxQuadrotorDecoupled6D.html#a1c763ecf07c9e869d34aff4594953a79">fastrack::value::AnalyticalKinematicBoxQuadrotorDecoupled6D</a>.</p>
 
 </div>
 </div>
@@ -286,7 +321,7 @@ template&lt;typename TS, typename TC, typename TD, typename PS, typename PC, typ
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="value__function_8h_source.html#l00073">73</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
+<p>Definition at line <a class="el" href="value__function_8h_source.html#l00078">78</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
 
 </div>
 </div>
@@ -313,7 +348,7 @@ template&lt;typename TS, typename TC, typename TD, typename PS, typename PC, typ
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="value__function_8h_source.html#l00082">82</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
+<p>Definition at line <a class="el" href="value__function_8h_source.html#l00091">91</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
 
 </div>
 </div>
@@ -406,7 +441,7 @@ template&lt;typename TS, typename TC, typename TD, typename PS, typename PC, typ
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="value__function_8h_source.html#l00081">81</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
+<p>Definition at line <a class="el" href="value__function_8h_source.html#l00090">90</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
 
 </div>
 </div>
@@ -433,7 +468,7 @@ template&lt;typename TS, typename TC, typename TD, typename PS, typename PC, typ
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="value__function_8h_source.html#l00080">80</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
+<p>Definition at line <a class="el" href="value__function_8h_source.html#l00089">89</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
 
 </div>
 </div>
@@ -496,7 +531,7 @@ template&lt;typename TS, typename TC, typename TD, typename PS, typename PC, typ
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="value__function_8h_source.html#l00105">105</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
+<p>Definition at line <a class="el" href="value__function_8h_source.html#l00121">121</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
 
 </div>
 </div>
@@ -520,7 +555,7 @@ template&lt;typename TS, typename TC, typename TD, typename PS, typename PC, typ
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="value__function_8h_source.html#l00109">109</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
+<p>Definition at line <a class="el" href="value__function_8h_source.html#l00125">125</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
 
 </div>
 </div>
@@ -544,7 +579,7 @@ template&lt;typename TS, typename TC, typename TD, typename PS, typename PC, typ
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="value__function_8h_source.html#l00108">108</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
+<p>Definition at line <a class="el" href="value__function_8h_source.html#l00124">124</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
 
 </div>
 </div>
@@ -568,7 +603,31 @@ template&lt;typename TS, typename TC, typename TD, typename PS, typename PC, typ
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="value__function_8h_source.html#l00102">102</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
+<p>Definition at line <a class="el" href="value__function_8h_source.html#l00117">117</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9fc70fdd165f3c419ae3aab6796f0525"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename TS, typename TC, typename TD, typename PS, typename PC, typename PD, typename B&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;RelativeDynamics&lt;TS, TC, PS, PC&gt; &gt; <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html">fastrack::value::ValueFunction</a>&lt; TS, TC, TD, PS, PC, PD, B &gt;::relative_dynamics_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="value__function_8h_source.html#l00118">118</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
 
 </div>
 </div>
@@ -592,7 +651,7 @@ template&lt;typename TS, typename TC, typename TD, typename PS, typename PC, typ
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="value__function_8h_source.html#l00101">101</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
+<p>Definition at line <a class="el" href="value__function_8h_source.html#l00116">116</a> of file <a class="el" href="value__function_8h_source.html">value_function.h</a>.</p>
 
 </div>
 </div>
@@ -605,7 +664,7 @@ template&lt;typename TS, typename TC, typename TD, typename PS, typename PC, typ
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Fri Jun 1 2018 03:29:34</small>
+<small>autogenerated on Fri Jul 6 2018 05:33:35</small>
 </div>
 </body>
 </html>

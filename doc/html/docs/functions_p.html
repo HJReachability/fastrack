@@ -25,6 +25,7 @@
       <li class="current"><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
       <li><a href="functions_vars.html"><span>Variables</span></a></li>
+      <li><a href="functions_type.html"><span>Typedefs</span></a></li>
       <li><a href="functions_rela.html"><span>Related&#160;Functions</span></a></li>
     </ul>
   </div>
@@ -68,11 +69,20 @@
 <li>pitch
 : <a class="el" href="structfastrack_1_1control_1_1QuadrotorControl.html#a758565eceb5eb8c5cce9acd72b059cf4">fastrack::control::QuadrotorControl</a>
 </li>
+<li>pitch_interval_
+: <a class="el" href="classfastrack_1_1control_1_1QuadrotorControlBoundBox.html#a5ff3d7ae3a5a09ea647aa3fc2f90b029">fastrack::control::QuadrotorControlBoundBox</a>
+</li>
+<li>pitch_roll_radius_
+: <a class="el" href="classfastrack_1_1control_1_1QuadrotorControlBoundCylinder.html#a057483ed518cde04f0078131e936972e">fastrack::control::QuadrotorControlBoundCylinder</a>
+</li>
 <li>Plan()
-: <a class="el" href="classfastrack_1_1planning_1_1GraphDynamicPlanner.html#ab9d5edcec2c806663e174700120cec1b">fastrack::planning::GraphDynamicPlanner&lt; S, E, D, SD, B, SB &gt;</a>
+: <a class="el" href="classfastrack_1_1planning_1_1GraphDynamicPlanner.html#a6f866cb42c4ce089fbc5d842d1503334">fastrack::planning::GraphDynamicPlanner&lt; S, E, D, SD, B, SB &gt;</a>
 , <a class="el" href="classfastrack_1_1planning_1_1KinematicPlanner.html#a294815183d275beaff7f2a535425824b">fastrack::planning::KinematicPlanner&lt; S, E, B, SB &gt;</a>
 , <a class="el" href="classfastrack_1_1planning_1_1OmplKinematicPlanner.html#aa5f894990da384f1b0bf35f47bd2ebcc">fastrack::planning::OmplKinematicPlanner&lt; P, S, E, B, SB &gt;</a>
 , <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a7ca2e5b65cf1d4cfefa57aad8453aa67">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
+</li>
+<li>PlanarDubins3D()
+: <a class="el" href="classfastrack_1_1state_1_1PlanarDubins3D.html#a9d56dba697906f0bce86683be398c945">fastrack::state::PlanarDubins3D</a>
 </li>
 <li>Planner()
 : <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a2af957dc9654c9401faf20d0679afcc3">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
@@ -121,18 +131,35 @@
 : <a class="el" href="structfastrack_1_1sensor_1_1SphereSensorParams.html#a624a17d6db10dd2480ee22c71aa8536d">fastrack::sensor::SphereSensorParams</a>
 </li>
 <li>Position()
-: <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#a75a7abb2b6a384e3d450e7abc7e49f4f">fastrack::state::PositionVelocity</a>
+: <a class="el" href="classfastrack_1_1state_1_1PlanarDubins3D.html#a4aae210f50b9887904e989d06f2ff8ab">fastrack::state::PlanarDubins3D</a>
+, <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#a75a7abb2b6a384e3d450e7abc7e49f4f">fastrack::state::PositionVelocity</a>
 , <a class="el" href="classfastrack_1_1state_1_1State.html#a46e38769e2d6ad2cee7a71edd93481ce">fastrack::state::State</a>
 </li>
 <li>position_
 : <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#ab39331a0aa648f9e1832e8c85d11f18f">fastrack::state::PositionVelocity</a>
 </li>
 <li>PositionVelocity()
-: <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#a03c41df5b749e1e0320dd96f016ae024">fastrack::state::PositionVelocity</a>
+: <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#a8d54d791b99059b7419f8dd735a14806">fastrack::state::PositionVelocity</a>
+</li>
+<li>PositionVelocityRelPlanarDubins3D()
+: <a class="el" href="classfastrack_1_1state_1_1PositionVelocityRelPlanarDubins3D.html#adc68075a0950a6b326772a912578fd32">fastrack::state::PositionVelocityRelPlanarDubins3D</a>
+</li>
+<li>PositionVelocityRelPositionVelocity()
+: <a class="el" href="classfastrack_1_1state_1_1PositionVelocityRelPositionVelocity.html#ad3f7b63f5c96173b028eb21478f54e78">fastrack::state::PositionVelocityRelPositionVelocity</a>
 </li>
 <li>Priority()
 : <a class="el" href="classfastrack_1_1value_1_1AnalyticalKinematicBoxQuadrotorDecoupled6D.html#ab2f88675ce1a69d8055e26c9edf7cc1b">fastrack::value::AnalyticalKinematicBoxQuadrotorDecoupled6D</a>
 , <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#a9b01ed37b61277e446fe02f077bd1d98">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
+</li>
+<li>ProjectToSurface()
+: <a class="el" href="classfastrack_1_1control_1_1ControlBound.html#aebed1d89a91fcb7ed7bf84e49d632615">fastrack::control::ControlBound&lt; C &gt;</a>
+, <a class="el" href="classfastrack_1_1control_1_1QuadrotorControlBoundBox.html#ad1ca10da8a963c681675437ef9b460c4">fastrack::control::QuadrotorControlBoundBox</a>
+, <a class="el" href="classfastrack_1_1control_1_1QuadrotorControlBoundCylinder.html#a510d5674e5077a2c9ec9b7044cf884e1">fastrack::control::QuadrotorControlBoundCylinder</a>
+, <a class="el" href="classfastrack_1_1control_1_1ScalarBoundInterval.html#ac6bd3249e8b49c33d85d401aca9782ec">fastrack::control::ScalarBoundInterval</a>
+, <a class="el" href="classfastrack_1_1control_1_1VectorBoundBox.html#a236a8dc3d86364ebde1fd38eb78b754a">fastrack::control::VectorBoundBox</a>
+</li>
+<li>Ptr
+: <a class="el" href="structfastrack_1_1planning_1_1GraphDynamicPlanner_1_1Node_3_01S_01_4.html#ac6b80f5455dfb09e9908d84343426d99">fastrack::planning::GraphDynamicPlanner&lt; S, E, D, SD, B, SB &gt;::Node&lt; S &gt;</a>
 </li>
 </ul>
 </div><!-- contents -->
@@ -141,7 +168,7 @@
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Fri Jun 1 2018 03:29:34</small>
+<small>autogenerated on Fri Jul 6 2018 05:33:35</small>
 </div>
 </body>
 </html>

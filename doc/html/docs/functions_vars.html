@@ -25,6 +25,7 @@
       <li><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
       <li class="current"><a href="functions_vars.html"><span>Variables</span></a></li>
+      <li><a href="functions_type.html"><span>Typedefs</span></a></li>
       <li><a href="functions_rela.html"><span>Related&#160;Functions</span></a></li>
     </ul>
   </div>
@@ -65,6 +66,12 @@
 
 
 <h3><a class="anchor" id="index_b"></a>- b -</h3><ul>
+<li>bearing_
+: <a class="el" href="classfastrack_1_1state_1_1PositionVelocityRelPlanarDubins3D.html#aee058d19e76aa89f339e3422159615d7">fastrack::state::PositionVelocityRelPlanarDubins3D</a>
+</li>
+<li>best_parent
+: <a class="el" href="structfastrack_1_1planning_1_1GraphDynamicPlanner_1_1Node_3_01S_01_4.html#a7472a407e1b48e46463622fd5369be30">fastrack::planning::GraphDynamicPlanner&lt; S, E, D, SD, B, SB &gt;::Node&lt; S &gt;</a>
+</li>
 <li>bound_
 : <a class="el" href="classfastrack_1_1planning_1_1Planner.html#ab7978635817decb68e0aa535be84cb1a">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
 , <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#a6de4aec82366a17068d3e44b66567ebf">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
@@ -94,14 +101,14 @@
 <li>centers_
 : <a class="el" href="classfastrack_1_1environment_1_1BallsInBox.html#a5c4322ceeba0bf6c4b199c9d8455469e">fastrack::environment::BallsInBox</a>
 </li>
-<li>config_lower_
-: <a class="el" href="classfastrack_1_1planning_1_1Planner.html#afb1b9cc66c69576ffc70b7f0e6eb1507">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
-</li>
-<li>config_upper_
-: <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a51463b5a5dc8eb9fdc4385815f2aff5d">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
+<li>children
+: <a class="el" href="structfastrack_1_1planning_1_1GraphDynamicPlanner_1_1Node_3_01S_01_4.html#afe2c639fe35b03e470b1c732bfa2be3b">fastrack::planning::GraphDynamicPlanner&lt; S, E, D, SD, B, SB &gt;::Node&lt; S &gt;</a>
 </li>
 <li>configuration_
 : <a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#aca0c08f1a321a87df8485fa9aef590de">fastrack::trajectory::Trajectory&lt; S &gt;</a>
+</li>
+<li>control_bound_
+: <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a4fa32c21a4fd7aa4185dd72b4354980e">fastrack::dynamics::Dynamics&lt; S, C, SR &gt;</a>
 </li>
 <li>control_pub_
 : <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#accab8cbcf3c41c74d01de947ed1cbedb">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
@@ -109,10 +116,16 @@
 <li>control_topic_
 : <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#acfeb8f96c5d7acd38cca7f1bc91c93cb">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
+<li>cost_to_come
+: <a class="el" href="structfastrack_1_1planning_1_1GraphDynamicPlanner_1_1Node_3_01S_01_4.html#a95c763a3dee88d4481598541c468629a">fastrack::planning::GraphDynamicPlanner&lt; S, E, D, SD, B, SB &gt;::Node&lt; S &gt;</a>
+</li>
 </ul>
 
 
 <h3><a class="anchor" id="index_d"></a>- d -</h3><ul>
+<li>distance_
+: <a class="el" href="classfastrack_1_1state_1_1PositionVelocityRelPlanarDubins3D.html#aa87b60fb936692881a06bfecb1eef285">fastrack::state::PositionVelocityRelPlanarDubins3D</a>
+</li>
 <li>dynamics_
 : <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a3463e807718fa64262d5fd606b2fae83">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
 </li>
@@ -150,6 +163,9 @@
 
 
 <h3><a class="anchor" id="index_i"></a>- i -</h3><ul>
+<li>index_
+: <a class="el" href="classfastrack_1_1planning_1_1SearchableSet.html#a254a2194487a1e3ae105c99faece12d5">fastrack::planning::SearchableSet&lt; N, S &gt;</a>
+</li>
 <li>initialized_
 : <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#adb8881a8ba845a6d2223b0639db98db1">fastrack::dynamics::Dynamics&lt; S, C, SR &gt;</a>
 , <a class="el" href="classfastrack_1_1environment_1_1Environment.html#ac0af321a986e3d3ea74666ba098e7e33">fastrack::environment::Environment&lt; M, P &gt;</a>
@@ -160,23 +176,35 @@
 , <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#ad0e18a6979d11395de3b360086dbce69">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 , <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#aa0822c97a7ac537f1ca0a0fc7d61385e">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
 </li>
+<li>is_viable
+: <a class="el" href="structfastrack_1_1planning_1_1GraphDynamicPlanner_1_1Node_3_01S_01_4.html#a70dc24d701df471a9736a65b78317b5a">fastrack::planning::GraphDynamicPlanner&lt; S, E, D, SD, B, SB &gt;::Node&lt; S &gt;</a>
+</li>
 </ul>
 
 
 <h3><a class="anchor" id="index_l"></a>- l -</h3><ul>
 <li>lower_
 : <a class="el" href="classfastrack_1_1environment_1_1Environment.html#ae807561774373a51f0a1e506da495749">fastrack::environment::Environment&lt; M, P &gt;</a>
-, <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#a509436361e8cf87f870d6d4c0054fb8a">fastrack::state::PositionVelocity</a>
+, <a class="el" href="classfastrack_1_1state_1_1PlanarDubins3D.html#ab3b27d5734eedc3364fc96ab8e7ea1c0">fastrack::state::PlanarDubins3D</a>
+, <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#a387d655489927c19e5e355fd6207a66b">fastrack::state::PositionVelocity</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_m"></a>- m -</h3><ul>
+<li>max_
+: <a class="el" href="classfastrack_1_1control_1_1ScalarBoundInterval.html#ad9e1f94b09df4f17908dd80816fa4fcd">fastrack::control::ScalarBoundInterval</a>
+, <a class="el" href="classfastrack_1_1control_1_1VectorBoundBox.html#a2d21f4fc809f8935f09beb858c514ff0">fastrack::control::VectorBoundBox</a>
+</li>
 <li>max_acc_
 : <a class="el" href="classfastrack_1_1value_1_1AnalyticalKinematicBoxQuadrotorDecoupled6D.html#ad97a5e31d5a672b93d5cece397e0f121">fastrack::value::AnalyticalKinematicBoxQuadrotorDecoupled6D</a>
 </li>
 <li>max_runtime_
 : <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a6c8d51b877289c439149b4f4f64514d7">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
+</li>
+<li>min_
+: <a class="el" href="classfastrack_1_1control_1_1ScalarBoundInterval.html#af542b4127a3e36250c0895b5be852115">fastrack::control::ScalarBoundInterval</a>
+, <a class="el" href="classfastrack_1_1control_1_1VectorBoundBox.html#ae2655ebc2349ad1f61934e3989aaa725">fastrack::control::VectorBoundBox</a>
 </li>
 </ul>
 
@@ -191,6 +219,12 @@
 , <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a038b1909003aad976eeecb6b1a6efb97">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 , <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#a25b562494e4aacded60df294cc8ed547">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
 </li>
+<li>normal_velocity_
+: <a class="el" href="classfastrack_1_1state_1_1PositionVelocityRelPlanarDubins3D.html#a122672a3f6c6427e050a93d9d77d7152">fastrack::state::PositionVelocityRelPlanarDubins3D</a>
+</li>
+<li>num_neighbors_
+: <a class="el" href="classfastrack_1_1planning_1_1GraphDynamicPlanner.html#af86967ee278a7ec61e1f5f315cb8cb48">fastrack::planning::GraphDynamicPlanner&lt; S, E, D, SD, B, SB &gt;</a>
+</li>
 </ul>
 
 
@@ -200,6 +234,12 @@
 </li>
 <li>pitch
 : <a class="el" href="structfastrack_1_1control_1_1QuadrotorControl.html#a758565eceb5eb8c5cce9acd72b059cf4">fastrack::control::QuadrotorControl</a>
+</li>
+<li>pitch_interval_
+: <a class="el" href="classfastrack_1_1control_1_1QuadrotorControlBoundBox.html#a5ff3d7ae3a5a09ea647aa3fc2f90b029">fastrack::control::QuadrotorControlBoundBox</a>
+</li>
+<li>pitch_roll_radius_
+: <a class="el" href="classfastrack_1_1control_1_1QuadrotorControlBoundCylinder.html#a057483ed518cde04f0078131e936972e">fastrack::control::QuadrotorControlBoundCylinder</a>
 </li>
 <li>planner_dynamics_
 : <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#ab643aa4d509bcd20438ab24253e3592c">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
@@ -266,6 +306,12 @@
 <li>ref_topic_
 : <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a333a4bbf53a875aa4fb943931617a3a5">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
+<li>registry_
+: <a class="el" href="classfastrack_1_1planning_1_1SearchableSet.html#af4e867a3268612570ad25ba8795a4d43">fastrack::planning::SearchableSet&lt; N, S &gt;</a>
+</li>
+<li>relative_dynamics_
+: <a class="el" href="classfastrack_1_1value_1_1ValueFunction.html#a9fc70fdd165f3c419ae3aab6796f0525">fastrack::value::ValueFunction&lt; TS, TC, TD, PS, PC, PD, B &gt;</a>
+</li>
 <li>replan_request_pub_
 : <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a13e222fff992b7268c329d2bfbebe294">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
@@ -290,10 +336,16 @@
 <li>roll
 : <a class="el" href="structfastrack_1_1control_1_1QuadrotorControl.html#ab72b479b683c91d630da8c83760cadfe">fastrack::control::QuadrotorControl</a>
 </li>
+<li>roll_interval_
+: <a class="el" href="classfastrack_1_1control_1_1QuadrotorControlBoundBox.html#af861216f68eda33ea96fee0ac13f488d">fastrack::control::QuadrotorControlBoundBox</a>
+</li>
 </ul>
 
 
 <h3><a class="anchor" id="index_s"></a>- s -</h3><ul>
+<li>search_radius_
+: <a class="el" href="classfastrack_1_1planning_1_1GraphDynamicPlanner.html#a4a3e3b9471d6f1b1eb57bb3f6526ed58">fastrack::planning::GraphDynamicPlanner&lt; S, E, D, SD, B, SB &gt;</a>
+</li>
 <li>sensor_frame_
 : <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#a5b16ab71608b731706475873c08b4ce8">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
 </li>
@@ -310,6 +362,15 @@
 <li>start_
 : <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a1cb0da2016b7683b5f8d022eb2ec41d5">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
+<li>state
+: <a class="el" href="structfastrack_1_1planning_1_1GraphDynamicPlanner_1_1Node_3_01S_01_4.html#a9638327e6e30124cc2e2bfd6dac85f38">fastrack::planning::GraphDynamicPlanner&lt; S, E, D, SD, B, SB &gt;::Node&lt; S &gt;</a>
+</li>
+<li>state_lower_
+: <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a124fd26d1fe55c6c567a027e06f04677">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
+</li>
+<li>state_upper_
+: <a class="el" href="classfastrack_1_1planning_1_1Planner.html#a52b935e37552356ec54489c454bfc5a6">fastrack::planning::Planner&lt; S, E, D, SD, B, SB &gt;</a>
+</li>
 <li>states_
 : <a class="el" href="classfastrack_1_1trajectory_1_1Trajectory.html#a1312dabee0bed410f47263fab07d8fa4">fastrack::trajectory::Trajectory&lt; S &gt;</a>
 </li>
@@ -317,6 +378,9 @@
 
 
 <h3><a class="anchor" id="index_t"></a>- t -</h3><ul>
+<li>tangent_velocity_
+: <a class="el" href="classfastrack_1_1state_1_1PositionVelocityRelPlanarDubins3D.html#a8ed61e39afe3a4921bd0f204502b7273">fastrack::state::PositionVelocityRelPlanarDubins3D</a>
+</li>
 <li>tf_broadcaster_
 : <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a8a82c6f070387601dee9052c301832bd">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
@@ -326,8 +390,18 @@
 <li>tf_listener_
 : <a class="el" href="classfastrack_1_1sensor_1_1Sensor.html#a5f9065786cd22652de6243bec21c2034">fastrack::sensor::Sensor&lt; E, M, P &gt;</a>
 </li>
+<li>theta_
+: <a class="el" href="classfastrack_1_1state_1_1PlanarDubins3D.html#a9a4d0f8e14cf34b7108132e6e7442753">fastrack::state::PlanarDubins3D</a>
+</li>
 <li>thrust
 : <a class="el" href="structfastrack_1_1control_1_1QuadrotorControl.html#ac14845a3691e5c040d099ba7d8f639f5">fastrack::control::QuadrotorControl</a>
+</li>
+<li>thrust_interval_
+: <a class="el" href="classfastrack_1_1control_1_1QuadrotorControlBoundBox.html#a65868772e615d169976c4187c0b4d32e">fastrack::control::QuadrotorControlBoundBox</a>
+, <a class="el" href="classfastrack_1_1control_1_1QuadrotorControlBoundCylinder.html#aa69123708699ee5a05bf3f1b07c57e1a">fastrack::control::QuadrotorControlBoundCylinder</a>
+</li>
+<li>time
+: <a class="el" href="structfastrack_1_1planning_1_1GraphDynamicPlanner_1_1Node_3_01S_01_4.html#ae2ec9d891f7983039614523626d93f78">fastrack::planning::GraphDynamicPlanner&lt; S, E, D, SD, B, SB &gt;::Node&lt; S &gt;</a>
 </li>
 <li>time_step_
 : <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a0d9ac463b12b9d751f04b95f80d4f166">fastrack::planning::PlannerManager&lt; S &gt;</a>
@@ -373,16 +447,13 @@
 <li>traj_vis_topic_
 : <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a9dc5e7fe665c57337f6e8b817c010797">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
+<li>trajs_to_children
+: <a class="el" href="structfastrack_1_1planning_1_1GraphDynamicPlanner_1_1Node_3_01S_01_4.html#a9fae9b1e71322e3b72a9feb09a38ed64">fastrack::planning::GraphDynamicPlanner&lt; S, E, D, SD, B, SB &gt;::Node&lt; S &gt;</a>
+</li>
 </ul>
 
 
 <h3><a class="anchor" id="index_u"></a>- u -</h3><ul>
-<li>u_lower_
-: <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#af00b40cfd1e8bc00542934b580a16319">fastrack::dynamics::Dynamics&lt; S, C, SR &gt;</a>
-</li>
-<li>u_upper_
-: <a class="el" href="classfastrack_1_1dynamics_1_1Dynamics.html#a6fd2e7ddcc1399817c0276660e46d4f8">fastrack::dynamics::Dynamics&lt; S, C, SR &gt;</a>
-</li>
 <li>updated_env_sub_
 : <a class="el" href="classfastrack_1_1planning_1_1PlannerManager.html#a9d43f7789739ad8c4076ee8e1b03ed13">fastrack::planning::PlannerManager&lt; S &gt;</a>
 </li>
@@ -397,12 +468,16 @@
 </li>
 <li>upper_
 : <a class="el" href="classfastrack_1_1environment_1_1Environment.html#a90be310fa7c1c38adfc83dd211081335">fastrack::environment::Environment&lt; M, P &gt;</a>
-, <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#ad224389639aa4f857df33e38310986bb">fastrack::state::PositionVelocity</a>
+, <a class="el" href="classfastrack_1_1state_1_1PlanarDubins3D.html#a3637c8607968c64aa0922bd8d6c26a9b">fastrack::state::PlanarDubins3D</a>
+, <a class="el" href="classfastrack_1_1state_1_1PositionVelocity.html#a1b958babedc7dad4e1cb728c6aeb9a21">fastrack::state::PositionVelocity</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_v"></a>- v -</h3><ul>
+<li>v_
+: <a class="el" href="classfastrack_1_1state_1_1PlanarDubins3D.html#ad9ba314c9c2525be6b02c6b83e93eb66">fastrack::state::PlanarDubins3D</a>
+</li>
 <li>value_
 : <a class="el" href="classfastrack_1_1tracking_1_1Tracker.html#a79558450aa0797eac18d18776b75b0c8">fastrack::tracking::Tracker&lt; V, TS, TC, PS, SB, SP &gt;</a>
 </li>
@@ -437,6 +512,10 @@
 <li>x
 : <a class="el" href="structfastrack_1_1bound_1_1Box.html#a430f91701e9c70c98623cc61358b4aa3">fastrack::bound::Box</a>
 </li>
+<li>x_
+: <a class="el" href="classfastrack_1_1state_1_1PlanarDubins3D.html#a7c6355903d930730336730bde5521d57">fastrack::state::PlanarDubins3D</a>
+, <a class="el" href="classfastrack_1_1state_1_1PositionVelocityRelPositionVelocity.html#a11b639515702ffbec4efc36cb83769a3">fastrack::state::PositionVelocityRelPositionVelocity</a>
+</li>
 </ul>
 
 
@@ -444,8 +523,15 @@
 <li>y
 : <a class="el" href="structfastrack_1_1bound_1_1Box.html#a7c1a1ed0efb2662de231aa76d4758f77">fastrack::bound::Box</a>
 </li>
+<li>y_
+: <a class="el" href="classfastrack_1_1state_1_1PlanarDubins3D.html#a7c740497651c80a21685b06cd904a1e6">fastrack::state::PlanarDubins3D</a>
+</li>
 <li>yaw_rate
 : <a class="el" href="structfastrack_1_1control_1_1QuadrotorControl.html#a5bc32706ca95541c87d8a7797e91908c">fastrack::control::QuadrotorControl</a>
+</li>
+<li>yaw_rate_interval_
+: <a class="el" href="classfastrack_1_1control_1_1QuadrotorControlBoundBox.html#a9ca063ba1db8133299f9cbec97a098ac">fastrack::control::QuadrotorControlBoundBox</a>
+, <a class="el" href="classfastrack_1_1control_1_1QuadrotorControlBoundCylinder.html#a1d43b06b38d3355de891778a23545df4">fastrack::control::QuadrotorControlBoundCylinder</a>
 </li>
 </ul>
 
@@ -454,6 +540,9 @@
 <li>z
 : <a class="el" href="structfastrack_1_1bound_1_1Box.html#a5f24e4def7104ceb932ae4dc4cf8d54b">fastrack::bound::Box</a>
 </li>
+<li>z_
+: <a class="el" href="classfastrack_1_1state_1_1PlanarDubins3D.html#a08a63f73325483a3cf5a9e5f8424ba1c">fastrack::state::PlanarDubins3D</a>
+</li>
 </ul>
 </div><!-- contents -->
 
@@ -461,7 +550,7 @@
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Fri Jun 1 2018 03:29:34</small>
+<small>autogenerated on Fri Jul 6 2018 05:33:35</small>
 </div>
 </body>
 </html>

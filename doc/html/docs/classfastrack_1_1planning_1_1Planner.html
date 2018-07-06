@@ -73,10 +73,6 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a9677ed727abcc371923ff31a720594cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02098fa6432f1851aa11265249319b90"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#a02098fa6432f1851aa11265249319b90">bound_srv_name_</a></td></tr>
 <tr class="separator:a02098fa6432f1851aa11265249319b90"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb1b9cc66c69576ffc70b7f0e6eb1507"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#afb1b9cc66c69576ffc70b7f0e6eb1507">config_lower_</a></td></tr>
-<tr class="separator:afb1b9cc66c69576ffc70b7f0e6eb1507"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51463b5a5dc8eb9fdc4385815f2aff5d"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#a51463b5a5dc8eb9fdc4385815f2aff5d">config_upper_</a></td></tr>
-<tr class="separator:a51463b5a5dc8eb9fdc4385815f2aff5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3463e807718fa64262d5fd606b2fae83"><td class="memItemLeft" align="right" valign="top">D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#a3463e807718fa64262d5fd606b2fae83">dynamics_</a></td></tr>
 <tr class="separator:a3463e807718fa64262d5fd606b2fae83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa95611b8124bf20abf9cb843e00cb26f"><td class="memItemLeft" align="right" valign="top">ros::ServiceClient&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#aa95611b8124bf20abf9cb843e00cb26f">dynamics_srv_</a></td></tr>
@@ -95,6 +91,10 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a226b428e943aa4d7dc7c0f00d6822161"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a644be3b571de56e745ffdafdc454b461"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#a644be3b571de56e745ffdafdc454b461">replan_srv_name_</a></td></tr>
 <tr class="separator:a644be3b571de56e745ffdafdc454b461"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a124fd26d1fe55c6c567a027e06f04677"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#a124fd26d1fe55c6c567a027e06f04677">state_lower_</a></td></tr>
+<tr class="separator:a124fd26d1fe55c6c567a027e06f04677"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52b935e37552356ec54489c454bfc5a6"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1planning_1_1Planner.html#a52b935e37552356ec54489c454bfc5a6">state_upper_</a></td></tr>
+<tr class="separator:a52b935e37552356ec54489c454bfc5a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename S, typename E, typename D, typename SD, typename B, typename SB&gt;<br/>
@@ -202,6 +202,8 @@ template&lt;typename S , typename E , typename D , typename SD , typename B , ty
 </table>
 </div><div class="memdoc">
 
+<p>Reimplemented in <a class="el" href="classfastrack_1_1planning_1_1GraphDynamicPlanner.html#a916ac8a85914615bbd677b97d7ad82d7">fastrack::planning::GraphDynamicPlanner&lt; S, E, D, SD, B, SB &gt;</a>.</p>
+
 <p>Definition at line <a class="el" href="planner_8h_source.html#l00199">199</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
@@ -246,7 +248,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classfastrack_1_1planning_1_1OmplKinematicPlanner.html#aa5f894990da384f1b0bf35f47bd2ebcc">fastrack::planning::OmplKinematicPlanner&lt; P, S, E, B, SB &gt;</a>, <a class="el" href="classfastrack_1_1planning_1_1KinematicPlanner.html#a294815183d275beaff7f2a535425824b">fastrack::planning::KinematicPlanner&lt; S, E, B, SB &gt;</a>, and <a class="el" href="classfastrack_1_1planning_1_1GraphDynamicPlanner.html#ab9d5edcec2c806663e174700120cec1b">fastrack::planning::GraphDynamicPlanner&lt; S, E, D, SD, B, SB &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfastrack_1_1planning_1_1OmplKinematicPlanner.html#aa5f894990da384f1b0bf35f47bd2ebcc">fastrack::planning::OmplKinematicPlanner&lt; P, S, E, B, SB &gt;</a>, <a class="el" href="classfastrack_1_1planning_1_1GraphDynamicPlanner.html#a6f866cb42c4ce089fbc5d842d1503334">fastrack::planning::GraphDynamicPlanner&lt; S, E, D, SD, B, SB &gt;</a>, and <a class="el" href="classfastrack_1_1planning_1_1KinematicPlanner.html#a294815183d275beaff7f2a535425824b">fastrack::planning::KinematicPlanner&lt; S, E, B, SB &gt;</a>.</p>
 
 </div>
 </div>
@@ -386,54 +388,6 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 </div><div class="memdoc">
 
 <p>Definition at line <a class="el" href="planner_8h_source.html#l00130">130</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="afb1b9cc66c69576ffc70b7f0e6eb1507"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename S, typename E, typename D, typename SD, typename B, typename SB&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt;double&gt; <a class="el" href="classfastrack_1_1planning_1_1Planner.html">fastrack::planning::Planner</a>&lt; S, E, D, SD, B, SB &gt;::config_lower_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00119">119</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a51463b5a5dc8eb9fdc4385815f2aff5d"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename S, typename E, typename D, typename SD, typename B, typename SB&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt;double&gt; <a class="el" href="classfastrack_1_1planning_1_1Planner.html">fastrack::planning::Planner</a>&lt; S, E, D, SD, B, SB &gt;::config_upper_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="planner_8h_source.html#l00118">118</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
 
 </div>
 </div>
@@ -653,6 +607,54 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 
 </div>
 </div>
+<a class="anchor" id="a124fd26d1fe55c6c567a027e06f04677"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename S, typename E, typename D, typename SD, typename B, typename SB&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;double&gt; <a class="el" href="classfastrack_1_1planning_1_1Planner.html">fastrack::planning::Planner</a>&lt; S, E, D, SD, B, SB &gt;::state_lower_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00119">119</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a52b935e37552356ec54489c454bfc5a6"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename S, typename E, typename D, typename SD, typename B, typename SB&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;double&gt; <a class="el" href="classfastrack_1_1planning_1_1Planner.html">fastrack::planning::Planner</a>&lt; S, E, D, SD, B, SB &gt;::state_upper_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="planner_8h_source.html#l00118">118</a> of file <a class="el" href="planner_8h_source.html">planner.h</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="planner_8h_source.html">planner.h</a></li>
 </ul>
@@ -662,7 +664,7 @@ template&lt;typename S, typename E, typename D, typename SD, typename B, typenam
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Fri Jun 1 2018 03:29:34</small>
+<small>autogenerated on Fri Jul 6 2018 05:33:35</small>
 </div>
 </body>
 </html>

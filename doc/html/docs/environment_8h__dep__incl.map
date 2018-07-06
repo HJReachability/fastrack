@@ -1,8 +1,8 @@
 <map id="environment.h" name="environment.h">
-<area shape="rect" id="node2" href="$balls__in__box_8h.html" title="balls_in_box.h" alt="" coords="29,80,133,107"/>
-<area shape="rect" id="node4" href="$planner_8h.html" title="planner.h" alt="" coords="175,80,248,107"/>
+<area shape="rect" id="node2" href="$balls__in__box_8h.html" title="balls_in_box.h" alt="" coords="39,80,144,107"/>
+<area shape="rect" id="node4" href="$planner_8h.html" title="planner.h" alt="" coords="196,80,269,107"/>
 <area shape="rect" id="node3" href="$balls__in__box_8cpp.html" title="balls_in_box.cpp" alt="" coords="5,155,123,181"/>
-<area shape="rect" id="node5" href="$dynamic__planner_8h.html" title="dynamic_planner.h" alt="" coords="147,155,276,181"/>
-<area shape="rect" id="node6" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="301,155,440,181"/>
-<area shape="rect" id="node7" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="284,229,457,256"/>
+<area shape="rect" id="node5" href="$graph__dynamic__planner_8h.html" title="graph_dynamic_planner.h" alt="" coords="148,155,319,181"/>
+<area shape="rect" id="node6" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="343,155,481,181"/>
+<area shape="rect" id="node7" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="325,229,499,256"/>
 </map>

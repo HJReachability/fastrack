@@ -1,5 +1,5 @@
 <map id="planner.h" name="planner.h">
-<area shape="rect" id="node2" href="$dynamic__planner_8h.html" title="dynamic_planner.h" alt="" coords="4,80,133,107"/>
-<area shape="rect" id="node3" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="159,80,297,107"/>
-<area shape="rect" id="node4" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="141,155,315,181"/>
+<area shape="rect" id="node2" href="$graph__dynamic__planner_8h.html" title="graph_dynamic_planner.h" alt="" coords="5,80,176,107"/>
+<area shape="rect" id="node3" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="200,80,339,107"/>
+<area shape="rect" id="node4" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="183,155,356,181"/>
 </map>
