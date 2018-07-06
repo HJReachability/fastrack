@@ -69,8 +69,8 @@ public:
   explicit Trajectory(std::list< Trajectory<S> >& trajs);
 
   // Construct from lists of states and times.
-  explicit Trajectory(const std::vector<S> states,
-                      const std::vector<double> times);
+  explicit Trajectory(const std::vector<S> &states,
+                      const std::vector<double> &times);
 
   // Construct from a ROS message.
   explicit Trajectory(const fastrack_msgs::Trajectory::ConstPtr& msg);
