@@ -153,7 +153,7 @@ KnnSearch(const S& query, size_t k) const {
 
   // Convert the input point to the FLANN format.
   const VectorXd x = query.ToVector();
-  const flann::Matrix<double> flann_query(x.data(), 1, query.size());
+  const flann::Matrix<double> flann_query(x.data(), 1, x.size());
 
   // Search the kd tree for the nearest neighbor to the query.
   std::vector< std::vector<int> > query_match_indices;
@@ -183,7 +183,7 @@ RadiusSearch(const S& query, double r) const {
 
   // Convert the input point to the FLANN format.
   const VectorXd x = query.ToVector();
-  const flann::Matrix<double> flann_query(x.data(), 1, query.size());
+  const flann::Matrix<double> flann_query(x.data(), 1, x.size());
 
   // Search the kd tree for the nearest neighbor to the query.
   std::vector< std::vector<int> > query_match_indices;

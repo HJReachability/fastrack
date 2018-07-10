@@ -36,94 +36,72 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base class for all occupancy maps, which are types of environment models
-// in which each point in space is assigned a probability of being occupied.
-// The base IsValid check is then a threshold test on the corresponding
-// occupancy probability.
-//
-// Like Environment, this class is templated on the sensor message type (M)
-// and the sensor parameters type (P) which may be used to simulate sensor
-// measurements.
+// BallsInBoxOccupancyMap is derived from OccupancyMap, and models space as
+// a collection of spherical sensor fields of view and spherical obstacles,
+// which may overlap.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_ENVIRONMENT_OCCUPANCY_MAP_H
-#define FASTRACK_ENVIRONMENT_OCCUPANCY_MAP_H
+#ifndef FASTRACK_ENVIRONMENT_BALLS_IN_BOX_OCCUPANCY_MAP_H
+#define FASTRACK_ENVIRONMENT_BALLS_IN_BOX_OCCUPANCY_MAP_H
 
-#include <fastrack/bound/box.h>
-#include <fastrack/utils/types.h>
-
-#include <ros/ros.h>
-#include <std_msgs/Empty.h>
-#include <visualization_msgs/Marker.h>
+#include <fastrack/environment/kdtree_map.h>
+#include <fastrack/environment/occupancy_map.h>
+#include <fastrack/sensor/sphere_sensor.h>
+#include <fastrack/sensor/sphere_sensor_params.h>
+#include <fastrack_msgs/SensedSpheres.h>
 
 namespace fastrack {
 namespace environment {
 
 using bound::Box;
+using sensor::SphereSensorParams;
 
-template <typename M, typename P> class OccupancyMap : public Environment {
+class BallsInBoxOccupancyMap
+    : public OccupancyMap<fastrack_msgs::SensedSpheres, SphereSensorParams> {
 public:
-  virtual ~OccupancyMap() {}
-
-  // Initialize from a ROS NodeHandle.
-  bool Initialize(const ros::NodeHandle &n);
-
-  // Collision check is a threshold test on occupancy probability integrated
-  // over the bound.
-  bool IsValid(const Vector3d &position, const Box &bound) const {
-    return initialized_ &&
-           OccupancyProbability(position, bound) < free_space_threshold_;
-  }
+  ~BallsInBoxOccupancyMap() {}
+  explicit BallsInBoxOccupancyMap()
+      : OccupancyMap<fastrack_msgs::SensedSpheres, SphereSensorParams>(),
+        largest_obstacle_radius_(0.0),
+        largest_sensor_radius_(0.0) {}
 
   // Derived classes must provide an OccupancyProbability function for both
   // single points and tracking error bounds centered on a point.
-  virtual double OccupancyProbability(const Vector3d &position) const = 0;
-  virtual double OccupancyProbability(const Vector3d &position,
-                                      const Box &bound) const = 0;
+  double OccupancyProbability(const Vector3d &p) const;
+  double OccupancyProbability(const Vector3d &p, const Box &bound) const;
 
   // Generate a sensor measurement.
-  virtual M SimulateSensor(const P &params) const = 0;
+  fastrack_msgs::SensedSpheres
+  SimulateSensor(const SphereSensorParams &params) const;
 
   // Derived classes must have some sort of visualization through RViz.
-  virtual void Visualize() const = 0;
+  void Visualize() const;
 
-protected:
-  explicit OccupancyMap() : Environment() {}
-
+private:
   // Load parameters. This may be overridden by derived classes if needed
   // (they should still call this one via OccupancyMap::LoadParameters).
-  virtual bool LoadParameters(const ros::NodeHandle &n);
+  bool LoadParameters(const ros::NodeHandle &n);
 
   // Update this environment with the information contained in the given
   // sensor measurement.
   // NOTE! This function needs to publish on `updated_topic_`.
-  virtual void SensorCallback(const typename M::ConstPtr &msg) = 0;
+  void SensorCallback(const typename M::ConstPtr &msg);
 
-  // Occupancy probability threshold below which a point/region is considered
-  // to be free space.
-  double free_space_threshold_;
-}; //\class OccupancyMap
+  // KdtreeMaps to store spherical obstacle and sensor locations, as well as
+  // radii for each.
+  KdtreeMap<3, double> obstacles_;
+  KdtreeMap<3, double> sensor_fovs_;
 
-// ----------------------------- IMPLEMENTATION ----------------------------- //
+  // Remember the largest obstacle/sensor radius yet, for intersection checks.
+  double largest_obstacle_radius_;
+  double largest_sensor_radius_;
 
-// Load parameters. This may be overridden by derived classes if needed
-// (they should still call this one via OccupancyMap::LoadParameters).
-template <typename M, typename P>
-bool OccupancyMap<M, P>::LoadParameters(const ros::NodeHandle &n) {
-  if (!Environment<M, P>::LoadParameters(n))
-    return false;
-
-  ros::NodeHandle nl(n);
-
-  // Free space threshold.
-  if (!nl.getParam("free_space_threshold", free_space_threshold_)) {
-    ROS_WARN("%s: Free space threshold was not provided.");
-    free_space_threshold_ = 0.1;
-  }
-
-  return true;
-}
+  // Static constants for occupied/unknown/free probabilities.
+  static constexpr double kOccupiedProbability = 1.0;
+  static constexpr double kUnknownProbability = 0.5;
+  static constexpr double kFreeProbability = 0.0;
+}; //\class BallsInBoxOccupancyMap
 
 } //\namespace environment
 } //\namespace fastrack
