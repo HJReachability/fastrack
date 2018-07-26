@@ -101,6 +101,14 @@
   <!-- Record? -->
   <arg name="record" default="false" />
 
+  <!-- Record a rosbag. -->
+  <node pkg="rosbag"
+	      type="record"
+	      name="recorder"
+	      args="-a -o $(fastrack_crazyflie_demos)/bagfiles/sw_demo_recording.bag"
+	      if="$(arg record)">
+  </node>
+
   <!-- ========================== FaSTrack stuff. ========================== -->
   <!-- Tracker. -->
   <include file="$(find fastrack_crazyflie_demos)/launch/analytical_quadrotor_decoupled_tracker.launch">
@@ -205,14 +213,6 @@
   </include>
 
   <!-- ========================== Crazyflie stuff. ========================= -->
-  <!-- Record a rosbag. -->
-  <node pkg="rosbag"
-	      type="record"
-	      name="recorder"
-	      args="-a -o $(fastrack_crazyflie_demos)/bagfiles/sw_demo_recording.bag"
-	      if="$(arg record)">
-  </node>
-
   <!-- TF static publisher to create a base_link frame for the tracker. -->
   <node pkg="tf"
         type="static_transform_publisher"
