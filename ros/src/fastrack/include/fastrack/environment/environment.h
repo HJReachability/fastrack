@@ -90,7 +90,7 @@ protected:
   virtual bool LoadParameters(const ros::NodeHandle& n);
 
   // Register callbacks.
-  bool RegisterCallbacks(const ros::NodeHandle& n);
+  virtual bool RegisterCallbacks(const ros::NodeHandle& n);
 
   // Update this environment with the information contained in the given
   // sensor measurement.
