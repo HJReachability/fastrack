@@ -62,8 +62,9 @@ namespace environment {
 
 using bound::Box;
 
-template <typename M, typename P> class OccupancyMap : public Environment {
-public:
+template <typename M, typename P>
+class OccupancyMap : public Environment {
+ public:
   virtual ~OccupancyMap() {}
 
   // Initialize from a ROS NodeHandle.
@@ -88,7 +89,7 @@ public:
   // Derived classes must have some sort of visualization through RViz.
   virtual void Visualize() const = 0;
 
-protected:
+ protected:
   explicit OccupancyMap() : Environment() {}
 
   // Load parameters. This may be overridden by derived classes if needed
@@ -103,7 +104,7 @@ protected:
   // Occupancy probability threshold below which a point/region is considered
   // to be free space.
   double free_space_threshold_;
-}; //\class OccupancyMap
+};  //\class OccupancyMap
 
 // ----------------------------- IMPLEMENTATION ----------------------------- //
 
@@ -111,8 +112,7 @@ protected:
 // (they should still call this one via OccupancyMap::LoadParameters).
 template <typename M, typename P>
 bool OccupancyMap<M, P>::LoadParameters(const ros::NodeHandle &n) {
-  if (!Environment<M, P>::LoadParameters(n))
-    return false;
+  if (!Environment<M, P>::LoadParameters(n)) return false;
 
   ros::NodeHandle nl(n);
 
@@ -125,7 +125,7 @@ bool OccupancyMap<M, P>::LoadParameters(const ros::NodeHandle &n) {
   return true;
 }
 
-} //\namespace environment
-} //\namespace fastrack
+}  //\namespace environment
+}  //\namespace fastrack
 
 #endif

@@ -59,7 +59,7 @@ using sensor::SphereSensorParams;
 
 class BallsInBoxOccupancyMap
     : public OccupancyMap<fastrack_msgs::SensedSpheres, SphereSensorParams> {
-public:
+ public:
   ~BallsInBoxOccupancyMap() {}
   explicit BallsInBoxOccupancyMap()
       : OccupancyMap<fastrack_msgs::SensedSpheres, SphereSensorParams>(),
@@ -72,13 +72,13 @@ public:
   double OccupancyProbability(const Vector3d &p, const Box &bound) const;
 
   // Generate a sensor measurement.
-  fastrack_msgs::SensedSpheres
-  SimulateSensor(const SphereSensorParams &params) const;
+  fastrack_msgs::SensedSpheres SimulateSensor(
+      const SphereSensorParams &params) const;
 
   // Derived classes must have some sort of visualization through RViz.
   void Visualize() const;
 
-private:
+ private:
   // Load parameters. This may be overridden by derived classes if needed
   // (they should still call this one via OccupancyMap::LoadParameters).
   bool LoadParameters(const ros::NodeHandle &n);
@@ -86,7 +86,8 @@ private:
   // Update this environment with the information contained in the given
   // sensor measurement.
   // NOTE! This function needs to publish on `updated_topic_`.
-  void SensorCallback(const typename M::ConstPtr &msg);
+  void SensorCallback(
+      const typename fastrack_msgs::SensedSpheres::ConstPtr &msg);
 
   // KdtreeMaps to store spherical obstacle and sensor locations, as well as
   // radii for each.
@@ -101,9 +102,9 @@ private:
   static constexpr double kOccupiedProbability = 1.0;
   static constexpr double kUnknownProbability = 0.5;
   static constexpr double kFreeProbability = 0.0;
-}; //\class BallsInBoxOccupancyMap
+};  //\class BallsInBoxOccupancyMap
 
-} //\namespace environment
-} //\namespace fastrack
+}  //\namespace environment
+}  //\namespace fastrack
 
 #endif
