@@ -75,7 +75,10 @@ class PlanarDubinsDynamics3D
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
   inline PositionVelocity Evaluate(const PlanarDubins3D& x,
-                                   const double& u) const {}
+                                   const double& u) const {
+    const Vector3d x_dot(v_*std::cos(x.Theta()), v_*std::sin(x.Theta()), u);
+    return x_dot;
+  }
 
   // Derived classes must be able to compute an optimal control given
   // the gradient of the value function at the specified state.
