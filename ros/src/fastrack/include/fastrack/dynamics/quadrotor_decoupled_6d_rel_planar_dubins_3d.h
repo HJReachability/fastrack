@@ -77,30 +77,36 @@ public:
     // Compute relative state.
     const PositionVelocityRelPlanarDubins3D relative_x(tracker_x, planner_x);
 
-    // TODO(@jaime): Check these calculations.
     // Relative distance derivative.
-    distance_dot =
+    const double distance_dot =
         relative_x.TangentVelocity() * std::cos(relative_x.Bearing()) +
         relative_x.NormalVelocity() * std::sin(relative_x.Bearing());
 
     // Relative bearing derivative.
-    bearing_dot =
-        -planner_u -
-        relative_x.TangentVelocity() * std::sin(relative_x.Bearing()) +
-        relative_x.NormalVelocity() * std::cos(relative_x.Bearing());
+    const double bearing_dot =
+        -planner_u +
+        (-relative_x.TangentVelocity() * std::sin(relative_x.Bearing()) +
+          relative_x.NormalVelocity() * std::cos(relative_x.Bearing())) /
+        relative_x.Distance(); // omega_circ = v_circ / R
+
+    // Tracker accelerations expressed in inertial world frame
+    const Vector2d tracker_accel( constants::G * std::tan(u.pitch)
+                                 -constants::G * std::tan(u.roll));
 
     // Relative tangent and normal velocity derivatives.
     // NOTE! Must rotate roll/pitch into planner frame.
     const double c = std::cos(planner_x.Theta());
     const double s = std::sin(planner_x.Theta());
 
-    tangent_velocity_dot = tracker_u.pitch * c - tracker_u.roll * s +
-                           planner_u * relative_x.TangentVelocity();
-    normal_velocity_dot = -tracker_u.pitch * s - tracker_u.roll * c -
-                          planner_u * relative_x.TangentVelocity();
+    const double tangent_velocity_dot = 
+        tracker_accel[0] * c + tracker_accel[1] * s +
+        planner_u * relative_x.NormalVelocity();
+    const double normal_velocity_dot = 
+        -tracker_accel[0] * s + tracker_accel[1] * c -
+        planner_u * relative_x.TangentVelocity();
 
     return std::unique_ptr<PositionVelocityRelPlanarDubins3D>(
-        new PositionVelocityRelPlanarDubins3D() distance_dot, bearing_dot,
+        new PositionVelocityRelPlanarDubins3D( distance_dot, bearing_dot,
         tangent_velocity_dot, normal_velocity_dot));
   }
 
