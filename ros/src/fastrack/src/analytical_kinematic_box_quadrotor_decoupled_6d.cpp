@@ -48,29 +48,9 @@
 namespace fastrack {
 namespace value {
 
-// Initialize from a ROS NodeHandle.
-bool AnalyticalKinematicBoxQuadrotorDecoupled6D::Initialize(
-    const ros::NodeHandle &n) {
-  name_ = ros::names::append(n.getNamespace(),
-                             "AnalyticalKinematicBoxQuadrotorDecoupled6D");
-
-  if (!LoadParameters(n)) {
-    ROS_ERROR("%s: Failed to load parameters.", name_.c_str());
-    return false;
-  }
-
-  if (!RegisterCallbacks(n)) {
-    ROS_ERROR("%s: Failed to register callbacks.", name_.c_str());
-    return false;
-  }
-
-  initialized_ = true;
-  return true;
-}
-
 // Load parameters.
 bool AnalyticalKinematicBoxQuadrotorDecoupled6D::LoadParameters(
-    const ros::NodeHandle &n) {
+    const ros::NodeHandle& n) {
   ros::NodeHandle nl(n);
 
   // Set dynamics parameters.
@@ -78,14 +58,10 @@ bool AnalyticalKinematicBoxQuadrotorDecoupled6D::LoadParameters(
   qc_lower.yaw_rate = 0.0;
   qc_upper.yaw_rate = 0.0;
 
-  if (!nl.getParam("tracker/upper/pitch", qc_upper.pitch))
-    return false;
-  if (!nl.getParam("tracker/upper/roll", qc_upper.roll))
-    return false;
-  if (!nl.getParam("tracker/upper/thrust", qc_upper.thrust))
-    return false;
-  if (!nl.getParam("tracker/lower/thrust", qc_lower.thrust))
-    return false;
+  if (!nl.getParam("tracker/upper/pitch", qc_upper.pitch)) return false;
+  if (!nl.getParam("tracker/upper/roll", qc_upper.roll)) return false;
+  if (!nl.getParam("tracker/upper/thrust", qc_upper.thrust)) return false;
+  if (!nl.getParam("tracker/lower/thrust", qc_lower.thrust)) return false;
   qc_lower.pitch = -qc_upper.pitch;
   qc_lower.roll = -qc_upper.roll;
 
@@ -93,12 +69,9 @@ bool AnalyticalKinematicBoxQuadrotorDecoupled6D::LoadParameters(
       new QuadrotorControlBoundBox(qc_lower, qc_upper)));
 
   VectorXd max_planner_speed(3);
-  if (!nl.getParam("planner/vx", max_planner_speed(0)))
-    return false;
-  if (!nl.getParam("planner/vy", max_planner_speed(1)))
-    return false;
-  if (!nl.getParam("planner/vz", max_planner_speed(2)))
-    return false;
+  if (!nl.getParam("planner/vx", max_planner_speed(0))) return false;
+  if (!nl.getParam("planner/vy", max_planner_speed(1))) return false;
+  if (!nl.getParam("planner/vz", max_planner_speed(2))) return false;
 
   planner_dynamics_.Initialize(std::unique_ptr<VectorBoundBox>(
       new VectorBoundBox(-max_planner_speed, max_planner_speed)));
@@ -116,26 +89,17 @@ bool AnalyticalKinematicBoxQuadrotorDecoupled6D::LoadParameters(
   max_acc_(2) = std::abs(max_acc_(2));
 
   // Velocity/acceleration disturbance bounds.
-  if (!nl.getParam("disturbance/velocity/x", vel_dist_(0)))
-    return false;
-  if (!nl.getParam("disturbance/velocity/y", vel_dist_(1)))
-    return false;
-  if (!nl.getParam("disturbance/velocity/z", vel_dist_(2)))
-    return false;
-  if (!nl.getParam("disturbance/acceleration/x", acc_dist_(0)))
-    return false;
-  if (!nl.getParam("disturbance/acceleration/y", acc_dist_(1)))
-    return false;
-  if (!nl.getParam("disturbance/acceleration/z", acc_dist_(2)))
-    return false;
+  if (!nl.getParam("disturbance/velocity/x", vel_dist_(0))) return false;
+  if (!nl.getParam("disturbance/velocity/y", vel_dist_(1))) return false;
+  if (!nl.getParam("disturbance/velocity/z", vel_dist_(2))) return false;
+  if (!nl.getParam("disturbance/acceleration/x", acc_dist_(0))) return false;
+  if (!nl.getParam("disturbance/acceleration/y", acc_dist_(1))) return false;
+  if (!nl.getParam("disturbance/acceleration/z", acc_dist_(2))) return false;
 
   // Position/velocity expansion.
-  if (!nl.getParam("expansion/velocity/x", vel_exp_(0)))
-    return false;
-  if (!nl.getParam("expansion/velocity/y", vel_exp_(1)))
-    return false;
-  if (!nl.getParam("expansion/velocity/z", vel_exp_(2)))
-    return false;
+  if (!nl.getParam("expansion/velocity/x", vel_exp_(0))) return false;
+  if (!nl.getParam("expansion/velocity/y", vel_exp_(1))) return false;
+  if (!nl.getParam("expansion/velocity/z", vel_exp_(2))) return false;
   pos_exp_ = vel_exp_.cwiseProduct(2.0 * max_planner_speed + 0.5 * vel_exp_)
                  .cwiseQuotient(max_acc_ - acc_dist_);
 
@@ -155,23 +119,23 @@ bool AnalyticalKinematicBoxQuadrotorDecoupled6D::LoadParameters(
 
 // Register callbacks.
 bool AnalyticalKinematicBoxQuadrotorDecoupled6D::RegisterCallbacks(
-    const ros::NodeHandle &n) {
+    const ros::NodeHandle& n) {
   return true;
 }
 
 // Evaluate the value function at tracker/planner states.
 double AnalyticalKinematicBoxQuadrotorDecoupled6D::Value(
-    const PositionVelocity &tracker_x,
-    const PositionVelocity &planner_x) const {
+    const PositionVelocity& tracker_x,
+    const PositionVelocity& planner_x) const {
   // Get relative state.
   const PositionVelocityRelPositionVelocity relative_x(tracker_x, planner_x);
-  const Vector3d &rx_position = relative_x.State().Position();
-  const Vector3d &rx_velocity = relative_x.State().Velocity();
+  const Vector3d& rx_position = relative_x.State().Position();
+  const Vector3d& rx_velocity = relative_x.State().Velocity();
 
   // Get the maximum allowable control in each subsystem.
-  const auto &control_bound =
-      static_cast<const VectorBoundBox &>(planner_dynamics_.GetControlBound());
-  const auto &max_planner_u = control_bound.Max();
+  const auto& control_bound =
+      static_cast<const VectorBoundBox&>(planner_dynamics_.GetControlBound());
+  const auto& max_planner_u = control_bound.Max();
 
   // Value is the maximum of values in each 2D subsystem.
   double value = -std::numeric_limits<double>::infinity();
@@ -197,20 +161,20 @@ double AnalyticalKinematicBoxQuadrotorDecoupled6D::Value(
   return value;
 }
 
-// Compute the value function gradient at a pair of tracker/planner states.
-std::unique_ptr<RelativeState<PositionVelocity, PositionVelocity>>
+// Compute the value function gradient at a pair of tracker/planner states.s
+PositionVelocityRelPositionVelocity
 AnalyticalKinematicBoxQuadrotorDecoupled6D::Gradient(
-    const PositionVelocity &tracker_x,
-    const PositionVelocity &planner_x) const {
+    const PositionVelocity& tracker_x,
+    const PositionVelocity& planner_x) const {
   // Get relative state.
   const PositionVelocityRelPositionVelocity relative_x(tracker_x, planner_x);
-  const Vector3d &rx_position = relative_x.State().Position();
-  const Vector3d &rx_velocity = relative_x.State().Velocity();
+  const Vector3d& rx_position = relative_x.State().Position();
+  const Vector3d& rx_velocity = relative_x.State().Velocity();
 
   // Get the maximum allowable control in each subsystem.
-  const auto &control_bound =
-      static_cast<const VectorBoundBox &>(planner_dynamics_.GetControlBound());
-  const auto &max_planner_u = control_bound.Max();
+  const auto& control_bound =
+      static_cast<const VectorBoundBox&>(planner_dynamics_.GetControlBound());
+  const auto& max_planner_u = control_bound.Max();
 
   // Loop through each subsystem and populate grad in position/velocity dims.
   Vector3d pos_grad, vel_grad;
@@ -240,8 +204,7 @@ AnalyticalKinematicBoxQuadrotorDecoupled6D::Gradient(
     }
   }
 
-  return std::unique_ptr<PositionVelocityRelPositionVelocity>(
-      new PositionVelocityRelPositionVelocity(pos_grad, vel_grad));
+  return PositionVelocityRelPositionVelocity(pos_grad, vel_grad));
 }
 
 // Priority of the optimal control at the given vehicle and planner states.
@@ -249,14 +212,14 @@ AnalyticalKinematicBoxQuadrotorDecoupled6D::Gradient(
 // should be exactly the optimal control signal computed by this
 // value function.
 double AnalyticalKinematicBoxQuadrotorDecoupled6D::Priority(
-    const PositionVelocity &tracker_x,
-    const PositionVelocity &planner_x) const {
+    const PositionVelocity& tracker_x,
+    const PositionVelocity& planner_x) const {
   // Get value at this relative state.
   const double value = Value(tracker_x, planner_x);
 
   // HACK! The threshold should probably be externally set via config.
-  const double relative_high = 0.20; // 20% of max inside value
-  const double relative_low = 0.05;  // 5% of max inside value
+  const double relative_high = 0.20;  // 20% of max inside value
+  const double relative_low = 0.05;   // 5% of max inside value
 
   // TODO! Make sure this is actually the maximum value.
   const double max_value = std::max(bound_.x, std::max(bound_.y, bound_.z));
@@ -271,5 +234,5 @@ double AnalyticalKinematicBoxQuadrotorDecoupled6D::Priority(
   return priority;
 }
 
-} // namespace value
-} // namespace fastrack
+}  // namespace value
+}  // namespace fastrack
