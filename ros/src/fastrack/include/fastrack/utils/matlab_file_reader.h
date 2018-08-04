@@ -52,7 +52,15 @@ namespace fastrack {
 class MatlabFileReader : private Uncopyable {
  public:
   ~MatlabFileReader();
+  explicit MatlabFileReader() {}
   explicit MatlabFileReader(const std::string& file_name);
+
+  // Open and close a file. Return bool upon success.
+  bool Open(const std::string& file_name);
+  void Close();
+
+  // Is this reader open?
+  bool IsOpen() { return mat_fp; }
 
   // Read scalar of the given type. Returns bool indicating success.
   template <typename T = double>
