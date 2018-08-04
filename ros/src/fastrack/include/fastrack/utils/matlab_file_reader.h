@@ -44,34 +44,40 @@
 #define FASTRACK_UTILS_MATLAB_FILE_READER_H
 
 #include <matio.h>
+#include <exception>
 #include <string>
-#incldue <vector>
+#include <vector>
 
 namespace fastrack {
 
 class MatlabFileReader : private Uncopyable {
  public:
-  ~MatlabFileReader();
+  ~MatlabFileReader() { Close(); }
   explicit MatlabFileReader() {}
-  explicit MatlabFileReader(const std::string& file_name);
+  explicit MatlabFileReader(const std::string& file_name) {
+    if (!Open(file_name))
+      throw std::runtime_error("Could not open file: " + file_name);
+  }
 
-  // Open and close a file. Return bool upon success.
+  // Open and close a file. Open returns bool upon success.
   bool Open(const std::string& file_name);
-  void Close();
+  void Close() {
+    if (Open()) Mat_Close(mat_fp_);
+  }
 
   // Is this reader open?
-  bool IsOpen() { return mat_fp; }
+  bool IsOpen() { return mat_fp_; }
 
-  // Read scalar of the given type. Returns bool indicating success.
-  template <typename T = double>
-  bool ReadScalar(const std::string& field_name, T* value);
+  // Read scalar. Returns bool indicating success.
+  bool ReadScalar(const std::string& field_name, double* value);
+  bool ReadScalar(const std::string& field_name, size_t* value);
 
-  // Read vector of the given type. Returns bool indicating success.
-  template <typename T = double>
-  bool ReadVector(const std::string& field_name, std::vector<T>* values);
+  // Read vector. Returns bool indicating success.
+  bool ReadVector(const std::string& field_name, std::vector<double>* values);
+  bool ReadVector(const std::string& field_name, std::vector<size_t>* values);
 
  private:
-  mat_t* mat_fp;
+  mat_t* mat_fp_;
 };  //\class MatlabFileReader
 
 }  // namespace fastrack
