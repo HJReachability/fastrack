@@ -49,10 +49,12 @@
 #include <fastrack/dynamics/dynamics.h>
 #include <fastrack/dynamics/relative_dynamics.h>
 #include <fastrack/state/relative_state.h>
+#include <fastrack/utils/matlab_file_reader.h>
 #include <fastrack/utils/types.h>
 #include <fastrack/value/value_function.h>
 
 #include <ros/ros.h>
+#include <functional>
 
 namespace fastrack {
 namespace value {
@@ -112,6 +114,11 @@ class MatlabValueFunction
   // Takes in a state and index along which to interpolate.
   VectorXd RecursiveGradientInterpolator(const VectorXd& x, size_t idx) const;
 
+  // Lower and upper bounds for the value function. Used for computing the
+  // 'priority' of the optimal control signal.
+  double priority_lower_;
+  double priority_upper_;
+
   // Number of voxels and upper/lower bounds in each dimension.
   std::vector<size_t> num_voxels_;
   std::vector<double> voxel_size_;
@@ -124,11 +131,6 @@ class MatlabValueFunction
   // Gradient information at each voxel. One list per dimension, each in the
   // same order as 'data_'.
   std::vector<std::vector<double>> gradient_;
-
-  // Lower and upper bounds for the value function. Used for computing the
-  // 'priority' of the optimal control signal.
-  double priority_lower_;
-  double priority_upper_;
 };  //\class MatlabValueFunction
 
 // ---------------------------- IMPLEMENTATION  ---------------------------- //
@@ -296,7 +298,61 @@ template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename RS, typename B>
 bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, B>::InitializeFromMatFile(
     const std::string& file_name) {
-  // TODO(dfk)!
+  // Open up this file.
+  MatlabFileReader reader(file_name);
+
+  // Load each class variable.
+  if (!reader.ReadScalar("priority_lower", &priority_lower_)) return false;
+  if (!reader.ReadScalar("priority_upper", &priority_upper_)) return false;
+  if (!reader.ReadVector("num_voxels", &num_voxels_)) return false;
+  if (!reader.ReadVector("lower", &lower_)) return false;
+  if (!reader.ReadVector("upper", &upper_)) return false;
+  if (!reader.ReadVector("data", &data_)) return false;
+
+  // Check loaded variables.
+  if (priority_lower_ >= priority_upper_) {
+    ROS_ERROR("%s: Priority lower bound above upper bound.", name_.c_str());
+    return false;
+  }
+
+  if (num_voxels_.size() != lower_.size() || lower_.size() != upper_.size()) {
+    ROS_ERROR("%s: Dimensions do not match.", name_.c_str());
+    return false;
+  }
+
+  const double total_num_voxels = std::accumulate(
+      num_voxels_.begin(), num_voxels_.end(), 1, std::multiplies<size_t>());
+  if (total_num_voxels == 0) {
+    ROS_ERROR("%s: 0 total voxels.", name_.c_str());
+    return false;
+  }
+
+  if (data_.size() != total_num_voxels) {
+    ROS_ERROR("%s: Grid data was of the wrong size.", name_.c_str());
+    return false;
+  }
+
+  // Compute voxel size.
+  for (size_t ii = 0; ii < num_voxels_.size(); ii++)
+    voxel_size_.emplace_back((upper_[ii] - lower_[ii]) /
+                             static_cast<double>(num_voxels_[ii]));
+
+  // Load gradients.
+  for (size_t ii = 0; ii < num_voxels_.size(); ii++) {
+    auto& partial = gradient_.emplace_back();
+    if (!reader.ReadVector("deriv" + std::to_string(ii), &partial))
+      return false;
+
+    if (partial.size() != total_num_voxels) {
+      ROS_ERROR("%s: Partial derivative in dimension %zu had incorrect size.",
+                name_.c_str(), ii);
+      return false;
+    }
+  }
+
+  // Load dynamics and bound parameters.
+
+
   return true;
 }
 
