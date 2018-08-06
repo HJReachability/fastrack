@@ -74,6 +74,11 @@ public:
       : RelativeState<PositionVelocity, PositionVelocity>(),
         x_(position, velocity) {}
 
+
+  // Convert from/to VectorXd.
+  void FromVector(const VectorXd& x) { x_.FromVector(x); }
+  VectorXd ToVector() const { return x_.ToVector(); }
+
   // Dimension of the state space.
   static constexpr size_t StateDimension() { return 6; }
 
@@ -82,7 +87,7 @@ public:
 
 private:
   // Relative state is just a single PositionVelocity.
-  const PositionVelocity x_;
+  PositionVelocity x_;
 }; //\class PositionVelocityRelPositionVelocity
 
 } // namespace state

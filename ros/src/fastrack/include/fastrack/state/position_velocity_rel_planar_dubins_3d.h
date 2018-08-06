@@ -78,6 +78,29 @@ public:
       : distance_(distance), bearing_(bearing), tangent_velocity_(tangent_v),
         normal_velocity_(normal_v) {}
 
+  // Convert from/to VectorXd.
+  // Assume vector is laid out as follows:
+  // [distance, bearing, tangent velocity, normal velocity]
+  void FromVector(const VectorXd& x) {
+    if (x.size() != 4)
+      throw std::runtime_error("Vector was of incorrect dimension.");
+
+    distance_ = x(0);
+    bearing_ = x(1);
+    tangent_velocity_ = x(2);
+    normal_velocity_ = x(3);
+  }
+
+  VectorXd ToVector() const {
+    VectorXd vec(4);
+    vec(0) = distance_;
+    vec(1) = bearing_;
+    vec(2) = tangent_velocity_;
+    vec(3) = normal_velocity_;
+
+    return vec;
+  }
+
   // Dimension of the state space.
   static constexpr size_t StateDimension() { return 4; }
 
@@ -89,18 +112,18 @@ public:
 
 private:
   // Relative (x, y) distance.
-  const double distance_;
+  double distance_;
 
   // Relative bearing in the (x, y) plane.
-  const double bearing_;
+  double bearing_;
 
   // PositionVelocity's relative velocity along PlanarDubins3D's heading.
   // (in Frenet frame).
-  const double tangent_velocity_;
+  double tangent_velocity_;
 
   // PositionVelocity's relative velocity normal to PlanarDubins3D's heading.
   // (in Frenet frame).
-  const double normal_velocity_;
+  double normal_velocity_;
 }; //\class PositionVelocityRelPlanarDubins3D
 
 } // namespace state
