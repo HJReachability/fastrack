@@ -60,10 +60,13 @@ public:
   virtual ~Dynamics() {}
 
   // Initialize with control bounds.
-  void Initialize(std::unique_ptr<ControlBound<C>> bound) {
+  void Initialize(std::unique_ptr<ControlBound<C>>& bound) {
     control_bound_ = std::move(bound);
     initialized_ = true;
   }
+
+  // Initialize from vector.
+  virtual bool Initialize(const std::vector<double>& bound_params) = 0;
 
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
@@ -84,7 +87,7 @@ public:
 
 protected:
   explicit Dynamics() : initialized_(false) {}
-  explicit Dynamics(std::unique_ptr<ControlBound<C>> bound)
+  explicit Dynamics(std::unique_ptr<ControlBound<C>>& bound)
       : control_bound_(bound.release()), initialized_(true) {}
 
   // Control bound.

@@ -53,7 +53,7 @@ namespace fastrack {
 namespace control {
 
 class QuadrotorControlBoundBox : public ControlBound<QuadrotorControl> {
-public:
+ public:
   ~QuadrotorControlBoundBox() {}
   explicit QuadrotorControlBoundBox(const QuadrotorControl &min,
                                     const QuadrotorControl &max)
@@ -61,6 +61,15 @@ public:
         roll_interval_(min.roll, max.roll),
         yaw_rate_interval_(min.yaw_rate, max.yaw_rate),
         thrust_interval_(min.thrust, max.thrust) {}
+
+  // Assume params are laid out as follows:
+  // [min pitch, min roll, min yaw rate, min thrust,
+  //  max pitch, max roll, max yaw rate, max thrust]
+  explicit QuadrotorControlBoundBox(const std::vector<double> &params)
+      : pitch_interval_(params[0], params[4]),
+        roll_interval_(params[1], params[5]),
+        yaw_rate_interval_(params[2], params[6]),
+        thrust_interval_(params[3], params[7]) {}
 
   // Derived classes must be able to check whether a query is inside the
   // bound.
@@ -76,23 +85,23 @@ public:
   // NOTE: We will treat this vector as emanating from the natural origin
   // of the bound so that it constitutes a meaningful direction with respect
   // to that origin.
-  inline QuadrotorControl
-  ProjectToSurface(const QuadrotorControl &query) const {
+  inline QuadrotorControl ProjectToSurface(
+      const QuadrotorControl &query) const {
     return QuadrotorControl(pitch_interval_.ProjectToSurface(query.pitch),
                             roll_interval_.ProjectToSurface(query.roll),
                             yaw_rate_interval_.ProjectToSurface(query.yaw_rate),
                             thrust_interval_.ProjectToSurface(query.thrust));
   }
 
-private:
+ private:
   // ScalarBoundIntervals for each control variable.
   const ScalarBoundInterval pitch_interval_;
   const ScalarBoundInterval roll_interval_;
   const ScalarBoundInterval yaw_rate_interval_;
   const ScalarBoundInterval thrust_interval_;
-}; //\class ControlBound
+};  //\class ControlBound
 
-} // namespace control
-} // namespace fastrack
+}  // namespace control
+}  // namespace fastrack
 
 #endif

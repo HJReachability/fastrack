@@ -204,7 +204,8 @@ AnalyticalKinematicBoxQuadrotorDecoupled6D::Gradient(
     }
   }
 
-  return PositionVelocityRelPositionVelocity(pos_grad, vel_grad));
+  return std::unique_ptr<PositionVelocityRelPositionVelocity>(
+      new PositionVelocityRelPositionVelocity(pos_grad, vel_grad));
 }
 
 // Priority of the optimal control at the given vehicle and planner states.

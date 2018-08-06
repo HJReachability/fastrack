@@ -75,8 +75,7 @@ using state::PositionVelocityRelPositionVelocity;
 class AnalyticalKinematicBoxQuadrotorDecoupled6D
     : public ValueFunction<PositionVelocity, QuadrotorControl,
                            QuadrotorDecoupled6D, PositionVelocity, VectorXd,
-                           Kinematics<PositionVelocity>,
-                           PositionVelocityRelPositionVelocity, Box> {
+                           Kinematics<PositionVelocity>, Box> {
  public:
   ~AnalyticalKinematicBoxQuadrotorDecoupled6D() {}
   explicit AnalyticalKinematicBoxQuadrotorDecoupled6D() : ValueFunction() {}
@@ -85,7 +84,7 @@ class AnalyticalKinematicBoxQuadrotorDecoupled6D
   double Value(const PositionVelocity& vehicle_x,
                const PositionVelocity& planner_x) const;
 
-  PositionVelocityRelPositionVelocity Gradient(
+  std::unique_ptr<PositionVelocityRelPositionVelocity> Gradient(
       const PositionVelocity& vehicle_x,
       const PositionVelocity& planner_x) const;
 

@@ -71,6 +71,18 @@ public:
             std::unique_ptr<ControlBound<QuadrotorControl>>(
                 new QuadrotorControlBoundBox(u_lower, u_upper))) {}
 
+  // Initialize from vector.
+  bool Initialize(const std::vector<double>& bound_params) {
+    if (bound_params.size() != 8) {
+      ROS_ERROR("PlanarDubinsDynamics3D: bound params were incorrect size.");
+      return false;
+    }
+
+    control_bound_.reset(new QuadrotorControlBoundBox(bound_params));
+    initialized_ = true;
+    return true;
+  }
+
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
   inline PositionVelocity Evaluate(const PositionVelocity &x,

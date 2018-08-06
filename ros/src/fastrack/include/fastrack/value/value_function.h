@@ -38,7 +38,7 @@
 //
 // Defines the ValueFunction class. Templated on the tracker/planner state
 // (TS/PS), tracker/planner control (TC/PC), tracker/planner dynamics (TD/PC),
-// relative state (RS), and bound (B).
+// and bound (B).
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -61,7 +61,7 @@ using dynamics::RelativeDynamics;
 using state::RelativeState;
 
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
-          typename PD, typename RS, typename B>
+          typename PD, typename B>
 class ValueFunction : private Uncopyable {
  public:
   virtual ~ValueFunction() {}
@@ -86,7 +86,8 @@ class ValueFunction : private Uncopyable {
 
   // Value and gradient at particular relative states.
   virtual double Value(const TS& tracker_x, const PS& planner_x) const = 0;
-  virtual RS Gradient(const TS& tracker_x, const PS& planner_x) const = 0;
+  virtual std::unique_ptr<RelativeState<TS, PS>> Gradient(
+      const TS& tracker_x, const PS& planner_x) const = 0;
 
   // Get the optimal control given the tracker state and planner state.
   inline TC OptimalControl(const TS& tracker_x, const PS& planner_x) const {
@@ -94,7 +95,7 @@ class ValueFunction : private Uncopyable {
       throw std::runtime_error("Uninitialized call to OptimalControl.");
 
     return relative_dynamics_->OptimalControl(
-        tracker_x, planner_x, Gradient(tracker_x, planner_x),
+        tracker_x, planner_x, *Gradient(tracker_x, planner_x),
         tracker_dynamics_.GetControlBound(),
         planner_dynamics_.GetControlBound());
   }

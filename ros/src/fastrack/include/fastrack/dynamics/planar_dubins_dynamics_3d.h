@@ -72,6 +72,18 @@ class PlanarDubinsDynamics3D
   inline double V() const { return v_; }
   inline double MaxOmega() const { return max_omega_; }
 
+  // Initialize from vector.
+  bool Initialize(const std::vector<double>& bound_params) {
+    if (bound_params.size() != 2) {
+      ROS_ERROR("PlanarDubinsDynamics3D: bound params were incorrect size.");
+      return false;
+    }
+
+    control_bound_.reset(new ScalarBoundInterval(bound_params));
+    initialized_ = true;
+    return true;
+  }
+
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
   inline PositionVelocity Evaluate(const PlanarDubins3D& x,

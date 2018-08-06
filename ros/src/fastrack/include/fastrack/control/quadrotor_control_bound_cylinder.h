@@ -54,13 +54,21 @@ namespace fastrack {
 namespace control {
 
 class QuadrotorControlBoundCylinder : public ControlBound<QuadrotorControl> {
-public:
+ public:
   ~QuadrotorControlBoundCylinder() {}
   explicit QuadrotorControlBoundCylinder(double radius,
                                          double ScalarBoundInterval &yaw_rate,
                                          double ScalarBoundInterval &thrust)
-      : pitch_roll_radius_(radius), yaw_rate_interval_(yaw_rate),
+      : pitch_roll_radius_(radius),
+        yaw_rate_interval_(yaw_rate),
         thrust_interval_(thrust) {}
+
+  // Assume 'params' is laid out as follows:
+  // [radius, min yaw rate, min thrust, max yaw rate, max thrust]
+  explicit QuadrotorControlBoundCylinder(const std::vector<double> &params)
+      : pitch_roll_radius_(params[0]),
+        yaw_rate_interval_(params[1], params[3]),
+        thrust_interval_(params[2], params[4]) {}
 
   // Derived classes must be able to check whether a query is inside the
   // bound.
@@ -75,8 +83,8 @@ public:
   // NOTE: We will treat this vector as emanating from the natural origin
   // of the bound so that it constitutes a meaningful direction with respect
   // to that origin.
-  inline QuadrotorControl
-  ProjectToSurface(const QuadrotorControl &query) const {
+  inline QuadrotorControl ProjectToSurface(
+      const QuadrotorControl &query) const {
     // Compute scaling to project (pitch, roll) onto the cylinder.
     const double scaling =
         pitch_roll_radius_ / std::hypot(query.pitch, query.roll);
@@ -86,16 +94,16 @@ public:
                             thrust_interval_.ProjectToSurface(query.thrust));
   }
 
-private:
+ private:
   // Radius in (pitch, roll) dimensions.
   const double pitch_roll_radius_;
 
   // Intervals in yaw_rate and thrust.
   const ScalarBoundInterval yaw_rate_interval_;
   const ScalarBoundInterval thrust_interval_;
-}; //\class ControlBound
+};  //\class ControlBound
 
-} // namespace control
-} // namespace fastrack
+}  // namespace control
+}  // namespace fastrack
 
 #endif

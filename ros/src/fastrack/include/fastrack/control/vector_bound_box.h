@@ -50,13 +50,19 @@ namespace fastrack {
 namespace control {
 
 class VectorBoundBox : public ControlBound<VectorXd> {
-public:
+ public:
   ~VectorBoundBox() {}
   explicit VectorBoundBox(const VectorXd &min, const VectorXd &max)
-      : ControlBound(), min_(min), max_(max) {
+      : min_(min), max_(max) {
     if (min_.size() != max_.size())
       throw std::runtime_error("Inconsistent bound dimensions.");
   }
+
+  // Assume 'params' is laid out such that the first half of the parameters
+  // form the 'min_' and the second form the 'max_'.
+  explicit VectorBoundBox(const std::vector<double> &params)
+      : min_(params.data(), params.size() >> 1),
+        max_(params.data() + params.size() >> 1, params.size() >> 1) {}
 
   // Accessors.
   inline const VectorXd &Min() const { return min_; }
@@ -70,8 +76,7 @@ public:
     }
 
     for (size_t ii = 0; ii < min_.size(); ii++) {
-      if (min_(ii) > query(ii) || query(ii) > max_(ii))
-        return false;
+      if (min_(ii) > query(ii) || query(ii) > max_(ii)) return false;
     }
 
     return true;
@@ -95,12 +100,12 @@ public:
     return projection;
   }
 
-private:
+ private:
   // Lower and upper bounds..
   const VectorXd min_, max_;
-}; //\class ControlBound
+};  //\class ControlBound
 
-} // namespace control
-} // namespace fastrack
+}  // namespace control
+}  // namespace fastrack
 
 #endif

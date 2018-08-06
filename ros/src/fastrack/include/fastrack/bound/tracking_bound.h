@@ -56,6 +56,9 @@ template<typename SR>
 struct TrackingBound {
   virtual ~TrackingBound() {}
 
+  // Initialize from vector.
+  virtual bool Initialize(const std::vector<double>& params) = 0;
+
   // Convert from service response type SR.
   virtual void FromRos(const SR& res) = 0;
 

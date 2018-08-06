@@ -67,6 +67,19 @@ struct Box : public TrackingBound<fastrack_srvs::TrackingBoundBox::Response> {
     : TrackingBound(),
       x(xsize), y(ysize), z(zsize) {}
 
+  // Initialize from vector.
+  bool Initialize(const std::vector<double>& params) {
+    if (params.size() != 3) {
+      ROS_ERROR("Box: params were incorrect size.");
+      return false;
+    }
+
+    x = params[0];
+    y = params[1];
+    z = params[2];
+    return true;
+  }
+
   // Convert from service response type SR.
   inline void FromRos(const fastrack_srvs::TrackingBoundBox::Response& res) {
     x = res.x; y = res.y; z = res.z;

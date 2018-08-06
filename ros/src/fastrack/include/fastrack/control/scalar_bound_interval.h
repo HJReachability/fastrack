@@ -49,10 +49,13 @@ namespace fastrack {
 namespace control {
 
 class ScalarBoundInterval : public ControlBound<double> {
-public:
+ public:
   ~ScalarBoundInterval() {}
-  explicit ScalarBoundInterval(double min, double max)
-      : ControlBound(), min_(min), max_(max) {}
+  explicit ScalarBoundInterval(double min, double max) : min_(min), max_(max) {}
+
+  // Assume 'params' is [min, max].
+  explicit ScalarBoundInterval(const std::vector<double> &params)
+      : min_(params[0]), max_(params_[1]) {}
 
   // Derived classes must be able to check whether a query is inside the bound.
   inline bool Contains(const double &query) const {
@@ -68,12 +71,12 @@ public:
     return (query >= 0.0) ? max_ : min_;
   }
 
-private:
+ private:
   // Min and max interval values.
   const double min_, max_;
-}; //\class ControlBound
+};  //\class ControlBound
 
-} // namespace control
-} // namespace fastrack
+}  // namespace control
+}  // namespace fastrack
 
 #endif

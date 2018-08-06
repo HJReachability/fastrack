@@ -39,7 +39,10 @@
 // Defines the MatlabValueFunction class, which derives from the base class
 // ValueFunction and is templated on the tracker/planner state
 // (TS/PS), tracker/planner control (TC/PC), tracker/planner dynamics (TD/PC),
-// relative state (RS), and bound (B).
+// relative state (RS), relative dynamics (RD) and bound (B).
+//
+// NOTE: this class is templated on relative state (RS) and dynamics (RD)
+// whereas the base class ValueFunction is NOT.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -59,18 +62,12 @@
 namespace fastrack {
 namespace value {
 
-using dynamics::Dynamics;
-using dynamics::RelativeDynamics;
-using state::RelativeState;
-
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
-          typename PD, typename RS, typename B>
-class MatlabValueFunction
-    : public ValueFunction<TS, TC, TD, PS, PC, PD, RS, B> {
+          typename PD, typename RS, typename RD, typename B>
+class MatlabValueFunction : public ValueFunction<TS, TC, TD, PS, PC, PD, B> {
  public:
   ~MatlabValueFunction() {}
-  explicit MatlabValueFunction()
-      : ValueFunction<TS, TC, TD, PS, PC, PD, RS, B>() {}
+  explicit MatlabValueFunction() : ValueFunction() {}
 
   // Initialize from file. Returns whether or not loading was successful.
   // Can be used as an alternative to intialization from a NodeHandle.
@@ -78,7 +75,7 @@ class MatlabValueFunction
 
   // Value and gradient at particular relative states.
   double Value(const TS& tracker_x, const PS& planner_x) const;
-  RS Gradient(const TS& tracker_x, const PS& planner_x) const;
+  std::unique_ptr<RS> Gradient(const TS& tracker_x, const PS& planner_x) const;
 
   // Priority of the optimal control at the given tracker and planner states.
   // This is a number between 0 and 1, where 1 means the final control signal
@@ -137,8 +134,8 @@ class MatlabValueFunction
 
 // Value at the given relative state.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
-          typename PD, typename RS, typename B>
-double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, B>::Value(
+          typename PD, typename RS, typename RD, typename B>
+double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::Value(
     const TS& tracker_x, const PS& planner_x) const {
   const VectorXd relative_x = RS(tracker_x, planner_x).ToVector();
 
@@ -174,11 +171,13 @@ double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, B>::Value(
 
 // Gradient at the given relative state.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
-          typename PD, typename RS, typename B>
-RS MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, B>::Gradient(
+          typename PD, typename RS, typename RD, typename B>
+std::unique_ptr<RS>
+MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::Gradient(
     const TS& tracker_x, const PS& planner_x) const {
   const VectorXd relative_x = RS(tracker_x, planner_x).ToVector();
-  return RecursiveGradientInterpolator(relative_x, 0);
+  return std::unique_ptr<RS>(
+      new RS(RecursiveGradientInterpolator(relative_x, 0)));
 }
 
 // Priority of the optimal control at the given tracker and planner states.
@@ -186,8 +185,8 @@ RS MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, B>::Gradient(
 // should be exactly the optimal control signal computed by this
 // value function.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
-          typename PD, typename RS, typename B>
-double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, B>::Priority(
+          typename PD, typename RS, typename RD, typename B>
+double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::Priority(
     const TS& tracker_x, const PS& planner_x) const {
   const double value = Value(tracker_x, planner_x);
 
@@ -199,8 +198,8 @@ double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, B>::Priority(
 
 // Convert a (relative) state to an index into 'data_'.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
-          typename PD, typename RS, typename B>
-size_t MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, B>::StateToIndex(
+          typename PD, typename RS, typename RD, typename B>
+size_t MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::StateToIndex(
     const VectorXd& x) {
   // Quantize each dimension of the state.
   std::vector<size_t> quantized;
@@ -230,8 +229,8 @@ size_t MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, B>::StateToIndex(
 
 // Accessor for precomputed gradient at the given state.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
-          typename PD, typename RS, typename B>
-VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, B>::GradientAccessor(
+          typename PD, typename RS, typename RD, typename B>
+VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::GradientAccessor(
     const VectorXd& x) {
   // Convert to index and read gradient one dimension at a time.
   const size_t idx = StateToIndex(x);
@@ -245,8 +244,8 @@ VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, B>::GradientAccessor(
 
 // Compute the grid point below a given state in dimension idx.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
-          typename PD, typename RS, typename B>
-double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, B>::LowerGridPoint(
+          typename PD, typename RS, typename RD, typename B>
+double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::LowerGridPoint(
     const VectorXd& x, size_t idx) const {
   // Get center of nearest voxel.
   const double center =
@@ -260,8 +259,8 @@ double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, B>::LowerGridPoint(
 // Recursive helper function for gradient multilinear interpolation.
 // Takes in a state and index along which to interpolate.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
-          typename PD, typename RS, typename B>
-VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, B>::
+          typename PD, typename RS, typename RD, typename B>
+VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::
     RecursiveGradientInterpolator(const VectorXd& x, size_t idx) {
   // Assume x's entries prior to idx are equal to the upper/lower bounds of
   // the voxel containing x.
@@ -295,8 +294,8 @@ VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, B>::
 // Initialize from file. Returns whether or not loading was successful.
 // Can be used as an alternative to intialization from a NodeHandle.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
-          typename PD, typename RS, typename B>
-bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, B>::InitializeFromMatFile(
+          typename PD, typename RS, typename RD, typename B>
+bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::InitializeFromMatFile(
     const std::string& file_name) {
   // Open up this file.
   MatlabFileReader reader(file_name);
@@ -351,7 +350,15 @@ bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, B>::InitializeFromMatFile(
   }
 
   // Load dynamics and bound parameters.
+  std::vector<double> params;
+  if (!reader.ReadVector("tracker_params", &params)) return false;
+  if (!tracker_dynamics_.Initialize(params)) return false;
+  if (!reader.ReadVector("planner_params", &params)) return false;
+  if (!planner_dynamics_.Initialize(params)) return false;
+  relative_dynamics_.reset(new RD);
 
+  if (!reader.ReadVector("bound_params", &params)) return false;
+  if (!bound_.Initialize(params)) return false;
 
   return true;
 }
