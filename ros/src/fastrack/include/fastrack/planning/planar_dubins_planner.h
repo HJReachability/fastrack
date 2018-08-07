@@ -44,15 +44,19 @@
 #ifndef FASTRACK_PLANNING_PLANAR_DUBINS_PLANNER_H
 #define FASTRACK_PLANNING_PLANAR_DUBINS_PLANNER_H
 
+#include <fastrack/bound/box.h>
+#include <fastrack/dynamics/planar_dubins_dynamics_3d.h>
+#include <fastrack/environment/balls_in_box_occupancy_map.h>
 #include <fastrack/planning/graph_dynamic_planner.h>
+#include <fastrack/state/planar_dubins_3d.h>
 #include <fastrack/utils/types.h>
 
 namespace fastrack {
 namespace planning {
 
-using environment::BallsInBoxOccupancyMap;
 using bound::Box;
 using dynamics::PlanarDubinsDynamics3D;
+using environment::BallsInBoxOccupancyMap;
 using state::PlanarDubins3D;
 
 namespace ob = ompl::base;
@@ -82,7 +86,7 @@ class PlanarDubinsPlanner
 
 };  //\class PlanarDubinsPlanner
 
-}  //\namespace planning
-}  //\namespace fastrack
+}  // namespace planning
+}  // namespace fastrack
 
 #endif

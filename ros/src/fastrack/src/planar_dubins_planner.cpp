@@ -135,5 +135,3 @@ ob::ScopedState<ob::SE2StateSpace> PlanarDubinsPlanner::ToOmplState(
 
 }  //\namespace planning
 }  //\namespace fastrack
-
-#endif

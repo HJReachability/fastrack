@@ -115,7 +115,7 @@ bool SearchableSet<N, S>::Insert(const typename N::ConstPtr& node) {
 
   // Copy the input point into FLANN's Matrix type.
   const VectorXd x = node->state.ToVector();
-  flann::Matrix<double> flann_point(new double[x.size()], 1, cols);
+  flann::Matrix<double> flann_point(new double[x.size()], 1, x.size());
 
   for (size_t ii = 0; ii < x.size(); ii++)
     flann_point[0][ii] = x(ii);
@@ -148,7 +148,7 @@ std::vector<typename N::ConstPtr> SearchableSet<N, S>::
 KnnSearch(const S& query, size_t k) const {
   if (index_ == nullptr) {
     ROS_WARN("SearchableSet: Cannot search empty index.");
-    return std::vector<N::ConstPtr>();
+    return std::vector<typename N::ConstPtr>();
   }
 
   // Convert the input point to the FLANN format.
@@ -165,7 +165,7 @@ KnnSearch(const S& query, size_t k) const {
                       flann::SearchParams(-1, 0.0, false));
 
   // Assign output.
-  std::vector<N::ConstPtr> neighbors;
+  std::vector<typename N::ConstPtr> neighbors;
   for (size_t ii = 0; ii < num_neighbors_found; ii++)
     neighbors.push_back(registry_[ query_match_indices[0][ii] ]);
 
@@ -178,7 +178,7 @@ std::vector<typename N::ConstPtr> SearchableSet<N, S>::
 RadiusSearch(const S& query, double r) const {
   if (index_ == nullptr) {
     ROS_WARN("SearchableSet: cannot search empty index.");
-    return std::vector<N::ConstPtr>();
+    return std::vector<typename N::ConstPtr>();
   }
 
   // Convert the input point to the FLANN format.
@@ -195,7 +195,7 @@ RadiusSearch(const S& query, double r) const {
                          query_squared_distances, r * r,
                          flann::SearchParams(-1, 0.0, false));
   // Assign output.
-  std::vector<N::ConstPtr> neighbors;
+  std::vector<typename N::ConstPtr> neighbors;
   for (size_t ii = 0; ii < num_neighbors_found; ii++)
     neighbors.push_back(registry_[ query_match_indices[0][ii] ]);
 
