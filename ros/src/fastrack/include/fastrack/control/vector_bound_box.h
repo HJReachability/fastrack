@@ -60,9 +60,18 @@ class VectorBoundBox : public ControlBound<VectorXd> {
 
   // Assume 'params' is laid out such that the first half of the parameters
   // form the 'min_' and the second form the 'max_'.
-  explicit VectorBoundBox(const std::vector<double> &params)
-      : min_(params.data(), params.size() >> 1),
-        max_(params.data() + params.size() >> 1, params.size() >> 1) {}
+  explicit VectorBoundBox(const std::vector<double> &params) {
+    if (!params.size() || params.size() & 1)
+      throw std::runtime_error("Incorrect number of parameters.");
+
+    const size_t dimension = params.size() >> 1;
+
+    min_.resize(dimension);
+    for (size_t ii = 0; ii < dimension; ii++) min_(ii) = params[ii];
+
+    max_.resize(dimension);
+    for (size_t ii = 0; ii < dimension; ii++) max_(ii) = params[dimension + ii];
+  }
 
   // Accessors.
   inline const VectorXd &Min() const { return min_; }
@@ -102,7 +111,7 @@ class VectorBoundBox : public ControlBound<VectorXd> {
 
  private:
   // Lower and upper bounds..
-  const VectorXd min_, max_;
+  VectorXd min_, max_;
 };  //\class ControlBound
 
 }  // namespace control

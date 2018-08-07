@@ -39,13 +39,13 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <fastrack/environment/balls_in_box.h>
+#include <fastrack/environment/balls_in_box_occupancy_map.h>
 
 namespace fastrack {
 namespace environment {
 
 // Occupancy probability for a single point.
-double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d &p) const {
+double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p) const {
   if (!initialized_) {
     ROS_WARN("%s: Tried to collision check without initializing.",
              name_.c_str());
@@ -53,25 +53,22 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d &p) const {
   }
 
   // Check box limits.
-  if (p(0) < lower_(0) + bound.x || p(0) > upper_(0) - bound.x ||
-      p(1) < lower_(1) + bound.y || p(1) > upper_(1) - bound.y ||
-      p(2) < lower_(2) + bound.z || p(2) > upper_(2) - bound.z)
+  if (p(0) < lower_(0) || p(0) > upper_(0) || p(1) < lower_(1) ||
+      p(1) > upper_(1) || p(2) < lower_(2) || p(2) > upper_(2))
     return kOccupiedProbability;
 
   // Check if this point is inside any obstacles.
   const std::vector<std::pair<Vector3d, double>> neighboring_obstacles =
       obstacles_.RadiusSearch(p, largest_obstacle_radius_);
-  for (const auto &entry : neighboring_obstacles) {
-    if ((p - entry.first).norm() < entry.second)
-      return kOccupiedProbability;
+  for (const auto& entry : neighboring_obstacles) {
+    if ((p - entry.first).norm() < entry.second) return kOccupiedProbability;
   }
 
   // Check if this point is inside any sensor FOVs.
   const std::vector<std::pair<Vector3d, double>> neighboring_sensors =
       sensor_fovs_.RadiusSearch(p, largest_sensor_radius_);
-  for (const auto &entry : neighboring_sensors) {
-    if ((p - entry.first).norm() < entry.second)
-      return kFreeProbability;
+  for (const auto& entry : neighboring_sensors) {
+    if ((p - entry.first).norm() < entry.second) return kFreeProbability;
   }
 
   return kUnknownProbability;
@@ -80,8 +77,8 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d &p) const {
 // Occupancy probability for a box tracking error bound centered at the given
 // point. Occupancy is set to occupied if ANY of the box is occupied. Next,
 // if ANY of the box is unknown the result is unknown. Otherwise, free.
-double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d &p,
-                                                    const Box &bound) const {
+double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
+                                                    const Box& bound) const {
   if (!initialized_) {
     ROS_WARN("%s: Tried to collision check without initializing.",
              name_.c_str());
@@ -96,36 +93,36 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d &p,
 
   // Helper function to check if any sphere in the given KdtreeMap overlaps
   // the given Box.
-  auto Overlaps = [&p, &bound](const KdtreeMap &kdtree, double largest_radius) {
+  auto overlaps = [&p, &bound](const KdtreeMap<3, double>& kdtree,
+                               double largest_radius) {
     // Get nearest neighbors.
     const auto neighbors = kdtree.RadiusSearch(
         p, largest_radius + std::max({bound.x, bound.y, bound.z}));
 
     // Check for overlaps.
     const Vector3d bound_vector(bound.x, bound.y, bound.z);
-    for (const auto &entry : neighbors) {
+    for (const auto& entry : neighbors) {
       // Find closest point to neighbor within bound.
       Vector3d closest_point;
       for (size_t ii = 0; ii < 3; ii++) {
         closest_point(ii) =
             std::min(p(ii) + bound_vector(ii),
-                     std::max(p(ii) - bound_vector(ii), entry.first));
+                     std::max(p(ii) - bound_vector(ii), entry.first(ii)));
       }
 
       // Is closest point within radius.
-      if ((closest_point - entry.first).norm() <= entry.second)
-        return true;
+      if ((closest_point - entry.first).norm() <= entry.second) return true;
     }
 
     return false;
-  }; //\Overlaps
+  };  //\overlaps
 
   // Check if this point is inside any obstacles.
-  if (Overlaps(obstacles_, largest_obstacle_radius_))
+  if (overlaps(obstacles_, largest_obstacle_radius_))
     return kOccupiedProbability;
 
   // Check if this point contains any unknown space.
-  if (!Overlaps(sensor_fovs_, largest_sensor_radius_))
+  if (!overlaps(sensor_fovs_, largest_sensor_radius_))
     return kUnknownProbability;
 
   return kFreeProbability;
@@ -135,11 +132,12 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d &p,
 // sensor measurement.
 // NOTE! This function needs to publish on `updated_topic_`.
 void BallsInBoxOccupancyMap::SensorCallback(
-    const fastrack_msgs::SensedSpheres::ConstPtr &msg) {
+    const fastrack_msgs::SensedSpheres::ConstPtr& msg) {
   // Add sensor FOV to kdtree.
-  sensor_fovs_.Insert({Vector3d(msg->sensor_position.x, msg->sensor_position.y,
-                                msg->sensor_position.z),
-                       sensor_radius});
+  sensor_fovs_.Insert(
+      std::make_pair(Vector3d(msg->sensor_position.x, msg->sensor_position.y,
+                              msg->sensor_position.z),
+                     msg->sensor_radius));
 
   // Check list lengths.
   if (msg->centers.size() != msg->radii.size())
@@ -158,7 +156,7 @@ void BallsInBoxOccupancyMap::SensorCallback(
     // If not unique, discard.
     bool unique = true;
     const auto neighbors = obstacles_.RadiusSearch(p, constants::kEpsilon);
-    for (const auto &entry : neighbors) {
+    for (const auto& entry : neighbors) {
       if (std::abs(r - entry.second) < constants::kEpsilon) {
         unique = false;
         break;
@@ -181,8 +179,8 @@ void BallsInBoxOccupancyMap::SensorCallback(
 }
 
 // Generate a sensor measurement as a service response.
-fastrack_msgs::SensedSpheres
-BallsInBoxOccupancyMap::SimulateSensor(const SphereSensorParams &params) const {
+fastrack_msgs::SensedSpheres BallsInBoxOccupancyMap::SimulateSensor(
+    const SphereSensorParams& params) const {
   fastrack_msgs::SensedSpheres msg;
 
   // Find nearest neighbors.
@@ -190,7 +188,7 @@ BallsInBoxOccupancyMap::SimulateSensor(const SphereSensorParams &params) const {
       params.position, params.range + largest_obstacle_radius_);
 
   // Check and see if any are actually in range.
-  for (const auto &entry : neighbors) {
+  for (const auto& entry : neighbors) {
     if ((params.position - entry.first).norm() < params.range + entry.second) {
       geometry_msgs::Vector3 c;
       c.x = entry.first(0);
@@ -207,8 +205,7 @@ BallsInBoxOccupancyMap::SimulateSensor(const SphereSensorParams &params) const {
 
 // Derived classes must have some sort of visualization through RViz.
 void BallsInBoxOccupancyMap::Visualize() const {
-  if (vis_pub_.getNumSubscribers() <= 0)
-    return;
+  if (vis_pub_.getNumSubscribers() <= 0) return;
 
   // Set up box marker.
   visualization_msgs::Marker cube;
@@ -245,9 +242,9 @@ void BallsInBoxOccupancyMap::Visualize() const {
   vis_pub_.publish(cube);
 
   // Visualize obstacles as spheres.
-  const auto &obstacle_registry = obstacles_.Registry();
+  const auto& obstacle_registry = obstacles_.Registry();
   for (size_t ii = 0; ii < obstacle_registry.size(); ii++) {
-    const auto &entry = obstacle_registry[ii];
+    const auto& entry = obstacle_registry[ii];
 
     visualization_msgs::Marker sphere;
     sphere.ns = "obstacles";
@@ -279,9 +276,9 @@ void BallsInBoxOccupancyMap::Visualize() const {
   }
 
   // Visualize sensor FOVs as spheres too.
-  const auto &sensor_registry = sensor_fovs_.Registry();
+  const auto& sensor_registry = sensor_fovs_.Registry();
   for (size_t ii = 0; ii < sensor_registry.size(); ii++) {
-    const auto &entry = sensor_registry[ii];
+    const auto& entry = sensor_registry[ii];
 
     visualization_msgs::Marker sphere;
     sphere.ns = "sensors";
@@ -313,5 +310,5 @@ void BallsInBoxOccupancyMap::Visualize() const {
   }
 }
 
-} //\namespace environment
-} //\namespace fastrack
+}  // namespace environment
+}  // namespace fastrack

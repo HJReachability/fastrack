@@ -43,10 +43,13 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#include <fastrack/control/control_bound.h>
 #include <fastrack/value/analytical_kinematic_box_quadrotor_decoupled_6d.h>
 
 namespace fastrack {
 namespace value {
+
+using fastrack::control::ControlBound;
 
 // Load parameters.
 bool AnalyticalKinematicBoxQuadrotorDecoupled6D::LoadParameters(
@@ -65,7 +68,7 @@ bool AnalyticalKinematicBoxQuadrotorDecoupled6D::LoadParameters(
   qc_lower.pitch = -qc_upper.pitch;
   qc_lower.roll = -qc_upper.roll;
 
-  tracker_dynamics_.Initialize(std::unique_ptr<QuadrotorControlBoundBox>(
+  tracker_dynamics_.Initialize(std::unique_ptr<ControlBound<QuadrotorControl>>(
       new QuadrotorControlBoundBox(qc_lower, qc_upper)));
 
   VectorXd max_planner_speed(3);
@@ -73,7 +76,7 @@ bool AnalyticalKinematicBoxQuadrotorDecoupled6D::LoadParameters(
   if (!nl.getParam("planner/vy", max_planner_speed(1))) return false;
   if (!nl.getParam("planner/vz", max_planner_speed(2))) return false;
 
-  planner_dynamics_.Initialize(std::unique_ptr<VectorBoundBox>(
+  planner_dynamics_.Initialize(std::unique_ptr<ControlBound<VectorXd>>(
       new VectorBoundBox(-max_planner_speed, max_planner_speed)));
 
   // Set relative dynamics.
@@ -162,7 +165,7 @@ double AnalyticalKinematicBoxQuadrotorDecoupled6D::Value(
 }
 
 // Compute the value function gradient at a pair of tracker/planner states.s
-PositionVelocityRelPositionVelocity
+std::unique_ptr<RelativeState<PositionVelocity, PositionVelocity>>
 AnalyticalKinematicBoxQuadrotorDecoupled6D::Gradient(
     const PositionVelocity& tracker_x,
     const PositionVelocity& planner_x) const {
@@ -204,7 +207,7 @@ AnalyticalKinematicBoxQuadrotorDecoupled6D::Gradient(
     }
   }
 
-  return std::unique_ptr<PositionVelocityRelPositionVelocity>(
+  return std::unique_ptr<RelativeState<PositionVelocity, PositionVelocity>>(
       new PositionVelocityRelPositionVelocity(pos_grad, vel_grad));
 }
 

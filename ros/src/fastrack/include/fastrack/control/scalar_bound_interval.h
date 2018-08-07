@@ -55,7 +55,10 @@ class ScalarBoundInterval : public ControlBound<double> {
 
   // Assume 'params' is [min, max].
   explicit ScalarBoundInterval(const std::vector<double> &params)
-      : min_(params[0]), max_(params_[1]) {}
+      : min_(params[0]), max_(params[1]) {
+    if (params.size() != 2)
+      throw std::runtime_error("Incorrect number of parameters.");
+  }
 
   // Derived classes must be able to check whether a query is inside the bound.
   inline bool Contains(const double &query) const {

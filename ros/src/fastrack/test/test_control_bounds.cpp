@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, The Regents of the University of California (Regents).
+ * Copyright (c) 2017, The Regents of the University of California (Regents).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,52 +36,32 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Utility for reading variables out of *.mat files.
+// Unit tests for control bounds.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_UTILS_MATLAB_FILE_READER_H
-#define FASTRACK_UTILS_MATLAB_FILE_READER_H
+#include <fastrack/control/quadrotor_control.h>
+#include <fastrack/control/quadrotor_control_bound_box.h>
+#include <fastrack/control/quadrotor_control_bound_cylinder.h>
+#include <fastrack/control/scalar_bound_interval.h>
+#include <fastrack/control/vector_bound_box.h>
 
-#include <fastrack/utils/uncopyable.h>
+#include <gtest/gtest.h>
 
-#include <matio.h>
-#include <stdexcept>
-#include <string>
-#include <vector>
+using namespace fastrack::control;
 
-namespace fastrack {
+namespace {
+// Min and max constants.
+static constexpr double kBoundMin = -1.0;
+static constexpr double kBoundMax = 1.0;
+}  // namespace
 
-class MatlabFileReader : private Uncopyable {
- public:
-  ~MatlabFileReader() { Close(); }
-  explicit MatlabFileReader() {}
-  explicit MatlabFileReader(const std::string& file_name) {
-    if (!Open(file_name))
-      throw std::runtime_error("Could not open file: " + file_name);
-  }
+TEST(ScalarBoundInterval, TestContains) {
+  const ScalarBoundInterval bound({kBoundMin, kBoundMax});
 
-  // Open and close a file. Open returns bool upon success.
-  bool Open(const std::string& file_name);
-  void Close() {
-    if (IsOpen()) Mat_Close(mat_fp_);
-  }
-
-  // Is this reader open?
-  bool IsOpen() { return mat_fp_; }
-
-  // Read scalar. Returns bool indicating success.
-  bool ReadScalar(const std::string& field_name, double* value);
-  bool ReadScalar(const std::string& field_name, size_t* value);
-
-  // Read vector. Returns bool indicating success.
-  bool ReadVector(const std::string& field_name, std::vector<double>* values);
-  bool ReadVector(const std::string& field_name, std::vector<size_t>* values);
-
- private:
-  mat_t* mat_fp_;
-};  //\class MatlabFileReader
-
-}  // namespace fastrack
-
-#endif
+  // Query a known point.
+  constexpr double query_good = 0.0;
+  constexpr double query_bad = 2.0;
+  EXPECT_TRUE(bound.Contains(query_good));
+  EXPECT_FALSE(bound.Contains(query_bad));
+}

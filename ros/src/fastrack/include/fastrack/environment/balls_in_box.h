@@ -63,7 +63,7 @@ class BallsInBox
 public:
   ~BallsInBox() {}
   explicit BallsInBox()
-      : Environment<fastrack::SensedSpheres, SphereSensorParams>() {}
+    : Environment<fastrack_msgs::SensedSpheres, SphereSensorParams>() {}
 
   // Derived classes must provide a collision checker which returns true if
   // and only if the provided position is a valid collision-free configuration.

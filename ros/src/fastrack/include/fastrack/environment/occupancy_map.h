@@ -50,6 +50,7 @@
 #ifndef FASTRACK_ENVIRONMENT_OCCUPANCY_MAP_H
 #define FASTRACK_ENVIRONMENT_OCCUPANCY_MAP_H
 
+#include <fastrack/environment/environment.h>
 #include <fastrack/bound/box.h>
 #include <fastrack/utils/types.h>
 
@@ -63,43 +64,43 @@ namespace environment {
 using bound::Box;
 
 template <typename M, typename P>
-class OccupancyMap : public Environment {
+class OccupancyMap : public Environment<M, P> {
  public:
   virtual ~OccupancyMap() {}
 
   // Initialize from a ROS NodeHandle.
-  bool Initialize(const ros::NodeHandle &n);
+  bool Initialize(const ros::NodeHandle& n);
 
   // Collision check is a threshold test on occupancy probability integrated
   // over the bound.
-  bool IsValid(const Vector3d &position, const Box &bound) const {
-    return initialized_ &&
+  bool IsValid(const Vector3d& position, const Box& bound) const {
+    return this->initialized_ &&
            OccupancyProbability(position, bound) < free_space_threshold_;
   }
 
   // Derived classes must provide an OccupancyProbability function for both
   // single points and tracking error bounds centered on a point.
-  virtual double OccupancyProbability(const Vector3d &position) const = 0;
-  virtual double OccupancyProbability(const Vector3d &position,
-                                      const Box &bound) const = 0;
+  virtual double OccupancyProbability(const Vector3d& position) const = 0;
+  virtual double OccupancyProbability(const Vector3d& position,
+                                      const Box& bound) const = 0;
 
   // Generate a sensor measurement.
-  virtual M SimulateSensor(const P &params) const = 0;
+  virtual M SimulateSensor(const P& params) const = 0;
 
   // Derived classes must have some sort of visualization through RViz.
   virtual void Visualize() const = 0;
 
  protected:
-  explicit OccupancyMap() : Environment() {}
+  explicit OccupancyMap() : Environment<M, P>() {}
 
   // Load parameters. This may be overridden by derived classes if needed
   // (they should still call this one via OccupancyMap::LoadParameters).
-  virtual bool LoadParameters(const ros::NodeHandle &n);
+  virtual bool LoadParameters(const ros::NodeHandle& n);
 
   // Update this environment with the information contained in the given
   // sensor measurement.
   // NOTE! This function needs to publish on `updated_topic_`.
-  virtual void SensorCallback(const typename M::ConstPtr &msg) = 0;
+  virtual void SensorCallback(const typename M::ConstPtr& msg) = 0;
 
   // Occupancy probability threshold below which a point/region is considered
   // to be free space.
@@ -111,21 +112,21 @@ class OccupancyMap : public Environment {
 // Load parameters. This may be overridden by derived classes if needed
 // (they should still call this one via OccupancyMap::LoadParameters).
 template <typename M, typename P>
-bool OccupancyMap<M, P>::LoadParameters(const ros::NodeHandle &n) {
+bool OccupancyMap<M, P>::LoadParameters(const ros::NodeHandle& n) {
   if (!Environment<M, P>::LoadParameters(n)) return false;
 
   ros::NodeHandle nl(n);
 
   // Free space threshold.
-  if (!nl.getParam("free_space_threshold", free_space_threshold_)) {
-    ROS_WARN("%s: Free space threshold was not provided.");
-    free_space_threshold_ = 0.1;
+  if (!nl.getParam("free_space_threshold", this->free_space_threshold_)) {
+    ROS_WARN("%s: Free space threshold was not provided.", this->name_.c_str());
+    this->free_space_threshold_ = 0.1;
   }
 
   return true;
 }
 
-}  //\namespace environment
-}  //\namespace fastrack
+}  // namespace environment
+}  // namespace fastrack
 
 #endif

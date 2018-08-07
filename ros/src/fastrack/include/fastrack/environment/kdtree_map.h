@@ -46,8 +46,8 @@
 #ifndef FASTRACK_ENVIRONMENT_KDTREE_MAP_H
 #define FASTRACK_ENVIRONMENT_KDTREE_MAP_H
 
-#include <utils/types.h>
-#include <utils/uncopyable.h>
+#include <fastrack/utils/types.h>
+#include <fastrack/utils/uncopyable.h>
 
 #include <flann/flann.h>
 #include <ros/ros.h>
@@ -55,33 +55,34 @@
 namespace fastrack {
 namespace environment {
 
-template <int K, typename V> class SearchableSet : private Uncopyable {
-public:
+template <int K, typename V>
+class KdtreeMap : private Uncopyable {
+ public:
   typedef Eigen::Matrix<double, K, 1> VectorKd;
 
   ~KdtreeMap() {}
   explicit KdtreeMap() {}
 
   // Insert a new pair into the kdtree.
-  bool Insert(const std::pair<VectorKd, V> &entry);
-  bool Insert(const VectorKd &key, const V &value) {
+  bool Insert(const std::pair<VectorKd, V>& entry);
+  bool Insert(const VectorKd& key, const V& value) {
     return Insert({key, value});
   }
 
   // Nearest neighbor search.
-  std::vector<std::pair<VectorKd, V>> KnnSearch(const VectorKd &query,
+  std::vector<std::pair<VectorKd, V>> KnnSearch(const VectorKd& query,
                                                 size_t k) const;
 
   // Radius search.
-  std::vector<std::pair<VectorKd, V>> RadiusSearch(const VectorKd &query,
+  std::vector<std::pair<VectorKd, V>> RadiusSearch(const VectorKd& query,
                                                    double r) const;
 
   // Accessor.
-  const std::vector<std::pair<VectorKd, V>> &Registry() const {
+  const std::vector<std::pair<VectorKd, V>>& Registry() const {
     return registry_;
   }
 
-private:
+ private:
   // A Flann kdtree. Searches in this index return indices, which are then
   // mapped to key-value pairs.
   std::unique_ptr<flann::KDTreeIndex<flann::L2<double>>> index_;
@@ -92,7 +93,7 @@ private:
 
 // Insert a new pair into the kdtree.
 template <int K, typename V>
-bool KdtreeMap<K, V>::Insert(const std::pair<VectorKd, V> &entry) {
+bool KdtreeMap<K, V>::Insert(const std::pair<VectorKd, V>& entry) {
   // Append to registry.
   registry_.push_back(entry);
 
@@ -120,8 +121,8 @@ bool KdtreeMap<K, V>::Insert(const std::pair<VectorKd, V> &entry) {
 
 // Nearest neighbor search.
 template <int K, typename V>
-std::vector<std::pair<VectorKd, V>>
-KdtreeMap<K, V>::KnnSearch(const VectorKd &query, size_t k) const {
+std::vector<std::pair<typename KdtreeMap<K, V>::VectorKd, V>>
+KdtreeMap<K, V>::KnnSearch(const VectorKd& query, size_t k) const {
   std::vector<std::pair<VectorKd, V>> neighbors;
 
   if (index_ == nullptr) {
@@ -130,7 +131,8 @@ KdtreeMap<K, V>::KnnSearch(const VectorKd &query, size_t k) const {
   }
 
   // Convert the input point to the FLANN format.
-  const flann::Matrix<double> flann_query(query.data(), 1, K);
+  VectorKd non_const_query(query);
+  const flann::Matrix<double> flann_query(non_const_query.data(), 1, K);
 
   // Search the kd tree for the nearest neighbor to the query.
   std::vector<std::vector<int>> query_match_indices;
@@ -149,8 +151,8 @@ KdtreeMap<K, V>::KnnSearch(const VectorKd &query, size_t k) const {
 
 // Radius search.
 template <int K, typename V>
-std::vector<std::pair<VectorKd, V>>
-KdtreeMap<K, V>::RadiusSearch(const VectorKd &query, double r) const {
+std::vector<std::pair<typename KdtreeMap<K, V>::VectorKd, V>>
+KdtreeMap<K, V>::RadiusSearch(const VectorKd& query, double r) const {
   std::vector<std::pair<VectorKd, V>> neighbors;
 
   if (index_ == nullptr) {
@@ -159,7 +161,8 @@ KdtreeMap<K, V>::RadiusSearch(const VectorKd &query, double r) const {
   }
 
   // Convert the input point to the FLANN format.
-  const flann::Matrix<double> flann_query(query.data(), 1, K);
+  VectorKd non_const_query(query);
+  const flann::Matrix<double> flann_query(non_const_query.data(), 1, K);
 
   // Search the kd tree for the nearest neighbor to the query.
   std::vector<std::vector<int>> query_match_indices;
@@ -177,7 +180,7 @@ KdtreeMap<K, V>::RadiusSearch(const VectorKd &query, double r) const {
   return neighbors;
 }
 
-} //\namespace planning
-} //\namespace fastrack
+}  // namespace environment
+}  // namespace fastrack
 
 #endif

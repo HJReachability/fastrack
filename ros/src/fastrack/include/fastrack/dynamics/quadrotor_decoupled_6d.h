@@ -61,7 +61,7 @@ using state::PositionVelocity;
 
 class QuadrotorDecoupled6D
     : public Dynamics<PositionVelocity, QuadrotorControl, Empty> {
-public:
+ public:
   ~QuadrotorDecoupled6D() {}
   explicit QuadrotorDecoupled6D()
       : Dynamics<PositionVelocity, QuadrotorControl, Empty>() {}
@@ -71,8 +71,14 @@ public:
             std::unique_ptr<ControlBound<QuadrotorControl>>(
                 new QuadrotorControlBoundBox(u_lower, u_upper))) {}
 
+  // Initialize by calling base class.
+  void Initialize(std::unique_ptr<ControlBound<QuadrotorControl>> bound) {
+    return Dynamics<PositionVelocity, QuadrotorControl, Empty>::Initialize(
+        bound);
+  }
+
   // Initialize from vector.
-  bool Initialize(const std::vector<double>& bound_params) {
+  bool Initialize(const std::vector<double> &bound_params) {
     if (bound_params.size() != 8) {
       ROS_ERROR("PlanarDubinsDynamics3D: bound params were incorrect size.");
       return false;
@@ -104,9 +110,8 @@ public:
   // the gradient of the value function at the specified state.
   // In this case (linear dynamics), the state is irrelevant given the
   // gradient of the value function at that state.
-  inline QuadrotorControl
-  OptimalControl(const PositionVelocity &x,
-                 const PositionVelocity &value_gradient) const {
+  inline QuadrotorControl OptimalControl(
+      const PositionVelocity &x, const PositionVelocity &value_gradient) const {
     // Check initialization.
     if (!initialized_)
       throw std::runtime_error(
@@ -138,9 +143,9 @@ public:
     throw std::runtime_error("QuadrotorDecoupled6D: FromRos is unimplemented.");
   }
 
-}; //\class QuadrotorDecoupled6D
+};  //\class QuadrotorDecoupled6D
 
-} // namespace dynamics
-} // namespace fastrack
+}  // namespace dynamics
+}  // namespace fastrack
 
 #endif

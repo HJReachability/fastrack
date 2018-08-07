@@ -54,8 +54,9 @@ namespace dynamics {
 
 using control::ControlBound;
 
-template <typename S, typename C, typename SR> class Dynamics {
-public:
+template <typename S, typename C, typename SR>
+class Dynamics {
+ public:
   // Destructor.
   virtual ~Dynamics() {}
 
@@ -66,7 +67,7 @@ public:
   }
 
   // Initialize from vector.
-  virtual bool Initialize(const std::vector<double>& bound_params) = 0;
+  virtual bool Initialize(const std::vector<double> &bound_params) = 0;
 
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
@@ -85,19 +86,19 @@ public:
   // Convert from the appropriate service response type.
   virtual void FromRos(const SR &res) = 0;
 
-protected:
+ protected:
   explicit Dynamics() : initialized_(false) {}
-  explicit Dynamics(std::unique_ptr<ControlBound<C>>& bound)
-      : control_bound_(bound.release()), initialized_(true) {}
+  explicit Dynamics(std::unique_ptr<ControlBound<C>> bound)
+    : control_bound_(bound.release()), initialized_(true) {}
 
   // Control bound.
   std::unique_ptr<const ControlBound<C>> control_bound_;
 
   // Initialization.
   bool initialized_;
-}; //\class Dynamics
+};  //\class Dynamics
 
-} // namespace dynamics
-} // namespace fastrack
+}  // namespace dynamics
+}  // namespace fastrack
 
 #endif

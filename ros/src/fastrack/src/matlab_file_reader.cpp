@@ -64,7 +64,7 @@ bool MatlabFileReader::ReadScalar(const std::string& field_name,
   matvar_t* variable = Mat_VarRead(mat_fp_, field_name.c_str());
   if (!variable || variable->data_type != MAT_T_DOUBLE) return false;
 
-  *value = *static_cast<double*>(variable);
+  *value = *static_cast<double*>(variable->data);
 
   // Free variable.
   Mat_VarFree(variable);
@@ -81,7 +81,7 @@ bool MatlabFileReader::ReadScalar(const std::string& field_name,
   matvar_t* variable = Mat_VarRead(mat_fp_, field_name.c_str());
   if (!variable || variable->data_type != MAT_T_UINT64) return false;
 
-  *value = *static_cast<size_t*>(variable);
+  *value = *static_cast<size_t*>(variable->data);
 
   // Free variable.
   Mat_VarFree(variable);
@@ -129,5 +129,3 @@ bool MatlabFileReader::ReadVector(const std::string& field_name,
 }
 
 }  // namespace fastrack
-
-#endif

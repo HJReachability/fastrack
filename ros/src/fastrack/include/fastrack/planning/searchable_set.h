@@ -46,8 +46,8 @@
 #ifndef FASTRACK_PLANNING_SEARCHABLE_SET_H
 #define FASTRACK_PLANNING_SEARCHABLE_SET_H
 
-#include <utils/types.h>
-#include <utils/uncopyable.h>
+#include <fastrack/utils/types.h>
+#include <fastrack/utils/uncopyable.h>
 
 #include <ros/ros.h>
 #include <flann/flann.h>

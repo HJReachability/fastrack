@@ -76,6 +76,12 @@ class Kinematics
             std::unique_ptr<ControlBound<VectorXd>>(
                 new VectorBoundBox(u_lower, u_upper))) {}
 
+  // Initialize by calling base class.
+  void Initialize(std::unique_ptr<ControlBound<VectorXd>> bound) {
+    Dynamics<S, VectorXd, fastrack_srvs::KinematicPlannerDynamics::Response>::
+      Initialize(bound);
+  }
+
   // Initialize from vector.
   bool Initialize(const std::vector<double>& bound_params) {
     if (bound_params.size() != 2 * S::ConfigurationDimension()) {
@@ -83,8 +89,8 @@ class Kinematics
       return false;
     }
 
-    control_bound_.reset(new VectorBoundBox(bound_params));
-    initialized_ = true;
+    this->control_bound_.reset(new VectorBoundBox(bound_params));
+    this->initialized_ = true;
     return true;
   }
 

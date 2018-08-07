@@ -46,8 +46,8 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_VALUE_VALUE_FUNCTION_H
-#define FASTRACK_VALUE_VALUE_FUNCTION_H
+#ifndef FASTRACK_VALUE_MATLAB_VALUE_FUNCTION_H
+#define FASTRACK_VALUE_MATLAB_VALUE_FUNCTION_H
 
 #include <fastrack/dynamics/dynamics.h>
 #include <fastrack/dynamics/relative_dynamics.h>

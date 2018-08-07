@@ -84,7 +84,7 @@ class AnalyticalKinematicBoxQuadrotorDecoupled6D
   double Value(const PositionVelocity& vehicle_x,
                const PositionVelocity& planner_x) const;
 
-  std::unique_ptr<PositionVelocityRelPositionVelocity> Gradient(
+  std::unique_ptr<RelativeState<PositionVelocity, PositionVelocity>> Gradient(
       const PositionVelocity& vehicle_x,
       const PositionVelocity& planner_x) const;
 

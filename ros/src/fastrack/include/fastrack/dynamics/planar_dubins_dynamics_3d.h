@@ -72,6 +72,13 @@ class PlanarDubinsDynamics3D
   inline double V() const { return v_; }
   inline double MaxOmega() const { return max_omega_; }
 
+  // Initialize by calling base class.
+  void Initialize(std::unique_ptr<ControlBound<double>> bound) {
+    Dynamics<PlanarDubins3D, double,
+             fastrack_srvs::PlanarDubinsPlannerDynamics::Response>::
+      Initialize(bound);
+  }
+
   // Initialize from vector.
   bool Initialize(const std::vector<double>& bound_params) {
     if (bound_params.size() != 2) {
@@ -88,7 +95,7 @@ class PlanarDubinsDynamics3D
   // as a function of current state and control.
   inline PositionVelocity Evaluate(const PlanarDubins3D& x,
                                    const double& u) const {
-    const Vector3d x_dot(v_*std::cos(x.Theta()), v_*std::sin(x.Theta()), u);
+    const Vector3d x_dot(v_ * std::cos(x.Theta()), v_ * std::sin(x.Theta()), u);
     return x_dot;
   }
 
