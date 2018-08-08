@@ -52,7 +52,7 @@ using namespace fastrack::control;
 
 namespace {
 // Min and max constants.
-static constexpr double kBoundMin = -1.0;
+static constexpr double kBoundMin = -2.0;
 static constexpr double kBoundMax = 1.0;
 }  // namespace
 
@@ -64,4 +64,14 @@ TEST(ScalarBoundInterval, TestContains) {
   constexpr double query_bad = 2.0;
   EXPECT_TRUE(bound.Contains(query_good));
   EXPECT_FALSE(bound.Contains(query_bad));
+}
+
+TEST(ScalarBoundInterval, TestProjectToSurface) {
+  const ScalarBoundInterval bound(std::vector<double>{kBoundMin, kBoundMax});
+
+  // Query a known point.
+  constexpr double query_pos = 0.1;
+  constexpr double query_neg = -0.1;
+  EXPECT_EQ(bound.ProjectToSurface(query_pos), kBoundMax);
+  EXPECT_EQ(bound.ProjectToSurface(query_neg), kBoundMin);
 }
