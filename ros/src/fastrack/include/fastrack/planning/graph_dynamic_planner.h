@@ -101,7 +101,7 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
     double time = constants::kInfinity;
     double cost_to_come = constants::kInfinity;
     bool is_viable = false;
-    Node::ConstPtr best_parent = nullptr;
+    Node::Ptr best_parent = nullptr;
     std::vector<Node::Ptr> children;
     std::vector<Trajectory<S>> trajs_to_children;
 
@@ -177,9 +177,10 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::Plan(
   goal_node->is_viable = true;
 
   // Generate trajectory.
-  const Trajectory<S> traj = RecursivePlan(SearchableSet<Node, S>(start_node),
-                                           SearchableSet<Node, S>(goal_node),
-                                           start_time, true, initial_call_time);
+  SearchableSet<Node, S> graph(start_node);
+  const SearchableSet<Node, S> goal_set(goal_node);
+  const Trajectory<S> traj =
+      RecursivePlan(graph, goal_set, start_time, true, initial_call_time);
 
   // Wait around if we finish early.
   const double elapsed_time = (ros::Time::now() - initial_call_time).toSec();
@@ -281,7 +282,12 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
         child->best_parent = sample_node;
 
         // Breath first search to update time / cost to come.
-        UpdateDescendants(sample_node);
+        // Will halt at the start node, which must be set carefully depending
+        // upon whether we are going outbound (away from the start) or not
+        // (toward the start).
+        const auto& start_node =
+            (outbound) ? graph.InitialNode() : goals.InitialNode();
+        UpdateDescendants(sample_node, start_node);
       }
 
       // Make sure all ancestors are viable.
@@ -329,9 +335,9 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory(
   // Accumulate trajectories in a list.
   std::list<Trajectory<S>> trajs;
 
-  typename Node::Ptr node = goal;
+  typename Node::ConstPtr node = goal;
   while (node != start || (node == start && trajs.size() == 0)) {
-    const typename Node::Ptr parent = node->best_parent;
+    const typename Node::ConstPtr parent = node->best_parent;
 
     if (parent == nullptr) {
       ROS_ERROR("%s: Parent was null.", this->name_.c_str());

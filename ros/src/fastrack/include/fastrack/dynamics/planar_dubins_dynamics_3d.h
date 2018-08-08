@@ -46,6 +46,9 @@
 
 #include <fastrack/dynamics/dynamics.h>
 #include <fastrack/state/planar_dubins_3d.h>
+#include <fastrack/control/scalar_bound_interval.h>
+#include <fastrack_srvs/PlanarDubinsPlannerDynamics.h>
+#include <fastrack_srvs/PlanarDubinsPlannerDynamicsResponse.h>
 
 #include <math.h>
 
@@ -53,24 +56,28 @@ namespace fastrack {
 namespace dynamics {
 
 using state::PlanarDubins3D;
+using control::ScalarBoundInterval;
 
 class PlanarDubinsDynamics3D
     : public Dynamics<PlanarDubins3D, double,
                       fastrack_srvs::PlanarDubinsPlannerDynamics::Response> {
  public:
-  ~QuadrotorDecoupled6D() {}
-  explicit QuadrotorDecoupled6D()
+  ~PlanarDubinsDynamics3D() {}
+  explicit PlanarDubinsDynamics3D()
       : Dynamics<PlanarDubins3D, double,
                  fastrack_srvs::PlanarDubinsPlannerDynamics::Response>() {}
-  explicit QuadrotorDecoupled6D(const double& u_lower, const double& u_upper)
+  explicit PlanarDubinsDynamics3D(const double& u_lower, const double& u_upper)
       : Dynamics<PlanarDubins3D, double,
                  fastrack_srvs::PlanarDubinsPlannerDynamics::Response>(
             std::unique_ptr<ControlBound<double>>(
                 new ScalarBoundInterval(u_lower, u_upper))) {}
 
   // Accessors.
-  inline double V() const { return v_; }
-  inline double MaxOmega() const { return max_omega_; }
+  double V() const { return v_; }
+  double MaxOmega() const { return max_omega_; }
+
+  // Compute turning radius.
+  double TurningRadius() const { return v_ / max_omega_; }
 
   // Initialize by calling base class.
   void Initialize(std::unique_ptr<ControlBound<double>> bound) {
@@ -93,9 +100,10 @@ class PlanarDubinsDynamics3D
 
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
-  inline PositionVelocity Evaluate(const PlanarDubins3D& x,
-                                   const double& u) const {
-    const Vector3d x_dot(v_ * std::cos(x.Theta()), v_ * std::sin(x.Theta()), u);
+  inline PlanarDubins3D Evaluate(const PlanarDubins3D& x,
+                                 const double& u) const {
+    const PlanarDubins3D x_dot(v_ * std::cos(x.Theta()),
+                               v_ * std::sin(x.Theta()), u);
     return x_dot;
   }
 
@@ -103,10 +111,11 @@ class PlanarDubinsDynamics3D
   // the gradient of the value function at the specified state.
   // In this case (linear dynamics), the state is irrelevant given the
   // gradient of the value function at that state.
-  inline PlanarDubins3D OptimalControl(
+  inline double OptimalControl(
       const PlanarDubins3D& x, const PlanarDubins3D& value_gradient) const {
     throw std::runtime_error(
         "PlanarDubinsDynamics3D: OptimalControl is unimplemented.");
+    return std::numeric_limits<double>::quiet_NaN();
   }
 
   // Convert to the appropriate service response type.

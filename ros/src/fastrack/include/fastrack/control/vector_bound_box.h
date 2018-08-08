@@ -79,10 +79,8 @@ class VectorBoundBox : public ControlBound<VectorXd> {
 
   // Derived classes must be able to check whether a query is inside the bound.
   inline bool Contains(const VectorXd &query) const {
-    if (min_.size() != query.size()) {
-      ROS_ERROR("VectorBoundBox: incorrect query dimension.");
-      return false;
-    }
+    if (min_.size() != query.size())
+      throw std::runtime_error("Incorrect query dimension.");
 
     for (size_t ii = 0; ii < min_.size(); ii++) {
       if (min_(ii) > query(ii) || query(ii) > max_(ii)) return false;
@@ -97,10 +95,8 @@ class VectorBoundBox : public ControlBound<VectorXd> {
   // of the bound so that it constitutes a meaningful direction with respect
   // to that origin.
   inline VectorXd ProjectToSurface(const VectorXd &query) const {
-    if (min_.size() != query.size()) {
-      ROS_ERROR("VectorBoundBox: incorrect query dimension.");
-      return VectorXd::Zero(min_.size());
-    }
+    if (min_.size() != query.size())
+      throw std::runtime_error("Incorrect query dimension.");
 
     VectorXd projection(min_.size());
     for (size_t ii = 0; ii < min_.size(); ii++)

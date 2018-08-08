@@ -218,6 +218,10 @@ fastrack_msgs::State PlanarDubins3D::ToRos() const {
   return msg;
 }
 
+// Get bounds of state space.
+const PlanarDubins3D& PlanarDubins3D::GetLower() { return lower_; }
+const PlanarDubins3D& PlanarDubins3D::GetUpper() { return upper_; }
+
 // Get bounds of configuration space.
 VectorXd PlanarDubins3D::GetConfigurationLower() {
   return lower_.Configuration();

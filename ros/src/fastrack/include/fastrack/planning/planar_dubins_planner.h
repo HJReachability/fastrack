@@ -51,6 +51,11 @@
 #include <fastrack/state/planar_dubins_3d.h>
 #include <fastrack/utils/types.h>
 
+#include <ompl/base/SpaceInformation.h>
+#include <ompl/geometric/SimpleSetup.h>
+#include <ompl/base/spaces/DubinsStateSpace.h>
+#include <ompl/base/spaces/SE2StateSpace.h>
+
 namespace fastrack {
 namespace planning {
 
@@ -79,8 +84,8 @@ class PlanarDubinsPlanner
                                      double start_time = 0.0) const;
 
   // Convert OMPL state to/from PlanarDubins3D.
-  PlanarDubins3D FromOMPL(const ob::State* ompl_state);
-  static ob::ScopedState<ob::SE2StateSpace> ToOMPL(
+  PlanarDubins3D FromOmplState(const ob::State* ompl_state) const;
+  static ob::ScopedState<ob::SE2StateSpace> ToOmplState(
       const PlanarDubins3D& state,
       const std::shared_ptr<ob::SE2StateSpace>& space);
 

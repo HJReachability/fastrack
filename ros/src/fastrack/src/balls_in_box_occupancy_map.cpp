@@ -203,6 +203,15 @@ fastrack_msgs::SensedSpheres BallsInBoxOccupancyMap::SimulateSensor(
   return msg;
 }
 
+// Load parameters. This may be overridden by derived classes if needed
+// (they should still call this one via OccupancyMap::LoadParameters).
+bool BallsInBoxOccupancyMap::LoadParameters(const ros::NodeHandle& n) {
+  if (!OccupancyMap::LoadParameters(n))
+    return false;
+
+  return true;
+}
+
 // Derived classes must have some sort of visualization through RViz.
 void BallsInBoxOccupancyMap::Visualize() const {
   if (vis_pub_.getNumSubscribers() <= 0) return;

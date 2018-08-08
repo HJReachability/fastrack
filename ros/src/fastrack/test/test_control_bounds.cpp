@@ -57,7 +57,7 @@ static constexpr double kBoundMax = 1.0;
 }  // namespace
 
 TEST(ScalarBoundInterval, TestContains) {
-  const ScalarBoundInterval bound({kBoundMin, kBoundMax});
+  const ScalarBoundInterval bound(std::vector<double>{kBoundMin, kBoundMax});
 
   // Query a known point.
   constexpr double query_good = 0.0;

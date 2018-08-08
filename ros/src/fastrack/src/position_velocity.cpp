@@ -242,6 +242,10 @@ fastrack_msgs::State PositionVelocity::ToRos() const {
   return msg;
 }
 
+// Get bounds of state space.
+const PositionVelocity& PositionVelocity::GetLower() { return lower_; }
+const PositionVelocity& PositionVelocity::GetUpper() { return upper_; }
+
 // Get bounds of configuration space.
 VectorXd PositionVelocity::GetConfigurationLower() {
   return lower_.Configuration();

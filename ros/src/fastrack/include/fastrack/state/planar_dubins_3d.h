@@ -115,6 +115,8 @@ public:
                         const PlanarDubins3D &upper);
   static void SetBounds(const std::vector<double> &lower,
                         const std::vector<double> &upper);
+  static const PlanarDubins3D& GetLower();
+  static const PlanarDubins3D& GetUpper();
   static VectorXd GetConfigurationLower();
   static VectorXd GetConfigurationUpper();
 

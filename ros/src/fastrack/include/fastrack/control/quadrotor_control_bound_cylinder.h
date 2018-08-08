@@ -57,22 +57,22 @@ class QuadrotorControlBoundCylinder : public ControlBound<QuadrotorControl> {
  public:
   ~QuadrotorControlBoundCylinder() {}
   explicit QuadrotorControlBoundCylinder(double radius,
-                                         double ScalarBoundInterval &yaw_rate,
-                                         double ScalarBoundInterval &thrust)
+                                         const ScalarBoundInterval& yaw_rate,
+                                         const ScalarBoundInterval& thrust)
       : pitch_roll_radius_(radius),
         yaw_rate_interval_(yaw_rate),
         thrust_interval_(thrust) {}
 
   // Assume 'params' is laid out as follows:
   // [radius, min yaw rate, min thrust, max yaw rate, max thrust]
-  explicit QuadrotorControlBoundCylinder(const std::vector<double> &params)
+  explicit QuadrotorControlBoundCylinder(const std::vector<double>& params)
       : pitch_roll_radius_(params[0]),
         yaw_rate_interval_(params[1], params[3]),
         thrust_interval_(params[2], params[4]) {}
 
   // Derived classes must be able to check whether a query is inside the
   // bound.
-  inline bool Contains(const QuadrotorControl &query) const {
+  inline bool Contains(const QuadrotorControl& query) const {
     return std::hypot(query.pitch, query.roll) < pitch_roll_radius_ &&
            yaw_rate_interval_.Contains(query.yaw_rate) &&
            thrust_interval_.Contains(query.thrust);
@@ -84,7 +84,7 @@ class QuadrotorControlBoundCylinder : public ControlBound<QuadrotorControl> {
   // of the bound so that it constitutes a meaningful direction with respect
   // to that origin.
   inline QuadrotorControl ProjectToSurface(
-      const QuadrotorControl &query) const {
+      const QuadrotorControl& query) const {
     // Compute scaling to project (pitch, roll) onto the cylinder.
     const double scaling =
         pitch_roll_radius_ / std::hypot(query.pitch, query.roll);

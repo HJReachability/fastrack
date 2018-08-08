@@ -50,7 +50,7 @@ namespace planning {
 // (but not necessarily recursively feasible).
 Trajectory<PlanarDubins3D> PlanarDubinsPlanner::SubPlan(
     const PlanarDubins3D& start, const PlanarDubins3D& goal,
-    double start_time = 0.0) const {
+    double start_time) const {
   // Create an OMPL state space.
   auto space = std::make_shared<ob::DubinsStateSpace>(dynamics_.TurningRadius());
 
@@ -62,10 +62,10 @@ Trajectory<PlanarDubins3D> PlanarDubinsPlanner::SubPlan(
   constexpr size_t kNumRealVectorBoundDimensions = 2;
   ob::RealVectorBounds bounds(kNumRealVectorBoundDimensions);
 
-  bounds.setLow(0, PlanarDubins3D::lower_.X());
-  bounds.setLow(1, PlanarDubins3D::lower_.Y());
-  bounds.setHigh(0, PlanarDubins3D::upper_.X());
-  bounds.setHigh(1, PlanarDubins3D::upper_.Y());
+  bounds.setLow(0, PlanarDubins3D::GetLower().X());
+  bounds.setLow(1, PlanarDubins3D::GetLower().Y());
+  bounds.setHigh(0, PlanarDubins3D::GetUpper().X());
+  bounds.setHigh(1, PlanarDubins3D::GetUpper().Y());
   space->setBounds(bounds);
 
   // Set up OMPL solver.
@@ -78,7 +78,7 @@ Trajectory<PlanarDubins3D> PlanarDubinsPlanner::SubPlan(
 
   // Solve.
   if (!ompl_setup.solve(max_runtime_)) {
-    ROS_WARN("%s: Could not compute a valid solution.");
+    ROS_WARN("%s: Could not compute a valid solution.", name_.c_str());
     return Trajectory<PlanarDubins3D>();
   }
 
@@ -106,7 +106,8 @@ Trajectory<PlanarDubins3D> PlanarDubinsPlanner::SubPlan(
 }
 
 // Convert OMPL state to/from PlanarDubins3D.
-PlanarDubins3D PlanarDubinsPlanner::FromOmplState(const ob::State* ompl_state) {
+PlanarDubins3D PlanarDubinsPlanner::FromOmplState(
+    const ob::State* ompl_state) const {
   // Catch null state.
   if (!ompl_state)
     throw std::runtime_error("PlanarDubinsPlanner: null OMPL state.");
@@ -116,8 +117,8 @@ PlanarDubins3D PlanarDubinsPlanner::FromOmplState(const ob::State* ompl_state) {
       static_cast<const ob::SE2StateSpace::StateType*>(ompl_state);
 
   // Populate PlanarDubins3D state.
-  return PlanarDubins3D(cast_state->values[0], cast_state->values[1],
-                        cast_state[2], dynamics_.V());
+  return PlanarDubins3D(cast_state->getX(), cast_state->getY(),
+                        cast_state->getYaw(), dynamics_.V());
 }
 
 ob::ScopedState<ob::SE2StateSpace> PlanarDubinsPlanner::ToOmplState(

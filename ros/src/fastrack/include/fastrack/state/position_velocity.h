@@ -116,6 +116,8 @@ public:
                         const PositionVelocity &upper);
   static void SetBounds(const std::vector<double> &lower,
                         const std::vector<double> &upper);
+  static const PositionVelocity& GetLower();
+  static const PositionVelocity& GetUpper();
   static VectorXd GetConfigurationLower();
   static VectorXd GetConfigurationUpper();
 
