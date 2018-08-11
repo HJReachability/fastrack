@@ -91,9 +91,8 @@ class VectorBoundBox : public ControlBound<VectorXd> {
 
   // Derived classes must be able to compute the projection of a vector
   // (represented as the templated type) onto the surface of the bound.
-  // NOTE: We will treat this vector as emanating from the natural origin
-  // of the bound so that it constitutes a meaningful direction with respect
-  // to that origin.
+  // NOTE: this is basically solving an LP with the bound as the feasible
+  // set and the query as the coefficients.
   inline VectorXd ProjectToSurface(const VectorXd &query) const {
     if (min_.size() != query.size())
       throw std::runtime_error("Incorrect query dimension.");

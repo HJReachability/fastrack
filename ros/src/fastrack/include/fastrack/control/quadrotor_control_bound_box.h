@@ -82,9 +82,8 @@ class QuadrotorControlBoundBox : public ControlBound<QuadrotorControl> {
 
   // Derived classes must be able to compute the projection of a vector
   // (represented as the templated type) onto the surface of the bound.
-  // NOTE: We will treat this vector as emanating from the natural origin
-  // of the bound so that it constitutes a meaningful direction with respect
-  // to that origin.
+  // NOTE: this is basically solving an LP with the bound as the feasible
+  // set and the query as the coefficients.
   inline QuadrotorControl ProjectToSurface(
       const QuadrotorControl &query) const {
     return QuadrotorControl(pitch_interval_.ProjectToSurface(query.pitch),
