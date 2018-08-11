@@ -32,6 +32,7 @@
  *
  * Please contact the author(s) of this library if you have any questions.
  * Authors: David Fridovich-Keil   ( dfk@eecs.berkeley.edu )
+ *          Jaime F. Fisac         ( jfisac@eecs.berkeley.edu )
  */
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -68,9 +69,9 @@ public:
         bearing_(std::atan2(tracker_x.Y() - planner_x.Y(),
                             tracker_x.X() - planner_x.X())),
         tangent_velocity_(std::cos(planner_x.Theta()) * tracker_x.Vx() +
-                          std::sin(planner_x.Theta()) * planner_x.Vy()),
+                          std::sin(planner_x.Theta()) * tracker_x.Vy()),
         normal_velocity_(-std::sin(planner_x.Theta()) * tracker_x.Vx() +
-                         std::cos(planner_x.Theta()) * planner_x.Vy()) {}
+                          std::cos(planner_x.Theta()) * tracker_x.Vy()) {}
 
   // Construct directly.
   explicit PositionVelocityRelPlanarDubins3D(double distance, double bearing,
@@ -117,11 +118,11 @@ private:
   // Relative bearing in the (x, y) plane.
   double bearing_;
 
-  // PositionVelocity's relative velocity along PlanarDubins3D's heading.
+  // PositionVelocity's absolute velocity along PlanarDubins3D's heading.
   // (in Frenet frame).
   double tangent_velocity_;
 
-  // PositionVelocity's relative velocity normal to PlanarDubins3D's heading.
+  // PositionVelocity's absolute velocity normal to PlanarDubins3D's heading.
   // (in Frenet frame).
   double normal_velocity_;
 }; //\class PositionVelocityRelPlanarDubins3D

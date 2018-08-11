@@ -32,6 +32,7 @@
  *
  * Please contact the author(s) of this library if you have any questions.
  * Authors: David Fridovich-Keil   ( dfk@eecs.berkeley.edu )
+ *          Jaime F. Fisac         ( jfisac@eecs.berkeley.edu )
  */
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -77,15 +78,21 @@ public:
     // Compute relative state.
     const PositionVelocityRelPlanarDubins3D relative_x(tracker_x, planner_x);
 
+    // Net instantaneous tangent velocity (PositionVelocity minus Dubins).
+    // This is used in the derivatives of relative position (distance, bearing).
+    // It is NOT used in the velocity derivatives because velocity states are
+    // absolute (even though they are expressed in the changing Dubins frame).
+    net_tangent_velocity = relative_x.TangentVelocity() - planner_x.V();
+
     // Relative distance derivative.
     const double distance_dot =
-        relative_x.TangentVelocity() * std::cos(relative_x.Bearing()) +
+        net_tangent_velocity * std::cos(relative_x.Bearing()) +
         relative_x.NormalVelocity() * std::sin(relative_x.Bearing());
 
     // Relative bearing derivative.
     const double bearing_dot =
         -planner_u +
-        (-relative_x.TangentVelocity() * std::sin(relative_x.Bearing()) +
+        (-net_tangent_velocity * std::sin(relative_x.Bearing()) +
           relative_x.NormalVelocity() * std::cos(relative_x.Bearing())) /
         relative_x.Distance(); // omega_circ = v_circ / R
 
