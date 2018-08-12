@@ -98,7 +98,7 @@ class MatlabValueFunction : public ValueFunction<TS, TC, TD, PS, PC, PD, B> {
   size_t StateToIndex(const VectorXd& x) const;
 
   // Compute the difference vector between this (relative) state and the center
-  // of the nearest voxel (i.e. voxel center minus state).
+  // of the nearest cell (i.e. cell center minus state).
   VectorXd DirectionToCenter(const VectorXd& x) const;
 
   // Accessor for precomputed gradient at the given state.
@@ -116,16 +116,16 @@ class MatlabValueFunction : public ValueFunction<TS, TC, TD, PS, PC, PD, B> {
   double priority_lower_;
   double priority_upper_;
 
-  // Number of voxels and upper/lower bounds in each dimension.
-  std::vector<size_t> num_voxels_;
-  std::vector<double> voxel_size_;
+  // Number of cells and upper/lower bounds in each dimension.
+  std::vector<size_t> num_cells_;
+  std::vector<double> cell_size_;
   std::vector<double> lower_;
   std::vector<double> upper_;
 
   // Value function itself is stored in row-major order.
   std::vector<double> data_;
 
-  // Gradient information at each voxel. One list per dimension, each in the
+  // Gradient information at each cell. One list per dimension, each in the
   // same order as 'data_'.
   std::vector<std::vector<double>> gradient_;
 };  //\class MatlabValueFunction
@@ -139,7 +139,7 @@ double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::Value(
     const TS& tracker_x, const PS& planner_x) const {
   const VectorXd relative_x = RS(tracker_x, planner_x).ToVector();
 
-  // Get distance from voxel center in each dimension.
+  // Get distance from cell center in each dimension.
   const VectorXd center_distance = DistanceToCenter(relative_x);
 
   // Interpolate.
@@ -150,17 +150,17 @@ double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::Value(
   for (size_t ii = 0; ii < relative_x.size(); ii++) {
     // Get neighboring value.
     if (center_distance(ii) >= 0.0)
-      neighbor(ii) += voxel_size_[ii];
+      neighbor(ii) += cell_size_[ii];
     else
-      neighbor(ii) -= voxel_size_[ii];
+      neighbor(ii) -= cell_size_[ii];
 
     const double neighbor_value = data_[StateToIndex(neighbor)];
     neighbor(ii) = relative_x(ii);
 
     // Compute forward difference.
     const double slope = (center_distance(ii) >= 0.0)
-                             ? (neighbor_value - nn_value) / voxel_size_[ii]
-                             : (nn_value - neighbor_value) / voxel_size_[ii];
+                             ? (neighbor_value - nn_value) / cell_size_[ii]
+                             : (nn_value - neighbor_value) / cell_size_[ii];
 
     // Add to the Taylor approximation.
     approx_value += slope * center_distance(ii);
@@ -209,18 +209,18 @@ size_t MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::StateToIndex(
       quantized.push_back(0);
     } else if (x(ii) > upper_[ii]) {
       ROS_WARN("%s: State is too large in dimension %zu.", name_.c_str(), ii);
-      quantized.push_back(num_voxels_[ii] - 1);
+      quantized.push_back(num_cells_[ii] - 1);
     } else {
       // In bounds, so quantize. This works because of 0-indexing and casting.
       quantized.push_back(
-          static_cast<size_t>((x(ii) - lower_[ii]) / voxel_size_[ii]));
+          static_cast<size_t>((x(ii) - lower_[ii]) / cell_size_[ii]));
     }
   }
 
   // Convert to row-major order.
   size_t idx = quantized[0];
   for (size_t ii = 1; ii < quantized.size(); ii++) {
-    idx *= num_voxels_[ii];
+    idx *= num_cells_[ii];
     idx += quantized[ii];
   }
 
@@ -247,13 +247,13 @@ template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename RS, typename RD, typename B>
 double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::LowerGridPoint(
     const VectorXd& x, size_t idx) const {
-  // Get center of nearest voxel.
+  // Get center of nearest cell.
   const double center =
-      0.5 * voxel_size_[idx] + lower_[idx] +
-      voxel_size_[idx] * std::floor((x(idx) - lower_[idx]) / voxel_size_[idx]);
+      0.5 * cell_size_[idx] + lower_[idx] +
+      cell_size_[idx] * std::floor((x(idx) - lower_[idx]) / cell_size_[idx]);
 
-  // Check if center is above us. If so, the lower bound is the voxel below.
-  return (center > x(idx)) ? center - voxel_size_[idx] : center;
+  // Check if center is above us. If so, the lower bound is the cell below.
+  return (center > x(idx)) ? center - cell_size_[idx] : center;
 }
 
 // Recursive helper function for gradient multilinear interpolation.
@@ -263,14 +263,14 @@ template <typename TS, typename TC, typename TD, typename PS, typename PC,
 VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::
     RecursiveGradientInterpolator(const VectorXd& x, size_t idx) {
   // Assume x's entries prior to idx are equal to the upper/lower bounds of
-  // the voxel containing x.
-  // Begin by computing the lower and upper bounds of the voxel containing x
+  // the cell containing x.
+  // Begin by computing the lower and upper bounds of the cell containing x
   // in dimension idx.
   const double lower = LowerGridPoint(x, idx);
-  const double upper = lower + voxel_size_[idx];
+  const double upper = lower + cell_size_[idx];
 
   // Compute the fractional distance between lower and upper.
-  const double fractional_dist = (x(idx) - lower) / voxel_size_[idx];
+  const double fractional_dist = (x(idx) - lower) / cell_size_[idx];
 
   // Split x along dimension idx.
   VectorXd x_lower = x;
@@ -303,7 +303,7 @@ bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::InitializeFromMatFi
   // Load each class variable.
   if (!reader.ReadScalar("priority_lower", &priority_lower_)) return false;
   if (!reader.ReadScalar("priority_upper", &priority_upper_)) return false;
-  if (!reader.ReadVector("num_voxels", &num_voxels_)) return false;
+  if (!reader.ReadVector("num_cells", &num_cells_)) return false;
   if (!reader.ReadVector("lower", &lower_)) return false;
   if (!reader.ReadVector("upper", &upper_)) return false;
   if (!reader.ReadVector("data", &data_)) return false;
@@ -314,35 +314,35 @@ bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::InitializeFromMatFi
     return false;
   }
 
-  if (num_voxels_.size() != lower_.size() || lower_.size() != upper_.size()) {
+  if (num_cells_.size() != lower_.size() || lower_.size() != upper_.size()) {
     ROS_ERROR("%s: Dimensions do not match.", name_.c_str());
     return false;
   }
 
-  const double total_num_voxels = std::accumulate(
-      num_voxels_.begin(), num_voxels_.end(), 1, std::multiplies<size_t>());
-  if (total_num_voxels == 0) {
-    ROS_ERROR("%s: 0 total voxels.", name_.c_str());
+  const double total_num_cells = std::accumulate(
+      num_cells_.begin(), num_cells_.end(), 1, std::multiplies<size_t>());
+  if (total_num_cells == 0) {
+    ROS_ERROR("%s: 0 total cells.", name_.c_str());
     return false;
   }
 
-  if (data_.size() != total_num_voxels) {
+  if (data_.size() != total_num_cells) {
     ROS_ERROR("%s: Grid data was of the wrong size.", name_.c_str());
     return false;
   }
 
-  // Compute voxel size.
-  for (size_t ii = 0; ii < num_voxels_.size(); ii++)
-    voxel_size_.emplace_back((upper_[ii] - lower_[ii]) /
-                             static_cast<double>(num_voxels_[ii]));
+  // Compute cell size.
+  for (size_t ii = 0; ii < num_cells_.size(); ii++)
+    cell_size_.emplace_back((upper_[ii] - lower_[ii]) /
+                             static_cast<double>(num_cells_[ii]));
 
   // Load gradients.
-  for (size_t ii = 0; ii < num_voxels_.size(); ii++) {
+  for (size_t ii = 0; ii < num_cells_.size(); ii++) {
     auto& partial = gradient_.emplace_back();
     if (!reader.ReadVector("deriv" + std::to_string(ii), &partial))
       return false;
 
-    if (partial.size() != total_num_voxels) {
+    if (partial.size() != total_num_cells) {
       ROS_ERROR("%s: Partial derivative in dimension %zu had incorrect size.",
                 name_.c_str(), ii);
       return false;

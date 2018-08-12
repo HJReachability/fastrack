@@ -93,10 +93,16 @@ tau = t0:dt:tMax;
 
 %% problem parameters
 
-% input bounds
+% Tracker input bound
 a_max_ = 2; % ~10º --> ~0.2 rad --> ~0.2 g --> ~2 m/s^2
+
+% Dubins input bound
 omega_max = pi/4; % rad/s
+
+% Disturbance bound
 d_max = 0.5; % m/s^2
+
+% Dubins car speed
 v = 0.5; % m/s
 
 % surface function is the distance between the point mass and the Dubins car
@@ -159,46 +165,30 @@ hold on
 surf(xs2(:,:,1,1),xs1(:,:,1,1),data0(:,:,1,1));
 surf(xs2(:,:,1,1),xs1(:,:,1,1),data(:,:,1,1,end));
 
-%% Compute optimal trajectory from some initial state
-if compTraj
-  pause
-  
-  %set the initial state
-  xinit = [3, 3, -pi];
-  
-  figure(6)
-  clf
-  h = visSetIm(g, data(:,:,:,end));
-  h.FaceAlpha = .3;
-  hold on
-  s = scatter3(xinit(1), xinit(2), xinit(3));
-  s.SizeData = 70;
-  
-  %check if this initial state is in the BRS/BRT
-  %value = eval_u(g, data, x)
-  value = eval_u(g,data(:,:,:,end),xinit);
-  
-  if value <= 0 %if initial state is in BRS/BRT
-    % find optimal trajectory
-    
-    dCar.x = xinit; %set initial state of the dubins car
+%% Save data to load into FaSTrack.
 
-    TrajextraArgs.uMode = uMode; %set if control wants to min or max
-    TrajextraArgs.visualize = true; %show plot
-    TrajextraArgs.fig_num = 2; %figure number
-    
-    %we want to see the first two dimensions (x and y)
-    TrajextraArgs.projDim = [1 1 0]; 
-    
-    %flip data time points so we start from the beginning of time
-    dataTraj = flip(data,4);
-    
-    % [traj, traj_tau] = ...
-    % computeOptTraj(g, data, tau, dynSys, extraArgs)
-    [traj, traj_tau] = ...
-      computeOptTraj(g, dataTraj, tau2, dCar, TrajextraArgs);
-  else
-    error(['Initial state is not in the BRS/BRT! It have a value of ' num2str(value,2)])
-  end
-end
+% Keep final step of value function computation only
+data = squeeze(data(:,:,:,:,end));
+
+% Choose TEB level set relative to the minimum nonempty level set
+level_set_margin = 0.1;
+
+% Define transition between free and forced control near the boundary
+threshold_lower = 0.1;
+threshold_upper = 0.8;
+priority_lower = min(data(:)) + level_set_margin*threshold_lower;
+priority_upper = min(data(:)) + level_set_margin*threshold_upper;
+
+% Grid size and bounds
+num_cells = N;
+lower = grid_min;
+upper = grid_max;
+
+%% TODO: define tracker_params, planner_params, bound_params consistent with
+% the Initialize() function in the appropriate class
+
+% Save in .mat file
+
+save value_function priority_upper priority_lower num_cells lower upper data
+
 % end
