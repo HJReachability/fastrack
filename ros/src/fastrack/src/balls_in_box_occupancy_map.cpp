@@ -58,15 +58,17 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p) const {
     return kOccupiedProbability;
 
   // Check if this point is inside any obstacles.
+  // NOTE: use KnnSearch instead of RadiusSearch for extra precision.
+  constexpr size_t kOneNearestNeighbor = 1;
   const std::vector<std::pair<Vector3d, double>> neighboring_obstacles =
-      obstacles_.RadiusSearch(p, largest_obstacle_radius_);
+      obstacles_.KnnSearch(p, kOneNearestNeighbor);
   for (const auto& entry : neighboring_obstacles) {
     if ((p - entry.first).norm() < entry.second) return kOccupiedProbability;
   }
 
   // Check if this point is inside any sensor FOVs.
   const std::vector<std::pair<Vector3d, double>> neighboring_sensors =
-      sensor_fovs_.RadiusSearch(p, largest_sensor_radius_);
+      sensor_fovs_.KnnSearch(p, kOneNearestNeighbor);
   for (const auto& entry : neighboring_sensors) {
     if ((p - entry.first).norm() < entry.second) return kFreeProbability;
   }
@@ -96,8 +98,10 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
   auto overlaps = [&p, &bound](const KdtreeMap<3, double>& kdtree,
                                double largest_radius) {
     // Get nearest neighbors.
-    const auto neighbors = kdtree.RadiusSearch(
-        p, largest_radius + std::max({bound.x, bound.y, bound.z}));
+    // NOTE: using KnnSearch instead of RadiusSearch because it seems to
+    // be more precise.
+    constexpr size_t kOneNearestNeighbor = 1;
+    const auto neighbors = kdtree.KnnSearch(p, kOneNearestNeighbor);
 
     // Check for overlaps.
     const Vector3d bound_vector(bound.x, bound.y, bound.z);
@@ -146,7 +150,6 @@ void BallsInBoxOccupancyMap::SensorCallback(
   const size_t num_obstacles = std::min(msg->centers.size(), msg->radii.size());
 
   // Add each unique obstacle to list.
-  // NOTE! Just using a linear search here for simplicity.
   bool any_unique = false;
   for (size_t ii = 0; ii < num_obstacles; ii++) {
     const Vector3d p(msg->centers[ii].x, msg->centers[ii].y,
@@ -155,9 +158,11 @@ void BallsInBoxOccupancyMap::SensorCallback(
 
     // If not unique, discard.
     bool unique = true;
-    const auto neighbors = obstacles_.RadiusSearch(p, constants::kEpsilon);
+    constexpr size_t kOneNearestNeighbor = 1;
+    const auto neighbors = obstacles_.KnnSearch(p, kOneNearestNeighbor);
     for (const auto& entry : neighbors) {
-      if (std::abs(r - entry.second) < constants::kEpsilon) {
+      if ((p - entry.first).squaredNorm() < constants::kEpsilon &&
+          std::abs(r - entry.second) < constants::kEpsilon) {
         unique = false;
         break;
       }
@@ -206,8 +211,7 @@ fastrack_msgs::SensedSpheres BallsInBoxOccupancyMap::SimulateSensor(
 // Load parameters. This may be overridden by derived classes if needed
 // (they should still call this one via OccupancyMap::LoadParameters).
 bool BallsInBoxOccupancyMap::LoadParameters(const ros::NodeHandle& n) {
-  if (!OccupancyMap::LoadParameters(n))
-    return false;
+  if (!OccupancyMap::LoadParameters(n)) return false;
 
   return true;
 }
