@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, The Regents of the University of California (Regents).
+ * Copyright (c) 2018, The Regents of the University of California (Regents).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,8 +43,8 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_PLANNING_SEARCHABLE_SET_H
-#define FASTRACK_PLANNING_SEARCHABLE_SET_H
+#ifndef FASTRACK_UTILS_SEARCHABLE_SET_H
+#define FASTRACK_UTILS_SEARCHABLE_SET_H
 
 #include <fastrack/utils/types.h>
 #include <fastrack/utils/uncopyable.h>
@@ -53,7 +53,6 @@
 #include <ros/ros.h>
 
 namespace fastrack {
-namespace planning {
 
 template <typename N, typename S>
 class SearchableSet : private Uncopyable {
@@ -200,7 +199,6 @@ std::vector<typename N::Ptr> SearchableSet<N, S>::RadiusSearch(const S& query,
   return neighbors;
 }
 
-}  //\namespace planning
 }  //\namespace fastrack
 
 #endif

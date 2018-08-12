@@ -43,8 +43,8 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_ENVIRONMENT_KDTREE_MAP_H
-#define FASTRACK_ENVIRONMENT_KDTREE_MAP_H
+#ifndef FASTRACK_UTILS_KDTREE_MAP_H
+#define FASTRACK_UTILS_KDTREE_MAP_H
 
 #include <fastrack/utils/types.h>
 #include <fastrack/utils/uncopyable.h>
@@ -53,7 +53,6 @@
 #include <ros/ros.h>
 
 namespace fastrack {
-namespace environment {
 
 template <int K, typename V>
 class KdtreeMap : private Uncopyable {
@@ -67,6 +66,15 @@ class KdtreeMap : private Uncopyable {
   bool Insert(const std::pair<VectorKd, V>& entry);
   bool Insert(const VectorKd& key, const V& value) {
     return Insert({key, value});
+  }
+
+  // Insert a bunch of entries.
+  template <typename Container>
+  bool Insert(const Container& pairs) {
+    for (const std::pair<VectorKd, V>& entry : pairs)
+      if (!Insert(entry)) return false;
+
+    return true;
   }
 
   // Nearest neighbor search.
@@ -102,17 +110,15 @@ bool KdtreeMap<K, V>::Insert(const std::pair<VectorKd, V>& entry) {
 
   // If this is the first point in the index, create the index and exit.
   if (index_ == nullptr) {
-    // Single kd-tree.
-    const int kNumTrees = 1;
+    constexpr int kNumTrees = 1;
     index_.reset(new flann::KDTreeIndex<flann::L2<double>>(
         flann_point, flann::KDTreeIndexParams(kNumTrees)));
-
     index_->buildIndex();
   } else {
     // If the index is already created, add the data point to the index.
-    // Rebuild every time the index floats in size to occasionally rebalance
+    // Rebuild every time the index doubles in size to occasionally rebalance
     // the kdtree.
-    const double kRebuildThreshold = 2.0;
+    constexpr float kRebuildThreshold = 2.0;
     index_->addPoints(flann_point, kRebuildThreshold);
   }
 
@@ -131,8 +137,8 @@ KdtreeMap<K, V>::KnnSearch(const VectorKd& query, size_t k) const {
   }
 
   // Convert the input point to the FLANN format.
-  VectorKd non_const_query(query);
-  const flann::Matrix<double> flann_query(non_const_query.data(), 1, K);
+  flann::Matrix<double> flann_query(new double[K], 1, K);
+  for (size_t ii = 0; ii < K; ii++) flann_query[0][ii] = query(ii);
 
   // Search the kd tree for the nearest neighbor to the query.
   std::vector<std::vector<int>> query_match_indices;
@@ -140,11 +146,14 @@ KdtreeMap<K, V>::KnnSearch(const VectorKd& query, size_t k) const {
 
   const int num_neighbors_found = index_->knnSearch(
       flann_query, query_match_indices, query_squared_distances,
-      static_cast<int>(k), flann::SearchParams(-1, 0.0, false));
+      static_cast<int>(k), flann::SearchParams(FLANN_CHECKS_UNLIMITED));
 
   // Assign output.
   for (size_t ii = 0; ii < num_neighbors_found; ii++)
     neighbors.push_back(registry_[query_match_indices[0][ii]]);
+
+  // Free flann_query memory.
+  delete[] flann_query.ptr();
 
   return neighbors;
 }
@@ -161,26 +170,30 @@ KdtreeMap<K, V>::RadiusSearch(const VectorKd& query, double r) const {
   }
 
   // Convert the input point to the FLANN format.
-  VectorKd non_const_query(query);
-  const flann::Matrix<double> flann_query(non_const_query.data(), 1, K);
+  flann::Matrix<double> flann_query(new double[K], 1, K);
+  for (size_t ii = 0; ii < K; ii++) flann_query[0][ii] = query(ii);
 
   // Search the kd tree for the nearest neighbor to the query.
   std::vector<std::vector<int>> query_match_indices;
   std::vector<std::vector<double>> query_squared_distances;
 
   // FLANN checks Euclidean distance squared, so we pass in r * r.
-  int num_neighbors_found = index_->radiusSearch(
+  constexpr double kExactSearch = 0.0;
+  constexpr bool kDoNotSort = false;
+  const int num_neighbors_found = index_->radiusSearch(
       flann_query, query_match_indices, query_squared_distances, r * r,
-      flann::SearchParams(-1, 0.0, false));
+      flann::SearchParams(FLANN_CHECKS_UNLIMITED, kExactSearch, kDoNotSort));
 
   // Assign output.
   for (size_t ii = 0; ii < num_neighbors_found; ii++)
     neighbors.push_back(registry_[query_match_indices[0][ii]]);
 
+  // Free flann_query memory.
+  delete[] flann_query.ptr();
+
   return neighbors;
 }
 
-}  // namespace environment
 }  // namespace fastrack
 
 #endif

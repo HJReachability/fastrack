@@ -45,7 +45,7 @@
 #ifndef FASTRACK_ENVIRONMENT_BALLS_IN_BOX_OCCUPANCY_MAP_H
 #define FASTRACK_ENVIRONMENT_BALLS_IN_BOX_OCCUPANCY_MAP_H
 
-#include <fastrack/environment/kdtree_map.h>
+#include <fastrack/utils/kdtree_map.h>
 #include <fastrack/environment/occupancy_map.h>
 #include <fastrack/sensor/sphere_sensor.h>
 #include <fastrack/sensor/sphere_sensor_params.h>

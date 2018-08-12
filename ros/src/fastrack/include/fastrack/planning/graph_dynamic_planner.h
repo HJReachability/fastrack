@@ -48,8 +48,8 @@
 
 #include <fastrack/dynamics/dynamics.h>
 #include <fastrack/planning/planner.h>
-#include <fastrack/planning/searchable_set.h>
 #include <fastrack/trajectory/trajectory.h>
+#include <fastrack/utils/searchable_set.h>
 #include <fastrack/utils/types.h>
 
 namespace fastrack {
