@@ -155,15 +155,11 @@ data0 = -data0;
 data  = -data;
 uMode = 'min';
 dMode = 'max';
-%% --- End negated computation ---
+% --- End negated computation ---
 
-% Plot surface function l(x) and value function V(x). It should be V(x) >= l(x).
-xs1 = g.xs{1};
-xs2 = g.xs{2};
-figure
-hold on
-surf(xs2(:,:,1,1),xs1(:,:,1,1),data0(:,:,1,1));
-surf(xs2(:,:,1,1),xs1(:,:,1,1),data(:,:,1,1,end));
+%% Plot surface function l(x) and value function V(x).
+
+[h_f, h_data, h_data0] = PlotValueXY(g,data,data0);
 
 %% Save data to load into FaSTrack.
 
