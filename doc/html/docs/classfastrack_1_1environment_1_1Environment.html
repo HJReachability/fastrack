@@ -41,12 +41,12 @@
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a39c4bdd093c5dc04a1c90fb1baf0c2cf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1environment_1_1Environment.html#a39c4bdd093c5dc04a1c90fb1baf0c2cf">AreValid</a> (const std::vector&lt; Vector3d &gt; &amp;positions, const Box &amp;bound) const </td></tr>
-<tr class="separator:a39c4bdd093c5dc04a1c90fb1baf0c2cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafd1f6e8bcc6571d4506e2f3b277fbf2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1environment_1_1Environment.html#aafd1f6e8bcc6571d4506e2f3b277fbf2">AreValid</a> (const std::vector&lt; Vector3d &gt; &amp;positions, const Box &amp;bound, double time=std::numeric_limits&lt; double &gt;::quiet_NaN()) const </td></tr>
+<tr class="separator:aafd1f6e8bcc6571d4506e2f3b277fbf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b21b5ced0dfa1e74ef2109b2448ac53"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1environment_1_1Environment.html#a4b21b5ced0dfa1e74ef2109b2448ac53">Initialize</a> (const ros::NodeHandle &amp;n)</td></tr>
 <tr class="separator:a4b21b5ced0dfa1e74ef2109b2448ac53"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e87d4beb1d9add5bcc9f7843f481370"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1environment_1_1Environment.html#a5e87d4beb1d9add5bcc9f7843f481370">IsValid</a> (const Vector3d &amp;position, const Box &amp;bound) const =0</td></tr>
-<tr class="separator:a5e87d4beb1d9add5bcc9f7843f481370"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a339d14bb9ffc95d1a0a06b20128d9361"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1environment_1_1Environment.html#a339d14bb9ffc95d1a0a06b20128d9361">IsValid</a> (const Vector3d &amp;position, const Box &amp;bound, double time=std::numeric_limits&lt; double &gt;::quiet_NaN()) const =0</td></tr>
+<tr class="separator:a339d14bb9ffc95d1a0a06b20128d9361"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74d807ad989d5839899f53a4af138a5a"><td class="memItemLeft" align="right" valign="top">virtual M&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1environment_1_1Environment.html#a74d807ad989d5839899f53a4af138a5a">SimulateSensor</a> (const P &amp;params) const =0</td></tr>
 <tr class="separator:a74d807ad989d5839899f53a4af138a5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a825588cff0b0700c41ce7def6b41d292"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfastrack_1_1environment_1_1Environment.html#a825588cff0b0700c41ce7def6b41d292">Visualize</a> () const =0</td></tr>
@@ -147,12 +147,12 @@ template&lt;typename M, typename P&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="environment_8h_source.html#l00085">85</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
+<p>Definition at line <a class="el" href="environment_8h_source.html#l00088">88</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a39c4bdd093c5dc04a1c90fb1baf0c2cf"></a>
+<a class="anchor" id="aafd1f6e8bcc6571d4506e2f3b277fbf2"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -168,7 +168,13 @@ template&lt;typename M , typename P &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const Box &amp;&#160;</td>
-          <td class="paramname"><em>bound</em>&#160;</td>
+          <td class="paramname"><em>bound</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>time</em> = <code>std::numeric_limits&lt;double&gt;::quiet_NaN()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -178,7 +184,7 @@ template&lt;typename M , typename P &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="environment_8h_source.html#l00192">192</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
+<p>Definition at line <a class="el" href="environment_8h_source.html#l00194">194</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
 
 </div>
 </div>
@@ -198,11 +204,11 @@ template&lt;typename M , typename P &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="environment_8h_source.html#l00125">125</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
+<p>Definition at line <a class="el" href="environment_8h_source.html#l00127">127</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a5e87d4beb1d9add5bcc9f7843f481370"></a>
+<a class="anchor" id="a339d14bb9ffc95d1a0a06b20128d9361"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -221,7 +227,13 @@ template&lt;typename M, typename P&gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const Box &amp;&#160;</td>
-          <td class="paramname"><em>bound</em>&#160;</td>
+          <td class="paramname"><em>bound</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>time</em> = <code>std::numeric_limits&lt;&#160;double&#160;&gt;::quiet_NaN()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -236,7 +248,7 @@ template&lt;typename M, typename P&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classfastrack_1_1environment_1_1BallsInBox.html#afd74edb5caf15b48a746edfe1de2ee59">fastrack::environment::BallsInBox</a>.</p>
+<p>Implemented in <a class="el" href="classfastrack_1_1environment_1_1BallsInBox.html#ae2b45358bc6bca0e11c4ed1757124474">fastrack::environment::BallsInBox</a>.</p>
 
 </div>
 </div>
@@ -266,7 +278,7 @@ template&lt;typename M , typename P &gt; </div>
 
 <p>Reimplemented in <a class="el" href="classfastrack_1_1environment_1_1BallsInBox.html#a4184d950bb44336b6009e436141258a0">fastrack::environment::BallsInBox</a>.</p>
 
-<p>Definition at line <a class="el" href="environment_8h_source.html#l00148">148</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
+<p>Definition at line <a class="el" href="environment_8h_source.html#l00150">150</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
 
 </div>
 </div>
@@ -294,7 +306,7 @@ template&lt;typename M , typename P &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="environment_8h_source.html#l00173">173</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
+<p>Definition at line <a class="el" href="environment_8h_source.html#l00175">175</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
 
 </div>
 </div>
@@ -400,7 +412,7 @@ template&lt;typename M, typename P&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="environment_8h_source.html#l00114">114</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
+<p>Definition at line <a class="el" href="environment_8h_source.html#l00116">116</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
 
 </div>
 </div>
@@ -424,7 +436,7 @@ template&lt;typename M, typename P&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="environment_8h_source.html#l00118">118</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
+<p>Definition at line <a class="el" href="environment_8h_source.html#l00120">120</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
 
 </div>
 </div>
@@ -448,7 +460,7 @@ template&lt;typename M, typename P&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="environment_8h_source.html#l00101">101</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
+<p>Definition at line <a class="el" href="environment_8h_source.html#l00103">103</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
 
 </div>
 </div>
@@ -472,7 +484,7 @@ template&lt;typename M, typename P&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="environment_8h_source.html#l00117">117</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
+<p>Definition at line <a class="el" href="environment_8h_source.html#l00119">119</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
 
 </div>
 </div>
@@ -496,7 +508,7 @@ template&lt;typename M, typename P&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="environment_8h_source.html#l00107">107</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
+<p>Definition at line <a class="el" href="environment_8h_source.html#l00109">109</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
 
 </div>
 </div>
@@ -520,7 +532,7 @@ template&lt;typename M, typename P&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="environment_8h_source.html#l00111">111</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
+<p>Definition at line <a class="el" href="environment_8h_source.html#l00113">113</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
 
 </div>
 </div>
@@ -544,7 +556,7 @@ template&lt;typename M, typename P&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="environment_8h_source.html#l00106">106</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
+<p>Definition at line <a class="el" href="environment_8h_source.html#l00108">108</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
 
 </div>
 </div>
@@ -568,7 +580,7 @@ template&lt;typename M, typename P&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="environment_8h_source.html#l00110">110</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
+<p>Definition at line <a class="el" href="environment_8h_source.html#l00112">112</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
 
 </div>
 </div>
@@ -592,7 +604,7 @@ template&lt;typename M, typename P&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="environment_8h_source.html#l00102">102</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
+<p>Definition at line <a class="el" href="environment_8h_source.html#l00104">104</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
 
 </div>
 </div>
@@ -616,7 +628,7 @@ template&lt;typename M, typename P&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="environment_8h_source.html#l00105">105</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
+<p>Definition at line <a class="el" href="environment_8h_source.html#l00107">107</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
 
 </div>
 </div>
@@ -640,7 +652,7 @@ template&lt;typename M, typename P&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="environment_8h_source.html#l00109">109</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
+<p>Definition at line <a class="el" href="environment_8h_source.html#l00111">111</a> of file <a class="el" href="environment_8h_source.html">environment.h</a>.</p>
 
 </div>
 </div>
@@ -653,7 +665,7 @@ template&lt;typename M, typename P&gt; </div>
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Thu Jul 26 2018 05:14:56</small>
+<small>autogenerated on Fri Aug 17 2018 07:11:57</small>
 </div>
 </body>
 </html>
