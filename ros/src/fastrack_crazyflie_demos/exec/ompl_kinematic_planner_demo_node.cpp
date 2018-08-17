@@ -47,6 +47,7 @@
 #include <fastrack/bound/box.h>
 
 #include <fastrack_srvs/KinematicPlannerDynamics.h>
+#include <fastrack_srvs/TrackingBoundBox.h>
 
 #include <ros/ros.h>
 
