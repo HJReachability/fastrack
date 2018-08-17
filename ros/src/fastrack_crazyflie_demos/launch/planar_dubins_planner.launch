@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+
+<launch>
+  <!-- Topics. -->
+  <arg name="sensor_sub_topic" default="/sensor" />
+  <arg name="updated_env_topic" default="/updated_env" />
+  <arg name="vis_topic" default="/vis/known_env" />
+
+  <!-- Services. -->
+  <arg name="replan_srv" default="/replan" />
+  <arg name="bound_srv" default="/bound" />
+  <arg name="dynamics_srv" default="/planner_dynamics" />
+
+  <!-- Fixed frame. -->
+  <arg name="fixed_frame" default="world" />
+
+  <!-- Maximum planning runtime (sec). -->
+  <arg name="max_runtime" default="0.5" />
+
+  <!-- Planning search radius and number of neighbors to attempt to connect. -->
+  <arg name="search_radius" default="1.0" />
+  <arg name="num_neighbors" default="5" />
+
+  <!-- State space bounds [x, y, z, vx, vy, vz].
+       NOTE! These should agree with the upper and lower environment bounds. -->
+  <arg name="state_upper" default="[10.0, 10.0, 10.0, 10.0, 10.0, 10.0]" />
+  <arg name="state_lower" default="[-10.0, -10.0, 0.0, -10.0, -10.0, -10.0]" />
+
+  <!-- Environment parameters. -->
+  <arg name="env_upper_x" default="10.0" />
+  <arg name="env_upper_y" default="10.0" />
+  <arg name="env_upper_z" default="10.0" />
+  <arg name="env_lower_x" default="10.0" />
+  <arg name="env_lower_y" default="10.0" />
+  <arg name="env_lower_z" default="0.0" />
+
+  <arg name="env_num_obstacles" default="0" />
+  <arg name="env_min_radius" default="0.5" />
+  <arg name="env_max_radius" default="1.0" />
+
+  <arg name="seed" default="0" />
+
+  <!-- OMPL kinematic planner node.  -->
+  <node name="planner"
+        pkg="fastrack_crazyflie_demos"
+        type="planar_dubins_planner_demo_node"
+        output="screen">
+    <param name="topic/sensor_sub" value="$(arg sensor_sub_topic)" />
+    <param name="topic/updated_env" value="$(arg updated_env_topic)" />
+    <param name="vis/env" value="$(arg vis_topic)" />
+
+    <param name="srv/replan" value="$(arg replan_srv)" />
+    <param name="srv/dynamics" value="$(arg dynamics_srv)" />
+    <param name="srv/bound" value="$(arg bound_srv)" />
+
+    <param name="max_runtime" value="$(arg max_runtime)" />
+    <param name="search_radius" value="$(arg search_radius)" />
+    <param name="num_neighbors" value="$(arg num_neighbors)" />
+
+    <param name="frame/fixed" value="$(arg fixed_frame)" />
+
+    <rosparam param="state/upper" subst_value="True">$(arg state_upper)</rosparam>
+    <rosparam param="state/lower" subst_value="True">$(arg state_lower)</rosparam>
+
+    <param name="env/upper/x" value="$(arg env_upper_x)" />
+    <param name="env/upper/y" value="$(arg env_upper_y)" />
+    <param name="env/upper/z" value="$(arg env_upper_z)" />
+    <param name="env/lower/x" value="$(arg env_lower_x)" />
+    <param name="env/lower/y" value="$(arg env_lower_y)" />
+    <param name="env/lower/z" value="$(arg env_lower_z)" />
+
+    <param name="env/num_obstacles" value="$(arg env_num_obstacles)" />
+    <param name="env/min_radius" value="$(arg env_min_radius)" />
+    <param name="env/max_radius" value="$(arg env_max_radius)" />
+    <param name="env/seed" value="$(arg seed)" />
+  </node>
+</launch>
