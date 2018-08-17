@@ -49,7 +49,9 @@ namespace environment {
 // Derived classes must provide a collision checker which returns true if
 // and only if the provided position is a valid collision-free configuration.
 // Provide a separate collision check for each type of tracking error bound.
-bool BallsInBox::IsValid(const Vector3d& position, const Box& bound) const {
+// Ignores 'time' since this is a time-invariant environment.
+bool BallsInBox::IsValid(const Vector3d& position, const Box& bound,
+                         double time) const {
   if (!initialized_) {
     ROS_WARN("%s: Tried to collision check an uninitialized BallsInBox.",
              name_.c_str());

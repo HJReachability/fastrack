@@ -51,17 +51,17 @@
 #include <fastrack/utils/types.h>
 
 #include <ros/ros.h>
-#include <visualization_msgs/Marker.h>
 #include <std_msgs/Empty.h>
+#include <visualization_msgs/Marker.h>
 
 namespace fastrack {
 namespace environment {
 
 using bound::Box;
 
-template<typename M, typename P>
+template <typename M, typename P>
 class Environment {
-public:
+ public:
   virtual ~Environment() {}
 
   // Initialize from a ROS NodeHandle.
@@ -70,10 +70,13 @@ public:
   // Derived classes must provide a collision checker which returns true if
   // and only if the provided position is a valid collision-free configuration.
   // Provide a separate collision check for each type of tracking error bound.
-  virtual bool IsValid(const Vector3d& position, const Box& bound) const = 0;
+  virtual bool IsValid(
+      const Vector3d& position, const Box& bound,
+      double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
 
   // Utility for checking multiple positions.
-  bool AreValid(const std::vector<Vector3d>& positions, const Box& bound) const;
+  bool AreValid(const std::vector<Vector3d>& positions, const Box& bound,
+                double time = std::numeric_limits<double>::quiet_NaN()) const;
 
   // Generate a sensor measurement.
   virtual M SimulateSensor(const P& params) const = 0;
@@ -81,9 +84,8 @@ public:
   // Derived classes must have some sort of visualization through RViz.
   virtual void Visualize() const = 0;
 
-protected:
-  explicit Environment()
-    : initialized_(false) {}
+ protected:
+  explicit Environment() : initialized_(false) {}
 
   // Load parameters. This may be overridden by derived classes if needed
   // (they should still call this one via Environment::LoadParameters).
@@ -116,12 +118,12 @@ protected:
   // Naming and initialization.
   std::string name_;
   bool initialized_;
-}; //\class Environment
+};  //\class Environment
 
 // ----------------------------- IMPLEMENTATION ----------------------------- //
 
 // Initialize from a ROS NodeHandle.
-template<typename M, typename P>
+template <typename M, typename P>
 bool Environment<M, P>::Initialize(const ros::NodeHandle& n) {
   name_ = ros::names::append(n.getNamespace(), "Environment");
 
@@ -144,7 +146,7 @@ bool Environment<M, P>::Initialize(const ros::NodeHandle& n) {
 
 // Load parameters. This may be overridden by derived classes if needed
 // (they should still call this one via Environment::LoadParameters).
-template<typename M, typename P>
+template <typename M, typename P>
 bool Environment<M, P>::LoadParameters(const ros::NodeHandle& n) {
   ros::NodeHandle nl(n);
 
@@ -169,38 +171,37 @@ bool Environment<M, P>::LoadParameters(const ros::NodeHandle& n) {
 }
 
 // Register callbacks.
-template<typename M, typename P>
+template <typename M, typename P>
 bool Environment<M, P>::RegisterCallbacks(const ros::NodeHandle& n) {
   ros::NodeHandle nl(n);
 
   // Subscribers.
-  sensor_sub_ = nl.subscribe(
-    sensor_topic_.c_str(), 1, &Environment<M, P>::SensorCallback, this);
+  sensor_sub_ = nl.subscribe(sensor_topic_.c_str(), 1,
+                             &Environment<M, P>::SensorCallback, this);
 
   // Publishers.
-  vis_pub_ = nl.advertise<visualization_msgs::Marker>(
-    vis_topic_.c_str(), 1, false);
+  vis_pub_ =
+      nl.advertise<visualization_msgs::Marker>(vis_topic_.c_str(), 1, false);
 
-  updated_pub_ = nl.advertise<std_msgs::Empty>(
-    updated_topic_.c_str(), 1, false);
+  updated_pub_ =
+      nl.advertise<std_msgs::Empty>(updated_topic_.c_str(), 1, false);
 
   return true;
 }
 
 // Provide auxiliary validity checkers for sets of positions.
-template<typename M, typename P>
-bool Environment<M, P>::AreValid(
-  const std::vector<Vector3d>& positions, const Box& bound) const {
+template <typename M, typename P>
+bool Environment<M, P>::AreValid(const std::vector<Vector3d>& positions,
+                                 const Box& bound, double time) const {
   // Return Boolean AND of all IsValid calls.
   for (const auto& p : positions) {
-    if (!IsValid(p, bound))
-      return false;
+    if (!IsValid(p, bound, time)) return false;
   }
 
   return true;
 }
 
-} //\namespace environment
-} //\namespace fastrack
+}  //\namespace environment
+}  //\namespace fastrack
 
 #endif

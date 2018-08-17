@@ -48,36 +48,37 @@
 #include <fastrack/sensor/sphere_sensor_params.h>
 #include <fastrack_msgs/SensedSpheres.h>
 
-#include <ros/ros.h>
-#include <visualization_msgs/Marker.h>
 #include <geometry_msgs/Point.h>
 #include <geometry_msgs/Vector3.h>
+#include <ros/ros.h>
+#include <visualization_msgs/Marker.h>
 
 namespace fastrack {
 namespace environment {
 
 using sensor::SphereSensorParams;
 
-class BallsInBox : public Environment<
-  fastrack_msgs::SensedSpheres, SphereSensorParams> {
-public:
+class BallsInBox
+    : public Environment<fastrack_msgs::SensedSpheres, SphereSensorParams> {
+ public:
   ~BallsInBox() {}
-  explicit BallsInBox()
-    : Environment() {}
+  explicit BallsInBox() : Environment() {}
 
   // Derived classes must provide a collision checker which returns true if
   // and only if the provided position is a valid collision-free configuration.
   // Provide a separate collision check for each type of tracking error bound.
-  bool IsValid(const Vector3d& position, const Box& bound) const;
+  // Ignores 'time' since this is a time-invariant environment.
+  bool IsValid(const Vector3d& position, const Box& bound,
+               double time = std::numeric_limits<double>::quiet_NaN()) const;
 
   // Generate a sensor measurement.
   fastrack_msgs::SensedSpheres SimulateSensor(
-    const SphereSensorParams& params) const;
+      const SphereSensorParams& params) const;
 
   // Derived classes must have some sort of visualization through RViz.
   void Visualize() const;
 
-private:
+ private:
   // Load parameters. This may be overridden by derived classes if needed
   // (they should still call this one via Environment::LoadParameters).
   bool LoadParameters(const ros::NodeHandle& n);
@@ -89,14 +90,14 @@ private:
 
   // Generate random obstacles.
   void GenerateObstacles(size_t num, double min_radius, double max_radius,
-                         unsigned int seed=0);
+                         unsigned int seed = 0);
 
   // Obstacle centers and radii.
   std::vector<Vector3d> centers_;
   std::vector<double> radii_;
-}; //\class Environment
+};  //\class Environment
 
-} //\namespace environment
-} //\namespace fastrack
+}  //\namespace environment
+}  //\namespace fastrack
 
 #endif
