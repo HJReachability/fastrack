@@ -46,15 +46,14 @@
 
 #include <fastrack/bound/box.h>
 #include <fastrack/dynamics/planar_dubins_dynamics_3d.h>
-#include <fastrack/environment/balls_in_box_occupancy_map.h>
 #include <fastrack/planning/graph_dynamic_planner.h>
 #include <fastrack/state/planar_dubins_3d.h>
 #include <fastrack/utils/types.h>
 
 #include <ompl/base/SpaceInformation.h>
-#include <ompl/geometric/SimpleSetup.h>
 #include <ompl/base/spaces/DubinsStateSpace.h>
 #include <ompl/base/spaces/SE2StateSpace.h>
+#include <ompl/geometric/SimpleSetup.h>
 
 namespace fastrack {
 namespace planning {
@@ -67,14 +66,17 @@ using state::PlanarDubins3D;
 namespace ob = ompl::base;
 namespace og = ompl::geometric;
 
+template <typename E, typename B, typename SB>
 class PlanarDubinsPlanner
-    : public GraphDynamicPlanner<PlanarDubins3D, BallsInBoxOccupancyMap,
-                                 PlanarDubinsDynamics3D,
-                                 fastrack_srvs::PlanarDubinsPlannerDynamics,
-                                 Box, fastrack_srvs::TrackingBoundBox> {
+    : public GraphDynamicPlanner<PlanarDubins3D, E, PlanarDubinsDynamics3D,
+                                 fastrack_srvs::PlanarDubinsPlannerDynamics, B,
+                                 SB> {
  public:
   ~PlanarDubinsPlanner() {}
-  explicit PlanarDubinsPlanner() {}
+  explicit PlanarDubinsPlanner()
+      : GraphDynamicPlanner<PlanarDubins3D, E, PlanarDubinsDynamics3D,
+                            fastrack_srvs::PlanarDubinsPlannerDynamics, B,
+                            SB>() {}
 
  private:
   // Generate a sub-plan that connects two states and is dynamically feasible
@@ -90,6 +92,100 @@ class PlanarDubinsPlanner
       const std::shared_ptr<ob::SE2StateSpace>& space);
 
 };  //\class PlanarDubinsPlanner
+
+// ----------------------------- IMPLEMENTATION ----------------------------  //
+
+// Generate a sub-plan that connects two states and is dynamically feasible
+// (but not necessarily recursively feasible).
+template <typename E, typename B, typename SB>
+Trajectory<PlanarDubins3D> PlanarDubinsPlanner<E, B, SB>::SubPlan(
+    const PlanarDubins3D& start, const PlanarDubins3D& goal,
+    double start_time) const {
+  // Create an OMPL state space.
+  auto space =
+      std::make_shared<ob::DubinsStateSpace>(dynamics_.TurningRadius());
+
+  // Parse start/goal states into OMPL format.
+  const auto& ompl_start = ToOmplState(start, space);
+  const auto& ompl_goal = ToOmplState(goal, space);
+
+  // Set up state space bounds.
+  constexpr size_t kNumRealVectorBoundDimensions = 2;
+  ob::RealVectorBounds bounds(kNumRealVectorBoundDimensions);
+
+  bounds.setLow(0, PlanarDubins3D::GetLower().X());
+  bounds.setLow(1, PlanarDubins3D::GetLower().Y());
+  bounds.setHigh(0, PlanarDubins3D::GetUpper().X());
+  bounds.setHigh(1, PlanarDubins3D::GetUpper().Y());
+  space->setBounds(bounds);
+
+  // Set up OMPL solver.
+  og::SimpleSetup ompl_setup(space);
+  ompl_setup.setStateValidityChecker([&](const ob::State* state) {
+    return env_.AreValid(FromOmplState(state).OccupiedPositions(), bound_);
+  });
+
+  ompl_setup.setStartAndGoalStates(ompl_start, ompl_goal);
+
+  // Solve.
+  if (!ompl_setup.solve(max_runtime_)) {
+    ROS_WARN("%s: Could not compute a valid solution.", name_.c_str());
+    return Trajectory<PlanarDubins3D>();
+  }
+
+  // Unpack the solution, upsample to include roughly the states used for
+  // validity checking at planning time, and assign timesteps.
+  auto path = ompl_setup.getSolutionPath();
+  path.interpolate();
+
+  std::vector<PlanarDubins3D> states;
+  std::vector<double> times;
+
+  double time = start_time;
+  for (size_t ii = 0; ii < path.getStateCount(); ii++) {
+    const auto state = FromOmplState(path.getState(ii));
+
+    if (ii > 0)
+      time +=
+          (state.Position() - states.back().Position()).norm() / dynamics_.V();
+
+    states.emplace_back(state);
+    times.emplace_back(time);
+  }
+
+  return Trajectory<PlanarDubins3D>(states, times);
+}
+
+// Convert OMPL state to/from PlanarDubins3D.
+template <typename E, typename B, typename SB>
+PlanarDubins3D PlanarDubinsPlanner<E, B, SB>::FromOmplState(
+    const ob::State* ompl_state) const {
+  // Catch null state.
+  if (!ompl_state)
+    throw std::runtime_error("PlanarDubinsPlanner: null OMPL state.");
+
+  // Cast to proper type.
+  const ob::SE2StateSpace::StateType* cast_state =
+      static_cast<const ob::SE2StateSpace::StateType*>(ompl_state);
+
+  // Populate PlanarDubins3D state.
+  return PlanarDubins3D(cast_state->getX(), cast_state->getY(),
+                        cast_state->getYaw(), dynamics_.V());
+}
+
+template <typename E, typename B, typename SB>
+ob::ScopedState<ob::SE2StateSpace> PlanarDubinsPlanner<E, B, SB>::ToOmplState(
+    const PlanarDubins3D& state,
+    const std::shared_ptr<ob::SE2StateSpace>& space) {
+  ob::ScopedState<ob::SE2StateSpace> ompl_state(space);
+
+  // Populate each field.
+  ompl_state[0] = state.X();
+  ompl_state[1] = state.Y();
+  ompl_state[2] = state.Theta();
+
+  return ompl_state;
+}
 
 }  // namespace planning
 }  // namespace fastrack

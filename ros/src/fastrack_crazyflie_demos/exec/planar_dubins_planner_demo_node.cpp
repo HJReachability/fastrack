@@ -40,7 +40,11 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#include <fastrack/bound/box.h>
+#include <fastrack/environment/balls_in_box_occupancy_map.h>
 #include <fastrack/planning/planar_dubins_planner.h>
+
+#include <fastrack_srvs/TrackingBoundBox.h>
 
 #include <ros/ros.h>
 
@@ -48,7 +52,10 @@ int main(int argc, char** argv) {
   ros::init(argc, argv, "PlannerDemo");
   ros::NodeHandle n("~");
 
-  fastrack::planning::PlanarDubinsPlanner planner;
+  fastrack::planning::PlanarDubinsPlanner<
+      fastrack::environment::BallsInBoxOccupancyMap, fastrack::bound::Box,
+      fastrack_srvs::TrackingBoundBox>
+      planner;
 
   if (!planner.Initialize(n)) {
     ROS_ERROR("%s: Failed to initialize planner.",
