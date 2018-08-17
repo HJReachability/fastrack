@@ -373,8 +373,8 @@ bool GraphDynamicPlanner<S, E, D, SD, B, SB>::LoadParameters(
 
   // Search parameters.
   int k;
-  if (!nl.getParam("planner/search_radius", this->search_radius_)) return false;
-  if (!nl.getParam("planner/num_neighbors", k)) return false;
+  if (!nl.getParam("search_radius", this->search_radius_)) return false;
+  if (!nl.getParam("num_neighbors", k)) return false;
   this->num_neighbors_ = static_cast<size_t>(k);
 
   return true;
