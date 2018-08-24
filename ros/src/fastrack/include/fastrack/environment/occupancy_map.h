@@ -68,9 +68,6 @@ class OccupancyMap : public Environment<M, P> {
  public:
   virtual ~OccupancyMap() {}
 
-  // Initialize from a ROS NodeHandle.
-  bool Initialize(const ros::NodeHandle& n);
-
   // Collision check is a threshold test on occupancy probability integrated
   // over the bound.
   bool IsValid(const Vector3d& position, const Box& bound) const {
