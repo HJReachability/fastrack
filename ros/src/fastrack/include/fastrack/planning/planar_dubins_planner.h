@@ -103,7 +103,7 @@ Trajectory<PlanarDubins3D> PlanarDubinsPlanner<E, B, SB>::SubPlan(
     double start_time) const {
   // Create an OMPL state space.
   auto space =
-      std::make_shared<ob::DubinsStateSpace>(dynamics_.TurningRadius());
+      std::make_shared<ob::DubinsStateSpace>(this->dynamics_.TurningRadius());
 
   // Parse start/goal states into OMPL format.
   const auto& ompl_start = ToOmplState(start, space);
@@ -122,14 +122,15 @@ Trajectory<PlanarDubins3D> PlanarDubinsPlanner<E, B, SB>::SubPlan(
   // Set up OMPL solver.
   og::SimpleSetup ompl_setup(space);
   ompl_setup.setStateValidityChecker([&](const ob::State* state) {
-    return env_.AreValid(FromOmplState(state).OccupiedPositions(), bound_);
+    return this->env_.AreValid(FromOmplState(state).OccupiedPositions(),
+                               this->bound_);
   });
 
   ompl_setup.setStartAndGoalStates(ompl_start, ompl_goal);
 
   // Solve.
-  if (!ompl_setup.solve(max_runtime_)) {
-    ROS_WARN("%s: Could not compute a valid solution.", name_.c_str());
+  if (!ompl_setup.solve(this->max_runtime_)) {
+    ROS_WARN("%s: Could not compute a valid solution.", this->name_.c_str());
     return Trajectory<PlanarDubins3D>();
   }
 
@@ -147,7 +148,7 @@ Trajectory<PlanarDubins3D> PlanarDubinsPlanner<E, B, SB>::SubPlan(
 
     if (ii > 0)
       time +=
-          (state.Position() - states.back().Position()).norm() / dynamics_.V();
+          (state.Position() - states.back().Position()).norm() / this->dynamics_.V();
 
     states.emplace_back(state);
     times.emplace_back(time);
@@ -170,7 +171,7 @@ PlanarDubins3D PlanarDubinsPlanner<E, B, SB>::FromOmplState(
 
   // Populate PlanarDubins3D state.
   return PlanarDubins3D(cast_state->getX(), cast_state->getY(),
-                        cast_state->getYaw(), dynamics_.V());
+                        cast_state->getYaw(), this->dynamics_.V());
 }
 
 template <typename E, typename B, typename SB>
