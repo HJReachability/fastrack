@@ -80,7 +80,7 @@ class QuadrotorDecoupled6D
   // Initialize from vector.
   bool Initialize(const std::vector<double> &bound_params) {
     if (bound_params.size() != 8) {
-      ROS_ERROR("PlanarDubinsDynamics3D: bound params were incorrect size.");
+      ROS_ERROR("QuadrotorDecoupled6D: bound params were incorrect size.");
       return false;
     }
 

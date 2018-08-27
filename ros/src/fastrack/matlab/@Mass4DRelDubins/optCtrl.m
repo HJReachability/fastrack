@@ -36,73 +36,51 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
-%% Defines the Mass4DRelDubins MATLAB class, which inherits from the DynSys
-%% base class. This class assumes Dubins car planner dynamics and planar
-%% point mass (double integrator) tracker dynamics and uses a Circle tracking
-%% error bound. Mass4D differs from Quad4D only in that its acceleration vector
-%% is constrained to lie in a circle instead of a box.
+%% Computes the optimal point mass control input for Mass4DRelDubins.
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-classdef Mass4DRelDubins < DynSys
-% Mass4DRelDubins: Dynamics of a planar point mass pursuing a Dubins car.
+function uOpt = optCtrl(obj, ~, x, deriv, uMode, ~)
+% uOpt = optCtrl(obj, t, x, deriv, uMode, dMode, MIEdims)
 
-  properties
-    %% Dubins car (fixed) velocity
-    v_
+% Note: dynamics specified in dynamics.m
 
-    %% Mass4D maximum acceleration control (Euclidean norm)
-    a_max_
+%% Input processing
+if nargin < 5
+  uMode = 'min';
+end
 
-    % Dubins maximum angular rate (absolute value)
-    omega_max_
-    
-    % Mass4D maximum acceleration disturbance (Euclidean norm)
-    d_max_
+%% Optimal control
+if iscell(deriv)
+  uOpt = cell(obj.nu, 1);
+  normalizer = max(sqrt(deriv{3}.^2 + deriv{4}.^2), 1e-6);
+  if strcmp(uMode, 'max')
+    uOpt{1} = deriv{3} ./ normalizer * obj.a_max_;
+    uOpt{2} = deriv{4} ./ normalizer * obj.a_max_;
 
+  elseif strcmp(uMode, 'min')
+    uOpt{1} = -deriv{3} ./ normalizer * obj.a_max_;
+    uOpt{2} = -deriv{4} ./ normalizer * obj.a_max_;
+  else
+    error('Unknown uMode!')
   end
-  
-  methods
-    function obj = Mass4DRelDubins(x, a_max, omega_max, d_max, v)
-      % obj = Mass4DRelDubins(x, Mass4D, KinVeh2D)
-      %
-      % Constructor. Creates the dynamical system object with state x and
-      % parameters from the input parameters
-      %
-      % Inputs:
-      %   x           - state: [distance, bearing, tangent_vel, normal_vel]
-      %   a_max       - maximum Mass4D acceleration control
-      %   omaga_max   - maximum Dubins angular rate
-      %   d_max       - maximum Mass4D acceleration disturbance
-      %
-      % Output:
-      %   obj         - Mass4DRelDubins object
-      %
-      % Note: dynamics specified in dynamics.m
-      
-      if numel(x) ~= 4
-        error('Initial state does not have right dimension!');
-      end
-      
-      if ~iscolumn(x)
-        x = x';
-      end
-      
-      obj.x = x;
-      obj.xhist = obj.x;
-      
-      obj.a_max_ = a_max;
-      obj.omega_max_ = omega_max;
-      obj.d_max_ = d_max;
-      obj.v_ = v;
-      
-      obj.pdim = [1,3,4];
-      obj.hdim = 2;
-      
-      obj.nx = 4;
-      obj.nu = 2;
-      obj.nd = 3;
-    end
-    
-  end % end methods
-end % end classdef
+
+else
+  uOpt = zeros(obj.nu, 1);
+  normalizer = max(sqrt(deriv(3)^2 + deriv(4)^2), 1e-6);
+  if strcmp(uMode, 'max')
+    uOpt(1) = deriv(3) / normalizer * obj.a_max_;
+    uOpt(2) = deriv(4) / normalizer * obj.a_max_;
+
+  elseif strcmp(uMode, 'min')
+    uOpt(1) = -deriv(3) / normalizer * obj.a_max_;
+    uOpt(2) = -deriv(4) / normalizer * obj.a_max_;
+  else
+    error('Unknown uMode!')
+  end
+end
+
+
+
+
+end
