@@ -73,7 +73,7 @@ function dx = dynamics(obj, ~, x, u, d, ~)
 %   omega \in Ball(0, omega_max_)
 %   (a_t, a_n) \in Ball(0,a_max_)
 %   (d_t, d_n) \in Ball(0,d_max_)
-%         
+%
 
 
 if numel(u) ~= obj.nu

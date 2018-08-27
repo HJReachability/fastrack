@@ -1,4 +1,3 @@
-%
 % Copyright (c) 2018, The Regents of the University of California (Regents).
 % All rights reserved.
 %
@@ -74,10 +73,10 @@
 %     obstacles = shapeCylinder(g, 3, [-1.5; 1.5; 0], 0.75);
 %     HJIextraArgs.obstacles = obstacles;
 
-% Do not compute optimal trajectory from an initial state
+% Do not compute optimal trajectory from an initial state.
 compTraj = false;
 
-%% Grid
+%% Grid.
 grid_min = [ 0.05; -pi; -2; -2];    % Lower corner of computation domain
 grid_max = [ 1;  pi;  2;  2];    % Upper corner of computation domain
 N = [20; 31; 21; 21];            % Number of grid points per dimension
@@ -85,30 +84,29 @@ pdDims = 2;                      % 2nd dimension is periodic
 g = createGrid(grid_min, grid_max, N, pdDims); % create state space grid
 
 
-%% time vector
+%% Time vector.
 t0 = 0;
 tMax = 0.5;
 dt = 0.05;
 tau = t0:dt:tMax;
 
-%% problem parameters
-
-% Tracker input bound
+%% Problem parameters.
+% Tracker input bound.
 a_max_ = 2; % ~10º --> ~0.2 rad --> ~0.2 g --> ~2 m/s^2
 
-% Dubins input bound
+% Dubins input bound.
 omega_max = pi/4; % rad/s
 
-% Disturbance bound
+% Disturbance bound.
 d_max = 0.5; % m/s^2
 
-% Dubins car speed
+% Dubins car speed.
 v = 0.5; % m/s
 
-% surface function is the distance between the point mass and the Dubins car
+% surface function is the distance between the point mass and the Dubins car.
 data0 = g.xs{1};
 
-% Roles of the control and disturbance for the (original) surface function
+% Roles of the control and disturbance for the (original) surface function.
 uMode = 'min';
 dMode = 'max';
 
@@ -118,14 +116,14 @@ dMode = 'max';
 % function.
 data0 = -data0;
 
-% The control and disturbance roles are switched: u maximizes *negated* distance
+% The control and disturbance roles are switched: u maximizes *negated* distance.
 uMode = 'max';
 dMode = 'min';
 
-% Define dynamic system
+% Define dynamic system.
 mass_vs_dubins = Mass4DRelDubins([0, 0, 0, 0], a_max_, omega_max, d_max, v);
 
-% Put grid and dynamic systems into schemeData
+% Put grid and dynamic systems into schemeData.
 schemeData.grid = g;
 schemeData.dynSys = mass_vs_dubins;
 schemeData.accuracy = 'high'; %set accuracy
@@ -136,7 +134,6 @@ schemeData.dMode = dMode;
 minWith = 'zero'; % Compute reachable tube (for all time, not only final time)
 
 %% Compute value function.
-
 HJIextraArgs.visualize = true; %show plot
 HJIextraArgs.fig_num = 1; %set figure number
 HJIextraArgs.deleteLastPlot = true; %delete previous plot as you update
@@ -150,7 +147,7 @@ HJIextraArgs.viewAngle = [0,90];
 [data, tau2, ~] = ...
   HJIPDE_solve(data0, tau, schemeData, minWith, HJIextraArgs);
 
-% Un-negate value function to restore normal conditions.
+% Un-negate value function to restore normal conditions..
 data0 = -data0;
 data  = -data;
 uMode = 'min';
@@ -158,33 +155,33 @@ dMode = 'max';
 % --- End negated computation ---
 
 %% Plot surface function l(x) and value function V(x).
-
 [h_f, h_data, h_data0] = PlotValueXY(g,data,data0);
 
 %% Save data to load into FaSTrack.
-
-% Keep final step of value function computation only
+% Keep final step of value function computation only.
 data = squeeze(data(:,:,:,:,end));
 
-% Choose TEB level set relative to the minimum nonempty level set
+% Choose TEB level set relative to the minimum nonempty level set.
 level_set_margin = 0.1;
 
-% Define transition between free and forced control near the boundary
+% Define transition between free and forced control near the boundary.
 threshold_lower = 0.1;
 threshold_upper = 0.8;
 priority_lower = min(data(:)) + level_set_margin*threshold_lower;
 priority_upper = min(data(:)) + level_set_margin*threshold_upper;
 
-% Grid size and bounds
+% Grid size and bounds.
 num_cells = N;
 lower = grid_min;
 upper = grid_max;
 
-%% TODO: define tracker_params, planner_params, bound_params consistent with
-% the Initialize() function in the appropriate class
+%% TODO(@jaime): Define tracker_params, planner_params, bound_params consistent
+% with the Initialize() function in the appropriate class.
+tracker_params = []
+planner_params = []
+bound_params = []
 
-% Save in .mat file
-
+% Save in .mat file.
 save value_function priority_upper priority_lower num_cells lower upper data
 
 % end
