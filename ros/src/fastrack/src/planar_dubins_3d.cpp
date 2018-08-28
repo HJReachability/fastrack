@@ -74,14 +74,19 @@ PlanarDubins3D::PlanarDubins3D(const fastrack_msgs::State &msg)
   } else
     throw std::runtime_error("PlanarDubins3D: msg dimension is incorrect.");
 }
-PlanarDubins3D::PlanarDubins3D(const VectorXd &config)
+PlanarDubins3D::PlanarDubins3D(const VectorXd &x)
     : State(), x_(0.0), y_(0.0), theta_(0.0), v_(constants::kDefaultHeight) {
   // Check dimensions.
-  if (config.size() != ConfigurationDimension())
-    throw std::runtime_error("PlanarDubins3D: incorrect config dimension.");
-
-  x_ = config(0);
-  y_ = config(1);
+  if (x.size() == ConfigurationDimension()) {
+    x_ = x(0);
+    y_ = x(1);
+  } else if (x.size() == StateDimension()) {
+    x_ = x(0);
+    y_ = x(1);
+    theta_ = x(2);
+  } else {
+    throw std::runtime_error("PlanarDubins3D: incorrect input dimension.");
+  }
 } // namespace state
 
 // Set non-configuration dimensions to match the given config derivative.

@@ -74,6 +74,9 @@ public:
       : RelativeState<PositionVelocity, PositionVelocity>(),
         x_(position, velocity) {}
 
+  // Construct from VectorXd.
+  explicit PositionVelocityRelPositionVelocity(const VectorXd &x)
+      : RelativeState<PositionVelocity, PositionVelocity>(), x_(x) {}
 
   // Convert from/to VectorXd.
   void FromVector(const VectorXd& x) { x_.FromVector(x); }

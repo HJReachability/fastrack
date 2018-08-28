@@ -58,7 +58,7 @@ public:
                             double vz);
   explicit PositionVelocity(const Vector3d &position, const Vector3d &velocity);
   explicit PositionVelocity(const fastrack_msgs::State &msg);
-  explicit PositionVelocity(const VectorXd &config);
+  explicit PositionVelocity(const VectorXd &x);
 
   // Accessors.
   inline double X() const { return position_(0); }

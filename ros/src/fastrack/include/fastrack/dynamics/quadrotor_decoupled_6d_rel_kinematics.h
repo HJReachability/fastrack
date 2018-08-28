@@ -76,8 +76,8 @@ public:
   // Derived classes must be able to give the time derivative of relative state
   // as a function of current state and control of each system.
   inline std::unique_ptr<RelativeState<PositionVelocity, PositionVelocity>>
-  Evaluate(const PositionVelocity &tracker_x, const QuadrotorControl &tracker_u,
-           const PositionVelocity &planner_x, const VectorXd &planner_u) const {
+  Evaluate(const PositionVelocity& tracker_x, const QuadrotorControl& tracker_u,
+           const PositionVelocity& planner_x, const VectorXd& planner_u) const {
     if (planner_u.size() != PositionVelocity::ConfigurationDimension())
       std::runtime_error("Bad planner control size.");
 
@@ -95,16 +95,16 @@ public:
   // the gradient of the value function at the relative state specified
   // by the given system states, provided abstract control bounds.
   inline QuadrotorControl OptimalControl(
-      const PositionVelocity &tracker_x, const PositionVelocity &planner_x,
-      const RelativeState<PositionVelocity, PositionVelocity> &value_gradient,
-      const ControlBound<QuadrotorControl> &tracker_u_bound,
-      const ControlBound<VectorXd> &planner_u_bound) const {
+      const PositionVelocity& tracker_x, const PositionVelocity& planner_x,
+      const RelativeState<PositionVelocity, PositionVelocity>& value_gradient,
+      const ControlBound<QuadrotorControl>& tracker_u_bound,
+      const ControlBound<VectorXd>& planner_u_bound) const {
     // Get internal state of value gradient and map tracker control (negative)
     // coefficients to QuadrotorControl, so we get a negative gradient.
-    const auto &cast = static_cast<const PositionVelocityRelPositionVelocity &>(
+    const auto& cast = static_cast<const PositionVelocityRelPositionVelocity& >(
         value_gradient);
 
-    const auto &grad = cast.State();
+    const auto& grad = cast.State();
     QuadrotorControl negative_grad;
     negative_grad.yaw_rate = 0.0;
     negative_grad.pitch = -grad.Vx();

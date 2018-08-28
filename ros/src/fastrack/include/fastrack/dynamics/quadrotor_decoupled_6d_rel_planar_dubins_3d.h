@@ -46,7 +46,9 @@
 #define FASTRACK_DYNAMICS_QUADROTOR_DECOUPLED_6D_REL_PLANAR_DUBINS_3D_H
 
 #include <fastrack/control/quadrotor_control.h>
+#include <fastrack/control/quadrotor_control_bound_cylinder.h>
 #include <fastrack/dynamics/dynamics.h>
+#include <fastrack/dynamics/relative_dynamics.h>
 #include <fastrack/state/planar_dubins_3d.h>
 #include <fastrack/state/position_velocity.h>
 #include <fastrack/state/position_velocity_rel_planar_dubins_3d.h>
@@ -57,6 +59,7 @@ namespace fastrack {
 namespace dynamics {
 
 using control::QuadrotorControl;
+using control::QuadrotorControlBoundCylinder;
 using state::PlanarDubins3D;
 using state::PositionVelocity;
 using state::PositionVelocityRelPlanarDubins3D;
@@ -73,8 +76,8 @@ public:
   // Derived classes must be able to give the time derivative of relative state
   // as a function of current state and control of each system.
   inline std::unique_ptr<RelativeState<PositionVelocity, PlanarDubins3D>>
-  Evaluate(const PositionVelocity &tracker_x, const QuadrotorControl &tracker_u,
-           const PlanarDubins3D &planner_x, const double &planner_u) const {
+  Evaluate(const PositionVelocity& tracker_x, const QuadrotorControl& tracker_u,
+           const PlanarDubins3D& planner_x, const double& planner_u) const {
     // Compute relative state.
     const PositionVelocityRelPlanarDubins3D relative_x(tracker_x, planner_x);
 
@@ -82,7 +85,8 @@ public:
     // This is used in the derivatives of relative position (distance, bearing).
     // It is NOT used in the velocity derivatives because velocity states are
     // absolute (even though they are expressed in the changing Dubins frame).
-    net_tangent_velocity = relative_x.TangentVelocity() - planner_x.V();
+    const auto net_tangent_velocity =
+        relative_x.TangentVelocity() - planner_x.V();
 
     // Relative distance derivative.
     const double distance_dot =
@@ -96,20 +100,20 @@ public:
           relative_x.NormalVelocity() * std::cos(relative_x.Bearing())) /
         relative_x.Distance(); // omega_circ = v_circ / R
 
-    // Tracker accelerations expressed in inertial world frame
-    const Vector2d tracker_accel( constants::G * std::tan(u.pitch)
-                                 -constants::G * std::tan(u.roll));
+    // Tracker accelerations expressed in inertial world frame.
+    const double tracker_accel_x = constants::G * std::tan(tracker_u.pitch);
+    const double tracker_accel_y = -constants::G * std::tan(tracker_u.roll);
 
     // Relative tangent and normal velocity derivatives.
     // NOTE! Must rotate roll/pitch into planner frame.
     const double c = std::cos(planner_x.Theta());
     const double s = std::sin(planner_x.Theta());
 
-    const double tangent_velocity_dot = 
-        tracker_accel[0] * c + tracker_accel[1] * s +
+    const double tangent_velocity_dot =
+        tracker_accel_x * c + tracker_accel_y * s +
         planner_u * relative_x.NormalVelocity();
-    const double normal_velocity_dot = 
-        -tracker_accel[0] * s + tracker_accel[1] * c -
+    const double normal_velocity_dot =
+        -tracker_accel_x * s + tracker_accel_y * c -
         planner_u * relative_x.TangentVelocity();
 
     return std::unique_ptr<PositionVelocityRelPlanarDubins3D>(
@@ -121,11 +125,12 @@ public:
   // the gradient of the value function at the relative state specified
   // by the given system states, provided abstract control bounds.
   inline QuadrotorControl OptimalControl(
-      const PositionVelocity &tracker_x, const PlanarDubins3D &planner_x,
-      const RelativeState<PositionVelocity, PlanarDubins3D> &value_gradient,
-      const QuadrotorControlBoundCylinder &tracker_u_bound,
-      const ScalarBoundInterval &planner_u_bound) const {
+      const PositionVelocity& tracker_x, const PlanarDubins3D& planner_x,
+      const RelativeState<PositionVelocity, PlanarDubins3D>& value_gradient,
+      const ControlBound<QuadrotorControl>& tracker_u_bound,
+      const ControlBound<double>& planner_u_bound) const {
     // TODO(@dfk, @jaime): figure this part out.
+    return QuadrotorControl();
   }
 }; //\class QuadrotorDecoupledPlanarDubins
 

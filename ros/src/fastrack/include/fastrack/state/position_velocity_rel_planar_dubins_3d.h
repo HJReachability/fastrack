@@ -73,6 +73,12 @@ public:
         normal_velocity_(-std::sin(planner_x.Theta()) * tracker_x.Vx() +
                           std::cos(planner_x.Theta()) * tracker_x.Vy()) {}
 
+  // Construct from VectorXd.
+  explicit PositionVelocityRelPlanarDubins3D(const VectorXd &x)
+    : RelativeState<PositionVelocity, PlanarDubins3D>() {
+    FromVector(x);
+  }
+
   // Construct directly.
   explicit PositionVelocityRelPlanarDubins3D(double distance, double bearing,
                                              double tangent_v, double normal_v)
@@ -83,7 +89,7 @@ public:
   // Assume vector is laid out as follows:
   // [distance, bearing, tangent velocity, normal velocity]
   void FromVector(const VectorXd& x) {
-    if (x.size() != 4)
+    if (x.size() != StateDimension())
       throw std::runtime_error("Vector was of incorrect dimension.");
 
     distance_ = x(0);
