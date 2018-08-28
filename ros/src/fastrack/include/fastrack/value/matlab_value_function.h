@@ -67,7 +67,7 @@ template <typename TS, typename TC, typename TD, typename PS, typename PC,
 class MatlabValueFunction : public ValueFunction<TS, TC, TD, PS, PC, PD, B> {
  public:
   ~MatlabValueFunction() {}
-  explicit MatlabValueFunction() : ValueFunction() {}
+  explicit MatlabValueFunction() : ValueFunction<TS, TC, TD, PS, PC, PD, B>() {}
 
   // Initialize from file. Returns whether or not loading was successful.
   // Can be used as an alternative to intialization from a NodeHandle.
@@ -75,7 +75,8 @@ class MatlabValueFunction : public ValueFunction<TS, TC, TD, PS, PC, PD, B> {
 
   // Value and gradient at particular relative states.
   double Value(const TS& tracker_x, const PS& planner_x) const;
-  std::unique_ptr<RS> Gradient(const TS& tracker_x, const PS& planner_x) const;
+  std::unique_ptr<RelativeState<TS, PS>> Gradient(const TS& tracker_x,
+                                                  const PS& planner_x) const;
 
   // Priority of the optimal control at the given tracker and planner states.
   // This is a number between 0 and 1, where 1 means the final control signal
@@ -105,7 +106,10 @@ class MatlabValueFunction : public ValueFunction<TS, TC, TD, PS, PC, PD, B> {
   VectorXd GradientAccessor(const VectorXd& x) const;
 
   // Compute the grid point below a given state in dimension idx.
-  double LowerGridPoint(const VectorXd& punctured, size_t idx) const;
+  double LowerGridPoint(const VectorXd& x, size_t idx) const;
+
+  // Compute center of nearest grid cell to the given state.
+  VectorXd NearestCenterPoint(const VectorXd& x) const;
 
   // Recursive helper function for gradient multilinear interpolation.
   // Takes in a state and index along which to interpolate.
@@ -140,7 +144,7 @@ double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::Value(
   const VectorXd relative_x = RS(tracker_x, planner_x).ToVector();
 
   // Get distance from cell center in each dimension.
-  const VectorXd center_distance = DistanceToCenter(relative_x);
+  const VectorXd center_distance = DirectionToCenter(relative_x);
 
   // Interpolate.
   const double nn_value = data_[StateToIndex(relative_x)];
@@ -172,7 +176,7 @@ double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::Value(
 // Gradient at the given relative state.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename RS, typename RD, typename B>
-std::unique_ptr<RS>
+std::unique_ptr<RelativeState<TS, PS>>
 MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::Gradient(
     const TS& tracker_x, const PS& planner_x) const {
   const VectorXd relative_x = RS(tracker_x, planner_x).ToVector();
@@ -200,15 +204,17 @@ double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::Priority(
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename RS, typename RD, typename B>
 size_t MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::StateToIndex(
-    const VectorXd& x) {
+    const VectorXd& x) const {
   // Quantize each dimension of the state.
   std::vector<size_t> quantized;
   for (size_t ii = 0; ii < x.size(); ii++) {
     if (x(ii) < lower_[ii]) {
-      ROS_WARN("%s: State is too small in dimension %zu.", name_.c_str(), ii);
+      ROS_WARN("%s: State is too small in dimension %zu.", this->name_.c_str(),
+               ii);
       quantized.push_back(0);
     } else if (x(ii) > upper_[ii]) {
-      ROS_WARN("%s: State is too large in dimension %zu.", name_.c_str(), ii);
+      ROS_WARN("%s: State is too large in dimension %zu.", this->name_.c_str(),
+               ii);
       quantized.push_back(num_cells_[ii] - 1);
     } else {
       // In bounds, so quantize. This works because of 0-indexing and casting.
@@ -230,8 +236,8 @@ size_t MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::StateToIndex(
 // Accessor for precomputed gradient at the given state.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename RS, typename RD, typename B>
-VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::GradientAccessor(
-    const VectorXd& x) {
+VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD,
+                             B>::GradientAccessor(const VectorXd& x) const {
   // Convert to index and read gradient one dimension at a time.
   const size_t idx = StateToIndex(x);
 
@@ -240,6 +246,15 @@ VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::GradientAccesso
     gradient(ii) = gradient_[ii][idx];
 
   return gradient;
+}
+
+// Compute the difference vector between this (relative) state and the center
+// of the nearest cell (i.e. cell center minus state).
+template <typename TS, typename TC, typename TD, typename PS, typename PC,
+          typename PD, typename RS, typename RD, typename B>
+VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::
+DirectionToCenter(const VectorXd& x) const {
+  return NearestCenterPoint(x) - x;
 }
 
 // Compute the grid point below a given state in dimension idx.
@@ -256,12 +271,29 @@ double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::LowerGridPoint(
   return (center > x(idx)) ? center - cell_size_[idx] : center;
 }
 
+// Compute the center of the cell nearest to the given state.
+template <typename TS, typename TC, typename TD, typename PS, typename PC,
+          typename PD, typename RS, typename RD, typename B>
+VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::
+NearestCenterPoint(const VectorXd& x) const {
+  VectorXd center(x.size());
+
+  for (size_t ii = 0; ii < center.size(); ii++)
+    center[ii] =
+        0.5 * cell_size_[ii] + lower_[ii] +
+        cell_size_[ii] * std::floor((x(ii) - lower_[ii]) / cell_size_[ii]);
+
+  return center;
+}
+
 // Recursive helper function for gradient multilinear interpolation.
 // Takes in a state and index along which to interpolate.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename RS, typename RD, typename B>
-VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::
-    RecursiveGradientInterpolator(const VectorXd& x, size_t idx) {
+VectorXd
+MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD,
+                    B>::RecursiveGradientInterpolator(const VectorXd& x,
+                                                      size_t idx) const {
   // Assume x's entries prior to idx are equal to the upper/lower bounds of
   // the cell containing x.
   // Begin by computing the lower and upper bounds of the cell containing x
@@ -295,8 +327,9 @@ VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::
 // Can be used as an alternative to intialization from a NodeHandle.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename RS, typename RD, typename B>
-bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::InitializeFromMatFile(
-    const std::string& file_name) {
+bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD,
+                         B>::InitializeFromMatFile(const std::string&
+                                                       file_name) {
   // Open up this file.
   MatlabFileReader reader(file_name);
 
@@ -310,41 +343,43 @@ bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::InitializeFromMatFi
 
   // Check loaded variables.
   if (priority_lower_ >= priority_upper_) {
-    ROS_ERROR("%s: Priority lower bound above upper bound.", name_.c_str());
+    ROS_ERROR("%s: Priority lower bound above upper bound.",
+              this->name_.c_str());
     return false;
   }
 
   if (num_cells_.size() != lower_.size() || lower_.size() != upper_.size()) {
-    ROS_ERROR("%s: Dimensions do not match.", name_.c_str());
+    ROS_ERROR("%s: Dimensions do not match.", this->name_.c_str());
     return false;
   }
 
   const double total_num_cells = std::accumulate(
       num_cells_.begin(), num_cells_.end(), 1, std::multiplies<size_t>());
   if (total_num_cells == 0) {
-    ROS_ERROR("%s: 0 total cells.", name_.c_str());
+    ROS_ERROR("%s: 0 total cells.", this->name_.c_str());
     return false;
   }
 
   if (data_.size() != total_num_cells) {
-    ROS_ERROR("%s: Grid data was of the wrong size.", name_.c_str());
+    ROS_ERROR("%s: Grid data was of the wrong size.", this->name_.c_str());
     return false;
   }
 
   // Compute cell size.
   for (size_t ii = 0; ii < num_cells_.size(); ii++)
     cell_size_.emplace_back((upper_[ii] - lower_[ii]) /
-                             static_cast<double>(num_cells_[ii]));
+                            static_cast<double>(num_cells_[ii]));
 
   // Load gradients.
   for (size_t ii = 0; ii < num_cells_.size(); ii++) {
-    auto& partial = gradient_.emplace_back();
+    gradient_.emplace_back();
+    auto& partial = gradient_.back();
     if (!reader.ReadVector("deriv" + std::to_string(ii), &partial))
       return false;
 
     if (partial.size() != total_num_cells) {
       ROS_ERROR("%s: Partial derivative in dimension %zu had incorrect size.",
-                name_.c_str(), ii);
+                this->name_.c_str(), ii);
       return false;
     }
   }
@@ -352,13 +387,13 @@ bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::InitializeFromMatFi
   // Load dynamics and bound parameters.
   std::vector<double> params;
   if (!reader.ReadVector("tracker_params", &params)) return false;
-  if (!tracker_dynamics_.Initialize(params)) return false;
+  if (!this->tracker_dynamics_.Initialize(params)) return false;
   if (!reader.ReadVector("planner_params", &params)) return false;
-  if (!planner_dynamics_.Initialize(params)) return false;
-  relative_dynamics_.reset(new RD);
+  if (!this->planner_dynamics_.Initialize(params)) return false;
+  this->relative_dynamics_.reset(new RD);
 
   if (!reader.ReadVector("bound_params", &params)) return false;
-  if (!bound_.Initialize(params)) return false;
+  if (!this->bound_.Initialize(params)) return false;
 
   return true;
 }
