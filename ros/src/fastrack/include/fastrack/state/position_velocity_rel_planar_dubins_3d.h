@@ -62,8 +62,8 @@ public:
 
   // NOTE! We do NOT provide a default constructor. Objects from this
   // class SHOULD be initialized from the two corresponding states.
-  explicit PositionVelocityRelPlanarDubins3D(const PositionVelocity &tracker_x,
-                                             const PlanarDubins3D &planner_x)
+  explicit PositionVelocityRelPlanarDubins3D(const PositionVelocity& tracker_x,
+                                             const PlanarDubins3D& planner_x)
       : distance_(std::hypot(tracker_x.X() - planner_x.X(),
                              tracker_x.Y() - planner_x.Y())),
         bearing_(std::atan2(tracker_x.Y() - planner_x.Y(),
@@ -74,7 +74,7 @@ public:
                           std::cos(planner_x.Theta()) * tracker_x.Vy()) {}
 
   // Construct from VectorXd.
-  explicit PositionVelocityRelPlanarDubins3D(const VectorXd &x)
+  explicit PositionVelocityRelPlanarDubins3D(const VectorXd& x)
     : RelativeState<PositionVelocity, PlanarDubins3D>() {
     FromVector(x);
   }

@@ -65,11 +65,9 @@ class QuadrotorDecoupled6D
   ~QuadrotorDecoupled6D() {}
   explicit QuadrotorDecoupled6D()
       : Dynamics<PositionVelocity, QuadrotorControl, Empty>() {}
-  explicit QuadrotorDecoupled6D(const QuadrotorControl &u_lower,
-                                const QuadrotorControl &u_upper)
-      : Dynamics<PositionVelocity, QuadrotorControl, Empty>(
-            std::unique_ptr<ControlBound<QuadrotorControl>>(
-                new QuadrotorControlBoundBox(u_lower, u_upper))) {}
+  explicit QuadrotorDecoupled6D(
+      std::unique_ptr<ControlBound<QuadrotorControl>> bound)
+      : Dynamics<PositionVelocity, QuadrotorControl, Empty>(bound) {}
 
   // Initialize by calling base class.
   void Initialize(std::unique_ptr<ControlBound<QuadrotorControl>> bound) {
