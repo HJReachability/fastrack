@@ -48,6 +48,7 @@
 #define FASTRACK_ENVIRONMENT_ENVIRONMENT_H
 
 #include <fastrack/bound/box.h>
+#include <fastrack/bound/sphere.h>
 #include <fastrack/utils/types.h>
 
 #include <ros/ros.h>
@@ -58,6 +59,7 @@ namespace fastrack {
 namespace environment {
 
 using bound::Box;
+using bound::Sphere;
 
 template <typename M, typename P>
 class Environment {
@@ -73,10 +75,21 @@ class Environment {
   virtual bool IsValid(
       const Vector3d& position, const Box& bound,
       double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
+  virtual bool IsValid(
+      const Vector3d& position, const Sphere& bound,
+      double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
 
   // Utility for checking multiple positions.
-  bool AreValid(const std::vector<Vector3d>& positions, const Box& bound,
-                double time = std::numeric_limits<double>::quiet_NaN()) const;
+  template <typename B>
+  bool AreValid(const std::vector<Vector3d>& positions, const B& bound,
+                double time = std::numeric_limits<double>::quiet_NaN()) const {
+    // Return Boolean AND of all IsValid calls.
+    for (const auto& p : positions) {
+      if (!IsValid(p, bound, time)) return false;
+    }
+
+    return true;
+  }
 
   // Generate a sensor measurement.
   virtual M SimulateSensor(const P& params) const = 0;
@@ -185,18 +198,6 @@ bool Environment<M, P>::RegisterCallbacks(const ros::NodeHandle& n) {
 
   updated_pub_ =
       nl.advertise<std_msgs::Empty>(updated_topic_.c_str(), 1, false);
-
-  return true;
-}
-
-// Provide auxiliary validity checkers for sets of positions.
-template <typename M, typename P>
-bool Environment<M, P>::AreValid(const std::vector<Vector3d>& positions,
-                                 const Box& bound, double time) const {
-  // Return Boolean AND of all IsValid calls.
-  for (const auto& p : positions) {
-    if (!IsValid(p, bound, time)) return false;
-  }
 
   return true;
 }
