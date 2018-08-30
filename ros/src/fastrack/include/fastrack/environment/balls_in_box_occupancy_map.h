@@ -45,10 +45,10 @@
 #ifndef FASTRACK_ENVIRONMENT_BALLS_IN_BOX_OCCUPANCY_MAP_H
 #define FASTRACK_ENVIRONMENT_BALLS_IN_BOX_OCCUPANCY_MAP_H
 
-#include <fastrack/utils/kdtree_map.h>
 #include <fastrack/environment/occupancy_map.h>
 #include <fastrack/sensor/sphere_sensor.h>
 #include <fastrack/sensor/sphere_sensor_params.h>
+#include <fastrack/utils/kdtree_map.h>
 #include <fastrack_msgs/SensedSpheres.h>
 
 namespace fastrack {
@@ -68,12 +68,20 @@ class BallsInBoxOccupancyMap
 
   // Derived classes must provide an OccupancyProbability function for both
   // single points and tracking error bounds centered on a point.
-  double OccupancyProbability(const Vector3d &p) const;
-  double OccupancyProbability(const Vector3d &p, const Box &bound) const;
+  // Ignores time since this is a time-invariant environment.
+  double OccupancyProbability(
+      const Vector3d& p,
+      double time = std::numeric_limits<double>::quiet_NaN()) const;
+  double OccupancyProbability(
+      const Vector3d& p, const Box& bound,
+      double time = std::numeric_limits<double>::quiet_NaN()) const;
+  double OccupancyProbability(
+      const Vector3d& p, const Sphere& bound,
+      double time = std::numeric_limits<double>::quiet_NaN()) const;
 
   // Generate a sensor measurement.
   fastrack_msgs::SensedSpheres SimulateSensor(
-      const SphereSensorParams &params) const;
+      const SphereSensorParams& params) const;
 
   // Derived classes must have some sort of visualization through RViz.
   void Visualize() const;
@@ -81,13 +89,13 @@ class BallsInBoxOccupancyMap
  private:
   // Load parameters. This may be overridden by derived classes if needed
   // (they should still call this one via OccupancyMap::LoadParameters).
-  bool LoadParameters(const ros::NodeHandle &n);
+  bool LoadParameters(const ros::NodeHandle& n);
 
   // Update this environment with the information contained in the given
   // sensor measurement.
   // NOTE! This function needs to publish on `updated_topic_`.
   void SensorCallback(
-      const typename fastrack_msgs::SensedSpheres::ConstPtr &msg);
+      const typename fastrack_msgs::SensedSpheres::ConstPtr& msg);
 
   // KdtreeMaps to store spherical obstacle and sensor locations, as well as
   // radii for each.

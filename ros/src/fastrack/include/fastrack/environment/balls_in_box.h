@@ -68,7 +68,11 @@ public:
   // Derived classes must provide a collision checker which returns true if
   // and only if the provided position is a valid collision-free configuration.
   // Provide a separate collision check for each type of tracking error bound.
-  bool IsValid(const Vector3d &position, const Box &bound) const;
+  // Ignores 'time' since this is a time-invariant environment.
+  bool IsValid(const Vector3d& position, const Box& bound,
+               double time = std::numeric_limits<double>::quiet_NaN()) const;
+  bool IsValid(const Vector3d& position, const Sphere& bound,
+               double time = std::numeric_limits<double>::quiet_NaN()) const;
 
   // Generate a sensor measurement.
   fastrack_msgs::SensedSpheres

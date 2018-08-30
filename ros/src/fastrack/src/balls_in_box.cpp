@@ -58,18 +58,16 @@ bool BallsInBox::IsValid(const Vector3d& position, const Box& bound,
     return false;
   }
 
-  if (position(0) < lower_(0) + bound.x ||
-      position(0) > upper_(0) - bound.x ||
-      position(1) < lower_(1) + bound.y ||
-      position(1) > upper_(1) - bound.y ||
-      position(2) < lower_(2) + bound.z ||
-      position(2) > upper_(2) - bound.z)
+  if (position(0) < lower_(0) + bound.x || position(0) > upper_(0) - bound.x ||
+      position(1) < lower_(1) + bound.y || position(1) > upper_(1) - bound.y ||
+      position(2) < lower_(2) + bound.z || position(2) > upper_(2) - bound.z)
     return false;
 
   // Check against each obstacle.
   // NOTE! Just using a linear search here for simplicity.
   if (centers_.size() > 100)
-    ROS_WARN_THROTTLE(1.0, "%s: Caution! Linear search may be slowing you down.",
+    ROS_WARN_THROTTLE(1.0,
+                      "%s: Caution! Linear search may be slowing you down.",
                       name_.c_str());
 
   const Vector3d bound_vector(bound.x, bound.y, bound.z);
@@ -80,13 +78,41 @@ bool BallsInBox::IsValid(const Vector3d& position, const Box& bound,
     Vector3d closest_point;
     for (size_t jj = 0; jj < 3; jj++) {
       closest_point(jj) =
-        std::min(position(jj) + bound_vector(jj),
-                 std::max(position(jj) - bound_vector(jj), p(jj)));
+          std::min(position(jj) + bound_vector(jj),
+                   std::max(position(jj) - bound_vector(jj), p(jj)));
     }
 
     // Check distance to closest point.
-    if ((closest_point - p).norm() <= radii_[ii])
-      return false;
+    if ((closest_point - p).norm() <= radii_[ii]) return false;
+  }
+
+  return true;
+}
+
+bool BallsInBox::IsValid(const Vector3d& position, const Sphere& bound,
+                         double time) const {
+  if (!initialized_) {
+    ROS_WARN("%s: Tried to collision check an uninitialized BallsInBox.",
+             name_.c_str());
+    return false;
+  }
+
+  // Collision check against environment edge.
+  if (position(0) < lower_(0) + bound.r || position(0) > upper_(0) - bound.r ||
+      position(1) < lower_(1) + bound.r || position(1) > upper_(1) - bound.r ||
+      position(2) < lower_(2) + bound.r || position(2) > upper_(2) - bound.r)
+    return false;
+
+  // Check against each obstacle.
+  // NOTE! Just using a linear search here for simplicity.
+  if (centers_.size() > 100)
+    ROS_WARN_THROTTLE(1.0,
+                      "%s: Caution! Linear search may be slowing you down.",
+                      name_.c_str());
+
+  for (size_t ii = 0; ii < centers_.size(); ii++) {
+    const Vector3d& p = centers_[ii];
+    if ((position - p).norm() <= radii_[ii] + bound.r) return false;
   }
 
   return true;
@@ -96,7 +122,7 @@ bool BallsInBox::IsValid(const Vector3d& position, const Box& bound,
 // sensor measurement.
 // NOTE! This function needs to publish on `updated_topic_`.
 void BallsInBox::SensorCallback(
-  const fastrack_msgs::SensedSpheres::ConstPtr& msg) {
+    const fastrack_msgs::SensedSpheres::ConstPtr& msg) {
   // Check list lengths.
   if (msg->centers.size() != msg->radii.size())
     ROS_WARN("%s: Malformed SensedSpheres msg.", name_.c_str());
@@ -106,12 +132,14 @@ void BallsInBox::SensorCallback(
   // Add each unique obstacle to list.
   // NOTE! Just using a linear search here for simplicity.
   if (centers_.size() > 100)
-    ROS_WARN_THROTTLE(1.0, "%s: Caution! Linear search may be slowing you down.",
+    ROS_WARN_THROTTLE(1.0,
+                      "%s: Caution! Linear search may be slowing you down.",
                       name_.c_str());
 
   bool any_unique = false;
   for (size_t ii = 0; ii < num_obstacles; ii++) {
-    const Vector3d p(msg->centers[ii].x, msg->centers[ii].y, msg->centers[ii].z);
+    const Vector3d p(msg->centers[ii].x, msg->centers[ii].y,
+                     msg->centers[ii].z);
     const double r = msg->radii[ii];
 
     // If not unique, discard.
@@ -141,8 +169,8 @@ void BallsInBox::SensorCallback(
 }
 
 // Generate a sensor measurement as a service response.
-fastrack_msgs::SensedSpheres BallsInBox::
-SimulateSensor(const SphereSensorParams& params) const {
+fastrack_msgs::SensedSpheres BallsInBox::SimulateSensor(
+    const SphereSensorParams& params) const {
   fastrack_msgs::SensedSpheres msg;
 
   // Check each obstacle and, if in range, add to response.
@@ -163,8 +191,7 @@ SimulateSensor(const SphereSensorParams& params) const {
 
 // Derived classes must have some sort of visualization through RViz.
 void BallsInBox::Visualize() const {
-  if (vis_pub_.getNumSubscribers() <= 0)
-    return;
+  if (vis_pub_.getNumSubscribers() <= 0) return;
 
   // Set up box marker.
   visualization_msgs::Marker cube;
@@ -201,7 +228,7 @@ void BallsInBox::Visualize() const {
   vis_pub_.publish(cube);
 
   // Visualize obstacles as spheres.
-  for (size_t ii = 0; ii < centers_.size(); ii++){
+  for (size_t ii = 0; ii < centers_.size(); ii++) {
     visualization_msgs::Marker sphere;
     sphere.ns = "sphere";
     sphere.header.frame_id = fixed_frame_;
@@ -236,14 +263,15 @@ void BallsInBox::Visualize() const {
 // Load parameters. This may be overridden by derived classes if needed
 // (they should still call this one via Environment::LoadParameters).
 bool BallsInBox::LoadParameters(const ros::NodeHandle& n) {
-  if (!Environment<fastrack_msgs::SensedSpheres, SphereSensorParams>::
-      LoadParameters(n))
+  if (!Environment<fastrack_msgs::SensedSpheres,
+                   SphereSensorParams>::LoadParameters(n))
     return false;
 
   ros::NodeHandle nl(n);
 
   // Number/size of obstacles.
-  int num; double min_radius, max_radius;
+  int num;
+  double min_radius, max_radius;
   if (!nl.getParam("env/num_obstacles", num)) return false;
   if (!nl.getParam("env/min_radius", min_radius)) return false;
   if (!nl.getParam("env/max_radius", max_radius)) return false;
@@ -259,8 +287,8 @@ bool BallsInBox::LoadParameters(const ros::NodeHandle& n) {
 }
 
 // Generate random obstacles.
-void BallsInBox::GenerateObstacles(
-  size_t num, double min_radius, double max_radius, unsigned int seed) {
+void BallsInBox::GenerateObstacles(size_t num, double min_radius,
+                                   double max_radius, unsigned int seed) {
   // Create a random number generator.
   std::random_device rd;
   std::default_random_engine rng(rd());
@@ -279,5 +307,5 @@ void BallsInBox::GenerateObstacles(
   }
 }
 
-} //\namespace environment
-} //\namespace fastrack
+}  //\namespace environment
+}  //\namespace fastrack

@@ -50,8 +50,9 @@
 #ifndef FASTRACK_ENVIRONMENT_OCCUPANCY_MAP_H
 #define FASTRACK_ENVIRONMENT_OCCUPANCY_MAP_H
 
-#include <fastrack/environment/environment.h>
 #include <fastrack/bound/box.h>
+#include <fastrack/bound/sphere.h>
+#include <fastrack/environment/environment.h>
 #include <fastrack/utils/types.h>
 
 #include <ros/ros.h>
@@ -74,12 +75,23 @@ class OccupancyMap : public Environment<M, P> {
     return this->initialized_ &&
            OccupancyProbability(position, bound) < free_space_threshold_;
   }
+  bool IsValid(const Vector3d& position, const Sphere& bound,
+               double time = std::numeric_limits<double>::quiet_NaN()) const {
+    return this->initialized_ &&
+           OccupancyProbability(position, bound, time) < free_space_threshold_;
+  }
 
   // Derived classes must provide an OccupancyProbability function for both
   // single points and tracking error bounds centered on a point.
-  virtual double OccupancyProbability(const Vector3d& position) const = 0;
-  virtual double OccupancyProbability(const Vector3d& position,
-                                      const Box& bound) const = 0;
+  virtual double OccupancyProbability(
+      const Vector3d& position,
+      double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
+  virtual double OccupancyProbability(
+      const Vector3d& position, const Box& bound,
+      double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
+  virtual double OccupancyProbability(
+      const Vector3d& position, const Sphere& bound,
+      double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
 
   // Generate a sensor measurement.
   virtual M SimulateSensor(const P& params) const = 0;
