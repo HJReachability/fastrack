@@ -36,56 +36,73 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Node running a Tracker based on the MatlabValueFunction class.
+// Sphere for tracking error bound. Spheres are defined only by their radius.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <fastrack/bound/sphere.h>
-#include <fastrack/control/quadrotor_control.h>
-#include <fastrack/dynamics/planar_dubins_dynamics_3d.h>
-#include <fastrack/dynamics/quadrotor_decoupled_6d.h>
-#include <fastrack/dynamics/quadrotor_decoupled_6d_rel_planar_dubins_3d.h>
-#include <fastrack/state/planar_dubins_3d.h>
-#include <fastrack/state/position_velocity.h>
-#include <fastrack/tracking/tracker.h>
+#ifndef FASTRACK_BOUND_SPHERE_H
+#define FASTRACK_BOUND_SPHERE_H
+
+#include <fastrack/bound/tracking_bound.h>
 #include <fastrack/utils/types.h>
-#include <fastrack/value/matlab_value_function.h>
 
-#include <fastrack_srvs/PlanarDubinsPlannerDynamics.h>
 #include <fastrack_srvs/TrackingBoundSphere.h>
+#include <fastrack_srvs/TrackingBoundSphereResponse.h>
 
-#include <ros/ros.h>
+namespace fastrack {
+namespace bound {
 
-namespace ft = fastrack::tracking;
-namespace fs = fastrack::state;
-namespace fb = fastrack::bound;
-namespace fc = fastrack::control;
-namespace fd = fastrack::dynamics;
-namespace fv = fastrack::value;
+struct Sphere : public TrackingBound<fastrack_srvs::TrackingBoundSphere::Response> {
+  // Radius.
+  double r;
 
-using CustomValueFunction = fv::MatlabValueFunction<
-    fs::PositionVelocity, fc::QuadrotorControl,
-    fd::QuadrotorDecoupled6D<fc::QuadrotorControlBoundCylinder>,
-    fs::PlanarDubins3D, double, fd::PlanarDubinsDynamics3D,
-    fs::PositionVelocityRelPlanarDubins3D,
-    fd::QuadrotorDecoupled6DRelPlanarDubins3D, fb::Sphere>;
+  // Initialize from vector.
+  bool Initialize(const std::vector<double>& params) {
+    if (params.size() != 1) {
+      ROS_ERROR("Sphere: params were incorrect size.");
+      return false;
+    }
 
-int main(int argc, char** argv) {
-  ros::init(argc, argv, "TrackerDemo");
-  ros::NodeHandle n("~");
-
-  ft::Tracker<CustomValueFunction, fs::PositionVelocity, fc::QuadrotorControl,
-              fs::PlanarDubins3D, fastrack_srvs::TrackingBoundSphere,
-              fastrack_srvs::PlanarDubinsPlannerDynamics>
-      tracker;
-
-  if (!tracker.Initialize(n)) {
-    ROS_ERROR("%s: Failed to initialize tracker.",
-              ros::this_node::getName().c_str());
-    return EXIT_FAILURE;
+    r = params[0];
+    return true;
   }
 
-  ros::spin();
+  // Convert from service response type SR.
+  void FromRos(const fastrack_srvs::TrackingBoundSphere::Response& res) {
+    r = res.r;
+  }
 
-  return EXIT_SUCCESS;
-}
+  // Convert to service response.
+  fastrack_srvs::TrackingBoundSphere::Response ToRos() const {
+    fastrack_srvs::TrackingBoundSphere::Response res;
+    res.r = r;
+
+    return res;
+  }
+
+  // Visualize.
+  void Visualize(const ros::Publisher& pub, const std::string& frame) const {
+    visualization_msgs::Marker m;
+    m.ns = "bound";
+    m.header.frame_id = frame;
+    m.header.stamp = ros::Time::now();
+    m.id = 0;
+    m.type = visualization_msgs::Marker::SPHERE;
+    m.action = visualization_msgs::Marker::ADD;
+    m.color.a = 0.3;
+    m.color.r = 0.5;
+    m.color.g = 0.1;
+    m.color.b = 0.5;
+    m.scale.x = 2.0 * r;
+    m.scale.y = 2.0 * r;
+    m.scale.z = 2.0 * r;
+
+    pub.publish(m);
+  }
+
+}; //\struct Box
+
+} //\namespace bound
+} //\namespace fastrack
+
+#endif
