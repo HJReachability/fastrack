@@ -44,9 +44,9 @@
 #ifndef FASTRACK_DYNAMICS_PLANAR_DUBINS_DYNAMICS_3D_H
 #define FASTRACK_DYNAMICS_PLANAR_DUBINS_DYNAMICS_3D_H
 
+#include <fastrack/control/scalar_bound_interval.h>
 #include <fastrack/dynamics/dynamics.h>
 #include <fastrack/state/planar_dubins_3d.h>
-#include <fastrack/control/scalar_bound_interval.h>
 #include <fastrack_srvs/PlanarDubinsPlannerDynamics.h>
 #include <fastrack_srvs/PlanarDubinsPlannerDynamicsResponse.h>
 
@@ -59,44 +59,36 @@ using state::PlanarDubins3D;
 using control::ScalarBoundInterval;
 
 class PlanarDubinsDynamics3D
-    : public Dynamics<PlanarDubins3D, double,
+    : public Dynamics<PlanarDubins3D, double, ScalarBoundInterval,
                       fastrack_srvs::PlanarDubinsPlannerDynamics::Response> {
  public:
   ~PlanarDubinsDynamics3D() {}
   explicit PlanarDubinsDynamics3D()
-      : Dynamics<PlanarDubins3D, double,
+      : Dynamics<PlanarDubins3D, double, ScalarBoundInterval,
                  fastrack_srvs::PlanarDubinsPlannerDynamics::Response>() {}
+  explicit PlanarDubinsDynamics3D(const ScalarBoundInterval& bound)
+      : Dynamics<PlanarDubins3D, double, ScalarBoundInterval,
+                 fastrack_srvs::PlanarDubinsPlannerDynamics::Response>(bound) {}
+  explicit PlanarDubinsDynamics3D(const std::vector<double>& params)
+      : Dynamics<PlanarDubins3D, double, ScalarBoundInterval,
+                 fastrack_srvs::PlanarDubinsPlannerDynamics::Response>(params) {
+  }
   explicit PlanarDubinsDynamics3D(const double& u_lower, const double& u_upper)
-      : Dynamics<PlanarDubins3D, double,
+      : Dynamics<PlanarDubins3D, double, ScalarBoundInterval,
                  fastrack_srvs::PlanarDubinsPlannerDynamics::Response>(
-            std::unique_ptr<ControlBound<double>>(
-                new ScalarBoundInterval(u_lower, u_upper))) {}
+            ScalarBoundInterval(u_lower, u_upper)) {
+    // Make sure interval is symmetric.
+    constexpr double kSmallNumber = 1e-8;
+    if (std::abs(control_bound_->Max() + control_bound_->Min() > kSmallNumber))
+      throw std::runtime_error("Non-symmetric control bound.");
+  }
 
   // Accessors.
   double V() const { return v_; }
-  double MaxOmega() const { return max_omega_; }
+  double MaxOmega() const { return control_bound_->Max(); }
 
   // Compute turning radius.
-  double TurningRadius() const { return v_ / max_omega_; }
-
-  // Initialize by calling base class.
-  void Initialize(std::unique_ptr<ControlBound<double>> bound) {
-    Dynamics<PlanarDubins3D, double,
-             fastrack_srvs::PlanarDubinsPlannerDynamics::Response>::
-      Initialize(bound);
-  }
-
-  // Initialize from vector.
-  bool Initialize(const std::vector<double>& bound_params) {
-    if (bound_params.size() != 2) {
-      ROS_ERROR("PlanarDubinsDynamics3D: bound params were incorrect size.");
-      return false;
-    }
-
-    control_bound_.reset(new ScalarBoundInterval(bound_params));
-    initialized_ = true;
-    return true;
-  }
+  double TurningRadius() const { return V() / MaxOmega(); }
 
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
@@ -111,8 +103,8 @@ class PlanarDubinsDynamics3D
   // the gradient of the value function at the specified state.
   // In this case (linear dynamics), the state is irrelevant given the
   // gradient of the value function at that state.
-  inline double OptimalControl(
-      const PlanarDubins3D& x, const PlanarDubins3D& value_gradient) const {
+  inline double OptimalControl(const PlanarDubins3D& x,
+                               const PlanarDubins3D& value_gradient) const {
     throw std::runtime_error(
         "PlanarDubinsDynamics3D: OptimalControl is unimplemented.");
     return std::numeric_limits<double>::quiet_NaN();
@@ -120,9 +112,12 @@ class PlanarDubinsDynamics3D
 
   // Convert to the appropriate service response type.
   inline fastrack_srvs::PlanarDubinsPlannerDynamics::Response ToRos() const {
+    if (!control_bound_)
+      throw std::runtime_error("PlanarDubinsDynamics3D was not initialized.");
+
     fastrack_srvs::PlanarDubinsPlannerDynamics::Response res;
     res.speed = v_;
-    res.max_yaw_rate = max_omega_;
+    res.max_yaw_rate = control_bound_->Max();
 
     return res;
   }
@@ -131,12 +126,12 @@ class PlanarDubinsDynamics3D
   inline void FromRos(
       const fastrack_srvs::PlanarDubinsPlannerDynamics::Response& res) {
     v_ = res.speed;
-    max_omega_ = res.max_yaw_rate;
+    control_bound_.reset(
+        new ScalarBoundInterval(-res.max_yaw_rate, res.max_yaw_rate));
   }
 
  private:
   double v_;
-  double max_omega_;
 };  //\class QuadrotorDecoupled6D
 
 }  // namespace dynamics

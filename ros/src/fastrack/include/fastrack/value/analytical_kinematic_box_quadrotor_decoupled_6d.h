@@ -74,7 +74,8 @@ using state::PositionVelocityRelPositionVelocity;
 
 class AnalyticalKinematicBoxQuadrotorDecoupled6D
     : public ValueFunction<PositionVelocity, QuadrotorControl,
-                           QuadrotorDecoupled6D, PositionVelocity, VectorXd,
+                           QuadrotorDecoupled6D<QuadrotorControlBoundBox>,
+                           PositionVelocity, VectorXd,
                            Kinematics<PositionVelocity>, Box> {
  public:
   ~AnalyticalKinematicBoxQuadrotorDecoupled6D() {}

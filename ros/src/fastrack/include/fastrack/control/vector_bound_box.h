@@ -52,7 +52,7 @@ namespace control {
 class VectorBoundBox : public ControlBound<VectorXd> {
  public:
   ~VectorBoundBox() {}
-  explicit VectorBoundBox(const VectorXd &min, const VectorXd &max)
+  explicit VectorBoundBox(const VectorXd& min, const VectorXd& max)
       : min_(min), max_(max) {
     if (min_.size() != max_.size())
       throw std::runtime_error("Inconsistent bound dimensions.");
@@ -60,7 +60,7 @@ class VectorBoundBox : public ControlBound<VectorXd> {
 
   // Assume 'params' is laid out such that the first half of the parameters
   // form the 'min_' and the second form the 'max_'.
-  explicit VectorBoundBox(const std::vector<double> &params) {
+  explicit VectorBoundBox(const std::vector<double>& params) {
     if (!params.size() || params.size() & 1)
       throw std::runtime_error("Incorrect number of parameters.");
 
@@ -74,11 +74,20 @@ class VectorBoundBox : public ControlBound<VectorXd> {
   }
 
   // Accessors.
-  inline const VectorXd &Min() const { return min_; }
-  inline const VectorXd &Max() const { return max_; }
+  inline const VectorXd& Min() const { return min_; }
+  inline const VectorXd& Max() const { return max_; }
+
+  // Custom definition of copy-assign operator.
+  VectorBoundBox& operator=(const VectorBoundBox& other) {
+    if (&other == this) return *this;
+
+    min_ = other.min_;
+    max_ = other.max_;
+    return *this;
+  }
 
   // Derived classes must be able to check whether a query is inside the bound.
-  inline bool Contains(const VectorXd &query) const {
+  inline bool Contains(const VectorXd& query) const {
     if (min_.size() != query.size())
       throw std::runtime_error("Incorrect query dimension.");
 
@@ -93,7 +102,7 @@ class VectorBoundBox : public ControlBound<VectorXd> {
   // (represented as the templated type) onto the surface of the bound.
   // NOTE: this is basically solving an LP with the bound as the feasible
   // set and the query as the coefficients.
-  inline VectorXd ProjectToSurface(const VectorXd &query) const {
+  inline VectorXd ProjectToSurface(const VectorXd& query) const {
     if (min_.size() != query.size())
       throw std::runtime_error("Incorrect query dimension.");
 

@@ -63,12 +63,12 @@ namespace fc = fastrack::control;
 namespace fd = fastrack::dynamics;
 namespace fv = fastrack::value;
 
-using CustomValueFunction =
-    fv::MatlabValueFunction<fs::PositionVelocity, fc::QuadrotorControl,
-                            fd::QuadrotorDecoupled6D, fs::PlanarDubins3D,
-                            double, fd::PlanarDubinsDynamics3D,
-                            fs::PositionVelocityRelPlanarDubins3D,
-                            fd::QuadrotorDecoupled6DRelPlanarDubins3D, fb::Box>;
+using CustomValueFunction = fv::MatlabValueFunction<
+    fs::PositionVelocity, fc::QuadrotorControl,
+    fd::QuadrotorDecoupled6D<fc::QuadrotorControlBoundCylinder>,
+    fs::PlanarDubins3D, double, fd::PlanarDubinsDynamics3D,
+    fs::PositionVelocityRelPlanarDubins3D,
+    fd::QuadrotorDecoupled6DRelPlanarDubins3D, fb::Box>;
 
 int main(int argc, char** argv) {
   ros::init(argc, argv, "TrackerDemo");

@@ -70,6 +70,17 @@ class QuadrotorControlBoundCylinder : public ControlBound<QuadrotorControl> {
         yaw_rate_interval_(params[1], params[3]),
         thrust_interval_(params[2], params[4]) {}
 
+  // Custom definition of copy-assign operator.
+  QuadrotorControlBoundCylinder& operator=(
+      const QuadrotorControlBoundCylinder& other) {
+    if (&other == this) return *this;
+
+    pitch_roll_radius_ = other.pitch_roll_radius_;
+    yaw_rate_interval_ = other.yaw_rate_interval_;
+    thrust_interval_ = other.thrust_interval_;
+    return *this;
+  }
+
   // Derived classes must be able to check whether a query is inside the
   // bound.
   inline bool Contains(const QuadrotorControl& query) const {
@@ -95,11 +106,11 @@ class QuadrotorControlBoundCylinder : public ControlBound<QuadrotorControl> {
 
  private:
   // Radius in (pitch, roll) dimensions.
-  const double pitch_roll_radius_;
+  double pitch_roll_radius_;
 
   // Intervals in yaw_rate and thrust.
-  const ScalarBoundInterval yaw_rate_interval_;
-  const ScalarBoundInterval thrust_interval_;
+  ScalarBoundInterval yaw_rate_interval_;
+  ScalarBoundInterval thrust_interval_;
 };  //\class ControlBound
 
 }  // namespace control

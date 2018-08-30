@@ -252,8 +252,8 @@ VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD,
 // of the nearest cell (i.e. cell center minus state).
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename RS, typename RD, typename B>
-VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::
-DirectionToCenter(const VectorXd& x) const {
+VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD,
+                             B>::DirectionToCenter(const VectorXd& x) const {
   return NearestCenterPoint(x) - x;
 }
 
@@ -274,8 +274,8 @@ double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::LowerGridPoint(
 // Compute the center of the cell nearest to the given state.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename RS, typename RD, typename B>
-VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::
-NearestCenterPoint(const VectorXd& x) const {
+VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD,
+                             B>::NearestCenterPoint(const VectorXd& x) const {
   VectorXd center(x.size());
 
   for (size_t ii = 0; ii < center.size(); ii++)
@@ -327,9 +327,8 @@ MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD,
 // Can be used as an alternative to intialization from a NodeHandle.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename RS, typename RD, typename B>
-bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD,
-                         B>::InitializeFromMatFile(const std::string&
-                                                       file_name) {
+bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::
+InitializeFromMatFile(const std::string& file_name) {
   // Open up this file.
   MatlabFileReader reader(file_name);
 
@@ -387,9 +386,9 @@ bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD,
   // Load dynamics and bound parameters.
   std::vector<double> params;
   if (!reader.ReadVector("tracker_params", &params)) return false;
-  if (!this->tracker_dynamics_.Initialize(params)) return false;
+  this->tracker_dynamics_.Initialize(params);
   if (!reader.ReadVector("planner_params", &params)) return false;
-  if (!this->planner_dynamics_.Initialize(params)) return false;
+  this->planner_dynamics_.Initialize(params);
   this->relative_dynamics_.reset(new RD);
 
   if (!reader.ReadVector("bound_params", &params)) return false;
