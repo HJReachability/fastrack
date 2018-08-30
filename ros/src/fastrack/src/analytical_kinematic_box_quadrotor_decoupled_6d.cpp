@@ -68,19 +68,18 @@ bool AnalyticalKinematicBoxQuadrotorDecoupled6D::LoadParameters(
   qc_lower.pitch = -qc_upper.pitch;
   qc_lower.roll = -qc_upper.roll;
 
-  tracker_dynamics_.Initialize(std::unique_ptr<ControlBound<QuadrotorControl>>(
-      new QuadrotorControlBoundBox(qc_lower, qc_upper)));
+  tracker_dynamics_.Initialize(QuadrotorControlBoundBox(qc_lower, qc_upper));
 
   VectorXd max_planner_speed(3);
   if (!nl.getParam("planner/vx", max_planner_speed(0))) return false;
   if (!nl.getParam("planner/vy", max_planner_speed(1))) return false;
   if (!nl.getParam("planner/vz", max_planner_speed(2))) return false;
 
-  planner_dynamics_.Initialize(std::unique_ptr<ControlBound<VectorXd>>(
-      new VectorBoundBox(-max_planner_speed, max_planner_speed)));
+  planner_dynamics_.Initialize(
+      VectorBoundBox(-max_planner_speed, max_planner_speed));
 
   // Set relative dynamics.
-  relative_dynamics_.reset(new QuadrotorDecoupled6DRelKinematics);
+  relative_dynamics_.reset(new QuadrotorDecoupled6DRelKinematics<QuadrotorControlBoundBox>);
 
   // Compute maximum acceleration. Make sure all elements are positive.
   const auto x_dot_max = tracker_dynamics_.Evaluate(

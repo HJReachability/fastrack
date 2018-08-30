@@ -59,33 +59,17 @@ using control::QuadrotorControl;
 using control::QuadrotorControlBoundBox;
 using state::PositionVelocity;
 
+template <typename CB>
 class QuadrotorDecoupled6D
-    : public Dynamics<PositionVelocity, QuadrotorControl, Empty> {
+  : public Dynamics<PositionVelocity, QuadrotorControl, CB, Empty> {
  public:
   ~QuadrotorDecoupled6D() {}
   explicit QuadrotorDecoupled6D()
-      : Dynamics<PositionVelocity, QuadrotorControl, Empty>() {}
-  explicit QuadrotorDecoupled6D(
-      std::unique_ptr<ControlBound<QuadrotorControl>> bound)
-      : Dynamics<PositionVelocity, QuadrotorControl, Empty>(bound) {}
-
-  // Initialize by calling base class.
-  void Initialize(std::unique_ptr<ControlBound<QuadrotorControl>> bound) {
-    return Dynamics<PositionVelocity, QuadrotorControl, Empty>::Initialize(
-        bound);
-  }
-
-  // Initialize from vector.
-  bool Initialize(const std::vector<double> &bound_params) {
-    if (bound_params.size() != 8) {
-      ROS_ERROR("QuadrotorDecoupled6D: bound params were incorrect size.");
-      return false;
-    }
-
-    control_bound_.reset(new QuadrotorControlBoundBox(bound_params));
-    initialized_ = true;
-    return true;
-  }
+    : Dynamics<PositionVelocity, QuadrotorControl, CB, Empty>() {}
+  explicit QuadrotorDecoupled6D(const CB& bound)
+    : Dynamics<PositionVelocity, QuadrotorControl, CB, Empty>(bound) {}
+  explicit QuadrotorDecoupled6D(const std::vector<double>& params)
+    : Dynamics<PositionVelocity, QuadrotorControl, CB, Empty>(params) {}
 
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
@@ -111,7 +95,7 @@ class QuadrotorDecoupled6D
   inline QuadrotorControl OptimalControl(
       const PositionVelocity &x, const PositionVelocity &value_gradient) const {
     // Check initialization.
-    if (!initialized_)
+    if (!this->control_bound_)
       throw std::runtime_error(
           "QuadrotorDecoupled6D: uninitialized call to OptimalControl.");
 
@@ -124,7 +108,7 @@ class QuadrotorDecoupled6D
     negative_grad.thrust = -value_gradient.Vz();
 
     // Project onto control bound and make sure to zero out yaw_rate.
-    QuadrotorControl c = control_bound_->ProjectToSurface(negative_grad);
+    QuadrotorControl c = this->control_bound_->ProjectToSurface(negative_grad);
     c.yaw_rate = 0.0;
 
     return c;
