@@ -77,10 +77,10 @@
 compTraj = false;
 
 %% Grid.
-grid_min = [ 0.05; -pi; -2; -2];    % Lower corner of computation domain
-grid_max = [ 1;  pi;  2;  2];    % Upper corner of computation domain
-N = [20; 31; 21; 21];            % Number of grid points per dimension
-pdDims = 2;                      % 2nd dimension is periodic
+grid_min = [ 0.01; -pi; -1; -1];  % Lower corner of computation domain
+grid_max = [ 0.5;  pi;  1;  1];   % Upper corner of computation domain
+N = [50; 35; 21; 21];             % Number of grid points per dimension
+pdDims = 2;                       % 2nd dimension is periodic
 g = createGrid(grid_min, grid_max, N, pdDims); % create state space grid
 
 
@@ -95,13 +95,13 @@ tau = t0:dt:tMax;
 a_max_ = 2; % ~10º --> ~0.2 rad --> ~0.2 g --> ~2 m/s^2
 
 % Dubins input bound.
-omega_max = pi/4; % rad/s
+omega_max = pi; % rad/s
 
 % Disturbance bound.
 d_max = 0.5; % m/s^2
 
 % Dubins car speed.
-v = 0.5; % m/s
+v = 1.0; % m/s
 
 % surface function is the distance between the point mass and the Dubins car.
 data0 = g.xs{1};
@@ -154,15 +154,17 @@ uMode = 'min';
 dMode = 'max';
 % --- End negated computation ---
 
+% Keep final step of value function computation only.
+data = squeeze(data(:,:,:,:,end));
+
 %% Plot surface function l(x) and value function V(x).
 [h_f, h_data, h_data0] = PlotValueXY(g,data,data0);
 
 %% Save data to load into FaSTrack.
-% Keep final step of value function computation only.
-data = squeeze(data(:,:,:,:,end));
 
 % Choose TEB level set relative to the minimum nonempty level set.
-level_set_margin = 0.1;
+level_set_margin = 0.1; % in meters
+level_set_boundary_value = min(data(:)) + level_set_margin;
 
 % Define transition between free and forced control near the boundary.
 threshold_lower = 0.1;
@@ -175,11 +177,45 @@ num_cells = N;
 lower = grid_min;
 upper = grid_max;
 
+%------------------- Efficient-to-handle TEB approximation -------------------%
+% Compute circle approximation of the TEB in relative position space.
+% (This projects the velocity components out, which is done through a min.)
+data_project_to_position = min( min(data,[],4), [],3);
+
+% Create array of points in the TEB
+teb_points = [];
+for i_rho = 1:N(1)
+	for i_theta = 1:N(2)
+		if data_project_to_position(i_rho,i_theta) <= level_set_boundary_value
+			rho = g.vs{1}(i_rho);
+			theta = g.vs{2}(i_theta);
+			teb_points = [teb_points; rho, theta];
+		end
+	end
+end
+
+% Compute circumscribed circle of the projected TEB (we know it is symmetric).
+R_c_sq = inf; % Initialize squared circumradius
+x_c = [];	  % Initialize circumcenter
+rhos = teb_points(:,1);
+thetas = teb_points(:,2);
+res_x = 0.01; % 0.01 m resolution
+% Iterate over candidate center positions (linear pass).
+for x = -grid_max(1):res_x:grid_max(1)
+	% Compute radius for this center as distance to farthest point in the set.
+	d_sq = max( (rhos.*sin(thetas) ).^2 + (rhos.*cos(thetas) - x).^2 );
+	if d_sq < R_c_sq
+		R_c_sq = d_sq;
+		x_c = x;
+	end
+end
+R_c = sqrt(R_c_sq);
+
 %% TODO(@jaime): Define tracker_params, planner_params, bound_params consistent
 % with the Initialize() function in the appropriate class.
-tracker_params = []
-planner_params = []
-bound_params = []
+tracker_params = []; % Control bounds for the tracker
+planner_params = []; % Control bounds for the tracker
+bound_params   = []; % TEB bounds
 
 % Save in .mat file.
 save value_function priority_upper priority_lower num_cells lower upper data
