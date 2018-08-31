@@ -41,6 +41,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifndef FASTRACK_BOUND_CYLINDER_H
 #define FASTRACK_BOUND_CYLINDER_H
 
 #include <fastrack/bound/tracking_bound.h>

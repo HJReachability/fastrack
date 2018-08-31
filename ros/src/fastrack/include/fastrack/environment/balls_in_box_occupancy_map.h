@@ -78,6 +78,9 @@ class BallsInBoxOccupancyMap
   double OccupancyProbability(
       const Vector3d& p, const Sphere& bound,
       double time = std::numeric_limits<double>::quiet_NaN()) const;
+  double OccupancyProbability(
+      const Vector3d& p, const Cylinder& bound,
+      double time = std::numeric_limits<double>::quiet_NaN()) const;
 
   // Generate a sensor measurement.
   fastrack_msgs::SensedSpheres SimulateSensor(
