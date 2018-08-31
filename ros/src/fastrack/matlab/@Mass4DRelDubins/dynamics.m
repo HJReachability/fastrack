@@ -75,6 +75,9 @@ function dx = dynamics(obj, ~, x, u, d, ~)
 %   (d_t, d_n) \in Ball(0,d_max_)
 %
 
+% TODO: It's probably not ideal to use polar coordinates for the grid!
+% Consider using Cartesian grid and transforming into polar inside the dynamics.
+% For the cell at the origin (singularity in polar), set theta to 0 manually.
 
 if numel(u) ~= obj.nu
   error('Incorrect number of control dimensions!')
