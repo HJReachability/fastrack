@@ -40,7 +40,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <fastrack/bound/sphere.h>
+#include <fastrack/bound/cylinder.h>
 #include <fastrack/control/quadrotor_control.h>
 #include <fastrack/dynamics/planar_dubins_dynamics_3d.h>
 #include <fastrack/dynamics/quadrotor_decoupled_6d.h>
@@ -52,7 +52,7 @@
 #include <fastrack/value/matlab_value_function.h>
 
 #include <fastrack_srvs/PlanarDubinsPlannerDynamics.h>
-#include <fastrack_srvs/TrackingBoundSphere.h>
+#include <fastrack_srvs/TrackingBoundCylinder.h>
 
 #include <ros/ros.h>
 
@@ -68,14 +68,14 @@ using CustomValueFunction = fv::MatlabValueFunction<
     fd::QuadrotorDecoupled6D<fc::QuadrotorControlBoundCylinder>,
     fs::PlanarDubins3D, double, fd::PlanarDubinsDynamics3D,
     fs::PositionVelocityRelPlanarDubins3D,
-    fd::QuadrotorDecoupled6DRelPlanarDubins3D, fb::Sphere>;
+    fd::QuadrotorDecoupled6DRelPlanarDubins3D, fb::Cylinder>;
 
 int main(int argc, char** argv) {
   ros::init(argc, argv, "TrackerDemo");
   ros::NodeHandle n("~");
 
   ft::Tracker<CustomValueFunction, fs::PositionVelocity, fc::QuadrotorControl,
-              fs::PlanarDubins3D, fastrack_srvs::TrackingBoundSphere,
+              fs::PlanarDubins3D, fastrack_srvs::TrackingBoundCylinder,
               fastrack_srvs::PlanarDubinsPlannerDynamics>
       tracker;
 

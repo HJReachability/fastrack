@@ -95,8 +95,7 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
 
   // Helper function to check if any sphere in the given KdtreeMap overlaps
   // the given Box.
-  auto overlaps = [&p, &bound](const KdtreeMap<3, double>& kdtree,
-                               double largest_radius) {
+  auto overlaps = [&p, &bound](const KdtreeMap<3, double>& kdtree) {
     // Get nearest neighbors.
     // NOTE: using KnnSearch instead of RadiusSearch because it seems to
     // be more precise.
@@ -122,11 +121,11 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
   };  //\overlaps
 
   // Check if this point is inside any obstacles.
-  if (overlaps(obstacles_, largest_obstacle_radius_))
+  if (overlaps(obstacles_))
     return kOccupiedProbability;
 
   // Check if this point contains any unknown space.
-  if (!overlaps(sensor_fovs_, largest_sensor_radius_))
+  if (!overlaps(sensor_fovs_))
     return kUnknownProbability;
 
   return kFreeProbability;
@@ -148,7 +147,50 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
     return kOccupiedProbability;
 
   // Helper function to check if any sphere in the given KdtreeMap overlaps
-  // the given Box.
+  // the given Sphere.
+  auto overlaps = [&p, &bound](const KdtreeMap<3, double>& kdtree) {
+    // Get nearest neighbors.
+    // NOTE: using KnnSearch instead of RadiusSearch because it seems to
+    // be more precise.
+    constexpr size_t kOneNearestNeighbor = 1;
+    const auto neighbors = kdtree.KnnSearch(p, kOneNearestNeighbor);
+
+    // Check for overlaps.
+    for (const auto& entry : neighbors) {
+      if ((p - entry.first).norm() <= entry.second + bound.r) return true;
+    }
+
+    return false;
+  };  //\overlaps
+
+  // Check if this point is inside any obstacles.
+  if (overlaps(obstacles_))
+    return kOccupiedProbability;
+
+  // Check if this point contains any unknown space.
+  if (!overlaps(sensor_fovs_))
+    return kUnknownProbability;
+
+  return kFreeProbability;
+}
+
+double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
+                                                    const Cylinder& bound,
+                                                    double time) const {
+  if (!initialized_) {
+    ROS_WARN("%s: Tried to collision check without initializing.",
+             name_.c_str());
+    return kOccupiedProbability;
+  }
+
+  // Check environment limits.
+  if (p(0) < lower_(0) + bound.r || p(0) > upper_(0) - bound.r ||
+      p(1) < lower_(1) + bound.r || p(1) > upper_(1) - bound.r ||
+      p(2) < lower_(2) + bound.z || p(2) > upper_(2) - bound.z)
+    return kOccupiedProbability;
+
+  // Helper function to check if any sphere in the given KdtreeMap overlaps
+  // the given Cylinder.
   auto overlaps = [&p, &bound](const KdtreeMap<3, double>& kdtree,
                                double largest_radius) {
     // Get nearest neighbors.
@@ -159,7 +201,30 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
 
     // Check for overlaps.
     for (const auto& entry : neighbors) {
-      if ((p - entry.first).norm() <= entry.second + bound.r) return true;
+      const Vector3d& center = entry.first;
+      const double& radius = entry.second;
+
+      // Check if we could not possibly collide with this neighbor sphere
+      // because it's too far away in z.
+      if (center(2) - radius > p(2) + bound.z || center(2) + radius < p(2) - bound.z)
+        continue;
+
+      // Find z coordinate on cylinder closest to the neighbor sphere.
+      // Handle cases separately depending on whether sphere center is above
+      // cylinder center.
+      const double closest_z = (center(2) >= p(2)) ?
+        std::max(std::min(p(2) + bound.z, center(2)),
+                 std::max(p(2) - bound.z, center(2) - radius)) :
+        std::min(std::max(p(2) - bound.z, center(2)),
+                 std::min(p(2) + bound.z, center(2) + radius));
+
+      // Compute radius of sphere at this z coordinate.
+      const double dz = center(2) - closest_z;
+      const double effective_r = std::sqrt(radius * radius - dz * dz);
+
+      // Compute differences in x/y.
+      if ((p.head<2>() - center.head<2>()).norm() <= effective_r + bound.r)
+        return true;
     }
 
     return false;
