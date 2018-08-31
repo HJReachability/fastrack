@@ -52,7 +52,8 @@
 namespace fastrack {
 namespace bound {
 
-struct Sphere : public TrackingBound<fastrack_srvs::TrackingBoundSphere::Response> {
+struct Sphere
+    : public TrackingBound<fastrack_srvs::TrackingBoundSphere::Response> {
   // Radius.
   double r;
 
@@ -100,7 +101,7 @@ struct Sphere : public TrackingBound<fastrack_srvs::TrackingBoundSphere::Respons
     pub.publish(m);
   }
 
-}; //\struct Box
+}; //\struct Sphere
 
 } //\namespace bound
 } //\namespace fastrack

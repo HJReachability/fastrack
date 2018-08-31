@@ -49,6 +49,7 @@
 
 #include <fastrack/bound/box.h>
 #include <fastrack/bound/sphere.h>
+#include <fastrack/bound/cylinder.h>
 #include <fastrack/utils/types.h>
 
 #include <ros/ros.h>
@@ -60,6 +61,7 @@ namespace environment {
 
 using bound::Box;
 using bound::Sphere;
+using bound::Cylinder;
 
 template <typename M, typename P>
 class Environment {
@@ -77,6 +79,9 @@ class Environment {
       double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
   virtual bool IsValid(
       const Vector3d& position, const Sphere& bound,
+      double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
+  virtual bool IsValid(
+      const Vector3d& position, const Cylinder& bound,
       double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
 
   // Utility for checking multiple positions.
