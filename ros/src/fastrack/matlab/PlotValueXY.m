@@ -44,14 +44,22 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-function [h_f, h_data, h_data0] = PlotValueXY(g,data,data0);
+function [h_f, h_data, h_data0] = PlotValueXY(g,data,data0,mode,high_dim_vals)
 %% Plot surface function l(x) and value function V(x).
 %  NOTE: As a sanity check, it should always be V(x) >= l(x).
 
-if nargin >=3
+if nargin >=3 && ~isempty(data0)
 	plot_data0 = true;
 else
 	plot_data0 = false;
+end
+
+if nargin < 4
+	mode = 'min';
+end
+
+if nargin < 5
+	high_dim_vals = [ceil(g.N(3)/2), ceil(g.N(4)/2)];
 end
 
 % Transform from polar coordinates
@@ -66,6 +74,17 @@ if plot_data0
 end
 data_closed  = [data, data(:,1,:,:,:)];
 
+% Determine how to treat the higher dimensions
+if strcmp(mode,'min') % projection of higher dimensions (minimum)
+	data0_low_dim = min( min(data0_closed,[],4), [],3);
+	data_low_dim  = min( min(data_closed,[],4), [],3);
+elseif strcmp(mode,'slice') % section of higher dimensions
+	data0_low_dim = data0_closed(:,:,high_dim_vals(1),high_dim_vals(2));
+	data_low_dim  = data_closed(:,:,high_dim_vals(1),high_dim_vals(2));
+else
+	error('mode %s undefined.',mode);
+end
+
 % Initialize figure and handles
 h_f = figure;
 hold on
@@ -76,15 +95,19 @@ h_data0 = 0;
 if plot_data0
 	h0 = mesh(Ys_closed(:,:,1,1),...
 	          Xs_closed(:,:,1,1),...
-	          data0_closed(:,:,ceil(g.N(3)/2),ceil(g.N(4)/2)),...
+	          data0_low_dim,...
 	          'FaceColor','none');
 end
 
 % Plot value function
 h  = surf(Ys_closed(:,:,1,1),...
           Xs_closed(:,:,1,1),...
-          data_closed(:,:,ceil(g.N(3)/2),...
-          ceil(g.N(4)/2),end));
+          data_low_dim);
+
+h_c  = contour3(Ys_closed(:,:,1,1),...
+          Xs_closed(:,:,1,1),...
+          data_low_dim,...
+          min(data_low_dim(:)):0.01:max(data_low_dim(:)));
 
 % Adjust axes and perspective
 h_a = h_f.CurrentAxes;
