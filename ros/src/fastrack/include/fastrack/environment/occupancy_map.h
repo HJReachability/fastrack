@@ -63,6 +63,8 @@ namespace fastrack {
 namespace environment {
 
 using bound::Box;
+using bound::Sphere;
+using bound::Cylinder;
 
 template <typename M, typename P>
 class OccupancyMap : public Environment<M, P> {
@@ -80,6 +82,11 @@ class OccupancyMap : public Environment<M, P> {
     return this->initialized_ &&
            OccupancyProbability(position, bound, time) < free_space_threshold_;
   }
+  bool IsValid(const Vector3d& position, const Cylinder& bound,
+               double time = std::numeric_limits<double>::quiet_NaN()) const {
+    return this->initialized_ &&
+           OccupancyProbability(position, bound, time) < free_space_threshold_;
+  }
 
   // Derived classes must provide an OccupancyProbability function for both
   // single points and tracking error bounds centered on a point.
@@ -91,6 +98,9 @@ class OccupancyMap : public Environment<M, P> {
       double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
   virtual double OccupancyProbability(
       const Vector3d& position, const Sphere& bound,
+      double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
+  virtual double OccupancyProbability(
+      const Vector3d& position, const Cylinder& bound,
       double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
 
   // Generate a sensor measurement.

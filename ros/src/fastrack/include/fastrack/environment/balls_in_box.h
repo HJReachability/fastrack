@@ -73,6 +73,8 @@ public:
                double time = std::numeric_limits<double>::quiet_NaN()) const;
   bool IsValid(const Vector3d& position, const Sphere& bound,
                double time = std::numeric_limits<double>::quiet_NaN()) const;
+  bool IsValid(const Vector3d& position, const Cylinder& bound,
+               double time = std::numeric_limits<double>::quiet_NaN()) const;
 
   // Generate a sensor measurement.
   fastrack_msgs::SensedSpheres
