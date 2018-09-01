@@ -74,6 +74,8 @@ public:
   ~Tracker() {}
   explicit Tracker()
     : ready_(false),
+      received_planner_x_(false),
+      received_tracker_x_(false),
       initialized_(false) {}
 
   // Initialize from a ROS NodeHandle.
@@ -92,9 +94,11 @@ private:
   // Callback to update tracker/planner state.
   inline void TrackerStateCallback(const fastrack_msgs::State::ConstPtr& msg) {
     tracker_x_.FromRos(msg);
+    received_tracker_x_ = true;
   }
   inline void PlannerStateCallback(const fastrack_msgs::State::ConstPtr& msg) {
     planner_x_.FromRos(msg);
+    received_planner_x_ = true;
   }
 
   // Service callbacks for tracking bound and planner parameters.
@@ -112,6 +116,12 @@ private:
     if (!ready_)
       return;
 
+    if (!received_planner_x_ || !received_tracker_x_) {
+      ROS_WARN_THROTTLE(1.0, "%s: Have not received planner/tracker state yet.",
+                        name_.c_str());
+      return;
+    }
+
     // Publish bound.
     value_.TrackingBound().Visualize(bound_pub_, planner_frame_);
 
@@ -123,6 +133,9 @@ private:
   // Most recent tracker/planner states.
   TS tracker_x_;
   PS planner_x_;
+
+  bool received_tracker_x_;
+  bool received_planner_x_;
 
   // Value function.
   V value_;
