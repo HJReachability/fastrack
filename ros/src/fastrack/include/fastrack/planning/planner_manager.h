@@ -75,6 +75,7 @@ public:
   explicit PlannerManager()
     : ready_(false),
       waiting_for_traj_(false),
+      serviced_updated_env_(false),
       initialized_(false) {}
 
   // Initialize this class with all parameters and callbacks.
@@ -111,6 +112,7 @@ protected:
 
   // Generate a new trajectory request when environment has been updated.
   inline void UpdatedEnvironmentCallback(const std_msgs::Empty::ConstPtr& msg) {
+    serviced_updated_env_ = false;
     MaybeRequestTrajectory();
   }
 
@@ -122,6 +124,9 @@ protected:
 
   // Are we waiting for a new trajectory?
   bool waiting_for_traj_;
+
+  // Have we serviced the most recent updated environment callback?
+  bool serviced_updated_env_;
 
   // Start/goal states.
   fastrack_msgs::State start_;
@@ -255,8 +260,9 @@ bool PlannerManager<S>::RegisterCallbacks(const ros::NodeHandle& n) {
 // classes with more specific replanning needs.
 template<typename S>
 void PlannerManager<S>::MaybeRequestTrajectory() {
-  if (!ready_ || waiting_for_traj_)
+  if (!ready_ || waiting_for_traj_) {
     return;
+  }
 
   // Set start and goal states.
   fastrack_msgs::ReplanRequest msg;
@@ -281,6 +287,7 @@ void PlannerManager<S>::MaybeRequestTrajectory() {
   // Publish request and set flag.
   replan_request_pub_.publish(msg);
   waiting_for_traj_ = true;
+  serviced_updated_env_ = true;
 }
 
 // Callback for applying tracking controller.
@@ -292,9 +299,12 @@ void PlannerManager<S>::TimerCallback(const ros::TimerEvent& e) {
   if (traj_.Size() == 0) {
     MaybeRequestTrajectory();
     return;
-  } else if (traj_.Size() == 0 && waiting_for_traj_) {
+  } else if (waiting_for_traj_) {
     ROS_WARN_THROTTLE(1.0, "%s: Waiting for trajectory.", name_.c_str());
-    return;
+  } else if (!serviced_updated_env_) {
+    ROS_INFO_THROTTLE(1.0, "%s: Servicing old updated environment callback.",
+                      name_.c_str());
+    MaybeRequestTrajectory();
   }
 
   // Interpolate the current trajectory.
