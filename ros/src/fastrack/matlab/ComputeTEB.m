@@ -44,7 +44,7 @@
 %% Problem parameters.
 
 % Gravity
-g = 9.81; % m/s^2
+gravity = 9.81; % m/s^2
 
 
 % ---- Planner parameters ----
@@ -63,12 +63,12 @@ v_z_ = 0.5; % m/s
 
 % Horizontal acceleration control bounds (via pitch/roll).
 pitch_roll_radius_ = 0.2; % rad;  ~10º --> ~0.2 rad --> ~0.2 g --> ~2 m/s^2
-a_max_ = g*tan(pitch_roll_radius_); % m/s^2; g*tan(0.2) = 1.99 m/s^2
+a_max_ = gravity*tan(pitch_roll_radius_); % m/s^2; g*tan(0.2) = 1.99 m/s^2
 
 % Vertical and directional parameters (for analytic vertical component of TEB).
 yaw_rate_max_ = pi;  % rad/s
-thrust_min_ = g - 3; % m/s^2
-thrust_max_ = g + 6; % m/s^2
+thrust_min_ = gravity - 3; % m/s^2
+thrust_max_ = gravity + 6; % m/s^2
 
 % Horizontal disturbance bound (maximum radius of horizontal component).
 d_max_ = 0.5; % m/s^2
@@ -212,7 +212,8 @@ R_c = sqrt(R_c_sq);
 % Semi-height of vertical TEB dimension.
 % Based on analytic double-integrator value function.
 % The limiting factor is the weakest acceleration capability of both directions.
-semi_height_ = v_z_^2 / (min(g - thrust_min_, thrust_max_ - g) - d_z_max_); % m
+semi_height_ = v_z_^2 / (min(gravity - thrust_min_,...
+                            thrust_max_ - gravity) - d_z_max_); % m
 
 % Control bound parameters for the planner: scalar_bound_interval, [min, max].
 planner_params = [-omega_max_, omega_max_];
