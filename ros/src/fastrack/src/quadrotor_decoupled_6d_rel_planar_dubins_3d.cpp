@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, The Regents of the University of California (Regents).
+ * Copyright (c) 2018, The Regents of the University of California (Regents).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -126,12 +126,11 @@ QuadrotorControl QuadrotorDecoupled6DRelPlanarDubins3D::OptimalControl(
   const auto& grad =
       static_cast<const PositionVelocityRelPlanarDubins3D&>(value_gradient);
 
-  // grad.Vx();
-
-  QuadrotorControl negative_grad;
   // Translate gradient into (negative) control-affine terms for pitch and roll.
   const double c = std::cos(planner_x.Theta());
   const double s = std::sin(planner_x.Theta());
+
+  QuadrotorControl negative_grad;
   negative_grad.pitch =
       -(grad.TangentVelocity() * c - grad.NormalVelocity() * s);
   negative_grad.roll =
@@ -143,11 +142,12 @@ QuadrotorControl QuadrotorDecoupled6DRelPlanarDubins3D::OptimalControl(
   QuadrotorControl u = tracker_u_bound.ProjectToSurface(negative_grad);
 
   // Adjust non-bang-bang control inputs.
-  u.yaw_rate = 0.0;  // Yaw controlled externally.
-  constexpr double k_p = 1.5;     // HACK! PD constants are hard-coded
-  constexpr double k_d = 1.0;     // (from k_manual.txt in crazyflie_clean).
-  u.thrust = constants::G + k_p * (planner_x.Z() - tracker_x.Z()) +
-             k_d * (planner_x.Vz() - tracker_x.Vz()); // Vertical PD controller.
+  u.yaw_rate = 0.0;            // Yaw controlled externally.
+  constexpr double k_p = 1.5;  // HACK! PD constants are hard-coded.
+  constexpr double k_d = 1.0;  // (from k_manual.txt in crazyflie_clean).
+  u.thrust =
+      constants::G + k_p * (planner_x.Z() - tracker_x.Z()) +
+      k_d * (planner_x.Vz() - tracker_x.Vz());  // Vertical PD controller.
 }
 
 }  // namespace dynamics
