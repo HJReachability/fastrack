@@ -57,6 +57,7 @@
 #include <fastrack/value/value_function.h>
 
 #include <ros/ros.h>
+#include <ros/assert.h>
 #include <functional>
 
 namespace fastrack {
@@ -89,8 +90,14 @@ class MatlabValueFunction : public ValueFunction<TS, TC, TD, PS, PC, PD, B> {
   bool LoadParameters(const ros::NodeHandle& n) {
     ros::NodeHandle nl(n);
 
+
     std::string file_name;
     if (!nl.getParam("file_name", file_name)) return false;
+
+    std::cout << "---------------------" << std::endl;
+
+    std::cout << file_name << std::endl;
+
 
     return InitializeFromMatFile(file_name);
   }
@@ -331,14 +338,23 @@ bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::
 InitializeFromMatFile(const std::string& file_name) {
   // Open up this file.
   MatlabFileReader reader(file_name);
+  ROS_ASSERT_MSG(reader.IsOpen(), "%s: Reader could not open file.",
+                 this->name_.c_str());
 
   // Load each class variable.
+  std::cout << "0" << std::endl;
   if (!reader.ReadScalar("priority_lower", &priority_lower_)) return false;
+  std::cout << "1" << std::endl;
   if (!reader.ReadScalar("priority_upper", &priority_upper_)) return false;
+  std::cout << "2" << std::endl;
   if (!reader.ReadVector("num_cells", &num_cells_)) return false;
+  std::cout << "3" << std::endl;
   if (!reader.ReadVector("lower", &lower_)) return false;
+  std::cout << "4" << std::endl;
   if (!reader.ReadVector("upper", &upper_)) return false;
+  std::cout << "5" << std::endl;
   if (!reader.ReadVector("data", &data_)) return false;
+  std::cout << "6" << std::endl;
 
   // Check loaded variables.
   if (priority_lower_ >= priority_upper_) {
