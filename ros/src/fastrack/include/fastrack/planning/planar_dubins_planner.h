@@ -49,6 +49,7 @@
 #include <fastrack/planning/graph_dynamic_planner.h>
 #include <fastrack/state/planar_dubins_3d.h>
 #include <fastrack/utils/types.h>
+#include <fastrack_srvs/PlanarDubinsPlannerDynamics.h>
 
 #include <ompl/base/SpaceInformation.h>
 #include <ompl/base/spaces/DubinsStateSpace.h>
@@ -147,8 +148,8 @@ Trajectory<PlanarDubins3D> PlanarDubinsPlanner<E, B, SB>::SubPlan(
     const auto state = FromOmplState(path.getState(ii));
 
     if (ii > 0)
-      time +=
-          (state.Position() - states.back().Position()).norm() / this->dynamics_.V();
+      time += (state.Position() - states.back().Position()).norm() /
+              this->dynamics_.V();
 
     states.emplace_back(state);
     times.emplace_back(time);
