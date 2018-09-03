@@ -98,7 +98,7 @@ protected:
   virtual void TimerCallback(const ros::TimerEvent& e);
 
   // Create and publish a marker at goal state. 
-  const virtual void VisualizeGoal();
+  virtual void VisualizeGoal() const ;
 
   // Callback for processing trajectory updates.
   inline void TrajectoryCallback(const fastrack_msgs::Trajectory::ConstPtr& msg) {
@@ -338,7 +338,7 @@ void PlannerManager<S>::TimerCallback(const ros::TimerEvent& e) {
 
 // Converts the goal state into a Rviz marker. 
 template<typename S>
-void PlannerManager<S>::VisualizeGoal() {
+void PlannerManager<S>::VisualizeGoal() const {
   // Set up sphere marker.
   visualization_msgs::Marker sphere;
   sphere.ns = "sphere";
