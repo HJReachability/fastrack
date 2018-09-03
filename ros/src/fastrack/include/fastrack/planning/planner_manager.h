@@ -97,6 +97,9 @@ protected:
   // derived classes should still call thhis function.
   virtual void TimerCallback(const ros::TimerEvent& e);
 
+  // Create and publish a marker at goal state. 
+  virtual void VisualizeGoal() const ;
+
   // Callback for processing trajectory updates.
   inline void TrajectoryCallback(const fastrack_msgs::Trajectory::ConstPtr& msg) {
     traj_ = Trajectory<S>(msg);
@@ -137,7 +140,7 @@ protected:
   double time_step_;
 
   // Publishers/subscribers and related topics.
-  ros::Publisher bound_pub_;
+  ros::Publisher goal_pub_;
   ros::Publisher ref_pub_;
   ros::Publisher replan_request_pub_;
   ros::Publisher traj_vis_pub_;
@@ -145,7 +148,7 @@ protected:
   ros::Subscriber ready_sub_;
   ros::Subscriber updated_env_sub_;
 
-  std::string bound_topic_;
+  std::string goal_topic_;
   std::string ref_topic_;
   std::string replan_request_topic_;
   std::string traj_vis_topic_;
@@ -203,7 +206,7 @@ bool PlannerManager<S>::LoadParameters(const ros::NodeHandle& n) {
   if (!nl.getParam("topic/replan_request", replan_request_topic_)) return false;
   if (!nl.getParam("topic/updated_env", updated_env_topic_)) return false;
   if (!nl.getParam("vis/traj", traj_vis_topic_)) return false;
-  if (!nl.getParam("vis/bound", bound_topic_)) return false;
+  if (!nl.getParam("vis/goal", goal_topic_)) return false;
 
   // Frames.
   if (!nl.getParam("frame/fixed", fixed_frame_)) return false;
@@ -241,8 +244,8 @@ bool PlannerManager<S>::RegisterCallbacks(const ros::NodeHandle& n) {
   replan_request_pub_ = nl.advertise<fastrack_msgs::ReplanRequest>(
     replan_request_topic_.c_str(), 1, false);
 
-  bound_pub_ = nl.advertise<visualization_msgs::Marker>(
-    bound_topic_.c_str(), 1, false);
+  goal_pub_ = nl.advertise<visualization_msgs::Marker>(
+    goal_topic_.c_str(), 1, false);
 
   traj_vis_pub_ = nl.advertise<visualization_msgs::Marker>(
     traj_vis_topic_.c_str(), 1, false);
@@ -260,6 +263,9 @@ bool PlannerManager<S>::RegisterCallbacks(const ros::NodeHandle& n) {
 // classes with more specific replanning needs.
 template<typename S>
 void PlannerManager<S>::MaybeRequestTrajectory() {
+  // Publish marker at goal location. 
+  VisualizeGoal();
+
   if (!ready_ || waiting_for_traj_) {
     return;
   }
@@ -328,6 +334,45 @@ void PlannerManager<S>::TimerCallback(const ros::TimerEvent& e) {
   tf.transform.rotation.w = 1;
 
   tf_broadcaster_.sendTransform(tf);
+}
+
+// Converts the goal state into a Rviz marker. 
+template<typename S>
+void PlannerManager<S>::VisualizeGoal() const {
+  // Set up sphere marker.
+  visualization_msgs::Marker sphere;
+  sphere.ns = "sphere";
+  sphere.header.frame_id = fixed_frame_;
+  sphere.header.stamp = ros::Time::now();
+  sphere.id = 0;
+  sphere.type = visualization_msgs::Marker::SPHERE;
+  sphere.action = visualization_msgs::Marker::ADD;
+  sphere.color.a = 1.0;
+  sphere.color.r = 0.3;
+  sphere.color.g = 0.7;
+  sphere.color.b = 0.7;
+
+  geometry_msgs::Point center;
+
+  // Fill in center and scale.
+  sphere.scale.x = 0.1;
+  center.x = goal_.x[0];
+
+  sphere.scale.y = 0.1;
+  center.y = goal_.x[1];
+
+  sphere.scale.z = 0.1;
+  center.z = goal_.x[2];
+
+  sphere.pose.position = center;
+  sphere.pose.orientation.x = 0.0;
+  sphere.pose.orientation.y = 0.0;
+  sphere.pose.orientation.z = 0.0;
+  sphere.pose.orientation.w = 1.0;
+
+  goal_pub_.publish(sphere);
+
+  return;
 }
 
 } //\namespace planning

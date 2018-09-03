@@ -8,7 +8,7 @@
   <arg name="updated_env_topic" default="/updated_env" />
   <arg name="ref_topic" default="/ref" />
   <arg name="traj_vis" default="/vis/traj" />
-  <arg name="bound_vis" default="/vis/bound" />
+  <arg name="goal_vis" default="/vis/goal" />
 
   <!-- Frames of reference. -->
   <arg name="fixed_frame" default="world" />
@@ -33,7 +33,7 @@
     <param name="topic/replan_request" value="$(arg replan_request_topic)" />
     <param name="topic/updated_env" value="$(arg updated_env_topic)" />
     <param name="vis/traj" value="$(arg traj_vis)" />
-    <param name="vis/bound" value="$(arg bound_vis)" />
+    <param name="vis/goal" value="$(arg goal_vis)" />
 
     <param name="frame/fixed" value="$(arg fixed_frame)" />
     <param name="frame/planner" value="$(arg planner_frame)" />
