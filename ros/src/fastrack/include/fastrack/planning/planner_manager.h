@@ -98,7 +98,7 @@ protected:
   virtual void TimerCallback(const ros::TimerEvent& e);
 
   // Create and publish a marker at goal state. 
-  virtual void VisualizeGoal();
+  const virtual void VisualizeGoal();
 
   // Callback for processing trajectory updates.
   inline void TrajectoryCallback(const fastrack_msgs::Trajectory::ConstPtr& msg) {
@@ -342,7 +342,7 @@ void PlannerManager<S>::VisualizeGoal() {
   // Set up sphere marker.
   visualization_msgs::Marker sphere;
   sphere.ns = "sphere";
-  sphere.header.frame_id = this->fixed_frame_;
+  sphere.header.frame_id = fixed_frame_;
   sphere.header.stamp = ros::Time::now();
   sphere.id = 0;
   sphere.type = visualization_msgs::Marker::SPHERE;
@@ -356,7 +356,6 @@ void PlannerManager<S>::VisualizeGoal() {
 
   // Fill in center and scale.
   sphere.scale.x = 0.1;
-  std::cout << "goal at: " << goal_ << std::endl;
   center.x = goal_.x[0];
 
   sphere.scale.y = 0.1;
