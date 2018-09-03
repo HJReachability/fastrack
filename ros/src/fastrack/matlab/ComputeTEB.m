@@ -171,7 +171,7 @@ priority_lower = min(data(:)) + level_set_margin*threshold_lower;
 priority_upper = min(data(:)) + level_set_margin*threshold_upper;
 
 % Grid size and bounds.
-num_cells = N;
+num_cells = cast(N,'uint64');
 lower = grid_min;
 upper = grid_max;
 
