@@ -75,7 +75,7 @@
   <arg name="lqr_x_dim" default="7" />
   <arg name="lqr_u_dim" default="4" />
 
-  <arg name="lqr_K_file" default="$(find crazyflie_lqr)/references/K_poor.txt" />
+  <arg name="lqr_K_file" default="$(find crazyflie_lqr)/references/K_manual.txt" />
   <arg name="lqr_u_ref_file" default="$(find crazyflie_lqr)/references/u_ref_hover.txt" />
 
   <!-- Environment parameters and state space bounds. -->
