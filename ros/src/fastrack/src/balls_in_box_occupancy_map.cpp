@@ -45,7 +45,8 @@ namespace fastrack {
 namespace environment {
 
 // Occupancy probability for a single point.
-double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p) const {
+double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
+                                                    double time) const {
   if (!initialized_) {
     ROS_WARN("%s: Tried to collision check without initializing.",
              name_.c_str());
@@ -80,7 +81,8 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p) const {
 // point. Occupancy is set to occupied if ANY of the box is occupied. Next,
 // if ANY of the box is unknown the result is unknown. Otherwise, free.
 double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
-                                                    const Box& bound) const {
+                                                    const Box& bound,
+                                                    double time) const {
   if (!initialized_) {
     ROS_WARN("%s: Tried to collision check without initializing.",
              name_.c_str());
@@ -121,12 +123,10 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
   };  //\overlaps
 
   // Check if this point is inside any obstacles.
-  if (overlaps(obstacles_))
-    return kOccupiedProbability;
+  if (overlaps(obstacles_)) return kOccupiedProbability;
 
   // Check if this point contains any unknown space.
-  if (!overlaps(sensor_fovs_))
-    return kUnknownProbability;
+  if (!overlaps(sensor_fovs_)) return kUnknownProbability;
 
   return kFreeProbability;
 }
@@ -164,12 +164,10 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
   };  //\overlaps
 
   // Check if this point is inside any obstacles.
-  if (overlaps(obstacles_))
-    return kOccupiedProbability;
+  if (overlaps(obstacles_)) return kOccupiedProbability;
 
   // Check if this point contains any unknown space.
-  if (!overlaps(sensor_fovs_))
-    return kUnknownProbability;
+  if (!overlaps(sensor_fovs_)) return kUnknownProbability;
 
   return kFreeProbability;
 }
@@ -206,17 +204,19 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
 
       // Check if we could not possibly collide with this neighbor sphere
       // because it's too far away in z.
-      if (center(2) - radius > p(2) + bound.z || center(2) + radius < p(2) - bound.z)
+      if (center(2) - radius > p(2) + bound.z ||
+          center(2) + radius < p(2) - bound.z)
         continue;
 
       // Find z coordinate on cylinder closest to the neighbor sphere.
       // Handle cases separately depending on whether sphere center is above
       // cylinder center.
-      const double closest_z = (center(2) >= p(2)) ?
-        std::max(std::min(p(2) + bound.z, center(2)),
-                 std::max(p(2) - bound.z, center(2) - radius)) :
-        std::min(std::max(p(2) - bound.z, center(2)),
-                 std::min(p(2) + bound.z, center(2) + radius));
+      const double closest_z =
+          (center(2) >= p(2))
+              ? std::max(std::min(p(2) + bound.z, center(2)),
+                         std::max(p(2) - bound.z, center(2) - radius))
+              : std::min(std::max(p(2) - bound.z, center(2)),
+                         std::min(p(2) + bound.z, center(2) + radius));
 
       // Compute radius of sphere at this z coordinate.
       const double dz = center(2) - closest_z;
