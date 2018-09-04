@@ -66,7 +66,8 @@ void Replanner::ReplanRequestCallback(
   replan.request.req = *msg;
   if (!replan_srv_.call(replan)) {
     ROS_ERROR("%s: Replan server error.", name_.c_str());
-    return;
+    replan.response.traj.states.clear();
+    replan.response.traj.times.clear();
   }
 
   // Publish trajectory.
