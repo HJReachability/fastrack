@@ -389,8 +389,10 @@ InitializeFromMatFile(const std::string& file_name) {
   for (size_t ii = 0; ii < num_cells_.size(); ii++) {
     gradient_.emplace_back();
     auto& partial = gradient_.back();
-    if (!reader.ReadVector("deriv" + std::to_string(ii), &partial))
+    if (!reader.ReadVector("deriv" + std::to_string(ii), &partial)) {
+      ROS_ERROR("%s: Could not read deriv%zu.", this->name_.c_str(), ii);
       return false;
+    }
 
     if (partial.size() != total_num_cells) {
       ROS_ERROR("%s: Partial derivative in dimension %zu had incorrect size.",

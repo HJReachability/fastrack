@@ -57,6 +57,9 @@ bool MatlabFileReader::Open(const std::string& file_name) {
 // Read scalar. Returns bool indicating success.
 bool MatlabFileReader::ReadScalar(const std::string& field_name,
                                   double* value) {
+  if (!IsOpen())
+    return false;
+
   // Make sure 'value' is non-null.
   if (!value) return false;
 
@@ -74,6 +77,9 @@ bool MatlabFileReader::ReadScalar(const std::string& field_name,
 // Read scalar. Returns bool indicating success.
 bool MatlabFileReader::ReadScalar(const std::string& field_name,
                                   size_t* value) {
+  if (!IsOpen())
+    return false;
+
   // Make sure 'value' is non-null.
   if (!value) return false;
 
@@ -91,6 +97,9 @@ bool MatlabFileReader::ReadScalar(const std::string& field_name,
 // Read vector. Returns bool indicating success.
 bool MatlabFileReader::ReadVector(const std::string& field_name,
                                   std::vector<double>* values) {
+  if (!IsOpen())
+    return false;
+
   // Make sure 'values' is non-null.
   if (!values) return false;
   values->clear();
@@ -111,6 +120,9 @@ bool MatlabFileReader::ReadVector(const std::string& field_name,
 // Read vector. Returns bool indicating success.
 bool MatlabFileReader::ReadVector(const std::string& field_name,
                                   std::vector<size_t>* values) {
+  if (!IsOpen())
+    return false;
+
   // Make sure 'values' is non-null.
   if (!values) return false;
   values->clear();
