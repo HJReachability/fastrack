@@ -158,7 +158,7 @@ data = squeeze(data(:,:,:,:,end));
 [h_f, h_data, h_data0] = PlotValueXY(g,data,data0);
 
 
-%% Save data to load into FaSTrack.
+%% Post-process data for saving and loading into FaSTrack.
 
 % Choose TEB level set relative to the minimum nonempty level set.
 level_set_margin = 0.1; % in meters
@@ -235,9 +235,38 @@ if abs(x_c) > res_x
 end
 bound_params   = [R_c, semi_height_];
 
-% Save in .mat file.
-save value_function ...
-     priority_upper priority_lower num_cells lower upper data ...
-     planner_params tracker_params bound_params
+% Value function (flattened and grid copies)
+data_flat = data(:);
+data_grid = reshape(data,N(:)');
+
+% Value function gradient (each component flattened)
+[deriv, ~, ~] = computeGradients(g, data);
+for i = 1:g.dim
+  assignin('caller',sprintf('deriv_%i',i-1),deriv{i}(:));
+end
+
+
+%% Save data to .mat file
+
+% Flatten value function
+data = data_flat;
+
+file_name = 'value_function'; % Name of file to store data and parameters.
+save(file_name, ...
+      'priority_upper', ...
+      'priority_lower', ...
+      'num_cells', ...
+      'lower', ...
+      'upper', ...
+      'data', ...
+      'planner_params', ...
+      'tracker_params', ...
+      'bound_params');
+for i = 1:g.dim
+  save(file_name,sprintf('deriv_%i',i-1),'-append');
+end
+
+% Re-define data as non-flattened in the workspace for other potential uses.
+data = data_grid;
 
 % end
