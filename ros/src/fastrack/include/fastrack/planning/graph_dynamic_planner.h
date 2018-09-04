@@ -164,13 +164,13 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::Plan(
   const ros::Time initial_call_time = ros::Time::now();
 
   // Set up start and goal nodes.
-  typename Node::Ptr start_node;
+  typename Node::Ptr start_node = Node::Create();
   start_node->state = start;
   start_node->time = start_time;
   start_node->cost_to_come = 0.0;
   start_node->is_viable = true;
 
-  typename Node::Ptr goal_node;
+  typename Node::Ptr goal_node = Node::Create();
   goal_node->state = goal;
   goal_node->time = constants::kInfinity;
   goal_node->cost_to_come = constants::kInfinity;
