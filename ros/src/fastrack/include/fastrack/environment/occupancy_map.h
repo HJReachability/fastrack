@@ -73,9 +73,10 @@ class OccupancyMap : public Environment<M, P> {
 
   // Collision check is a threshold test on occupancy probability integrated
   // over the bound.
-  bool IsValid(const Vector3d& position, const Box& bound) const {
+  bool IsValid(const Vector3d& position, const Box& bound,
+               double time = std::numeric_limits<double>::quiet_NaN()) const {
     return this->initialized_ &&
-           OccupancyProbability(position, bound) < free_space_threshold_;
+           OccupancyProbability(position, bound, time) < free_space_threshold_;
   }
   bool IsValid(const Vector3d& position, const Sphere& bound,
                double time = std::numeric_limits<double>::quiet_NaN()) const {
