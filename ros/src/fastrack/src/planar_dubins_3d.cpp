@@ -156,7 +156,7 @@ void PlanarDubins3D::SetBounds(const std::vector<double> &lower,
                                const std::vector<double> &upper) {
   // Check dimensions.
   if (lower.size() != 3 || upper.size() != 3)
-    throw new std::runtime_error("PlanarDubins3D: bad bound dimension.");
+    throw std::runtime_error("PlanarDubins3D: bad bound dimension.");
 
   lower_.x_ = lower[0];
   lower_.y_ = lower[1];

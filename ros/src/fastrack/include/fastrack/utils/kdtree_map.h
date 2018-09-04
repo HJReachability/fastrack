@@ -132,7 +132,7 @@ KdtreeMap<K, V>::KnnSearch(const VectorKd& query, size_t k) const {
   std::vector<std::pair<VectorKd, V>> neighbors;
 
   if (index_ == nullptr) {
-    ROS_WARN("KdtreeMap: Cannot search empty index.");
+    ROS_WARN_THROTTLE(1.0, "KdtreeMap: Cannot search empty index.");
     return neighbors;
   }
 

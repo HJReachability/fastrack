@@ -128,6 +128,8 @@ Trajectory<PlanarDubins3D> PlanarDubinsPlanner<E, B, SB>::SubPlan(
   });
 
   ompl_setup.setStartAndGoalStates(ompl_start, ompl_goal);
+  ompl_setup.getSpaceInformation()->setStateValidityCheckingResolution(0.005);
+  ompl_setup.setup();
 
   // Solve.
   if (!ompl_setup.solve(this->max_runtime_)) {
