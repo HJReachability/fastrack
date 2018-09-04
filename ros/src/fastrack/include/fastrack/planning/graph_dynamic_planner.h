@@ -155,7 +155,7 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
 // ----------------------------- IMPLEMENTATION ----------------------------- //
 
 // Plan a trajectory from the given start to goal states starting
-// at the given time.
+// at the given time.o
 template <typename S, typename E, typename D, typename SD, typename B,
           typename SB>
 Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::Plan(
