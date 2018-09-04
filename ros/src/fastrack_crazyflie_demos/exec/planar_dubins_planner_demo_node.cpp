@@ -40,11 +40,11 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <fastrack/bound/box.h>
+#include <fastrack/bound/cylinder.h>
 #include <fastrack/environment/balls_in_box_occupancy_map.h>
 #include <fastrack/planning/planar_dubins_planner.h>
 
-#include <fastrack_srvs/TrackingBoundBox.h>
+#include <fastrack_srvs/TrackingBoundCylinder.h>
 
 #include <ros/ros.h>
 
@@ -53,8 +53,8 @@ int main(int argc, char** argv) {
   ros::NodeHandle n("~");
 
   fastrack::planning::PlanarDubinsPlanner<
-      fastrack::environment::BallsInBoxOccupancyMap, fastrack::bound::Box,
-      fastrack_srvs::TrackingBoundBox>
+      fastrack::environment::BallsInBoxOccupancyMap, fastrack::bound::Cylinder,
+      fastrack_srvs::TrackingBoundCylinder>
       planner;
 
   if (!planner.Initialize(n)) {
