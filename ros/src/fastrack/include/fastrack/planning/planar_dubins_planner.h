@@ -77,7 +77,10 @@ class PlanarDubinsPlanner
   explicit PlanarDubinsPlanner()
       : GraphDynamicPlanner<PlanarDubins3D, E, PlanarDubinsDynamics3D,
                             fastrack_srvs::PlanarDubinsPlannerDynamics, B,
-                            SB>() {}
+                            SB>() {
+    // Set OMPL log level.
+    ompl::msg::setLogLevel(ompl::msg::LogLevel::LOG_NONE);
+  }
 
  private:
   // Generate a sub-plan that connects two states and is dynamically feasible
@@ -133,7 +136,8 @@ Trajectory<PlanarDubins3D> PlanarDubinsPlanner<E, B, SB>::SubPlan(
 
   // Solve.
   if (!ompl_setup.solve(this->max_runtime_)) {
-    ROS_WARN("%s: Could not compute a valid solution.", this->name_.c_str());
+    ROS_WARN_THROTTLE(1.0, "%s: Could not compute a valid solution.",
+                      this->name_.c_str());
     return Trajectory<PlanarDubins3D>();
   }
 
