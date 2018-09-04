@@ -46,16 +46,16 @@
 
 #include <fastrack/planning/kinematic_planner.h>
 
-#include <ompl/geometric/planners/rrt/RRTConnect.h>
 #include <ompl/geometric/planners/bitstar/BITstar.h>
+#include <ompl/geometric/planners/rrt/RRTConnect.h>
 
-#include <ompl/geometric/SimpleSetup.h>
-#include <ompl/base/TypedSpaceInformation.h>
 #include <ompl/base/SpaceInformation.h>
+#include <ompl/base/TypedSpaceInformation.h>
 #include <ompl/base/spaces/RealVectorStateSpace.h>
+#include <ompl/geometric/SimpleSetup.h>
 
-#include <ompl/geometric/planners/rrt/RRTConnect.h>
 #include <ompl/geometric/planners/bitstar/BITstar.h>
+#include <ompl/geometric/planners/rrt/RRTConnect.h>
 
 namespace fastrack {
 namespace planning {
@@ -63,38 +63,39 @@ namespace planning {
 namespace ob = ompl::base;
 namespace og = ompl::geometric;
 
-template<typename P, typename S, typename E, typename B, typename SB>
+template <typename P, typename S, typename E, typename B, typename SB>
 class OmplKinematicPlanner : public KinematicPlanner<S, E, B, SB> {
-public:
+ public:
   ~OmplKinematicPlanner() {}
-  explicit OmplKinematicPlanner()
-    : KinematicPlanner<S, E, B, SB>() {
+  explicit OmplKinematicPlanner() : KinematicPlanner<S, E, B, SB>() {
     // Set OMPL log level.
     ompl::msg::setLogLevel(ompl::msg::LogLevel::LOG_ERROR);
   }
 
-private:
+ private:
   // Plan a trajectory from the given start to goal states starting
   // at the given time.
   // NOTE! The states in the output trajectory are essentially configurations.
-  Trajectory<S> Plan(const S& start, const S& goal, double start_time=0.0) const;
+  Trajectory<S> Plan(const S& start, const S& goal,
+                     double start_time = 0.0) const;
 
   // Convert between OMPL states and configurations.
   S FromOmplState(const ob::State* state) const;
-}; //\class KinematicPlanner
+};  //\class KinematicPlanner
 
 // ---------------------------- IMPLEMENTATION ------------------------------ //
 
 // Convert between OMPL states and configurations.
-template<typename P, typename S, typename E, typename B, typename SB>
-S OmplKinematicPlanner<P, S, E, B, SB>::FromOmplState(const ob::State* state) const {
+template <typename P, typename S, typename E, typename B, typename SB>
+S OmplKinematicPlanner<P, S, E, B, SB>::FromOmplState(
+    const ob::State* state) const {
   // Catch null state.
   if (!state)
     throw std::runtime_error("OmplKinematicPlanner: null OMPL state.");
 
   // Cast state to proper type.
   const ob::RealVectorStateSpace::StateType* cast_state =
-    static_cast<const ob::RealVectorStateSpace::StateType*>(state);
+      static_cast<const ob::RealVectorStateSpace::StateType*>(state);
 
   // Populate configuration.
   VectorXd config(S::ConfigurationDimension());
@@ -106,9 +107,9 @@ S OmplKinematicPlanner<P, S, E, B, SB>::FromOmplState(const ob::State* state) co
 
 // Plan a trajectory from the given start to goal states starting
 // at the given time.
-template<typename P, typename S, typename E, typename B, typename SB>
-Trajectory<S> OmplKinematicPlanner<P, S, E, B, SB>::
-Plan(const S& start, const S& goal, double start_time) const {
+template <typename P, typename S, typename E, typename B, typename SB>
+Trajectory<S> OmplKinematicPlanner<P, S, E, B, SB>::Plan(
+    const S& start, const S& goal, double start_time) const {
   // Unpack start and goal configurations.
   const VectorXd start_config = start.Configuration();
   const VectorXd goal_config = goal.Configuration();
@@ -126,7 +127,7 @@ Plan(const S& start, const S& goal, double start_time) const {
 
   // Create the OMPL state space corresponding to this environment.
   auto ompl_space(
-    std::make_shared<ob::RealVectorStateSpace>(S::ConfigurationDimension()));
+      std::make_shared<ob::RealVectorStateSpace>(S::ConfigurationDimension()));
 
   // Set bounds for the environment.
   const VectorXd lower = S::GetConfigurationLower();
@@ -143,8 +144,9 @@ Plan(const S& start, const S& goal, double start_time) const {
   // Create a SimpleSetup instance and set the state validity checker function.
   og::SimpleSetup ompl_setup(ompl_space);
   ompl_setup.setStateValidityChecker([&](const ob::State* state) {
-      return this->env_.AreValid(FromOmplState(state).OccupiedPositions(), this->bound_);
-    });
+    return this->env_.AreValid(FromOmplState(state).OccupiedPositions(),
+                               this->bound_);
+  });
 
   // Set the start and goal states.
   ob::ScopedState<ob::RealVectorStateSpace> ompl_start(ompl_space);
@@ -182,8 +184,7 @@ Plan(const S& start, const S& goal, double start_time) const {
 
     // Increment time by the duration it takes us to get from the previous
     // configuration to this one.
-    if (ii > 0)
-      time += this->dynamics_.BestPossibleTime(states.back(), state);
+    if (ii > 0) time += this->dynamics_.BestPossibleTime(states.back(), state);
 
     times.push_back(time);
     states.push_back(state);
@@ -192,7 +193,7 @@ Plan(const S& start, const S& goal, double start_time) const {
   return Trajectory<S>(states, times);
 }
 
-} //\namespace planning
-} //\namespace fastrack
+}  //\namespace planning
+}  //\namespace fastrack
 
 #endif

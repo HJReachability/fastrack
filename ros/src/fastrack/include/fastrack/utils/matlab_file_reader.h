@@ -45,20 +45,26 @@
 
 #include <fastrack/utils/uncopyable.h>
 
+#include <ros/ros.h>
 #include <matio.h>
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <iostream>
 
 namespace fastrack {
 
 class MatlabFileReader : private Uncopyable {
  public:
   ~MatlabFileReader() { Close(); }
-  explicit MatlabFileReader() {}
-  explicit MatlabFileReader(const std::string& file_name) {
-    if (!Open(file_name))
-      throw std::runtime_error("Could not open file: " + file_name);
+  explicit MatlabFileReader()
+    : mat_fp_(nullptr) {}
+  explicit MatlabFileReader(const std::string& file_name)
+    : mat_fp_(nullptr) {
+    if (!Open(file_name)) {
+      ROS_ERROR("MatlabFileReader: could not load file %s.",
+                file_name.c_str());
+    }
   }
 
   // Open and close a file. Open returns bool upon success.

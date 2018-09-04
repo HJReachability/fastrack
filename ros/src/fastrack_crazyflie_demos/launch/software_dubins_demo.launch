@@ -79,6 +79,7 @@
   <arg name="lqr_u_ref_file" default="$(find crazyflie_lqr)/references/u_ref_hover.txt" />
 
   <!-- Environment parameters and state space bounds. -->
+  <arg name="free_space_threshold" default="0.05" />
   <arg name="env_max" default="10.0" />
   <arg name="vel_max" default="10.0" />
   <arg name="state_upper" default="[$(arg env_max), $(arg env_max), $(arg env_max),
@@ -142,6 +143,7 @@
     <arg name="env_lower_x" value="$(arg env_lower_x)" />
     <arg name="env_lower_y" value="$(arg env_lower_y)" />
     <arg name="env_lower_z" value="$(arg env_lower_z)" />
+    <arg name="free_space_threshold" value="$(arg free_space_threshold)" />
     <arg name="env_num_obstacles" value="0" />
     <arg name="env_min_radius" value="$(arg env_min_radius)" />
     <arg name="env_max_radius" value="$(arg env_max_radius)" />
