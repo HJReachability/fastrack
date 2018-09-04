@@ -18,7 +18,7 @@
   <arg name="max_runtime" default="0.5" />
 
   <!-- Planning search radius and number of neighbors to attempt to connect. -->
-  <arg name="search_radius" default="1.0" />
+  <arg name="search_radius" default="100.0" />
   <arg name="num_neighbors" default="5" />
 
   <!-- State space bounds [x, y, z, vx, vy, vz].

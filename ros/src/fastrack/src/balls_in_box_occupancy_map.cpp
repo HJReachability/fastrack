@@ -247,10 +247,9 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
 void BallsInBoxOccupancyMap::SensorCallback(
     const fastrack_msgs::SensedSpheres::ConstPtr& msg) {
   // Add sensor FOV to kdtree.
-  sensor_fovs_.Insert(
-      std::make_pair(Vector3d(msg->sensor_position.x, msg->sensor_position.y,
-                              msg->sensor_position.z),
-                     msg->sensor_radius));
+  const Vector3d sensor_position(msg->sensor_position.x, msg->sensor_position.y,
+                                 msg->sensor_position.z);
+  sensor_fovs_.Insert(std::make_pair(sensor_position, msg->sensor_radius));
 
   // Check list lengths.
   if (msg->centers.size() != msg->radii.size())

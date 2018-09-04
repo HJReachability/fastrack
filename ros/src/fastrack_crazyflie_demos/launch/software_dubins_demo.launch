@@ -47,19 +47,19 @@
   <!-- Goal point. -->
   <arg name="goal_x" default="8.0" />
   <arg name="goal_y" default="8.0" />
-  <arg name="goal_z" default="8.0" />
+  <arg name="goal_z" default="1.0" />
 
   <!-- Simulator params. -->
   <arg name="takeoff_hover_x" default="0.0" />
   <arg name="takeoff_hover_y" default="0.0" />
-  <arg name="takeoff_hover_z" default="2.0" />
+  <arg name="takeoff_hover_z" default="1.0" />
 
   <arg name="sim_init_x" default="0.0" />
   <arg name="sim_init_y" default="0.0" />
   <arg name="sim_init_z" default="0.0" />
 
   <!-- Planner params. -->
-  <arg name="planner_runtime" default="0.5" />
+  <arg name="planner_runtime" default="0.9" />
 
   <!-- Time steps. -->
   <arg name="simulator_dt" default="0.001" />
@@ -98,7 +98,7 @@
   <arg name="state_lower" default="[-$(arg env_max), -$(arg env_max), -$(arg theta_max)]" />
 
   <!-- Sensor range. -->
-  <arg name="sensor_range" default="2.0" />
+  <arg name="sensor_range" default="1000000.0" />
 
   <!-- Record? -->
   <arg name="record" default="false" />
