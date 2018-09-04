@@ -61,6 +61,8 @@ void Replanner::ReplanRequestCallback(
     return;
   }
 
+  std::cout << "Replanner is about to replan." << std::endl;
+
   // Make a service call.
   fastrack_srvs::Replan replan;
   replan.request.req = *msg;
