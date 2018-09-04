@@ -96,80 +96,81 @@
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  replan.request.req = *msg;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  <span class="keywordflow">if</span> (!<a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a54a0afc04ab8e5266d86babf5553c6b7">replan_srv_</a>.call(replan)) {</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    ROS_ERROR(<span class="stringliteral">&quot;%s: Replan server error.&quot;</span>, <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#ac613bc09b4cb37a1b1067441601d341f">name_</a>.c_str());</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  }</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <span class="comment">// Publish trajectory.</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a631a538e7a472946ff8da91696a1cc49">traj_pub_</a>.publish(replan.response.traj);</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;}</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment">// Initialize this class with all parameters and callbacks.</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="classfastrack_1_1planning_1_1Replanner.html#abe528458095219860c499ba5db151587">   77</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#abe528458095219860c499ba5db151587">Replanner::Initialize</a>(<span class="keyword">const</span> ros::NodeHandle&amp; n) {</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#ac613bc09b4cb37a1b1067441601d341f">name_</a> = ros::names::append(n.getNamespace(), <span class="stringliteral">&quot;Replanner&quot;</span>);</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  <span class="comment">// Load parameters.</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;  <span class="keywordflow">if</span> (!<a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a4f92b981a6ff8da0aa248945f6c4f5a6">LoadParameters</a>(n)) {</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    ROS_ERROR(<span class="stringliteral">&quot;%s: Failed to load parameters.&quot;</span>, <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#ac613bc09b4cb37a1b1067441601d341f">name_</a>.c_str());</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;  }</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  <span class="comment">// Register callbacks.</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  <span class="keywordflow">if</span> (!<a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a9d9f76a032f61508bb0da7f473b206c8">RegisterCallbacks</a>(n)) {</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    ROS_ERROR(<span class="stringliteral">&quot;%s: Failed to register callbacks.&quot;</span>, <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#ac613bc09b4cb37a1b1067441601d341f">name_</a>.c_str());</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  }</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a0d3bbad49b4e5eb199f70d8f17b9a956">initialized_</a> = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="comment">// Load parameters.</span></div>
-<div class="line"><a name="l00097"></a><span class="lineno"><a class="line" href="classfastrack_1_1planning_1_1Replanner.html#a4f92b981a6ff8da0aa248945f6c4f5a6">   97</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a4f92b981a6ff8da0aa248945f6c4f5a6">Replanner::LoadParameters</a>(<span class="keyword">const</span> ros::NodeHandle&amp; n) {</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  ros::NodeHandle nl(n);</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  <span class="comment">// Topics.</span></div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  <span class="keywordflow">if</span> (!nl.getParam(<span class="stringliteral">&quot;topic/traj&quot;</span>, <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#ab6fd7437d10ad6af38c1e0417cb63d35">traj_topic_</a>)) <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  <span class="keywordflow">if</span> (!nl.getParam(<span class="stringliteral">&quot;topic/replan_request&quot;</span>, <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a8d110a2887e95e1d31455e1db41b76b9">replan_request_topic_</a>)) <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;  <span class="comment">// Services.</span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  <span class="keywordflow">if</span> (!nl.getParam(<span class="stringliteral">&quot;srv/replan&quot;</span>, <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a9cc384b362341bac1be6da9773863421">replan_srv_name_</a>)) <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;  <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;}</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="comment">// Register callbacks.</span></div>
-<div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="classfastrack_1_1planning_1_1Replanner.html#a9d9f76a032f61508bb0da7f473b206c8">  111</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a9d9f76a032f61508bb0da7f473b206c8">Replanner::RegisterCallbacks</a>(<span class="keyword">const</span> ros::NodeHandle&amp; n) {</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  ros::NodeHandle nl(n);</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;  <span class="comment">// Publishers.</span></div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;  <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a631a538e7a472946ff8da91696a1cc49">traj_pub_</a> = nl.advertise&lt;fastrack_msgs::Trajectory&gt;(</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#ab6fd7437d10ad6af38c1e0417cb63d35">traj_topic_</a>.c_str(), 1, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;  <span class="comment">// Subscribers.</span></div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a01d8e154ec33d0d35fd290622b23c2b5">replan_request_sub_</a> = nl.subscribe(<a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a8d110a2887e95e1d31455e1db41b76b9">replan_request_topic_</a>.c_str(), 1,</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    &amp;<a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a64e28543600b53f2f393dc396f29757f">Replanner::ReplanRequestCallback</a>, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  <span class="comment">// Services.</span></div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  ros::service::waitForService(<a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a9cc384b362341bac1be6da9773863421">replan_srv_name_</a>);</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a54a0afc04ab8e5266d86babf5553c6b7">replan_srv_</a> = nl.serviceClient&lt;fastrack_srvs::Replan&gt;(</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a9cc384b362341bac1be6da9773863421">replan_srv_name_</a>.c_str(), <span class="keyword">true</span>);</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;  <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;}</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;} <span class="comment">//\namespace planning</span></div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;} <span class="comment">//\namespace fastrack</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    replan.response.traj.states.clear();</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    replan.response.traj.times.clear();</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  }</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  <span class="comment">// Publish trajectory.</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a631a538e7a472946ff8da91696a1cc49">traj_pub_</a>.publish(replan.response.traj);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;}</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="comment">// Initialize this class with all parameters and callbacks.</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="classfastrack_1_1planning_1_1Replanner.html#abe528458095219860c499ba5db151587">   78</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#abe528458095219860c499ba5db151587">Replanner::Initialize</a>(<span class="keyword">const</span> ros::NodeHandle&amp; n) {</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#ac613bc09b4cb37a1b1067441601d341f">name_</a> = ros::names::append(n.getNamespace(), <span class="stringliteral">&quot;Replanner&quot;</span>);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;  <span class="comment">// Load parameters.</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;  <span class="keywordflow">if</span> (!<a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a4f92b981a6ff8da0aa248945f6c4f5a6">LoadParameters</a>(n)) {</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    ROS_ERROR(<span class="stringliteral">&quot;%s: Failed to load parameters.&quot;</span>, <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#ac613bc09b4cb37a1b1067441601d341f">name_</a>.c_str());</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  }</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  <span class="comment">// Register callbacks.</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  <span class="keywordflow">if</span> (!<a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a9d9f76a032f61508bb0da7f473b206c8">RegisterCallbacks</a>(n)) {</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    ROS_ERROR(<span class="stringliteral">&quot;%s: Failed to register callbacks.&quot;</span>, <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#ac613bc09b4cb37a1b1067441601d341f">name_</a>.c_str());</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  }</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a0d3bbad49b4e5eb199f70d8f17b9a956">initialized_</a> = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;}</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="comment">// Load parameters.</span></div>
+<div class="line"><a name="l00098"></a><span class="lineno"><a class="line" href="classfastrack_1_1planning_1_1Replanner.html#a4f92b981a6ff8da0aa248945f6c4f5a6">   98</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a4f92b981a6ff8da0aa248945f6c4f5a6">Replanner::LoadParameters</a>(<span class="keyword">const</span> ros::NodeHandle&amp; n) {</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;  ros::NodeHandle nl(n);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  <span class="comment">// Topics.</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  <span class="keywordflow">if</span> (!nl.getParam(<span class="stringliteral">&quot;topic/traj&quot;</span>, <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#ab6fd7437d10ad6af38c1e0417cb63d35">traj_topic_</a>)) <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  <span class="keywordflow">if</span> (!nl.getParam(<span class="stringliteral">&quot;topic/replan_request&quot;</span>, <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a8d110a2887e95e1d31455e1db41b76b9">replan_request_topic_</a>)) <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  <span class="comment">// Services.</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;  <span class="keywordflow">if</span> (!nl.getParam(<span class="stringliteral">&quot;srv/replan&quot;</span>, <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a9cc384b362341bac1be6da9773863421">replan_srv_name_</a>)) <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;  <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;}</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="comment">// Register callbacks.</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno"><a class="line" href="classfastrack_1_1planning_1_1Replanner.html#a9d9f76a032f61508bb0da7f473b206c8">  112</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a9d9f76a032f61508bb0da7f473b206c8">Replanner::RegisterCallbacks</a>(<span class="keyword">const</span> ros::NodeHandle&amp; n) {</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;  ros::NodeHandle nl(n);</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;  <span class="comment">// Publishers.</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a631a538e7a472946ff8da91696a1cc49">traj_pub_</a> = nl.advertise&lt;fastrack_msgs::Trajectory&gt;(</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#ab6fd7437d10ad6af38c1e0417cb63d35">traj_topic_</a>.c_str(), 1, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  <span class="comment">// Subscribers.</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a01d8e154ec33d0d35fd290622b23c2b5">replan_request_sub_</a> = nl.subscribe(<a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a8d110a2887e95e1d31455e1db41b76b9">replan_request_topic_</a>.c_str(), 1,</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    &amp;<a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a64e28543600b53f2f393dc396f29757f">Replanner::ReplanRequestCallback</a>, <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  <span class="comment">// Services.</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  ros::service::waitForService(<a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a9cc384b362341bac1be6da9773863421">replan_srv_name_</a>);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a54a0afc04ab8e5266d86babf5553c6b7">replan_srv_</a> = nl.serviceClient&lt;fastrack_srvs::Replan&gt;(</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <a class="code" href="classfastrack_1_1planning_1_1Replanner.html#a9cc384b362341bac1be6da9773863421">replan_srv_name_</a>.c_str(), <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;  <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;}</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;} <span class="comment">//\namespace planning</span></div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;} <span class="comment">//\namespace fastrack</span></div>
 <div class="ttc" id="classfastrack_1_1planning_1_1Replanner_html_a54a0afc04ab8e5266d86babf5553c6b7"><div class="ttname"><a href="classfastrack_1_1planning_1_1Replanner.html#a54a0afc04ab8e5266d86babf5553c6b7">fastrack::planning::Replanner::replan_srv_</a></div><div class="ttdeci">ros::ServiceClient replan_srv_</div><div class="ttdef"><b>Definition:</b> <a href="replanner_8h_source.html#l00096">replanner.h:96</a></div></div>
 <div class="ttc" id="classfastrack_1_1planning_1_1Replanner_html_a631a538e7a472946ff8da91696a1cc49"><div class="ttname"><a href="classfastrack_1_1planning_1_1Replanner.html#a631a538e7a472946ff8da91696a1cc49">fastrack::planning::Replanner::traj_pub_</a></div><div class="ttdeci">ros::Publisher traj_pub_</div><div class="ttdef"><b>Definition:</b> <a href="replanner_8h_source.html#l00089">replanner.h:89</a></div></div>
 <div class="ttc" id="classfastrack_1_1planning_1_1Replanner_html_a64e28543600b53f2f393dc396f29757f"><div class="ttname"><a href="classfastrack_1_1planning_1_1Replanner.html#a64e28543600b53f2f393dc396f29757f">fastrack::planning::Replanner::ReplanRequestCallback</a></div><div class="ttdeci">void ReplanRequestCallback(const fastrack_msgs::ReplanRequest::ConstPtr &amp;msg)</div><div class="ttdef"><b>Definition:</b> <a href="replanner_8cpp_source.html#l00056">replanner.cpp:56</a></div></div>
-<div class="ttc" id="classfastrack_1_1planning_1_1Replanner_html_a4f92b981a6ff8da0aa248945f6c4f5a6"><div class="ttname"><a href="classfastrack_1_1planning_1_1Replanner.html#a4f92b981a6ff8da0aa248945f6c4f5a6">fastrack::planning::Replanner::LoadParameters</a></div><div class="ttdeci">bool LoadParameters(const ros::NodeHandle &amp;n)</div><div class="ttdef"><b>Definition:</b> <a href="replanner_8cpp_source.html#l00097">replanner.cpp:97</a></div></div>
-<div class="ttc" id="classfastrack_1_1planning_1_1Replanner_html_abe528458095219860c499ba5db151587"><div class="ttname"><a href="classfastrack_1_1planning_1_1Replanner.html#abe528458095219860c499ba5db151587">fastrack::planning::Replanner::Initialize</a></div><div class="ttdeci">bool Initialize(const ros::NodeHandle &amp;n)</div><div class="ttdef"><b>Definition:</b> <a href="replanner_8cpp_source.html#l00077">replanner.cpp:77</a></div></div>
+<div class="ttc" id="classfastrack_1_1planning_1_1Replanner_html_a4f92b981a6ff8da0aa248945f6c4f5a6"><div class="ttname"><a href="classfastrack_1_1planning_1_1Replanner.html#a4f92b981a6ff8da0aa248945f6c4f5a6">fastrack::planning::Replanner::LoadParameters</a></div><div class="ttdeci">bool LoadParameters(const ros::NodeHandle &amp;n)</div><div class="ttdef"><b>Definition:</b> <a href="replanner_8cpp_source.html#l00098">replanner.cpp:98</a></div></div>
+<div class="ttc" id="classfastrack_1_1planning_1_1Replanner_html_abe528458095219860c499ba5db151587"><div class="ttname"><a href="classfastrack_1_1planning_1_1Replanner.html#abe528458095219860c499ba5db151587">fastrack::planning::Replanner::Initialize</a></div><div class="ttdeci">bool Initialize(const ros::NodeHandle &amp;n)</div><div class="ttdef"><b>Definition:</b> <a href="replanner_8cpp_source.html#l00078">replanner.cpp:78</a></div></div>
 <div class="ttc" id="classfastrack_1_1planning_1_1Replanner_html_a9cc384b362341bac1be6da9773863421"><div class="ttname"><a href="classfastrack_1_1planning_1_1Replanner.html#a9cc384b362341bac1be6da9773863421">fastrack::planning::Replanner::replan_srv_name_</a></div><div class="ttdeci">std::string replan_srv_name_</div><div class="ttdef"><b>Definition:</b> <a href="replanner_8h_source.html#l00097">replanner.h:97</a></div></div>
 <div class="ttc" id="replanner_8h_html"><div class="ttname"><a href="replanner_8h.html">replanner.h</a></div></div>
 <div class="ttc" id="classfastrack_1_1planning_1_1Replanner_html_a8d110a2887e95e1d31455e1db41b76b9"><div class="ttname"><a href="classfastrack_1_1planning_1_1Replanner.html#a8d110a2887e95e1d31455e1db41b76b9">fastrack::planning::Replanner::replan_request_topic_</a></div><div class="ttdeci">std::string replan_request_topic_</div><div class="ttdef"><b>Definition:</b> <a href="replanner_8h_source.html#l00092">replanner.h:92</a></div></div>
 <div class="ttc" id="classfastrack_1_1planning_1_1Replanner_html_ab6fd7437d10ad6af38c1e0417cb63d35"><div class="ttname"><a href="classfastrack_1_1planning_1_1Replanner.html#ab6fd7437d10ad6af38c1e0417cb63d35">fastrack::planning::Replanner::traj_topic_</a></div><div class="ttdeci">std::string traj_topic_</div><div class="ttdef"><b>Definition:</b> <a href="replanner_8h_source.html#l00093">replanner.h:93</a></div></div>
 <div class="ttc" id="classfastrack_1_1planning_1_1Replanner_html_a0d3bbad49b4e5eb199f70d8f17b9a956"><div class="ttname"><a href="classfastrack_1_1planning_1_1Replanner.html#a0d3bbad49b4e5eb199f70d8f17b9a956">fastrack::planning::Replanner::initialized_</a></div><div class="ttdeci">bool initialized_</div><div class="ttdef"><b>Definition:</b> <a href="replanner_8h_source.html#l00101">replanner.h:101</a></div></div>
-<div class="ttc" id="classfastrack_1_1planning_1_1Replanner_html_a9d9f76a032f61508bb0da7f473b206c8"><div class="ttname"><a href="classfastrack_1_1planning_1_1Replanner.html#a9d9f76a032f61508bb0da7f473b206c8">fastrack::planning::Replanner::RegisterCallbacks</a></div><div class="ttdeci">bool RegisterCallbacks(const ros::NodeHandle &amp;n)</div><div class="ttdef"><b>Definition:</b> <a href="replanner_8cpp_source.html#l00111">replanner.cpp:111</a></div></div>
+<div class="ttc" id="classfastrack_1_1planning_1_1Replanner_html_a9d9f76a032f61508bb0da7f473b206c8"><div class="ttname"><a href="classfastrack_1_1planning_1_1Replanner.html#a9d9f76a032f61508bb0da7f473b206c8">fastrack::planning::Replanner::RegisterCallbacks</a></div><div class="ttdeci">bool RegisterCallbacks(const ros::NodeHandle &amp;n)</div><div class="ttdef"><b>Definition:</b> <a href="replanner_8cpp_source.html#l00112">replanner.cpp:112</a></div></div>
 <div class="ttc" id="classfastrack_1_1planning_1_1Replanner_html_a01d8e154ec33d0d35fd290622b23c2b5"><div class="ttname"><a href="classfastrack_1_1planning_1_1Replanner.html#a01d8e154ec33d0d35fd290622b23c2b5">fastrack::planning::Replanner::replan_request_sub_</a></div><div class="ttdeci">ros::Subscriber replan_request_sub_</div><div class="ttdef"><b>Definition:</b> <a href="replanner_8h_source.html#l00090">replanner.h:90</a></div></div>
 <div class="ttc" id="classfastrack_1_1planning_1_1Replanner_html_ac613bc09b4cb37a1b1067441601d341f"><div class="ttname"><a href="classfastrack_1_1planning_1_1Replanner.html#ac613bc09b4cb37a1b1067441601d341f">fastrack::planning::Replanner::name_</a></div><div class="ttdeci">std::string name_</div><div class="ttdef"><b>Definition:</b> <a href="replanner_8h_source.html#l00100">replanner.h:100</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
@@ -178,7 +179,7 @@
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/fastrack">fastrack</a><br />
 Author(s): David Fridovich-Keil <dfk@eecs.berkeley.edu></br />
-<small>autogenerated on Mon Sep 3 2018 20:17:07</small>
+<small>autogenerated on Tue Sep 4 2018 21:30:01</small>
 </div>
 </body>
 </html>
