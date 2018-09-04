@@ -222,7 +222,12 @@ void BallsInBox::SensorCallback(
 // Generate a sensor measurement as a service response.
 fastrack_msgs::SensedSpheres BallsInBox::SimulateSensor(
     const SphereSensorParams& params) const {
+  // Set up msg.
   fastrack_msgs::SensedSpheres msg;
+  msg.sensor_position.x = params.position(0);
+  msg.sensor_position.y = params.position(1);
+  msg.sensor_position.z = params.position(2);
+  msg.sensor_radius = params.range;
 
   // Check each obstacle and, if in range, add to response.
   geometry_msgs::Vector3 c;

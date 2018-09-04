@@ -79,7 +79,7 @@ class PlanarDubinsPlanner
                             fastrack_srvs::PlanarDubinsPlannerDynamics, B,
                             SB>() {
     // Set OMPL log level.
-    ompl::msg::setLogLevel(ompl::msg::LogLevel::LOG_NONE);
+    //    ompl::msg::setLogLevel(ompl::msg::LogLevel::LOG_WARN);
   }
 
  private:

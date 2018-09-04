@@ -209,6 +209,8 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
 
     typename Node::Ptr sample_node = nullptr;
     for (const auto& neighbor : neighbors) {
+      std::cout << "neighbor: " << neighbor->state.ToVector() << std::endl;
+
       // Reject this neighbor if it's too close to the sample.
       if ((neighbor->state.ToVector() - sample.ToVector()).norm() <
           constants::kEpsilon)
@@ -217,6 +219,8 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
       // (3) Plan a sub-path from this neighbor to sampled state.
       const Trajectory<S> sub_plan =
           SubPlan(neighbor->state, sample, neighbor->time);
+
+      std::cout << "Found a subplan of length: " << sub_plan.Size() << std::endl;
 
       if (sub_plan.Size() > 0) {
         typename Node::Ptr parent = neighbor;
@@ -242,18 +246,29 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
     // Sample a new point if there was no good way to get here.
     if (sample_node == nullptr) continue;
 
+    std::cout << "Found a path to the neighbor." << std::endl;
+
     // (4) Connect to one of the k nearest goal states if possible.
     std::vector<typename Node::Ptr> neighboring_goals =
         goals.RadiusSearch(sample, search_radius_);
 
+    std::cout << "Found " << neighboring_goals.size() << " nearby goals."
+              << std::endl;
+
     typename Node::Ptr child = nullptr;
     for (const auto& goal : neighboring_goals) {
+      std::cout << "Goal: " << goal->state.ToVector() << std::endl;
+
       // Check if this is a viable node.
       if (!goal->is_viable) continue;
+
+      std::cout << "Goal is viable." << std::endl;
 
       // Try to connect.
       const Trajectory<S> sub_plan =
           SubPlan(sample, goal->state, sample_node->time);
+
+      std::cout << "Plan to goal is of length: " << sub_plan.Size() << std::endl;
 
       // Upon success, set child to point to goal and update sample node to
       // include child node and corresponding trajectory.
@@ -269,11 +284,17 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
     }
 
     if (child == nullptr) {
-      // (5) If outbound, make a recursive call.
-      if (outbound)
-        const Trajectory<S> ignore = RecursivePlan(
-            graph, graph, sample_node->time, false, initial_call_time);
+      std::cout << "Child was null, so we need a recursive call." << std::endl;
+
+
+      // (5) If outbound, make a recursive call. We can ignore the returned
+      // trajectory since we'll generate one later once we're all done.
+      // if (outbound)
+      //   const Trajectory<S> ignore = RecursivePlan(
+      //            graph, graph, sample_node->time, false, initial_call_time);
     } else {
+      std::cout << "Child was non-null, so we don't need a recursive call."
+                << std::endl;
       // Reached the goal. Update goal to ensure it always has the
       // best parent.
       if (child->best_parent == nullptr ||
@@ -287,8 +308,12 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
         // (toward the start).
         const auto& start_node =
             (outbound) ? graph.InitialNode() : goals.InitialNode();
+
+        std::cout << "Updating descendants." << std::endl;
         UpdateDescendants(sample_node, start_node);
       }
+
+      std::cout << "Updated goal to ensure it always has best parent." << std::endl;
 
       // Make sure all ancestors are viable.
       // NOTE! Worst parents are not going to get updated.
@@ -298,13 +323,23 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
         parent = parent->best_parent;
       }
 
+      std::cout << "Marked all ancestors as viable." << std::endl;
+
       // Extract trajectory. Always walk backward from the initial node of the
       // goal set to that of the start set.
       // Else, return a dummy trajectory since it will be ignored anyway.
-      if (outbound)
-        return ExtractTrajectory(graph.InitialNode(), goals.InitialNode());
-      else
+      if (outbound) {
+        const auto traj =
+            ExtractTrajectory(graph.InitialNode(), goals.InitialNode());
+        std::cout << "Extracting trajectory of outbound call, length: "
+                  << traj.Size() << std::endl;
+
+        return traj;
+      } else {
+        std::cout << "Was not outbound. Returning empty trajectory."
+                  << std::endl;
         return Trajectory<S>();
+      }
     }
   }
 

@@ -298,7 +298,6 @@ void PlannerManager<S>::MaybeRequestTrajectory() {
   }
 
   // Publish request and set flag.
-  std::cout << "Planner manager is making a replan request." << std::endl;
   replan_request_pub_.publish(msg);
   waiting_for_traj_ = true;
   serviced_updated_env_ = true;
