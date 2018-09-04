@@ -81,11 +81,6 @@
   <!-- Environment parameters and state space bounds. -->
   <arg name="free_space_threshold" default="0.05" />
   <arg name="env_max" default="10.0" />
-  <arg name="vel_max" default="10.0" />
-  <arg name="state_upper" default="[$(arg env_max), $(arg env_max), $(arg env_max),
-                                    $(arg vel_max), $(arg vel_max), $(arg vel_max)]" />
-  <arg name="state_lower" default="[-$(arg env_max), -$(arg env_max), 0.0,
-                                    -$(arg vel_max), -$(arg vel_max), -$(arg vel_max)]" />
   <arg name="env_upper_x" default="$(arg env_max)" />
   <arg name="env_upper_y" default="$(arg env_max)" />
   <arg name="env_upper_z" default="$(arg env_max)" />
@@ -96,6 +91,11 @@
   <arg name="env_min_radius" default="0.5" />
   <arg name="env_max_radius" default="1.0" />
   <arg name="seed" default="0" />
+
+  <!-- Planner state space bounds. -->
+  <arg name="theta_max" default="3.1416" />
+  <arg name="state_upper" default="[$(arg env_max), $(arg env_max), $(arg theta_max)]" />
+  <arg name="state_lower" default="[-$(arg env_max), -$(arg env_max), -$(arg theta_max)]" />
 
   <!-- Sensor range. -->
   <arg name="sensor_range" default="2.0" />
