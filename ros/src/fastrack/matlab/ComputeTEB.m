@@ -216,7 +216,7 @@ semi_height_ = v_z_^2 / (min(gravity - thrust_min_,...
                             thrust_max_ - gravity) - d_z_max_); % m
 
 % Control bound parameters for the planner: scalar_bound_interval, [min, max].
-planner_params = [-omega_max_, omega_max_];
+planner_params = [v_, -omega_max_, omega_max_];
 
 % Control bound parameters for the tracker: quadrotor_control_bound_cylinder,
 % [pitch-roll radius, min yaw rate, min thrust, max yaw rate, max thrust].

@@ -66,17 +66,29 @@ class PlanarDubinsDynamics3D
   explicit PlanarDubinsDynamics3D()
       : Dynamics<PlanarDubins3D, double, ScalarBoundInterval,
                  fastrack_srvs::PlanarDubinsPlannerDynamics::Response>() {}
-  explicit PlanarDubinsDynamics3D(const ScalarBoundInterval& bound)
+  explicit PlanarDubinsDynamics3D(double v, const ScalarBoundInterval& bound)
       : Dynamics<PlanarDubins3D, double, ScalarBoundInterval,
-                 fastrack_srvs::PlanarDubinsPlannerDynamics::Response>(bound) {}
+                 fastrack_srvs::PlanarDubinsPlannerDynamics::Response>(bound),
+        v_(v) {}
+
+  // Assume parameters are laid out as: [v, min yaw rate, max yaw rate].
   explicit PlanarDubinsDynamics3D(const std::vector<double>& params)
       : Dynamics<PlanarDubins3D, double, ScalarBoundInterval,
-                 fastrack_srvs::PlanarDubinsPlannerDynamics::Response>(params) {
+                 fastrack_srvs::PlanarDubinsPlannerDynamics::Response>() {
+    if (params.size() != 3) {
+      throw std::runtime_error("Incorrect number of parameters.");
+    }
+
+    v_ = params[0];
+    control_bound_.reset(new ScalarBoundInterval(params[1], params[2]));
   }
-  explicit PlanarDubinsDynamics3D(const double& u_lower, const double& u_upper)
+
+  explicit PlanarDubinsDynamics3D(double v, const double& u_lower,
+                                  const double& u_upper)
       : Dynamics<PlanarDubins3D, double, ScalarBoundInterval,
                  fastrack_srvs::PlanarDubinsPlannerDynamics::Response>(
-            ScalarBoundInterval(u_lower, u_upper)) {
+            ScalarBoundInterval(u_lower, u_upper)),
+        v_(v) {
     // Make sure interval is symmetric.
     constexpr double kSmallNumber = 1e-8;
     if (std::abs(control_bound_->Max() + control_bound_->Min() > kSmallNumber))
