@@ -105,6 +105,8 @@ template <typename E, typename B, typename SB>
 Trajectory<PlanarDubins3D> PlanarDubinsPlanner<E, B, SB>::SubPlan(
     const PlanarDubins3D& start, const PlanarDubins3D& goal,
     double start_time) const {
+  std::cout << "Turning radius is: " << this->dynamics_.TurningRadius() << std::endl;
+
   // Create an OMPL state space.
   auto space =
       std::make_shared<ob::DubinsStateSpace>(this->dynamics_.TurningRadius());
