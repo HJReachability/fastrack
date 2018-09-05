@@ -339,7 +339,7 @@ template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename RS, typename RD, typename B>
 VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::
     RecursiveGradientInterpolator(const VectorXd& x, size_t idx) const {
-  return RecursiveMultilinearInterpolator(x idx, false);
+  return RecursiveMultilinearInterpolator(x, idx, false);
 }
 
 // Recursive helper function wrapper for gradient multilinear interpolation.
@@ -348,7 +348,7 @@ template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename RS, typename RD, typename B>
 VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::
     RecursiveGradientInterpolator(const VectorXd& x, size_t idx) const {
-  return RecursiveMultilinearInterpolator(x idx, true);
+  return RecursiveMultilinearInterpolator(x, idx, true);
 }
 
 // Initialize from file. Returns whether or not loading was successful.
