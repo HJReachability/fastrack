@@ -32,6 +32,7 @@
  *
  * Please contact the author(s) of this library if you have any questions.
  * Authors: David Fridovich-Keil   ( dfk@eecs.berkeley.edu )
+ *          Jaime F. Fisac         ( jfisac@eecs.berkeley.edu )
  */
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -106,6 +107,9 @@ class MatlabValueFunction : public ValueFunction<TS, TC, TD, PS, PC, PD, B> {
   // of the nearest cell (i.e. cell center minus state).
   VectorXd DirectionToCenter(const VectorXd& x) const;
 
+  // Accessor for precomputed value at the given state.
+  VectorXd ValueAccessor(const VectorXd& x) const;
+
   // Accessor for precomputed gradient at the given state.
   VectorXd GradientAccessor(const VectorXd& x) const;
 
@@ -115,7 +119,17 @@ class MatlabValueFunction : public ValueFunction<TS, TC, TD, PS, PC, PD, B> {
   // Compute center of nearest grid cell to the given state.
   VectorXd NearestCenterPoint(const VectorXd& x) const;
 
-  // Recursive helper function for gradient multilinear interpolation.
+  // Recursive helper function for value or gradient multilinear interpolation.
+  // Takes in a state and index along which to interpolate, and a boolean
+  // determining whether this is for the gradient or, otherwise, for the value.
+  VectorXd RecursiveMultilinearInterpolator(const VectorXd& x, size_t idx,
+                                            const bool for_gradient) const;
+
+  // Recursive helper function wrapper for gradient multilinear interpolation.
+  // Takes in a state and index along which to interpolate.
+  VectorXd RecursiveValueInterpolator(const VectorXd& x, size_t idx) const;
+
+  // Recursive helper function wrapper for gradient multilinear interpolation.
   // Takes in a state and index along which to interpolate.
   VectorXd RecursiveGradientInterpolator(const VectorXd& x, size_t idx) const;
 
@@ -146,35 +160,7 @@ template <typename TS, typename TC, typename TD, typename PS, typename PC,
 double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::Value(
     const TS& tracker_x, const PS& planner_x) const {
   const VectorXd relative_x = RS(tracker_x, planner_x).ToVector();
-
-  // Get distance from cell center in each dimension.
-  const VectorXd center_distance = DirectionToCenter(relative_x);
-
-  // Interpolate.
-  const double nn_value = data_[StateToIndex(relative_x)];
-  double approx_value = nn_value;
-
-  VectorXd neighbor = relative_x;
-  for (size_t ii = 0; ii < relative_x.size(); ii++) {
-    // Get neighboring value.
-    if (center_distance(ii) >= 0.0)
-      neighbor(ii) += cell_size_[ii];
-    else
-      neighbor(ii) -= cell_size_[ii];
-
-    const double neighbor_value = data_[StateToIndex(neighbor)];
-    neighbor(ii) = relative_x(ii);
-
-    // Compute forward difference.
-    const double slope = (center_distance(ii) >= 0.0)
-                             ? (neighbor_value - nn_value) / cell_size_[ii]
-                             : (nn_value - neighbor_value) / cell_size_[ii];
-
-    // Add to the Taylor approximation.
-    approx_value += slope * center_distance(ii);
-  }
-
-  return approx_value;
+  return RecursiveValueInterpolator(x, 0, false);  // interpolate x in data_
 }
 
 // Gradient at the given relative state.
@@ -185,7 +171,7 @@ MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::Gradient(
     const TS& tracker_x, const PS& planner_x) const {
   const VectorXd relative_x = RS(tracker_x, planner_x).ToVector();
   return std::unique_ptr<RS>(
-      new RS(RecursiveGradientInterpolator(relative_x, 0)));
+      new RS(RecursiveMultilinearInterpolator(relative_x, 0)));
 }
 
 // Priority of the optimal control at the given tracker and planner states.
@@ -239,7 +225,21 @@ size_t MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::StateToIndex(
   return idx;
 }
 
-// Accessor for precomputed gradient at the given state.
+// Accessor for precomputed value at the given state's grid cell.
+template <typename TS, typename TC, typename TD, typename PS, typename PC,
+          typename PD, typename RS, typename RD, typename B>
+VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::ValueAccessor(
+    const VectorXd& x) const {
+  // Convert to index and read value one dimension at a time.
+  const size_t idx = StateToIndex(x);
+
+  VectorXd value(x.size());
+  for (size_t ii = 0; ii < value.size(); ii++) value(ii) = data_[ii][idx];
+
+  return value;
+}
+
+// Accessor for precomputed gradient at the given state's grid cell.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename RS, typename RD, typename B>
 VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD,
@@ -292,14 +292,14 @@ VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD,
   return center;
 }
 
-// Recursive helper function for gradient multilinear interpolation.
-// Takes in a state and index along which to interpolate.
+// Recursive helper function for value or gradient multilinear interpolation.
+// Takes in a state and index along which to interpolate, and a boolean
+// determining whether this is for the gradient or, otherwise, for the value.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename RS, typename RD, typename B>
-VectorXd
-MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD,
-                    B>::RecursiveGradientInterpolator(const VectorXd& x,
-                                                      size_t idx) const {
+VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::
+    RecursiveMultilinearInterpolator(const VectorXd& x, size_t idx,
+                                     const bool for_gradient) const {
   // Assume x's entries prior to idx are equal to the upper/lower bounds of
   // the cell containing x.
   // Begin by computing the lower and upper bounds of the cell containing x
@@ -319,23 +319,44 @@ MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD,
 
   // Base case.
   if (idx == x.size() - 1) {
-    return GradientAccessor(x_upper) * fractional_dist +
-           GradientAccessor(x_lower) * (1.0 - fractional_dist);
+    return for_gradient
+               ? GradientAccessor(x_upper) * fractional_dist +
+                     GradientAccessor(x_lower) * (1.0 - fractional_dist)
+               : ValueAccessor(x_upper) * fractional_dist +
+                     ValueAccessor(x_lower) * (1.0 - fractional_dist);
   }
 
   // Recursive step.
-  return RecursiveGradientInterpolator(x_upper, idx + 1) * fractional_dist +
-         RecursiveGradientInterpolator(x_lower, idx + 1) *
+  return RecursiveMultilinearInterpolator(x_upper, idx + 1, for_gradient) *
+             fractional_dist +
+         RecursiveMultilinearInterpolator(x_lower, idx + 1, for_gradient) *
              (1.0 - fractional_dist);
+}
+
+// Recursive helper function wrapper for value multilinear interpolation.
+// Takes in a state and index along which to interpolate.
+template <typename TS, typename TC, typename TD, typename PS, typename PC,
+          typename PD, typename RS, typename RD, typename B>
+VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::
+    RecursiveGradientInterpolator(const VectorXd& x, size_t idx) const {
+  return RecursiveMultilinearInterpolator(x idx, false);
+}
+
+// Recursive helper function wrapper for gradient multilinear interpolation.
+// Takes in a state and index along which to interpolate.
+template <typename TS, typename TC, typename TD, typename PS, typename PC,
+          typename PD, typename RS, typename RD, typename B>
+VectorXd MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::
+    RecursiveGradientInterpolator(const VectorXd& x, size_t idx) const {
+  return RecursiveMultilinearInterpolator(x idx, true);
 }
 
 // Initialize from file. Returns whether or not loading was successful.
 // Can be used as an alternative to intialization from a NodeHandle.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename RS, typename RD, typename B>
-bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD,
-                         B>::InitializeFromMatFile(const std::string&
-                                                       file_name) {
+bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::
+    InitializeFromMatFile(const std::string& file_name) {
   // Open up this file.
   MatlabFileReader reader(file_name);
   if (!reader.IsOpen()) return false;
