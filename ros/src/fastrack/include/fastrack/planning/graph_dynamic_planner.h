@@ -115,6 +115,16 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
                                 best_parent, children, trajs_to_children));
     }
 
+    // Operators for equality checking.
+    bool operator==(const Node& other) const {
+      constexpr double kSmallNumber = 1e-8;
+      return state.ToVector().isApprox(other.state.ToVector(), kSmallNumber);
+    }
+
+    bool operator!=(const Node& other) const {
+      return !(*this == other);
+    }
+
    private:
     explicit Node() {}
     explicit Node(const S& this_state, double this_time,
@@ -209,7 +219,7 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
 
     typename Node::Ptr sample_node = nullptr;
     for (const auto& neighbor : neighbors) {
-      std::cout << "neighbor: " << neighbor->state.ToVector() << std::endl;
+      std::cout << "neighbor: " << neighbor->state.ToVector().transpose() << std::endl;
 
       // Reject this neighbor if it's too close to the sample.
       if ((neighbor->state.ToVector() - sample.ToVector()).norm() <
@@ -257,7 +267,7 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
 
     typename Node::Ptr child = nullptr;
     for (const auto& goal : neighboring_goals) {
-      std::cout << "Goal: " << goal->state.ToVector() << std::endl;
+      std::cout << "Goal: " << goal->state.ToVector().transpose() << std::endl;
 
       // Check if this is a viable node.
       if (!goal->is_viable) continue;
@@ -329,9 +339,10 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
       // goal set to that of the start set.
       // Else, return a dummy trajectory since it will be ignored anyway.
       if (outbound) {
+        std::cout << "About to extract trajectory." << std::endl;
         const auto traj =
             ExtractTrajectory(graph.InitialNode(), goals.InitialNode());
-        std::cout << "Extracting trajectory of outbound call, length: "
+        std::cout << "Extracted trajectory of outbound call, length: "
                   << traj.Size() << std::endl;
 
         return traj;
@@ -370,27 +381,54 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory(
   // Accumulate trajectories in a list.
   std::list<Trajectory<S>> trajs;
 
+  std::cout << "Extracting trajectory from "
+            << start->state.ToVector().transpose() << " to "
+            << goal->state.ToVector().transpose() << std::endl;
+
+  // const auto goal_parent = goal->best_parent;
+  // if (goal_parent) {
+  //   std::cout << "Goal parent: " << goal_parent->state.ToVector().transpose()
+  //             << std::endl;
+
+  //   const auto goal_grandparent = goal_parent->best_parent;
+  //   if (goal_grandparent) {
+  //     std::cout << "Goal grandparent: " << goal_grandparent->state.ToVector().transpose()
+  //               << std::endl;
+  //   } else {
+  //     std::cout << "Goal has no grandparent." << std::endl;
+  //   }
+  // } else {
+  //   std::cout << "Goal has no parent." << std::endl;
+  // }
+
   typename Node::ConstPtr node = goal;
-  while (node != start || (node == start && trajs.size() == 0)) {
-    const typename Node::ConstPtr parent = node->best_parent;
+  while (*node != *start || (*node == *start && trajs.size() == 0)) {
+    const auto& parent = node->best_parent;
 
     if (parent == nullptr) {
-      ROS_ERROR("%s: Parent was null.", this->name_.c_str());
+      ROS_ERROR_THROTTLE(1.0, "%s: Parent was null.", this->name_.c_str());
       break;
     }
+
+    //    std::cout << "Parent is: " << parent->state.ToVector().transpose() << std::endl;
 
     // Find node as child of parent.
     // NOTE! Could avoid this by replacing parallel std::vectors
     //       an std::unordered_map.
     for (size_t ii = 0; ii < parent->children.size(); ii++) {
-      if (parent->children[ii] == node) {
+      if (*parent->children[ii] == *node) {
         trajs.push_front(parent->trajs_to_children[ii]);
         break;
       }
 
       if (ii == parent->children.size() - 1)
-        ROS_ERROR("%s: Parent/child inconsistency.", this->name_.c_str());
+        ROS_ERROR_THROTTLE(1.0, "%s: Parent/child inconsistency.",
+                           this->name_.c_str());
     }
+
+    // Update node to be it's parent.
+    node = parent;
+    //    std::cout << "Trajs has length: " << trajs.size() << std::endl;
   }
 
   // Concatenate into a single trajectory.

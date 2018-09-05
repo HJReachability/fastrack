@@ -208,7 +208,7 @@
   </include>
 
   <!-- Reference converter. -->
-  <include file="$(find fastrack_crazyflie_demos)/launch/reference_converter.launch">
+  <include file="$(find fastrack_crazyflie_demos)/launch/position_velocity_reference_converter.launch">
     <arg name="fastrack_reference_topic" value="$(arg fastrack_reference_state_topic)" />
     <arg name="raw_reference_topic" value="$(arg reference_state_topic)" />
   </include>

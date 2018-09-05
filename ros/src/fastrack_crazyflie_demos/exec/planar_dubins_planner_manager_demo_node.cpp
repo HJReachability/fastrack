@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, The Regents of the University of California (Regents).
+ * Copyright (c) 2018, The Regents of the University of California (Regents).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,22 +36,26 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Node running a ReferenceConverter for a Crazyflie demo.
+// Node running a PlannerManager based on the PositionVelocity state.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <fastrack_crazyflie_demos/reference_converter.h>
+#include <fastrack/state/planar_dubins_3d.h>
+#include <fastrack/planning/planner_manager.h>
 
 #include <ros/ros.h>
 
+namespace fp = fastrack::planning;
+namespace fs = fastrack::state;
+
 int main(int argc, char** argv) {
-  ros::init(argc, argv, "ReferenceConverterDemo");
+  ros::init(argc, argv, "PlannerManagerDemo");
   ros::NodeHandle n("~");
 
-  fastrack::crazyflie::ReferenceConverter converter;
+  fp::PlannerManager<fs::PlanarDubins3D> manager;
 
-  if (!converter.Initialize(n)) {
-    ROS_ERROR("%s: Failed to initialize reference converter.",
+  if (!manager.Initialize(n)) {
+    ROS_ERROR("%s: Failed to initialize planner manager.",
               ros::this_node::getName().c_str());
     return EXIT_FAILURE;
   }

@@ -74,8 +74,11 @@ PositionVelocity::PositionVelocity(const fastrack_msgs::State &msg)
     position_(0) = msg.x[0];
     position_(1) = msg.x[1];
     position_(2) = msg.x[2];
-  } else
-    ROS_ERROR("PositionVelocity: msg dimension is incorrect.");
+  } else {
+    ROS_ERROR_THROTTLE(1.0,
+                       "PositionVelocity: msg dimension is incorrect: %zu.",
+                       msg.x.size());
+  }
 }
 PositionVelocity::PositionVelocity(const VectorXd &x)
     : State(), position_(Vector3d::Zero()), velocity_(Vector3d::Zero()) {
