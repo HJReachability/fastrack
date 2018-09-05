@@ -32,7 +32,7 @@
  *
  * Please contact the author(s) of this library if you have any questions.
  * Authors: David Fridovich-Keil   ( dfk@eecs.berkeley.edu )
- *          Jaime Fisac            ( jfisac@eecs.berkeley.edu )
+ *          Jaime F. Fisac            ( jfisac@eecs.berkeley.edu )
  */
 
 ///////////////////////////////////////////////////////////////////////////////
