@@ -8,7 +8,7 @@
   <!-- Reference converter node. -->
   <node name="reference_converter"
         pkg="fastrack_crazyflie_demos"
-        type="reference_converter_demo_node"
+        type="position_velocity_reference_converter_demo_node"
         output="screen">
     <param name="topic/fastrack_reference" value="$(arg fastrack_reference_topic)" />
     <param name="topic/raw_reference" value="$(arg raw_reference_topic)" />

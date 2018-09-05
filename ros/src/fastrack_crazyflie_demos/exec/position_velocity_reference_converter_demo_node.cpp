@@ -36,38 +36,24 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Node running a Tracker based on the AnalyticalKinematicBoxQuadrotorDecoupled
-// value function.
+// Node running a ReferenceConverter for a Crazyflie demo.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <fastrack/tracking/tracker.h>
-#include <fastrack/value/analytical_kinematic_box_quadrotor_decoupled_6d.h>
+#include <fastrack_crazyflie_demos/reference_converter.h>
 #include <fastrack/state/position_velocity.h>
-#include <fastrack/control/quadrotor_control.h>
-#include <fastrack/utils/types.h>
-
-#include <fastrack_srvs/KinematicPlannerDynamics.h>
-#include <fastrack_srvs/TrackingBoundBox.h>
 
 #include <ros/ros.h>
 
-namespace ft = fastrack::tracking;
-namespace fs = fastrack::state;
-namespace fc = fastrack::control;
-namespace fv = fastrack::value;
-
 int main(int argc, char** argv) {
-  ros::init(argc, argv, "TrackerDemo");
+  ros::init(argc, argv, "ReferenceConverterDemo");
   ros::NodeHandle n("~");
 
-  ft::Tracker<fv::AnalyticalKinematicBoxQuadrotorDecoupled6D,
-              fs::PositionVelocity, fc::QuadrotorControl, fs::PositionVelocity,
-              fastrack_srvs::TrackingBoundBox,
-              fastrack_srvs::KinematicPlannerDynamics> tracker;
+  fastrack::crazyflie::ReferenceConverter<fastrack::state::PositionVelocity>
+      converter;
 
-  if (!tracker.Initialize(n)) {
-    ROS_ERROR("%s: Failed to initialize tracker.",
+  if (!converter.Initialize(n)) {
+    ROS_ERROR("%s: Failed to initialize reference converter.",
               ros::this_node::getName().c_str());
     return EXIT_FAILURE;
   }

@@ -56,7 +56,7 @@ PlanarDubins3D PlanarDubins3D::upper_ = PlanarDubins3D();
 double PlanarDubins3D::z_ = constants::kDefaultHeight;
 
 // Constructors.
-PlanarDubins3D::PlanarDubins3D(const fastrack_msgs::State &msg)
+PlanarDubins3D::PlanarDubins3D(const fastrack_msgs::State& msg)
     : State(), x_(0.0), y_(0.0), theta_(0.0), v_(constants::kDefaultHeight) {
   // Check dimensions.
   if (msg.x.size() == StateDimension()) {
@@ -71,10 +71,12 @@ PlanarDubins3D::PlanarDubins3D(const fastrack_msgs::State &msg)
   } else if (msg.x.size() == ConfigurationDimension()) {
     x_ = msg.x[0];
     y_ = msg.x[1];
-  } else
-    throw std::runtime_error("PlanarDubins3D: msg dimension is incorrect.");
+  } else {
+    throw std::runtime_error("PlanarDubins3D: msg dimension is incorrect: " +
+                             std::to_string(msg.x.size()));
+  }
 }
-PlanarDubins3D::PlanarDubins3D(const VectorXd &x)
+PlanarDubins3D::PlanarDubins3D(const VectorXd& x)
     : State(), x_(0.0), y_(0.0), theta_(0.0), v_(constants::kDefaultHeight) {
   // Check dimensions.
   if (x.size() == ConfigurationDimension()) {
@@ -85,14 +87,16 @@ PlanarDubins3D::PlanarDubins3D(const VectorXd &x)
     y_ = x(1);
     theta_ = x(2);
   } else {
-    throw std::runtime_error("PlanarDubins3D: incorrect input dimension.");
+    throw std::runtime_error("PlanarDubins3D: incorrect input dimension: " +
+                             std::to_string(x.size()));
   }
-} // namespace state
+}  // namespace state
 
 // Set non-configuration dimensions to match the given config derivative.
-void PlanarDubins3D::SetConfigurationDot(const VectorXd &configuration_dot) {
+void PlanarDubins3D::SetConfigurationDot(const VectorXd& configuration_dot) {
   if (configuration_dot.size() != ConfigurationDimension())
-    throw std::runtime_error("PlanarDubins3D: invalid configuration_dot dim.");
+    throw std::runtime_error("PlanarDubins3D: invalid configuration_dot dim: " +
+                             std::to_string(configuration_dot.size()));
 
   v_ = configuration_dot.norm();
   theta_ = std::atan2(configuration_dot(1), configuration_dot(0));
@@ -144,16 +148,16 @@ std::vector<Vector3d> PlanarDubins3D::OccupiedPositions() const {
 }
 
 // Set bounds of the state space.
-void PlanarDubins3D::SetBounds(const PlanarDubins3D &lower,
-                               const PlanarDubins3D &upper) {
+void PlanarDubins3D::SetBounds(const PlanarDubins3D& lower,
+                               const PlanarDubins3D& upper) {
   lower_ = lower;
   upper_ = upper;
 }
 
 // Set state space bounds from std vectors. Layout is assumed to be
 // [x, y, theta].
-void PlanarDubins3D::SetBounds(const std::vector<double> &lower,
-                               const std::vector<double> &upper) {
+void PlanarDubins3D::SetBounds(const std::vector<double>& lower,
+                               const std::vector<double>& upper) {
   // Check dimensions.
   if (lower.size() != 3 || upper.size() != 3)
     throw std::runtime_error("PlanarDubins3D: bad bound dimension.");
@@ -168,7 +172,7 @@ void PlanarDubins3D::SetBounds(const std::vector<double> &lower,
 }
 
 // Convert from VectorXd. Assume State is [x, y, theta].
-void PlanarDubins3D::FromVector(const VectorXd &x) {
+void PlanarDubins3D::FromVector(const VectorXd& x) {
   if (x.size() == 3) {
     x_ = x(0);
     y_ = x(1);
@@ -191,7 +195,7 @@ VectorXd PlanarDubins3D::ToVector() const {
 
 // Convert from ROS message. Assume State is [x, y, theta], [x, y, theta, v], or
 // configuration only.
-void PlanarDubins3D::FromRos(const fastrack_msgs::State::ConstPtr &msg) {
+void PlanarDubins3D::FromRos(const fastrack_msgs::State::ConstPtr& msg) {
   if (msg->x.size() == 3) {
     // Message contains state, but not v.
     x_ = msg->x[0];
@@ -235,5 +239,63 @@ VectorXd PlanarDubins3D::GetConfigurationUpper() {
   return upper_.Configuration();
 }
 
-} // namespace state
-} // namespace fastrack
+// Compound assignment operators.
+PlanarDubins3D& PlanarDubins3D::operator+=(const PlanarDubins3D& rhs) {
+  x_ = rhs.x_ + std::hypot(x_, y_) * std::cos(rhs.theta_);
+  y_ = rhs.y_ + std::hypot(x_, y_) * std::sin(rhs.theta_);
+  theta_ += rhs.theta_;
+  return *this;
+}
+
+PlanarDubins3D& PlanarDubins3D::operator-=(const PlanarDubins3D& rhs) {
+  x_ = -rhs.x_ + std::hypot(x_, y_) * std::cos(rhs.theta_);
+  y_ = -rhs.y_ - std::hypot(x_, y_) * std::sin(rhs.theta_);
+  theta_ -= rhs.theta_;
+  return *this;
+}
+
+PlanarDubins3D& PlanarDubins3D::operator*=(double s) {
+  x_ *= s;
+  y_ *= s;
+  return *this;
+}
+
+PlanarDubins3D& PlanarDubins3D::operator/=(double s) {
+  x_ /= s;
+  y_ /= s;
+  return *this;
+}
+
+// Binary operators.
+PlanarDubins3D operator+(PlanarDubins3D lhs, const PlanarDubins3D& rhs) {
+  lhs += rhs;
+  return lhs;
+}
+
+PlanarDubins3D operator-(PlanarDubins3D lhs, const PlanarDubins3D& rhs) {
+  lhs -= rhs;
+  return lhs;
+}
+
+PlanarDubins3D operator*(PlanarDubins3D lhs, double s) {
+  lhs *= s;
+  return lhs;
+}
+
+PlanarDubins3D operator*(double s, PlanarDubins3D rhs) {
+  rhs *= s;
+  return rhs;
+}
+
+PlanarDubins3D operator/(PlanarDubins3D lhs, double s) {
+  lhs /= s;
+  return lhs;
+}
+
+PlanarDubins3D operator/(double s, PlanarDubins3D rhs) {
+  rhs /= s;
+  return rhs;
+}
+
+}  // namespace state
+}  // namespace fastrack

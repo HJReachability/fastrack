@@ -38,6 +38,8 @@
 //
 // Defines the ReferenceConverter class, which listens for new fastrack state
 // messages and immediately republishes them as crazyflie messages.
+// Since references are coming from the planner, this class needs to be
+// templated on the planner state type.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -47,24 +49,24 @@
 #include <fastrack/utils/types.h>
 #include <fastrack/utils/uncopyable.h>
 
-#include <fastrack_msgs/State.h>
 #include <crazyflie_msgs/PositionVelocityStateStamped.h>
+#include <fastrack_msgs/State.h>
 
 #include <ros/ros.h>
 
 namespace fastrack {
 namespace crazyflie {
 
+template <typename PS>
 class ReferenceConverter : private Uncopyable {
-public:
+ public:
   ~ReferenceConverter() {}
-  explicit ReferenceConverter()
-    : initialized_(false) {}
+  explicit ReferenceConverter() : initialized_(false) {}
 
   // Initialize this class with all parameters and callbacks.
   bool Initialize(const ros::NodeHandle& n);
 
-private:
+ private:
   bool LoadParameters(const ros::NodeHandle& n);
   bool RegisterCallbacks(const ros::NodeHandle& n);
 
@@ -83,7 +85,81 @@ private:
   bool initialized_;
 };
 
-} //\namespace crazyflie
-} //\namespace fastrack
+// ----------------------------- IMPLEMENTATION ---------------------------- //
+
+// Initialize this class with all parameters and callbacks.
+template <typename PS>
+bool ReferenceConverter<PS>::Initialize(const ros::NodeHandle& n) {
+  name_ = ros::names::append(n.getNamespace(), "ReferenceConverter");
+
+  // Load parameters.
+  if (!LoadParameters(n)) {
+    ROS_ERROR("%s: Failed to load parameters.", name_.c_str());
+    return false;
+  }
+
+  // Register callbacks.
+  if (!RegisterCallbacks(n)) {
+    ROS_ERROR("%s: Failed to register callbacks.", name_.c_str());
+    return false;
+  }
+
+  initialized_ = true;
+  return true;
+}
+
+// Load parameters.
+template <typename PS>
+bool ReferenceConverter<PS>::LoadParameters(const ros::NodeHandle& n) {
+  ros::NodeHandle nl(n);
+
+  // Topics.
+  if (!nl.getParam("topic/fastrack_reference", fastrack_reference_topic_))
+    return false;
+  if (!nl.getParam("topic/raw_reference", raw_reference_topic_)) return false;
+
+  return true;
+}
+
+// Register callbacks.
+template <typename PS>
+bool ReferenceConverter<PS>::RegisterCallbacks(const ros::NodeHandle& n) {
+  ros::NodeHandle nl(n);
+
+  // Subscriber.
+  fastrack_reference_sub_ =
+      nl.subscribe(fastrack_reference_topic_.c_str(), 1,
+                   &ReferenceConverter::ReferenceCallback, this);
+
+  // Publisher.
+  raw_reference_pub_ =
+      nl.advertise<crazyflie_msgs::PositionVelocityStateStamped>(
+          raw_reference_topic_.c_str(), 1, false);
+
+  return true;
+}
+
+// Callback for processing new reference signals.
+template <typename PS>
+void ReferenceConverter<PS>::ReferenceCallback(
+    const fastrack_msgs::State::ConstPtr& msg) {
+  // Convert to planner state type.
+  const PS state(*msg);
+
+  // Parse into Crazyflie msg.
+  crazyflie_msgs::PositionVelocityStateStamped cf;
+  cf.header.stamp = ros::Time::now();
+  cf.state.x = state.X();
+  cf.state.y = state.Y();
+  cf.state.z = state.Z();
+  cf.state.x_dot = state.Vx();
+  cf.state.y_dot = state.Vy();
+  cf.state.z_dot = state.Vz();
+
+  raw_reference_pub_.publish(cf);
+}
+
+}  //\namespace crazyflie
+}  //\namespace fastrack
 
 #endif

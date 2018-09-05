@@ -107,7 +107,7 @@ public:
   fastrack_msgs::State ToRos() const;
 
   // Dimension of the state and configuration spaces.
-  static constexpr size_t StateDimension() { return 6; }
+  static constexpr size_t StateDimension() { return 3; }
   static constexpr size_t ConfigurationDimension() { return 3; }
 
   // Set/get bounds of the state/configuration space.
@@ -127,13 +127,13 @@ public:
   // NOTE! Sets v_ to default value.
   static PlanarDubins3D Sample();
 
-  // Compound assignment operators.
+  // Compound assignment operators. Note that scaling only affects x/y position.
   PlanarDubins3D& operator+=(const PlanarDubins3D& rhs);
   PlanarDubins3D& operator-=(const PlanarDubins3D& rhs);
   PlanarDubins3D& operator*=(double s);
   PlanarDubins3D& operator/=(double s);
 
-  // Binary operators.
+  // Binary operators. Note that scaling only affects x/y position.
   friend PlanarDubins3D operator+(PlanarDubins3D lhs,
                                     const PlanarDubins3D& rhs);
   friend PlanarDubins3D operator-(PlanarDubins3D lhs,

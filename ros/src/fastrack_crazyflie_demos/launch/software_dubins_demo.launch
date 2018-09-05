@@ -151,7 +151,7 @@
   </include>
 
   <!-- Planner manager. -->
-  <include file="$(find fastrack_crazyflie_demos)/launch/position_velocity_planner_manager.launch">
+  <include file="$(find fastrack_crazyflie_demos)/launch/planar_dubins_planner_manager.launch">
     <arg name="ready_topic" value="$(arg in_flight_topic)" />
     <arg name="traj_topic" value="$(arg traj_topic)" />
     <arg name="replan_request_topic" value="$(arg replan_request_topic)" />
@@ -208,7 +208,7 @@
   </include>
 
   <!-- Reference converter. -->
-  <include file="$(find fastrack_crazyflie_demos)/launch/reference_converter.launch">
+  <include file="$(find fastrack_crazyflie_demos)/launch/planar_dubins_reference_converter.launch">
     <arg name="fastrack_reference_topic" value="$(arg fastrack_reference_state_topic)" />
     <arg name="raw_reference_topic" value="$(arg reference_state_topic)" />
   </include>

@@ -56,8 +56,8 @@
 #include <fastrack/utils/types.h>
 #include <fastrack/value/value_function.h>
 
-#include <ros/ros.h>
 #include <ros/assert.h>
+#include <ros/ros.h>
 #include <functional>
 
 namespace fastrack {
@@ -90,13 +90,11 @@ class MatlabValueFunction : public ValueFunction<TS, TC, TD, PS, PC, PD, B> {
   bool LoadParameters(const ros::NodeHandle& n) {
     ros::NodeHandle nl(n);
 
-
     std::string file_name;
     if (!nl.getParam("file_name", file_name)) return false;
 
     std::cout << "---------------------" << std::endl;
     std::cout << file_name << std::endl;
-
 
     return InitializeFromMatFile(file_name);
   }
@@ -215,12 +213,14 @@ size_t MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::StateToIndex(
   std::vector<size_t> quantized;
   for (size_t ii = 0; ii < x.size(); ii++) {
     if (x(ii) < lower_[ii]) {
-      ROS_WARN("%s: State is too small in dimension %zu.", this->name_.c_str(),
-               ii);
+      ROS_WARN_THROTTLE(1.0,
+                        "%s: State is too small in dimension %zu: %f vs %f",
+                        this->name_.c_str(), ii, x(ii), lower_[ii]);
       quantized.push_back(0);
     } else if (x(ii) > upper_[ii]) {
-      ROS_WARN("%s: State is too large in dimension %zu.", this->name_.c_str(),
-               ii);
+      ROS_WARN_THROTTLE(1.0,
+                        "%s: State is too large in dimension %zu: %f vs %f",
+                        this->name_.c_str(), ii, x(ii), upper_[ii]);
       quantized.push_back(num_cells_[ii] - 1);
     } else {
       // In bounds, so quantize. This works because of 0-indexing and casting.
@@ -333,8 +333,9 @@ MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD,
 // Can be used as an alternative to intialization from a NodeHandle.
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename RS, typename RD, typename B>
-bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::
-InitializeFromMatFile(const std::string& file_name) {
+bool MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD,
+                         B>::InitializeFromMatFile(const std::string&
+                                                       file_name) {
   // Open up this file.
   MatlabFileReader reader(file_name);
   if (!reader.IsOpen()) return false;
