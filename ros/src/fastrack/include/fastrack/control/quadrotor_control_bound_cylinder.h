@@ -96,8 +96,10 @@ class QuadrotorControlBoundCylinder : public ControlBound<QuadrotorControl> {
   inline QuadrotorControl ProjectToSurface(
       const QuadrotorControl& query) const {
     // Compute scaling to project (pitch, roll) onto the cylinder.
+    constexpr double kSmallNumber = 1e-8;
     const double scaling =
-        pitch_roll_radius_ / std::hypot(query.pitch, query.roll);
+        pitch_roll_radius_ /
+        std::max(kSmallNumber, std::hypot(query.pitch, query.roll));
 
     return QuadrotorControl(scaling * query.pitch, scaling * query.roll,
                             yaw_rate_interval_.ProjectToSurface(query.yaw_rate),

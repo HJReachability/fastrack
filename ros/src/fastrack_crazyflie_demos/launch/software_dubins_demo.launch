@@ -54,7 +54,7 @@
   <arg name="takeoff_hover_y" default="0.0" />
   <arg name="takeoff_hover_z" default="1.0" />
 
-  <arg name="planner_start_x" default="-0.18" />
+  <arg name="planner_start_x" default="-0.2" />
   <arg name="planner_start_y" default="0.0" />
   <arg name="planner_start_yaw" default="0.0" />
 
