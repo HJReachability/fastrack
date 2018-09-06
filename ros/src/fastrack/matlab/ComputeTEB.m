@@ -155,15 +155,27 @@ data = squeeze(data(:,:,:,:,end));
 %% Plotting
 
 % Plot surface function l(x) and value function V(x).
-[h_f, h_data, h_data0] = PlotValueXY(g,data,data0);
+[h_f, h_data, h_data0, C, h_c] = PlotValueXY(g,data,data0);
 
 
 %% Post-process data for saving and loading into FaSTrack.
+% Just in case we're loading data in flattened form.
 
 % Value function (flattened and grid copies)
-data_flat = data(:);
-data_grid = reshape(data,N(:)');
-data = data_grid; % Just in case we're loading data in flattened form.
+if isvector(data)
+    data_flat = data;
+else
+    % Need ROW MAJOR order, but MATLAB is COLUMN MAJOR by default.
+    data_flat = reshape(permute(data,g.dim:-1:1),[],1);
+end
+% Reconstruct MATLAB grid assuming ROW-MAJOR flattened version.
+data_grid = permute(reshape(data_flat,N(end:-1:1)'),g.dim:-1:1);
+if ~isvector(data)
+    % Error out if data_flat was not ROW-MAJOR.
+    assert(all(data(:)==data_grid(:)));
+else
+    data = data_grid; % Set data to grid form.
+end
 
 % Choose TEB level set relative to the minimum nonempty level set.
 level_set_margin = 0.1; % in meters
@@ -243,7 +255,8 @@ bound_params   = [R_c, semi_height_];
 % Value function gradient (each component flattened)
 [deriv, ~, ~] = computeGradients(g, data);
 for i = 1:g.dim
-  assignin('caller',sprintf('deriv_%i',i-1),deriv{i}(:));
+  deriv_flat{i} = reshape(permute(deriv{i},g.dim:-1:1),[],1);
+  assignin('caller',sprintf('deriv_%i',i-1),deriv_flat{i});
 end
 
 

@@ -44,7 +44,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-function [h_f, h_data, h_data0] = PlotValueXY(g,data,data0,mode,high_dim_vals)
+function [h_f, h_data, h_data0, C, h_c] = PlotValueXY(g,data,data0,mode,high_dim_vals)
 %% Plot surface function l(x) and value function V(x).
 %  NOTE: As a sanity check, it should always be V(x) >= l(x).
 
@@ -59,6 +59,7 @@ if nargin < 4
 end
 
 if nargin < 5
+    % TODO: @Jaime make vals the actual argument, not idx
 	high_dim_vals = [ceil(g.N(3)/2), ceil(g.N(4)/2)];
 end
 
@@ -104,7 +105,7 @@ h  = surf(Ys_closed(:,:,1,1),...
           Xs_closed(:,:,1,1),...
           data_low_dim);
 
-h_c  = contour3(Ys_closed(:,:,1,1),...
+[C,h_c]  = contour3(Ys_closed(:,:,1,1),...
           Xs_closed(:,:,1,1),...
           data_low_dim,...
           min(data_low_dim(:)):0.01:max(data_low_dim(:)));
