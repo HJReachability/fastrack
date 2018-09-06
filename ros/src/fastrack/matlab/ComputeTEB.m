@@ -160,6 +160,11 @@ data = squeeze(data(:,:,:,:,end));
 
 %% Post-process data for saving and loading into FaSTrack.
 
+% Value function (flattened and grid copies)
+data_flat = data(:);
+data_grid = reshape(data,N(:)');
+data = data_grid; % Just in case we're loading data in flattened form.
+
 % Choose TEB level set relative to the minimum nonempty level set.
 level_set_margin = 0.1; % in meters
 level_set_boundary_value = min(data(:)) + level_set_margin;
@@ -234,10 +239,6 @@ if abs(x_c) > res_x
         'Current implementation assumes that it is. Check value function.'])
 end
 bound_params   = [R_c, semi_height_];
-
-% Value function (flattened and grid copies)
-data_flat = data(:);
-data_grid = reshape(data,N(:)');
 
 % Value function gradient (each component flattened)
 [deriv, ~, ~] = computeGradients(g, data);
