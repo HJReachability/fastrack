@@ -80,9 +80,9 @@ d_z_max_ = 0.5; % m/s^2
 % ---- Differential game setup ----
 
 % State grid.
-grid_min = [ 0.01; -pi; -1; -1];  % Lower corner of computation domain.
-grid_max = [ 0.5;  pi;  1;  1];   % Upper corner of computation domain.
-N = [50; 35; 21; 21];             % Number of grid points per dimension.
+grid_min = [ 0.01; -pi; -1.1; -1.1];  % Lower corner of computation domain.
+grid_max = [ 0.5;  pi;  1.1;  1.1];   % Upper corner of computation domain.
+N = [50; 71; 45; 45];             % Number of grid points per dimension.
 pdDims = 2;                       % 2nd dimension is periodic.
 g = createGrid(grid_min, grid_max, N, pdDims); % Create state space grid.
 
