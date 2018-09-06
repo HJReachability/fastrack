@@ -64,7 +64,7 @@
   <arg name="sim_init_z" default="0.0" />
 
   <!-- Planner params. -->
-  <arg name="planner_runtime" default="0.9" />
+  <arg name="planner_runtime" default="0.95" />
 
   <!-- Time steps. -->
   <arg name="simulator_dt" default="0.001" />
@@ -103,7 +103,7 @@
   <arg name="state_lower" default="[-$(arg env_max), -$(arg env_max), -$(arg theta_max)]" />
 
   <!-- Sensor range. -->
-  <arg name="sensor_range" default="1000000.0" />
+  <arg name="sensor_range" default="2.0" />
 
   <!-- Record? -->
   <arg name="record" default="false" />

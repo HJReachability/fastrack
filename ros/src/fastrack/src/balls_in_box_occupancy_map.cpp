@@ -246,10 +246,22 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
 // NOTE! This function needs to publish on `updated_topic_`.
 void BallsInBoxOccupancyMap::SensorCallback(
     const fastrack_msgs::SensedSpheres::ConstPtr& msg) {
+  bool updated_env = false;
+
   // Add sensor FOV to kdtree.
   const Vector3d sensor_position(msg->sensor_position.x, msg->sensor_position.y,
                                  msg->sensor_position.z);
-  sensor_fovs_.Insert(std::make_pair(sensor_position, msg->sensor_radius));
+
+  // If this is far enough from any existing sensor FOV then add to the kdtree.
+  constexpr size_t kOneNearestNeighbor = 1;
+  constexpr double kSmallNumber = 1e-2;
+  const auto neighboring_fovs =
+      sensor_fovs_.KnnSearch(sensor_position, kOneNearestNeighbor);
+  if (neighboring_fovs.empty() ||
+      (neighboring_fovs[0].first - sensor_position).norm() > kSmallNumber) {
+    sensor_fovs_.Insert(std::make_pair(sensor_position, msg->sensor_radius));
+    updated_env = true;
+  }
 
   // Check list lengths.
   if (msg->centers.size() != msg->radii.size())
@@ -258,7 +270,6 @@ void BallsInBoxOccupancyMap::SensorCallback(
   const size_t num_obstacles = std::min(msg->centers.size(), msg->radii.size());
 
   // Add each unique obstacle to list.
-  bool any_unique = false;
   for (size_t ii = 0; ii < num_obstacles; ii++) {
     const Vector3d p(msg->centers[ii].x, msg->centers[ii].y,
                      msg->centers[ii].z);
@@ -266,7 +277,6 @@ void BallsInBoxOccupancyMap::SensorCallback(
 
     // If not unique, discard.
     bool unique = true;
-    constexpr size_t kOneNearestNeighbor = 1;
     const auto neighbors = obstacles_.KnnSearch(p, kOneNearestNeighbor);
     for (const auto& entry : neighbors) {
       if ((p - entry.first).squaredNorm() < constants::kEpsilon &&
@@ -277,12 +287,12 @@ void BallsInBoxOccupancyMap::SensorCallback(
     }
 
     if (unique) {
-      any_unique = true;
+      updated_env = true;
       obstacles_.Insert({p, r});
     }
   }
 
-  if (any_unique) {
+  if (updated_env) {
     // Let the system know this environment has been updated.
     updated_pub_.publish(std_msgs::Empty());
   }
@@ -413,7 +423,7 @@ void BallsInBoxOccupancyMap::Visualize() const {
     sphere.scale.y = 2.0 * entry.second;
     sphere.scale.z = 2.0 * entry.second;
 
-    sphere.color.a = 0.25;
+    sphere.color.a = 0.025;
     sphere.color.r = 0.5;
     sphere.color.g = 0.8;
     sphere.color.b = 0.5;

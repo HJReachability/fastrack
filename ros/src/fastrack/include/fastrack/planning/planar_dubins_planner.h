@@ -105,8 +105,6 @@ template <typename E, typename B, typename SB>
 Trajectory<PlanarDubins3D> PlanarDubinsPlanner<E, B, SB>::SubPlan(
     const PlanarDubins3D& start, const PlanarDubins3D& goal,
     double start_time) const {
-  std::cout << "Turning radius is: " << this->dynamics_.TurningRadius() << std::endl;
-
   // Create an OMPL state space.
   auto space =
       std::make_shared<ob::DubinsStateSpace>(this->dynamics_.TurningRadius());
@@ -137,7 +135,7 @@ Trajectory<PlanarDubins3D> PlanarDubinsPlanner<E, B, SB>::SubPlan(
   ompl_setup.setup();
 
   // Solve.
-  if (!ompl_setup.solve(this->max_runtime_)) {
+  if (!ompl_setup.solve(0.1 * this->max_runtime_)) {
     ROS_WARN_THROTTLE(1.0, "%s: Could not compute a valid solution.",
                       this->name_.c_str());
     return Trajectory<PlanarDubins3D>();

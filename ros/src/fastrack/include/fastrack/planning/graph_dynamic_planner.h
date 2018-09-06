@@ -270,9 +270,25 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
       std::cout << "Goal: " << goal->state.ToVector().transpose() << std::endl;
 
       // Check if this is a viable node.
-      if (!goal->is_viable) continue;
+      if (!goal->is_viable) {
+        if (outbound) {
+          ROS_ERROR_THROTTLE(1.0, "%s: Goal was not viable on outbound call.",
+                             this->name_.c_str());
+        }
+
+        continue;
+      }
 
       std::cout << "Goal is viable." << std::endl;
+
+      // Check if goal is in known free space.
+      if (!this->env_.AreValid(goal->state.OccupiedPositions(), this->bound_)) {
+        ROS_INFO_THROTTLE(1.0, "%s: Goal was not in known free space.",
+                          this->name_.c_str());
+        continue;
+      }
+
+      std::cout << "Goal is in known free space." << std::endl;
 
       // Try to connect.
       const Trajectory<S> sub_plan =
@@ -283,6 +299,18 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
       // Upon success, set child to point to goal and update sample node to
       // include child node and corresponding trajectory.
       if (sub_plan.Size() > 0) {
+        // If somehow the planner returned a plan that does not terminate at the
+        // desired goal, then discard.
+        constexpr double kSmallNumber = 1e-8;
+        if (!sub_plan.LastState().ToVector().isApprox(goal->state.ToVector(), kSmallNumber)) {
+          ROS_ERROR_STREAM(
+              this->name_
+              << "Planner returned a trajectory with the wrong end state: "
+              << sub_plan.LastState().ToVector().transpose() << " vs. "
+              << goal->state.ToVector().transpose());
+          continue;
+        }
+
         child = goal;
 
         // Update sample node to point to child.
@@ -299,9 +327,9 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
 
       // (5) If outbound, make a recursive call. We can ignore the returned
       // trajectory since we'll generate one later once we're all done.
-      // if (outbound)
-      //   const Trajectory<S> ignore = RecursivePlan(
-      //            graph, graph, sample_node->time, false, initial_call_time);
+      if (outbound)
+        const Trajectory<S> ignore = RecursivePlan(
+            graph, graph, sample_node->time, false, initial_call_time);
     } else {
       std::cout << "Child was non-null, so we don't need a recursive call."
                 << std::endl;
