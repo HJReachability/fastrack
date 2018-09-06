@@ -94,7 +94,7 @@ class ValueFunction : private Uncopyable {
     if (!initialized_)
       throw std::runtime_error("Uninitialized call to OptimalControl.");
 
-    std::cout << "Value is: " << Value(tracker_x, planner_x) << std::endl;
+    //    std::cout << "Value is: " << Value(tracker_x, planner_x) << std::endl;
 
     return relative_dynamics_->OptimalControl(
         tracker_x, planner_x, *Gradient(tracker_x, planner_x),
