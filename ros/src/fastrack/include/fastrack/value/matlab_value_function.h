@@ -205,7 +205,9 @@ double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::Priority(
   const double value = Value(tracker_x, planner_x);
 
   if (value < priority_lower_) return 0.0;
-  if (value > priority_upper_) return 1.0;
+
+  // HACK! If value is too high, just use LQR instead.
+  if (value > priority_upper_) return 0.0;
 
   return (value - priority_lower_) / (priority_upper_ - priority_lower_);
 }
