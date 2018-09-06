@@ -135,7 +135,10 @@ Trajectory<PlanarDubins3D> PlanarDubinsPlanner<E, B, SB>::SubPlan(
   ompl_setup.setup();
 
   // Solve.
-  if (!ompl_setup.solve(0.1 * this->max_runtime_)) {
+  // HACK! Cap the max runtime as a fraction of the total max runtime,
+  // since this will be called repeatedly from within GraphDynamicPlanner.
+  constexpr double kMaxRuntimeFraction = 0.1;
+  if (!ompl_setup.solve(kMaxRuntimeFraction * this->max_runtime_)) {
     ROS_WARN_THROTTLE(1.0, "%s: Could not compute a valid solution.",
                       this->name_.c_str());
     return Trajectory<PlanarDubins3D>();
