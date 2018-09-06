@@ -47,12 +47,17 @@
   <!-- Goal point. -->
   <arg name="goal_x" default="8.0" />
   <arg name="goal_y" default="8.0" />
-  <arg name="goal_z" default="1.0" />
+  <arg name="goal_yaw" default="0.0" />
 
   <!-- Simulator params. -->
   <arg name="takeoff_hover_x" default="0.0" />
   <arg name="takeoff_hover_y" default="0.0" />
   <arg name="takeoff_hover_z" default="1.0" />
+
+  <arg name="planner_start_x" default="-0.18" />
+  <arg name="planner_start_y" default="0.0" />
+  <arg name="planner_start_yaw" default="0.0" />
+
 
   <arg name="sim_init_x" default="0.0" />
   <arg name="sim_init_y" default="0.0" />
@@ -161,8 +166,8 @@
     <arg name="fixed_frame" value="$(arg fixed_frame)" />
     <arg name="planner_frame" value="$(arg planner_frame)" />
     <arg name="planner_runtime" value="$(arg planner_runtime)" />
-    <arg name="goal" value="[$(arg goal_x), $(arg goal_y), $(arg goal_z)]" />
-    <arg name="start" value="[$(arg takeoff_hover_x), $(arg takeoff_hover_y), $(arg takeoff_hover_z)]" />
+    <arg name="goal" value="[$(arg goal_x), $(arg goal_y), $(arg goal_yaw)]" />
+    <arg name="start" value="[$(arg planner_start_x), $(arg planner_start_y), $(arg planner_start_yaw)]" />
   </include>
 
   <!-- Replanner. -->

@@ -184,6 +184,12 @@ std::unique_ptr<RelativeState<TS, PS>>
 MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::Gradient(
     const TS& tracker_x, const PS& planner_x) const {
   const VectorXd relative_x = RS(tracker_x, planner_x).ToVector();
+
+  std::cout << "tracker_x: " << tracker_x.ToVector().transpose() << std::endl;
+  std::cout << "planner_x: " << planner_x.ToVector().transpose() << std::endl;
+  std::cout << "relative_x: " << relative_x.transpose() << std::endl;
+  std::cout << "gradient: " << RecursiveGradientInterpolator(relative_x, 0).transpose() << std::endl;
+
   return std::unique_ptr<RS>(
       new RS(RecursiveGradientInterpolator(relative_x, 0)));
 }

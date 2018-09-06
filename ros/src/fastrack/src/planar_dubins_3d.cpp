@@ -241,15 +241,15 @@ VectorXd PlanarDubins3D::GetConfigurationUpper() {
 
 // Compound assignment operators.
 PlanarDubins3D& PlanarDubins3D::operator+=(const PlanarDubins3D& rhs) {
-  x_ = rhs.x_ + std::hypot(x_, y_) * std::cos(rhs.theta_);
-  y_ = rhs.y_ + std::hypot(x_, y_) * std::sin(rhs.theta_);
+  x_ += rhs.x_;
+  y_ += rhs.y_;
   theta_ += rhs.theta_;
   return *this;
 }
 
 PlanarDubins3D& PlanarDubins3D::operator-=(const PlanarDubins3D& rhs) {
-  x_ = -rhs.x_ + std::hypot(x_, y_) * std::cos(rhs.theta_);
-  y_ = -rhs.y_ - std::hypot(x_, y_) * std::sin(rhs.theta_);
+  x_ -= rhs.x_;
+  y_ -= rhs.y_;
   theta_ -= rhs.theta_;
   return *this;
 }
@@ -257,12 +257,14 @@ PlanarDubins3D& PlanarDubins3D::operator-=(const PlanarDubins3D& rhs) {
 PlanarDubins3D& PlanarDubins3D::operator*=(double s) {
   x_ *= s;
   y_ *= s;
+  theta_ *= s;
   return *this;
 }
 
 PlanarDubins3D& PlanarDubins3D::operator/=(double s) {
   x_ /= s;
   y_ /= s;
+  theta_ *= s;
   return *this;
 }
 
