@@ -44,7 +44,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-function [h_f, h_data, h_data0, C, h_c] = PlotValueXY(g,data,data0,mode,high_dim_vals)
+function [h_f, h_data, h_data0, C, h_c] = PlotValueXY(g,data,data0,mode,high_dim_vals,figure_number)
 %% Plot surface function l(x) and value function V(x).
 %  NOTE: As a sanity check, it should always be V(x) >= l(x).
 
@@ -54,14 +54,26 @@ else
 	plot_data0 = false;
 end
 
-if nargin < 4
+if nargin < 4 || isempty(mode)
 	mode = 'min';
 end
 
-if nargin < 5
+if nargin < 5 || isempty(high_dim_vals)
     % TODO: @Jaime make vals the actual argument, not idx
 	high_dim_vals = [ceil(g.N(3)/2), ceil(g.N(4)/2)];
 end
+
+% Initialize figure and handles
+if nargin < 6 || isempty(figure_number)
+    h_f = figure;
+else
+    h_f = figure(figure_number);
+    clf(h_f);
+end
+hold on
+h_data  = 0;
+h_data0 = 0;
+
 
 % Transform from polar coordinates
 Xs = g.xs{1}.*cos(g.xs{2});
@@ -85,12 +97,6 @@ elseif strcmp(mode,'slice') % section of higher dimensions
 else
 	error('mode %s undefined.',mode);
 end
-
-% Initialize figure and handles
-h_f = figure;
-hold on
-h_data  = 0;
-h_data0 = 0;
 
 % Plot payoff surface function (signed distance) if provided
 if plot_data0
