@@ -80,20 +80,21 @@ d_z_max_ = 0.5; % m/s^2
 % ---- Differential game setup ----
 
 % State grid.
-grid_min = [ 0.01; -pi; -1.1; -1.1];  % Lower corner of computation domain.
-grid_max = [ 0.5;  pi;  1.1;  1.1];   % Upper corner of computation domain.
-N = [50; 71; 45; 45];             % Number of grid points per dimension.
-pdDims = 2;                       % 2nd dimension is periodic.
+grid_min = [ 0.01; -pi; -2.0; -2.0];  % Lower corner of computation domain.
+grid_max = [ 1.0;  pi;  2.0;  2.0];   % Upper corner of computation domain.
+N = [24; 35; 11; 11];                 % Number of grid points per dimension.
+pdDims = 2;                           % 2nd dimension is periodic.
 g = createGrid(grid_min, grid_max, N, pdDims); % Create state space grid.
 
 % Time vector.
-t0 = 0;
-tMax = 0.5;
+t0 = 0.0;
+tMax = 3.0;
 dt = 0.05;
 tau = t0:dt:tMax;
 
 % Payoff surface function: distance between the point mass and the Dubins car.
 data0 = g.xs{1};
+%data0 = data;
 
 % Roles of the control and disturbance for the (non-negated) surface function.
 uMode = 'min';
@@ -149,6 +150,10 @@ dMode = 'max';
 % -------------------------- End negated computation --------------------------
 
 % Keep final step of value function computation only.
+if ~exist('data_t','var')
+    data_t = [];
+end
+data_t = cat(length(size(data_t)),data_t,data);
 data = squeeze(data(:,:,:,:,end));
 
 
@@ -156,6 +161,15 @@ data = squeeze(data(:,:,:,:,end));
 
 % Plot surface function l(x) and value function V(x).
 [h_f, h_data, h_data0, C, h_c] = PlotValueXY(g,data,data0);
+
+% Visualize full video
+if exist('data_t','var')
+    h_vid = figure;
+    for t=1:size(data_t,g.dim+1)
+    PlotValueXY(g,squeeze(data_t(:,:,:,:,t)),data0,[],[],h_vid.Number);
+    pause(0.25);
+    end
+end
 
 
 %% Post-process data for saving and loading into FaSTrack.
@@ -212,6 +226,7 @@ end
 % Compute circumscribed circle of the projected TEB (we know it is symmetrical).
 R_c_sq = inf; % Initialize squared circumradius.
 x_c = [];     % Initialize circumcenter.
+R_0 = [];
 rhos = teb_points(:,1);
 thetas = teb_points(:,2);
 res_x = 0.01; % 0.01 m resolution
@@ -222,6 +237,9 @@ for x = -grid_max(1):res_x:grid_max(1)
     if d_sq < R_c_sq
         R_c_sq = d_sq;
         x_c = x;
+    end
+    if abs(x) < res_x
+        R_0 = sqrt(R_c_sq);
     end
 end
 R_c = sqrt(R_c_sq);
@@ -246,11 +264,13 @@ tracker_params = [pitch_roll_radius_,...
 % TEB parameters: tracking_bound_cylinder
 % (parametrized TEB approximation: circumscribed circle).
 if abs(x_c) > res_x
-    warning(...
-        ['Circumcircle approximation to TEB is not centered on the origin.\n'...
-        'Current implementation assumes that it is. Check value function.'])
+    warning(sprintf(...
+        ['Circumcircle approximation to TEB is not centered on the origin.\n\t'...
+        'Constructed bound_params for a centered (non-minimal) circular bound.']))
+    bound_params   = [R_0, semi_height_];
+else
+    bound_params   = [R_c, semi_height_];
 end
-bound_params   = [R_c, semi_height_];
 
 % Value function gradient (each component flattened)
 [deriv, ~, ~] = computeGradients(g, data);
