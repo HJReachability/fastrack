@@ -21,10 +21,10 @@
   <arg name="search_radius" default="100.0" />
   <arg name="num_neighbors" default="5" />
 
-  <!-- State space bounds [x, y, z, vx, vy, vz].
+  <!-- State space bounds [x, y, theta].
        NOTE! These should agree with the upper and lower environment bounds. -->
-  <arg name="state_upper" default="[10.0, 10.0, 10.0, 10.0, 10.0, 10.0]" />
-  <arg name="state_lower" default="[-10.0, -10.0, 0.0, -10.0, -10.0, -10.0]" />
+  <arg name="state_upper" default="[10.0, 10.0, 3.1416]" />
+  <arg name="state_lower" default="[-10.0, -10.0, -3.1416]" />
 
   <!-- Environment parameters. -->
   <arg name="env_upper_x" default="10.0" />

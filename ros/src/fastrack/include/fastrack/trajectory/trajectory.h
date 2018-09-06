@@ -66,7 +66,7 @@ public:
   // Construct from a list of trajectories.
   // NOTE! Not const because we will automatically time-shift trajectories
   //       to splice them together.
-  explicit Trajectory(std::list< Trajectory<S> >& trajs);
+  explicit Trajectory(const std::list< Trajectory<S> >& trajs);
 
   // Construct from lists of states and times.
   explicit Trajectory(const std::vector<S> &states,
@@ -117,19 +117,26 @@ private:
 // NOTE! Not const because we will automatically time-shift trajectories
 //       to splice them together.
 template<typename S>
-Trajectory<S>::Trajectory(std::list< Trajectory<S> >& trajs)
+Trajectory<S>::Trajectory(const std::list< Trajectory<S> >& trajs)
   : configuration_(false) {
-  for (auto& traj : trajs) {
+  for (const auto& traj : trajs) {
     // Reset first time to match last time of previous trajectory.
-    if (times_.size() > 0)
-      traj.ResetFirstTime(times_.back());
+    const double time_offset =
+        (times_.empty()) ? 0.0 : times_.back() - traj.times_.front();
 
     // Concatenate states and times to existing lists.
     states_.insert(states_.end(), traj.states_.begin(), traj.states_.end());
-    times_.insert(times_.end(), traj.times_.begin(), traj.times_.end());
+    for (size_t ii = 0; ii < traj.times_.size(); ii++)
+      times_.push_back(traj.times_[ii] + time_offset);
 
     // Set configuration to true if any trajectory is in configuration space.
     configuration_ |= traj.configuration_;
+  }
+
+  // Check to make sure time is monotonic increasing.
+  for (size_t ii = 1; ii < times_.size(); ii++) {
+    if (times_[ii - 1] > times_[ii])
+      throw std::runtime_error("Time was not strictly monotone.");
   }
 }
 

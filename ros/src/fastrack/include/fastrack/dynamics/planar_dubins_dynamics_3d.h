@@ -75,12 +75,7 @@ class PlanarDubinsDynamics3D
   explicit PlanarDubinsDynamics3D(const std::vector<double>& params)
       : Dynamics<PlanarDubins3D, double, ScalarBoundInterval,
                  fastrack_srvs::PlanarDubinsPlannerDynamics::Response>() {
-    if (params.size() != 3) {
-      throw std::runtime_error("Incorrect number of parameters.");
-    }
-
-    v_ = params[0];
-    control_bound_.reset(new ScalarBoundInterval(params[1], params[2]));
+    Initialize(params);
   }
 
   explicit PlanarDubinsDynamics3D(double v, const double& u_lower,
@@ -101,6 +96,19 @@ class PlanarDubinsDynamics3D
 
   // Compute turning radius.
   double TurningRadius() const { return V() / MaxOmega(); }
+
+  // Override base class initializer because parameter vector now contains
+  // more than just control bound params.
+  // Assume parameters are laid out as: [v, min yaw rate, max yaw rate].
+  void Initialize(const std::vector<double> &params) {
+    if (params.size() != 3) {
+      throw std::runtime_error("Incorrect number of parameters: " +
+                               std::to_string(params.size()));
+    }
+
+    v_ = params[0];
+    control_bound_.reset(new ScalarBoundInterval(params[1], params[2]));
+  }
 
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.

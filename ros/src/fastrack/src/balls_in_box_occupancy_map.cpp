@@ -285,10 +285,10 @@ void BallsInBoxOccupancyMap::SensorCallback(
   if (any_unique) {
     // Let the system know this environment has been updated.
     updated_pub_.publish(std_msgs::Empty());
-
-    // Visualize.
-    Visualize();
   }
+
+  // Visualize.
+  Visualize();
 }
 
 // Generate a sensor measurement as a service response.

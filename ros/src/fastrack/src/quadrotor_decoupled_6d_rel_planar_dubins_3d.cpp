@@ -148,6 +148,8 @@ QuadrotorControl QuadrotorDecoupled6DRelPlanarDubins3D::OptimalControl(
   u.thrust =
       constants::G + k_p * (planner_x.Z() - tracker_x.Z()) +
       k_d * (planner_x.Vz() - tracker_x.Vz());  // Vertical PD controller.
+
+  return u;
 }
 
 }  // namespace dynamics

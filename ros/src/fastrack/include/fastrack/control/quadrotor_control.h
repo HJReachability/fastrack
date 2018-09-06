@@ -76,6 +76,8 @@ struct QuadrotorControl {
     msg.u.push_back(thrust);
     msg.priority = priority;
 
+    std::cout << "optimal control (pitch, roll, yr, thrust)" << pitch << ", " << roll << ", " << yaw_rate << ", " << thrust << std::endl;
+
     return msg;
   }
 }; //\struct QuadrotorControl

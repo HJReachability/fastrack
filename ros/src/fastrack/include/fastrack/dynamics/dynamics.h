@@ -61,7 +61,7 @@ class Dynamics {
 
   // Initialize.
   void Initialize(const CB &bound) { control_bound_.reset(new CB(bound)); }
-  void Initialize(const std::vector<double> &params) {
+  virtual void Initialize(const std::vector<double> &params) {
     control_bound_.reset(new CB(params));
   }
 

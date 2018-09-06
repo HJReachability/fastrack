@@ -97,11 +97,12 @@ public:
   // be generalized to a collection of generic obstacles.
   std::vector<Vector3d> OccupiedPositions() const;
 
-  // Convert from/to VectorXd. Assume State is [x, y, z, vx, vy, vz]
+  // Convert from/to VectorXd. Assume State is [x, y, theta] or
+  // [x, y, theta, v].
   void FromVector(const VectorXd &x);
   VectorXd ToVector() const;
 
-  // Convert from/to ROS message. Assume State is [x, y, z, vx, vy, vz]
+  // Convert from/to ROS message. Assume State is [x, y, theta, v].
   // or configuration only.
   void FromRos(const fastrack_msgs::State::ConstPtr &msg);
   fastrack_msgs::State ToRos() const;
@@ -127,13 +128,13 @@ public:
   // NOTE! Sets v_ to default value.
   static PlanarDubins3D Sample();
 
-  // Compound assignment operators. Note that scaling only affects x/y position.
+  // Compound assignment operators.
   PlanarDubins3D& operator+=(const PlanarDubins3D& rhs);
   PlanarDubins3D& operator-=(const PlanarDubins3D& rhs);
   PlanarDubins3D& operator*=(double s);
   PlanarDubins3D& operator/=(double s);
 
-  // Binary operators. Note that scaling only affects x/y position.
+  // Binary operators.
   friend PlanarDubins3D operator+(PlanarDubins3D lhs,
                                     const PlanarDubins3D& rhs);
   friend PlanarDubins3D operator-(PlanarDubins3D lhs,
