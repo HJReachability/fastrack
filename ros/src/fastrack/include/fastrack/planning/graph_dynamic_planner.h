@@ -145,9 +145,12 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
                               double start_time, bool outbound,
                               const ros::Time& initial_call_time) const;
 
-  // Extract a trajectory from goal node to start node if one exists.
-  // Returns empty trajectory if none exists. Trajectory will begin at the
-  // specified time, and update 'traj_nodes_' and 'traj_node_times_'.
+  // Extract a trajectory from start node to goal node if one exists.
+  // Returns empty trajectory if none exists. If goal node is the home
+  // node, then will also include trajectories from the home node back
+  // to the start node to form a loop, i.e. start->home->start.
+  // Trajectory will begin at the specified time.
+  // NOTE: this function updates 'traj_nodes_' and 'traj_node_times_'.
   Trajectory<S> ExtractTrajectory(const typename Node::Ptr& start,
                                   const typename Node::Ptr& goal,
                                   double start_time) const;
@@ -222,7 +225,7 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::Plan(
     // Find which two nodes we are between.
     // NOTE: we will assume that the start time is strictly within the
     // time interval specified by the 'traj_node_times_'.
-    const auto& iter = std::upper_bound(traj_node_times_.begin(),
+    const auto& iter = std::lower_bound(traj_node_times_.begin(),
                                         traj_node_times_.end(), start_time);
     if (iter == traj_node_times_.end()) {
       throw std::runtime_error("Invalid start time: too late.");
@@ -258,8 +261,9 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::Plan(
     start_node = next_node;
   }
 
-  // Generate trajectory.
-  //  SearchableSet<Node, S> graph(start_node);
+  // Generate trajectory. This trajectory will originate from the start node and
+  // either terminate within the goal set OR at the start_node and pass through
+  // the home node.
   const SearchableSet<Node, S> goal_set(goal_node);
   const double plan_start_time =
       (traj_to_start_node) ? traj_to_start_node->LastTime() : start_time;
@@ -308,7 +312,7 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
         SubPlan(start_node->state, sample, start_node->time);
     if (sub_plan.Size() == 0) continue;
 
-    std::cout << "Found a subplan of length: " << sub_plan.Size() << std::endl;
+    // std::cout << "Found a subplan of length: " << sub_plan.Size() << std::endl;
 
     // Add to graph.
     typename Node::Ptr sample_node = Node::Create();
@@ -326,12 +330,12 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
     std::vector<typename Node::Ptr> neighboring_goals =
         goals.RadiusSearch(sample, search_radius_);
 
-    std::cout << "Found " << neighboring_goals.size() << " nearby goals."
-              << std::endl;
+    // std::cout << "Found " << neighboring_goals.size() << " nearby goals."
+    //           << std::endl;
 
     typename Node::Ptr child = nullptr;
     for (const auto& goal : neighboring_goals) {
-      std::cout << "Goal: " << goal->state.ToVector().transpose() << std::endl;
+      //      std::cout << "Goal: " << goal->state.ToVector().transpose() << std::endl;
 
       // Check if this is a viable node.
       if (!goal->is_viable) {
@@ -343,7 +347,7 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
         continue;
       }
 
-      std::cout << "Goal is viable." << std::endl;
+      //      std::cout << "Goal is viable." << std::endl;
 
       // Check if goal is in known free space.
       if (!this->env_.AreValid(goal->state.OccupiedPositions(), this->bound_)) {
@@ -352,15 +356,15 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
         continue;
       }
 
-      std::cout << "Goal is in known free space." << std::endl;
+      //      std::cout << "Goal is in known free space." << std::endl;
 
       // Try to connect.
       const Trajectory<S> sub_plan =
           SubPlan(sample, goal->state, sample_node->time);
       if (sub_plan.Size() == 0) continue;
 
-      std::cout << "Plan to goal is of length: " << sub_plan.Size()
-                << std::endl;
+      // std::cout << "Plan to goal is of length: " << sub_plan.Size()
+      //           << std::endl;
 
       // Upon success, set child to point to goal and update sample node to
       // include child node and corresponding trajectory.
@@ -385,7 +389,7 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
     }
 
     if (child == nullptr) {
-      std::cout << "Child was null, so we need a recursive call." << std::endl;
+      //      std::cout << "Child was null, so we need a recursive call." << std::endl;
 
       // (5) If outbound, make a recursive call. We can ignore the returned
       // trajectory since we'll generate one later once we're all done.
@@ -393,8 +397,8 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
         const Trajectory<S> ignore = RecursivePlan(
             sample_node, *home_set_, start_time, false, initial_call_time);
     } else {
-      std::cout << "Child was non-null, so we don't need a recursive call."
-                << std::endl;
+      //      std::cout << "Child was non-null, so we don't need a recursive call."
+      //                << std::endl;
       // Reached the goal. Update goal to ensure it always has the
       // best parent.
       if (child->best_parent == nullptr ||
@@ -406,12 +410,12 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
         // Will halt at the home node.
         const auto& home_node = home_set_->InitialNode();
 
-        std::cout << "Updating descendants." << std::endl;
+        //        std::cout << "Updating descendants." << std::endl;
         UpdateDescendants(sample_node, home_node);
       }
 
-      std::cout << "Updated goal to ensure it always has best parent."
-                << std::endl;
+      // std::cout << "Updated goal to ensure it always has best parent."
+      //           << std::endl;
 
       // Make sure all ancestors are viable.
       // NOTE! Worst parents are not going to get updated.
@@ -421,7 +425,7 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
         parent = parent->best_parent;
       }
 
-      std::cout << "Marked all ancestors as viable." << std::endl;
+      // std::cout << "Marked all ancestors as viable." << std::endl;
 
       // Extract trajectory. Always walk backward from the initial node of the
       // goal set to the start node. Be sure to set the correct start time.
@@ -436,8 +440,8 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
 
         return traj;
       } else {
-        std::cout << "Was not outbound. Returning empty trajectory."
-                  << std::endl;
+        // std::cout << "Was not outbound. Returning empty trajectory."
+        //           << std::endl;
         return Trajectory<S>();
       }
     }
@@ -457,11 +461,15 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
   }
 
   ROS_INFO("%s: Found a viable loop.", this->name_.c_str());
-  return ExtractTrajectory(home_node, home_node, start_time);
+  return ExtractTrajectory(start_node, home_node, start_time);
 }
 
-// Extract a trajectory from goal node to start node if one exists.
-// Returns empty trajectory if none exists.
+// Extract a trajectory from start node to goal node if one exists.
+// Returns empty trajectory if none exists. If goal node is the home
+// node, then will also include trajectories from the home node back
+// to the start node to form a loop, i.e. start->home->start.
+// Trajectory will begin at the specified time.
+// NOTE: this function updates 'traj_nodes_' and 'traj_node_times_'.
 template <typename S, typename E, typename D, typename SD, typename B,
           typename SB>
 Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory(
@@ -471,7 +479,7 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory(
   // and reset to include only the node/time preceding the start_time.
   // The node/time succeeding the start_time will be added later in this method.
   if (!traj_nodes_.empty()) {
-    const auto iter = std::upper_bound(traj_node_times_.begin(),
+    const auto iter = std::lower_bound(traj_node_times_.begin(),
                                        traj_node_times_.end(), start_time);
     if (iter == traj_node_times_.end()) {
       throw std::runtime_error("Invalid start time: too late.");
@@ -484,14 +492,15 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory(
     const size_t hi = std::distance(traj_node_times_.begin(), iter);
     const size_t lo = hi - 1;
 
-    const auto lo_node = traj_nodes_[lo];
+    const auto& lo_node = traj_nodes_[lo];
     const double lo_time = traj_node_times_[lo];
 
     traj_nodes_ = std::vector<typename Node::Ptr>({lo_node});
     traj_node_times_ = std::vector<double>({lo_time});
   }
 
-  // Accumulate trajectories and nodes in a list.
+  // Accumulate trajectories and nodes in a list. Use std::list because we
+  // will be populating from the back to the front.
   std::list<Trajectory<S>> trajs;
   std::list<typename Node::Ptr> nodes;
 
@@ -499,8 +508,45 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory(
             << start->state.ToVector().transpose() << " to "
             << goal->state.ToVector().transpose() << std::endl;
 
+  // If the goal is the home node, start off by walking backward from the
+  // start to the home node. Note that if the start is also the goal node,
+  // then this loop will do nothing and that case will be handled in the next
+  // loop below.
+  const auto& home_node = home_set_->InitialNode();
+  if (*goal == *home_node) {
+    std::cout << "Prepopulating trajectory from home to start." << std::endl;
+
+    auto node = start;
+    while (*node != *home_node) {
+      const auto& parent = node->best_parent;
+
+      if (parent == nullptr) {
+        ROS_ERROR_THROTTLE(1.0, "%s: Parent was null.", this->name_.c_str());
+        break;
+      }
+
+      // Find node as child of parent.
+      const auto& iter = parent->trajs_to_children.find(node);
+      if (iter == parent->trajs_to_children.end()) {
+        ROS_ERROR_THROTTLE(1.0, "%s: Parent/child inconsistency.",
+                           this->name_.c_str());
+      }
+
+      // Add to traj and node lists. Skip if last one to avoid duplication
+      // in next while loop.
+      if (*parent != *home_node) {
+        trajs.push_front(iter->second);
+        nodes.push_front(node);
+      }
+
+      // Update node to be its parent.
+      node = parent;
+    }
+  }
+
+  // Now walk from the goal backward toward the start.
   auto node = goal;
-  while (*node != *start || (*node == *start && trajs.empty())) {
+  while (*node != *start || trajs.empty()) {
     const auto& parent = node->best_parent;
 
     if (parent == nullptr) {
@@ -518,14 +564,21 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory(
                          this->name_.c_str());
     }
 
-    // Add to traj and node lists.
-    trajs.push_front(iter->second);
+    // Add to node list.
     nodes.push_front(node);
+    trajs.push_front(iter->second);
 
     // Update node to be its parent.
     node = parent;
     //    std::cout << "Trajs has length: " << trajs.size() << std::endl;
   }
+
+  // Add the start node to the list of nodes.
+  nodes.push_front(start);
+
+  std::cout << "Nodes: " << std::endl;
+  for (const auto& n : nodes)
+    std::cout << n->state.ToVector().transpose() << std::endl;
 
   // Add all nodes and corresponding times to traj_nodes and traj_node_times.
   double node_time = start_time;
@@ -539,6 +592,16 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory(
     trajs_iter++;
     nodes_iter++;
   }
+
+  if (nodes_iter == nodes.end()) {
+    throw std::runtime_error("Expecting one more node.");
+  }
+
+  traj_nodes_.push_back(*nodes_iter);
+  nodes_iter++;
+
+  if (nodes_iter != nodes.end())
+    throw std::runtime_error("Incorrect number of nodes.");
 
   // Concatenate into a single trajectory and set initial time.
   Trajectory<S> traj(trajs);
