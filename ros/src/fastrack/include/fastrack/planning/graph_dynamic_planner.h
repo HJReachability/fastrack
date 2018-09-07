@@ -84,9 +84,20 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
     return traj.Duration();
   }
 
-  // Member variables.
+  // Number of neighbors and radius to use for nearest neighbor searches.
   size_t num_neighbors_;
   double search_radius_;
+
+  // Backward-reachable set of the "home" state.
+  // This is the initial state of the planner which we assume is viable.
+  mutable std::unique_ptr<SearchableSet<Node, S>> home_set_;
+
+  // Parallel lists of nodes and times.
+  // These correspond to the most recently output trajectory and are used
+  // for quickly identifying query start states on the graph.
+  // NOTE: these times are absolute ROS times, not relative to 0.0.
+  std::vector<typename Node::Ptr> traj_nodes_;
+  std::vector<double> traj_node_times_;
 
   // Node in implicit planning graph, templated on state type.
   // NOTE! To avoid memory leaks, Nodes are constructed using a static
@@ -102,17 +113,16 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
     double cost_to_come = constants::kInfinity;
     bool is_viable = false;
     Node::Ptr best_parent = nullptr;
-    std::vector<Node::Ptr> children;
-    std::vector<Trajectory<S>> trajs_to_children;
+    std::unordered_map<Node::Ptr, Trajectory<S>> trajs_to_children;
 
     // Factory methods.
     static Node::Ptr Create() { return Node::Ptr(new Node()); }
     static Node::Ptr Create(
         const S& state, double time, double cost_to_come, bool is_viable,
-        const Node::Ptr& best_parent, const std::vector<Node::Ptr>& children,
-        const std::vector<Trajectory<S>>& trajs_to_children) {
+        const Node::Ptr& best_parent,
+        const std::unordered_map<Node::Ptr, Trajectory<S>>& trajs_to_children) {
       return Node::Ptr(new Node(state, time, cost_to_come, is_viable,
-                                best_parent, children, trajs_to_children));
+                                best_parent, trajs_to_children));
     }
 
     // Operators for equality checking.
@@ -121,23 +131,20 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
       return state.ToVector().isApprox(other.state.ToVector(), kSmallNumber);
     }
 
-    bool operator!=(const Node& other) const {
-      return !(*this == other);
-    }
+    bool operator!=(const Node& other) const { return !(*this == other); }
 
    private:
     explicit Node() {}
     explicit Node(const S& this_state, double this_time,
                   double this_cost_to_come, bool this_is_viable,
                   const Node::Ptr& this_best_parent,
-                  const std::vector<Node::Ptr>& this_children,
-                  const std::vector<Trajectory<S>>& this_trajs_to_children)
+                  const std::unordered_map<Node::Ptr, Trajectory<S>>&
+                      this_trajs_to_children)
         : state(this_state),
           time(this_time),
           cost_to_come(this_cost_to_come),
           is_viable(this_is_viable),
           best_parent(this_best_parent),
-          children(this_children),
           trajs_to_children(this_trajs_to_children) {}
   };  //\struct Node
 
@@ -146,15 +153,19 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
   // graph of explored states, a set of goal states, the start time,
   // whether or not this is an outbound or return trip, and whether
   // or not to extract a trajectory at the end (if not, returns an empty one.)
-  Trajectory<S> RecursivePlan(SearchableSet<Node, S>& graph,
+  Trajectory<S> RecursivePlan(const typename Node::Ptr& start,
                               const SearchableSet<Node, S>& goals,
-                              double start_time, bool outbound,
+                              bool outbound,
                               const ros::Time& initial_call_time) const;
 
   // Extract a trajectory from goal node to start node if one exists.
-  // Returns empty trajectory if none exists.
-  Trajectory<S> ExtractTrajectory(const typename Node::ConstPtr& start,
-                                  const typename Node::ConstPtr& goal) const;
+  // Returns empty trajectory if none exists. Trajectory will begin at the
+  // specified time, or at the start node's time if left unspecified.
+  // Optionally, updates 'traj_nodes_' and 'traj_node_times_'.
+  Trajectory<S> ExtractTrajectory(
+      const typename Node::ConstPtr& start, const typename Node::ConstPtr& goal,
+      double start_time = std::numeric_limits<double>::quiet_NaN(),
+      bool set_traj_nodes = false) const;
 
   // Update cost to come, time, and all traj_to_child times recursively.
   void UpdateDescendants(const typename Node::Ptr& node,
@@ -173,30 +184,104 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::Plan(
   // Keep track of initial time.
   const ros::Time initial_call_time = ros::Time::now();
 
-  // Set up start and goal nodes.
-  typename Node::Ptr start_node = Node::Create();
-  start_node->state = start;
-  start_node->time = start_time;
-  start_node->cost_to_come = 0.0;
-  start_node->is_viable = true;
-
+  // Set up goal node.
   typename Node::Ptr goal_node = Node::Create();
   goal_node->state = goal;
   goal_node->time = constants::kInfinity;
   goal_node->cost_to_come = constants::kInfinity;
   goal_node->is_viable = true;
 
+  // Set a start node as null. This will end up either being:
+  // (1) the home node, if we don't have one yet, OR
+  // (2) the node in traj_nodes immediately after the start_time.
+  typename Node::Ptr start_node;
+
+  // If we have a start node that is not the home node, we will also have
+  // a trajectory from the previous node to the start node that will have to
+  // be concatenated to the trajectory extracted from the graph.
+  std::unique_ptr<Trajectory<S>> traj_to_start_node;
+
+  // Check if we have a home_set. If not, create one from this start state.
+  // NOTE: assign home node a time of 0.0, since it will persist over multiple
+  // planning invocations.
+  // NOTE: if we don't yet have a home set, we also will not have a previous
+  // node trajectory.
+  if (!home_set_) {
+    typename Node::Ptr home_node = Node::Create();
+    home_node->state = start;
+    home_node->time = start_time;
+    home_node->cost_to_come = 0.0;
+    home_node->is_viable = true;
+    home_node->time = 0.0;
+
+    home_set_.reset(new SearchableSet<Node, S>(home_node));
+    start_node = home_node;
+  } else {
+    // We already have a home set, which means that we already have a node
+    // trajectory from which we can localize the query start state.
+    if (node_traj_.empty()) {
+      throw std::runtime_error(
+          "Home set exists, but node trajectory was empty.");
+    }
+
+    // Find which two nodes we are between.
+    // NOTE: we will assume that the start time is strictly within the
+    // time interval specified by the 'traj_node_times_'.
+    const auto iter = std::upper_bound(traj_node_times_.begin(),
+                                       traj_node_times_.end(), start_time);
+    if (iter == traj_node_times_.end()) {
+      throw std::runtime_error("Invalid start time: too late.");
+    }
+
+    if (iter == traj_node_times_.begin()) {
+      throw std::runtime_error("Invalid start time: too early.");
+    }
+
+    const size_t hi = std::distance(traj_node_times_.begin(), iter);
+    const size_t lo = hi - 1;
+
+    const auto& next_node = traj_nodes_[hi];
+    const auto& previous_node = traj_nodes_[lo];
+    const double previous_node_time = traj_node_times_[lo];
+
+    // Go ahead and extract the partial trajectory from previous to next node.
+    // This lives in the previous node.
+    const auto traj_iter = previous_node->trajs_to_children.find(next_node);
+    if (traj_iter == previous_node->trajs_to_children.end()) {
+      ROS_ERROR("%s: Inconsistency between parent and child.",
+                this->name_.c_str());
+    }
+
+    // NOTE: we don't have to truncate this trajectory because the interpolator
+    // in PlannerManager will take care of it for us!
+    // NOTE: ExtractTrajectory() will convert trajectories' relative times to
+    // absolute ROS times based on start_time.
+    traj_to_start_node.reset(new Trajectory<S>(traj_iter->second));
+    traj_to_start_node->ResetFirstTime(previous_node_time);
+
+    // Set start_node to next_node.
+    start_node = next_node;
+  }
+
   // Generate trajectory.
-  SearchableSet<Node, S> graph(start_node);
+  //  SearchableSet<Node, S> graph(start_node);
   const SearchableSet<Node, S> goal_set(goal_node);
-  const Trajectory<S> traj =
-      RecursivePlan(graph, goal_set, start_time, true, initial_call_time);
+  Trajectory<S> traj =
+      RecursivePlan(start_node, goal_set, true, initial_call_time);
 
   // Wait around if we finish early.
   const double elapsed_time = (ros::Time::now() - initial_call_time).toSec();
   if (elapsed_time < this->max_runtime_)
     ros::Duration(this->max_runtime_ - elapsed_time).sleep();
 
+  // If we have a trajectory from the start state to the start node, concatenate
+  // and make sure times are correct.
+  if (traj_to_start_node) {
+    traj.ResetFirstTime(traj_to_start_node->LastTime());
+    return Trajectory<S>(std::list<Trajectory<S>>({*traj_to_start_node, traj}));
+  }
+
+  traj.ResetFirstTime(start_time);
   return traj;
 }
 
@@ -205,60 +290,40 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::Plan(
 template <typename S, typename E, typename D, typename SD, typename B,
           typename SB>
 Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
-    SearchableSet<Node, S>& graph, const SearchableSet<Node, S>& goals,
-    double start_time, bool outbound,
-    const ros::Time& initial_call_time) const {
+    const typename Node::Ptr& start, const SearchableSet<Node, S>& goals,
+    bool outbound, const ros::Time& initial_call_time) const {
   // Loop until we run out of time.
   while ((ros::Time::now() - initial_call_time).toSec() < this->max_runtime_) {
     // (1) Sample a new point.
     const S sample = S::Sample();
+    std::cout << "sample: " << sample.ToVector().transpose() << std::endl;
 
-    // (2) Get k nearest neighbors.
-    const std::vector<typename Node::Ptr> neighbors =
-        graph.KnnSearch(sample, this->num_neighbors_);
+    // Reject this sample if it's too far from the start.
+    if ((sample.ToVector() - start_node->state.ToVector()).norm() >
+        search_radius_)
+      continue;
 
-    typename Node::Ptr sample_node = nullptr;
-    for (const auto& neighbor : neighbors) {
-      std::cout << "neighbor: " << neighbor->state.ToVector().transpose() << std::endl;
+    // (2) Plan a sub-path from the start to the sampled state.
+    const Trajectory<S> sub_plan =
+        SubPlan(start_node->state, sample, start_node->time);
+    if (sub_plan.Size() == 0) continue;
 
-      // Reject this neighbor if it's too close to the sample.
-      if ((neighbor->state.ToVector() - sample.ToVector()).norm() <
-          constants::kEpsilon)
-        continue;
+    std::cout << "Found a subplan of length: " << sub_plan.Size() << std::endl;
 
-      // (3) Plan a sub-path from this neighbor to sampled state.
-      const Trajectory<S> sub_plan =
-          SubPlan(neighbor->state, sample, neighbor->time);
+    // Add to graph.
+    sample_node = Node::Create();
+    sample_node->state = sample;
+    sample_node->time = parent->time + sub_plan.Duration();
+    sample_node->cost_to_come = parent->cost_to_come + Cost(sub_plan);
+    sample_node->is_viable = false;
+    sample_node->best_parent = start_node;
+    sample_node->children = {};
+    sample_node->trajs_to_children = {};
 
-      std::cout << "Found a subplan of length: " << sub_plan.Size() << std::endl;
+    // Update parent.
+    start_node->trajs_to_children.emplace(sample_node, sub_plan);
 
-      if (sub_plan.Size() > 0) {
-        typename Node::Ptr parent = neighbor;
-
-        // Add to graph.
-        sample_node = Node::Create();
-        sample_node->state = sample;
-        sample_node->time = parent->time + sub_plan.Duration();
-        sample_node->cost_to_come = parent->cost_to_come + Cost(sub_plan);
-        sample_node->is_viable = false;
-        sample_node->best_parent = parent;
-        sample_node->children = {};
-        sample_node->trajs_to_children = {};
-
-        // Update parent.
-        parent->children.push_back(sample_node);
-        parent->trajs_to_children.push_back(sub_plan);
-
-        break;
-      }
-    }
-
-    // Sample a new point if there was no good way to get here.
-    if (sample_node == nullptr) continue;
-
-    std::cout << "Found a path to the neighbor." << std::endl;
-
-    // (4) Connect to one of the k nearest goal states if possible.
+    // (3) Connect to one of the k nearest goal states if possible.
     std::vector<typename Node::Ptr> neighboring_goals =
         goals.RadiusSearch(sample, search_radius_);
 
@@ -293,43 +358,41 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
       // Try to connect.
       const Trajectory<S> sub_plan =
           SubPlan(sample, goal->state, sample_node->time);
+      if (sub_plan.Size() == 0) continue;
 
-      std::cout << "Plan to goal is of length: " << sub_plan.Size() << std::endl;
+      std::cout << "Plan to goal is of length: " << sub_plan.Size()
+                << std::endl;
 
       // Upon success, set child to point to goal and update sample node to
       // include child node and corresponding trajectory.
-      if (sub_plan.Size() > 0) {
-        // If somehow the planner returned a plan that does not terminate at the
-        // desired goal, then discard.
-        constexpr double kSmallNumber = 1e-8;
-        if (!sub_plan.LastState().ToVector().isApprox(goal->state.ToVector(), kSmallNumber)) {
-          ROS_ERROR_STREAM(
-              this->name_
-              << "Planner returned a trajectory with the wrong end state: "
-              << sub_plan.LastState().ToVector().transpose() << " vs. "
-              << goal->state.ToVector().transpose());
-          continue;
-        }
-
-        child = goal;
-
-        // Update sample node to point to child.
-        sample_node->children.push_back(child);
-        sample_node->trajs_to_children.push_back(sub_plan);
-
-        break;
+      // If somehow the planner returned a plan that does not terminate at the
+      // desired goal, then discard.
+      if (!sub_plan.LastState().ToVector().isApprox(goal->state.ToVector(),
+                                                    constants::kEpsilon)) {
+        ROS_ERROR_STREAM(
+            this->name_
+            << "Planner returned a trajectory with the wrong end state: "
+            << sub_plan.LastState().ToVector().transpose() << " vs. "
+            << goal->state.ToVector().transpose());
+        continue;
       }
+
+      // Set child to goal, since we have a valid trajectory to get there.
+      child = goal;
+
+      // Update sample node to point to child.
+      sample_node->trajs_to_children.emplace(child, sub_plan);
+      break;
     }
 
     if (child == nullptr) {
       std::cout << "Child was null, so we need a recursive call." << std::endl;
 
-
       // (5) If outbound, make a recursive call. We can ignore the returned
       // trajectory since we'll generate one later once we're all done.
       if (outbound)
-        const Trajectory<S> ignore = RecursivePlan(
-            graph, graph, sample_node->time, false, initial_call_time);
+        const Trajectory<S> ignore =
+            RecursivePlan(sample_node, *home_set_, false, initial_call_time);
     } else {
       std::cout << "Child was non-null, so we don't need a recursive call."
                 << std::endl;
@@ -341,17 +404,15 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
         child->best_parent = sample_node;
 
         // Breath first search to update time / cost to come.
-        // Will halt at the start node, which must be set carefully depending
-        // upon whether we are going outbound (away from the start) or not
-        // (toward the start).
-        const auto& start_node =
-            (outbound) ? graph.InitialNode() : goals.InitialNode();
+        // Will halt at the home node.
+        const auto& home_node = home_set_->InitialNode();
 
         std::cout << "Updating descendants." << std::endl;
-        UpdateDescendants(sample_node, start_node);
+        UpdateDescendants(sample_node, home_node);
       }
 
-      std::cout << "Updated goal to ensure it always has best parent." << std::endl;
+      std::cout << "Updated goal to ensure it always has best parent."
+                << std::endl;
 
       // Make sure all ancestors are viable.
       // NOTE! Worst parents are not going to get updated.
@@ -368,8 +429,7 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
       // Else, return a dummy trajectory since it will be ignored anyway.
       if (outbound) {
         std::cout << "About to extract trajectory." << std::endl;
-        const auto traj =
-            ExtractTrajectory(graph.InitialNode(), goals.InitialNode());
+        const auto traj = ExtractTrajectory(start_node, goals.InitialNode());
         std::cout << "Extracted trajectory of outbound call, length: "
                   << traj.Size() << std::endl;
 
@@ -389,14 +449,14 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
   if (!outbound) return Trajectory<S>();
 
   // Return a viable loop if we found one.
-  const typename Node::ConstPtr start = graph.InitialNode();
-  if (start->best_parent == nullptr) {
+  const typename Node::ConstPtr home_node = home_set_->InitialNode();
+  if (home_node_->best_parent == nullptr) {
     ROS_ERROR("%s: No viable loops available.", this->name_.c_str());
     return Trajectory<S>();
   }
 
   ROS_INFO("%s: Found a viable loop.", this->name_.c_str());
-  return ExtractTrajectory(start, start);
+  return ExtractTrajectory(home_node, home_node);
 }
 
 // Extract a trajectory from goal node to start node if one exists.
@@ -404,8 +464,8 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
 template <typename S, typename E, typename D, typename SD, typename B,
           typename SB>
 Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory(
-    const typename Node::ConstPtr& start,
-    const typename Node::ConstPtr& goal) const {
+    const typename Node::ConstPtr& start, const typename Node::ConstPtr& goal,
+    double start_time, bool set_traj_nodes) const {
   // Accumulate trajectories in a list.
   std::list<Trajectory<S>> trajs;
 
@@ -420,7 +480,8 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory(
 
   //   const auto goal_grandparent = goal_parent->best_parent;
   //   if (goal_grandparent) {
-  //     std::cout << "Goal grandparent: " << goal_grandparent->state.ToVector().transpose()
+  //     std::cout << "Goal grandparent: " <<
+  //     goal_grandparent->state.ToVector().transpose()
   //               << std::endl;
   //   } else {
   //     std::cout << "Goal has no grandparent." << std::endl;
@@ -438,23 +499,19 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory(
       break;
     }
 
-    //    std::cout << "Parent is: " << parent->state.ToVector().transpose() << std::endl;
+    //    std::cout << "Parent is: " << parent->state.ToVector().transpose() <<
+    //    std::endl;
 
     // Find node as child of parent.
-    // NOTE! Could avoid this by replacing parallel std::vectors
-    //       an std::unordered_map.
-    for (size_t ii = 0; ii < parent->children.size(); ii++) {
-      if (*parent->children[ii] == *node) {
-        trajs.push_front(parent->trajs_to_children[ii]);
-        break;
-      }
-
-      if (ii == parent->children.size() - 1)
-        ROS_ERROR_THROTTLE(1.0, "%s: Parent/child inconsistency.",
-                           this->name_.c_str());
+    const auto iter = parent->trajs_to_children.find(node);
+    if (iter == parent->trajs_to_children.end()) {
+      ROS_ERROR_THROTTLE(1.0, "%s: Parent/child inconsistency.",
+                         this->name_.c_str());
     }
 
-    // Update node to be it's parent.
+    trajs.push_front(iter->second);
+
+    // Update node to be its parent.
     node = parent;
     //    std::cout << "Trajs has length: " << trajs.size() << std::endl;
   }
@@ -474,9 +531,9 @@ bool GraphDynamicPlanner<S, E, D, SD, B, SB>::LoadParameters(
 
   // Search parameters.
   int k;
-  if (!nl.getParam("search_radius", this->search_radius_)) return false;
+  if (!nl.getParam("search_radius", search_radius_)) return false;
   if (!nl.getParam("num_neighbors", k)) return false;
-  this->num_neighbors_ = static_cast<size_t>(k);
+  num_neighbors_ = static_cast<size_t>(k);
 
   return true;
 }

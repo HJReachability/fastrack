@@ -136,7 +136,7 @@ Trajectory<S>::Trajectory(const std::list< Trajectory<S> >& trajs)
   // Check to make sure time is monotonic increasing.
   for (size_t ii = 1; ii < times_.size(); ii++) {
     if (times_[ii - 1] > times_[ii])
-      throw std::runtime_error("Time was not strictly monotone.");
+      throw std::runtime_error("Time was not monotone.");
   }
 }
 
