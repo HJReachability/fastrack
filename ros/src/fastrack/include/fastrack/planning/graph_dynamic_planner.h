@@ -369,7 +369,7 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
       // Upon success, set child to point to goal and update sample node to
       // include child node and corresponding trajectory.
       // If somehow the planner returned a plan that does not terminate at the
-      // desired goal, then discard.
+      // desired goal, or begin at the desired start, then discard.
       if (!sub_plan.LastState().ToVector().isApprox(goal->state.ToVector(),
                                                     constants::kEpsilon)) {
         ROS_ERROR_STREAM(
@@ -377,6 +377,16 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
             << "Planner returned a trajectory with the wrong end state: "
             << sub_plan.LastState().ToVector().transpose() << " vs. "
             << goal->state.ToVector().transpose());
+        continue;
+      }
+
+      if (!sub_plan.FirstState().ToVector().isApprox(sample.ToVector(),
+                                                     constants::kEpsilon)) {
+        ROS_ERROR_STREAM(
+            this->name_
+            << "Planner returned a trajectory with the wrong start state: "
+            << sub_plan.FirstState().ToVector().transpose() << " vs. "
+            << sample.ToVector().transpose());
         continue;
       }
 

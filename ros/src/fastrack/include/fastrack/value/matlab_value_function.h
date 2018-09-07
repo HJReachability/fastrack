@@ -208,7 +208,6 @@ double MatlabValueFunction<TS, TC, TD, PS, PC, PD, RS, RD, B>::Priority(
 
   // HACK! If value is too high, just use LQR instead.
   if (value > priority_upper_) return 0.0;
-
   return (value - priority_lower_) / (priority_upper_ - priority_lower_);
 }
 
