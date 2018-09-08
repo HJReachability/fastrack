@@ -387,8 +387,6 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
       sample_node->is_viable = true;
 
       // Add this guy to 'nodes_to_visit_'.
-      std::cout << "adding sampel node to nodes to visit: "
-                << sample_node->state.ToVector().transpose() << std::endl;
       nodes_to_visit_.emplace(sample_node);
       break;
     }
@@ -424,15 +422,6 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
 
         sample_node->best_home_child = child;
 
-        // std::cout << "Connecting sample "
-        //           << sample_node->state.ToVector().transpose() << " to child "
-        //           << child->state.ToVector().transpose()
-        //           << " and child cost to home is " << child->cost_to_home
-        //           << " with cost of traj "
-        //           << Cost(sample_node->trajs_to_children.at(child))
-        //           << " and sample cost to home is " << sample_node->cost_to_home
-        //           << std::endl;
-
         // Propagate backward to all ancestors.
         UpdateAncestorsOnHome(sample_node);
       }
@@ -463,7 +452,11 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
   }
 
   ROS_INFO("%s: Found a viable loop.", this->name_.c_str());
-  return ExtractTrajectory();
+  const auto traj = ExtractTrajectory();
+
+  std::cout << "Traj initial time - now: "
+            << traj.FirstTime() - ros::Time::now().toSec() << std::endl;
+  return traj;
 }
 
 // Extract a trajectory including the given start time, which either
@@ -524,7 +517,7 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory()
     // Extract nodes and times.
     const auto& previous_node = traj_nodes_[lo];
     start_node = traj_nodes_[hi];
-    const double first_traj_time = traj_node_times_[lo];
+    first_traj_time = traj_node_times_[lo];
 
     // Extract trajectory from previous node to start node and ensure
     // that it begins at the right time.
@@ -561,10 +554,6 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory()
       nodes.push_back(node->best_home_child);
     }
 
-    std::cout << "Start to home: " << std::endl;
-    for (const auto& n : nodes)
-      std::cout << n->state.ToVector().transpose() << std::endl;
-
     // (2) Pick a random node from 'nodes_to_visit_'.
     // NOTE: we're storing these in a hash table, therefore the first element
     // will be a uniform random draw from the set (if the hash is a good one).
@@ -577,15 +566,8 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory()
                this->name_.c_str());
       ROS_WARN("%s: Returning home.", this->name_.c_str());
     } else {
-      std::cout << "Nodes to visit:" << std::endl;
-      for (const auto& n : nodes_to_visit_) {
-        std::cout << n->state.ToVector().transpose() << std::endl;
-      }
-
       auto iter = nodes_to_visit_.begin();
       auto random_new_node = *iter;
-
-      std::cout << "Random new node: " << random_new_node->state.ToVector().transpose() << std::endl;
       nodes_to_visit_.erase(iter);
 
       // (3) Backtrack from that node all the way home via best parent.
@@ -601,17 +583,6 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory()
       // Append these nodes and trajs to the main lists.
       trajs.insert(trajs.end(), backward_trajs.begin(), backward_trajs.end());
       nodes.insert(nodes.end(), backward_nodes.begin(), backward_nodes.end());
-
-      std::cout << "Start to home to random: " << std::endl;
-      for (const auto& n : nodes)
-        std::cout << n->state.ToVector().transpose() << std::endl;
-
-      std::cout << "Random new node: " << random_new_node->state.ToVector().transpose() << std::endl;
-      std::cout << "Random new node cost to home: " << random_new_node->cost_to_home << std::endl;
-      std::cout << "Random new node cost to come: " << random_new_node->cost_to_come << std::endl;
-      std::cout << "Random new node cost to goal: " << random_new_node->cost_to_goal << std::endl;
-      std::cout << "Random new node is visited: " << random_new_node->is_visited << std::endl;
-      std::cout << "Home node is visited: " << home_set_->InitialNode()->is_visited << std::endl;
 
       // (4) From that node, follow best home child all the way home.
       for (auto node = random_new_node; node->cost_to_home > 0.0;
