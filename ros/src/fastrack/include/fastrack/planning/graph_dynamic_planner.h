@@ -57,6 +57,34 @@
 namespace fastrack {
 namespace planning {
 
+namespace {
+// Return false if the given trajectory does not start/end at the specified
+// states.
+template <typename S>
+static bool CheckTrajectoryEndpoints(const Trajectory<S>& traj, const S& start,
+                                     const S& end) {
+  if (!traj.FirstState().ToVector().isApprox(start.ToVector(),
+                                             constants::kEpsilon)) {
+    ROS_ERROR_STREAM(
+        "Planner returned a trajectory with the wrong start state: "
+        << traj.FirstState().ToVector().transpose() << " vs. "
+        << start.ToVector().transpose());
+    return false;
+  }
+
+  if (!traj.LastState().ToVector().isApprox(end.ToVector(),
+                                            constants::kEpsilon)) {
+    ROS_ERROR_STREAM("Planner returned a trajectory with the wrong end state: "
+                     << traj.LastState().ToVector().transpose() << " vs. "
+                     << end.ToVector().transpose());
+    return false;
+  }
+
+  return true;
+}
+
+}  //\namespace
+
 using dynamics::Dynamics;
 
 template <typename S, typename E, typename D, typename SD, typename B,
@@ -98,19 +126,17 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
     S state;
     double time = constants::kInfinity;
     double cost_to_come = constants::kInfinity;
+    double cost_to_home = constants::kInfinity;
+    double cost_to_goal = constants::kInfinity;
     bool is_viable = false;
     Node::Ptr best_parent = nullptr;
+    Node::Ptr best_home_child = nullptr;
+    Node::Ptr best_goal_child = nullptr;
+    std::vector<Node::Ptr> parents;
     std::unordered_map<Node::Ptr, Trajectory<S>> trajs_to_children;
 
     // Factory methods.
     static Node::Ptr Create() { return Node::Ptr(new Node()); }
-    static Node::Ptr Create(
-        const S& state, double time, double cost_to_come, bool is_viable,
-        const Node::Ptr& best_parent,
-        const std::unordered_map<Node::Ptr, Trajectory<S>>& trajs_to_children) {
-      return Node::Ptr(new Node(state, time, cost_to_come, is_viable,
-                                best_parent, trajs_to_children));
-    }
 
     // Operators for equality checking.
     bool operator==(const Node& other) const {
@@ -121,18 +147,7 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
     bool operator!=(const Node& other) const { return !(*this == other); }
 
    private:
-    explicit Node() {}
-    explicit Node(const S& this_state, double this_time,
-                  double this_cost_to_come, bool this_is_viable,
-                  const Node::Ptr& this_best_parent,
-                  const std::unordered_map<Node::Ptr, Trajectory<S>>&
-                      this_trajs_to_children)
-        : state(this_state),
-          time(this_time),
-          cost_to_come(this_cost_to_come),
-          is_viable(this_is_viable),
-          best_parent(this_best_parent),
-          trajs_to_children(this_trajs_to_children) {}
+    Node() {}
   };  //\struct Node
 
   // Recursive version of Plan() that plans outbound and return trajectories.
@@ -155,9 +170,21 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
                                   const typename Node::Ptr& goal,
                                   double start_time) const;
 
-  // Update cost to come, time, and all traj_to_child times recursively.
-  void UpdateDescendants(const typename Node::Ptr& node,
-                         const typename Node::ConstPtr& start) const;
+  // Update cost to come, best parent, time, and all traj_to_child times
+  // recursively.
+  // NOTE: this will never get into an infinite loop because eventually
+  // every node will know its best option and reject further updates.
+  void UpdateDescendants(const typename Node::Ptr& node) const;
+
+  // Update cost to home and best home child recursively.
+  // NOTE: this will never get into an infinite loop because eventually
+  // every node will know its best option and reject further updates.
+  void UpdateAncestorsCostToHome(const typename Node::Ptr& node) const;
+
+  // Update cost to goal and best goal child recursively.
+  // NOTE: this will never get into an infinite loop because eventually
+  // every node will know its best option and reject further updates.
+  void UpdateAncestorsCostToGoal(const typename Node::Ptr& node) const;
 
   // Number of neighbors and radius to use for nearest neighbor searches.
   size_t num_neighbors_;
@@ -191,6 +218,8 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::Plan(
   goal_node->state = goal;
   goal_node->time = constants::kInfinity;
   goal_node->cost_to_come = constants::kInfinity;
+  goal_node->cost_to_home = constants::kInfinity;
+  goal_node->cost_to_goal = 0.0;
   goal_node->is_viable = true;
 
   // Set a start node as null. This will end up either being:
@@ -213,6 +242,8 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::Plan(
     home_node->state = start;
     home_node->time = start_time;
     home_node->cost_to_come = 0.0;
+    home_node->cost_to_home = 0.0;
+    home_node->cost_to_goal = constants::kInfinity;
     home_node->is_viable = true;
     home_node->time = 0.0;
 
@@ -298,46 +329,69 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
     const S sample = S::Sample();
     //    std::cout << "sample: " << sample.ToVector().transpose() << std::endl;
 
-    // Reject this sample if it's too far from the start.
-    if ((sample.ToVector() - start_node->state.ToVector()).norm() >
-        search_radius_)
-      continue;
-
     // Reject this sample if it's not in known free space.
     if (!this->env_.AreValid(sample.OccupiedPositions(), this->bound_))
       continue;
 
-    // (2) Plan a sub-path from the start to the sampled state.
-    const Trajectory<S> sub_plan =
-        SubPlan(start_node->state, sample, start_node->time);
-    if (sub_plan.Size() == 0) continue;
+    // Check the home set for nearest neighbors and connect.
+    std::vector<typename Node::Ptr> home_set_neighbors =
+        home_set_->KnnSearch(sample, num_neighbors_);
 
-    // std::cout << "Found a subplan of length: " << sub_plan.Size() << std::endl;
+    typename Node::Ptr parent = nullptr;
+    typename Node::Ptr sample_node = nullptr;
+    for (const auto& neighboring_parent : home_set_neighbors) {
+      // (2) Plan a sub-path from the start to the sampled state.
+      const Trajectory<S> sub_plan =
+          SubPlan(neighboring_parent->state, sample, start_node->time);
+      if (sub_plan.Size() == 0) continue;
 
-    // Add to graph.
-    typename Node::Ptr sample_node = Node::Create();
-    sample_node->state = sample;
-    sample_node->time = start_node->time + sub_plan.Duration();
-    sample_node->cost_to_come = start_node->cost_to_come + Cost(sub_plan);
-    sample_node->is_viable = false;
-    sample_node->best_parent = start_node;
-    sample_node->trajs_to_children = {};
+      // If somehow the planner returned a plan that does not terminate at the
+      // desired goal, or begin at the desired start, then discard.
+      if (!CheckTrajectoryEndpoints(sub_plan, neighboring_parent->state,
+                                    sample))
+        continue;
 
-    // Update parent.
-    start_node->trajs_to_children.emplace(sample_node, sub_plan);
+      // std::cout << "Found a subplan of length: " << sub_plan.Size() <<
+      // std::endl;
+
+      // Add to graph.
+      sample_node = Node::Create();
+      sample_node->state = sample;
+      sample_node->time = neighboring_parent->time + sub_plan.Duration();
+      sample_node->cost_to_come =
+          neighboring_parent->cost_to_come + Cost(sub_plan);
+      sample_node->cost_to_home = constants::kInfinity;
+      sample_node->is_viable = false;
+      sample_node->best_parent = neighboring_parent;
+      sample_node->best_home_child = nullptr;
+      sample_node->parents = {neighboring_parent};
+      sample_node->trajs_to_children = {};
+
+      // Update parent.
+      neighboring_parent->trajs_to_children.emplace(sample_node, sub_plan);
+
+      // Set parent to neighboring parent and get of here.
+      parent = neighboring_parent;
+      break;
+    }
+
+    // Skip this sample if we didn't find a parent.
+    if (!parent) continue;
+
+    // Sample node had better not be null.
+    if (!sample_node) {
+      throw std::runtime_error("Sample node was null.");
+    }
 
     // (3) Connect to one of the k nearest goal states if possible.
     std::vector<typename Node::Ptr> neighboring_goals =
-        goals.RadiusSearch(sample, search_radius_);
-
-    // std::cout << "Found " << neighboring_goals.size() << " nearby goals."
-    //           << std::endl;
+        goals.KnnSearch(sample, num_neighbors_);
 
     typename Node::Ptr child = nullptr;
     for (const auto& goal : neighboring_goals) {
-      //      std::cout << "Goal: " << goal->state.ToVector().transpose() << std::endl;
-
       // Check if this is a viable node.
+      // NOTE: inbound recursive calls may encounter nodes which are goals (i.e.
+      // in the home set) but NOT viable yet.
       if (!goal->is_viable) {
         if (outbound) {
           ROS_ERROR_THROTTLE(1.0, "%s: Goal was not viable on outbound call.",
@@ -347,8 +401,6 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
         continue;
       }
 
-      //      std::cout << "Goal is viable." << std::endl;
-
       // Check if goal is in known free space.
       if (!this->env_.AreValid(goal->state.OccupiedPositions(), this->bound_)) {
         ROS_INFO_THROTTLE(1.0, "%s: Goal was not in known free space.",
@@ -356,102 +408,69 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
         continue;
       }
 
-      //      std::cout << "Goal is in known free space." << std::endl;
-
       // Try to connect.
       const Trajectory<S> sub_plan =
           SubPlan(sample, goal->state, sample_node->time);
       if (sub_plan.Size() == 0) continue;
 
-      // std::cout << "Plan to goal is of length: " << sub_plan.Size()
-      //           << std::endl;
-
       // Upon success, set child to point to goal and update sample node to
       // include child node and corresponding trajectory.
       // If somehow the planner returned a plan that does not terminate at the
       // desired goal, or begin at the desired start, then discard.
-      if (!sub_plan.LastState().ToVector().isApprox(goal->state.ToVector(),
-                                                    constants::kEpsilon)) {
-        ROS_ERROR_STREAM(
-            this->name_
-            << "Planner returned a trajectory with the wrong end state: "
-            << sub_plan.LastState().ToVector().transpose() << " vs. "
-            << goal->state.ToVector().transpose());
+      if (!CheckTrajectoryEndpoints(sub_plan, sample_node->state, goal->state))
         continue;
-      }
-
-      if (!sub_plan.FirstState().ToVector().isApprox(sample.ToVector(),
-                                                     constants::kEpsilon)) {
-        ROS_ERROR_STREAM(
-            this->name_
-            << "Planner returned a trajectory with the wrong start state: "
-            << sub_plan.FirstState().ToVector().transpose() << " vs. "
-            << sample.ToVector().transpose());
-        continue;
-      }
 
       // Set child to goal, since we have a valid trajectory to get there.
       child = goal;
 
+      // Add ourselves as a parent of the goal.
+      goal->parents.push_back(sample_node);
+
       // Update sample node to point to child.
       sample_node->trajs_to_children.emplace(child, sub_plan);
+      sample_node->is_viable = true;
       break;
     }
 
     if (child == nullptr) {
-      //      std::cout << "Child was null, so we need a recursive call." << std::endl;
-
       // (5) If outbound, make a recursive call. We can ignore the returned
       // trajectory since we'll generate one later once we're all done.
-      if (outbound)
+      if (outbound) {
         const Trajectory<S> ignore = RecursivePlan(
             sample_node, *home_set_, start_time, false, initial_call_time);
+      }
     } else {
-      //      std::cout << "Child was non-null, so we don't need a recursive call."
-      //                << std::endl;
-      // Reached the goal. Update goal to ensure it always has the
-      // best parent.
-      if (child->best_parent == nullptr ||
-          child->best_parent->cost_to_come > sample_node->cost_to_come) {
-        // I'm yo daddy.
-        child->best_parent = sample_node;
+      // Reached the goal. This means that 'sample_node' now has exactly one
+      // viable child. We need to update all sample node's descendants to
+      // reflect the potential change in best parent of sample_node's child.
+      // Also, sample node is now viable, so mark all ancestors as viable.
+      UpdateDescendants(sample_node);
 
-        // Breath first search to update time / cost to come.
-        // Will halt at the home node.
-        const auto& home_node = home_set_->InitialNode();
+      if (outbound) {
+        // Update sample node's cost to goal.
+        sample_node->cost_to_goal =
+            sample_node->cost_to_come +
+            Cost(sample_node->trajs_to_children.at(child));
 
-        //        std::cout << "Updating descendants." << std::endl;
-        UpdateDescendants(sample_node, home_node);
+        // Propagate backward to all ancestors.
+        UpdateAncestorsCostToGoal(sample_node);
+      } else {
+        // Update sample node's cost to home.
+        sample_node->cost_to_home =
+            sample_node->cost_to_come +
+            Cost(sample_node->trajs_to_children.at(child));
+
+        // Propagate backward to all ancestors.
+        UpdateAncestorsCostToHome(sample_node);
       }
-
-      // std::cout << "Updated goal to ensure it always has best parent."
-      //           << std::endl;
-
-      // Make sure all ancestors are viable.
-      // NOTE! Worst parents are not going to get updated.
-      typename Node::Ptr parent = sample_node;
-      while (parent != nullptr && !parent->is_viable) {
-        parent->is_viable = true;
-        parent = parent->best_parent;
-      }
-
-      // std::cout << "Marked all ancestors as viable." << std::endl;
 
       // Extract trajectory. Always walk backward from the initial node of the
       // goal set to the start node. Be sure to set the correct start time.
       // NOTE: this will automatically set traj_nodes and traj_node_times.
       // Else, return a dummy trajectory since it will be ignored anyway.
       if (outbound) {
-        std::cout << "About to extract trajectory." << std::endl;
-        const auto traj =
-            ExtractTrajectory(start_node, goals.InitialNode(), start_time);
-        std::cout << "Extracted trajectory of outbound call, length: "
-                  << traj.Size() << std::endl;
-
-        return traj;
+        return ExtractTrajectory(start_node, goals.InitialNode(), start_time);
       } else {
-        // std::cout << "Was not outbound. Returning empty trajectory."
-        //           << std::endl;
         return Trajectory<S>();
       }
     }
@@ -465,7 +484,7 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
 
   // Return a viable loop if we found one.
   const typename Node::Ptr home_node = home_set_->InitialNode();
-  if (home_node->best_parent == nullptr) {
+  if (home_node->parents.empty()) {
     ROS_ERROR("%s: No viable loops available.", this->name_.c_str());
     return Trajectory<S>();
   }
@@ -637,12 +656,120 @@ bool GraphDynamicPlanner<S, E, D, SD, B, SB>::LoadParameters(
   return true;
 }
 
-// Update cost to come, time, and all traj_to_child times recursively.
+// Update cost to come, best parent, time, and all traj_to_child times
+// recursively.
+// NOTE: this will never get into an infinite loop because eventually
+// every node will know its best option and reject further updates.
 template <typename S, typename E, typename D, typename SD, typename B,
           typename SB>
 void GraphDynamicPlanner<S, E, D, SD, B, SB>::UpdateDescendants(
-    const typename Node::Ptr& node,
-    const typename Node::ConstPtr& start) const {
+    const typename Node::Ptr& node) const {
+  // Run breadth-first search.
+  // Initialize a queue with 'node' inside.
+  std::list<typename Node::Ptr> queue = {node};
+
+  // Extract home node reference.
+  const auto& home_node = home_set_->InitialNode();
+
+  while (queue.size() > 0) {
+    // Pop oldest node.
+    const typename Node::Ptr current_node = queue.front();
+    queue.pop_front();
+
+    // Loop over all children and add to queue if this node is their
+    // NEW best parent.
+    for (auto& child_traj_pair : current_node->trajs_to_children) {
+      auto& child = child_traj_pair.first;
+      auto& traj_to_child = child_traj_pair.second;
+
+      // Update trajectory to child.
+      traj_to_child.ResetFirstTime(current_node->time);
+
+      // Maybe update child's best parent to be the current node.
+      // If so, also update time and cost to come.
+      // NOTE: if child's cost to come is infinite, it is DEFINTELY a goal.
+      // Everybody else will already have a best parent, except home.
+      bool new_best_parent = std::isinf(child->cost_to_come);
+      const double our_cost_to_child = Cost(traj_to_child);
+
+      if (!new_best_parent) {
+        if (child->cost_to_come >
+            current_node->cost_to_come + our_cost_to_child)
+          new_best_parent = true;
+      }
+
+      if (new_best_parent) {
+        child->best_parent = current_node;
+        child->time = current_node->time + traj_to_child.Duration();
+        child->cost_to_come = current_node->cost_to_come + our_cost_to_child;
+
+        // Push child onto the queue.
+        queue.push_back(child);
+      }
+    }
+  }
+}
+
+// Update cost to home and best home child recursively.
+// NOTE: this will never get into an infinite loop because eventually
+// every node will know its best option and reject further updates.
+template <typename S, typename E, typename D, typename SD, typename B,
+          typename SB>
+void GraphDynamicPlanner<S, E, D, SD, B, SB>::UpdateAncestorsCostToHome(
+    const typename Node::Ptr& node) const {
+  // Run breadth-first search.
+  // Initialize a queue with 'node' inside.
+  std::list<typename Node::Ptr> queue = {node};
+
+  // Extract home node reference.
+  const auto& home_node = home_set_->InitialNode();
+
+  while (queue.size() > 0) {
+    // Pop oldest node.
+    const typename Node::Ptr current_node = queue.front();
+    queue.pop_front();
+
+    // Loop over all parents and add to queue if this node is their
+    // NEW best home child.
+    for (auto& parent : current_node->parents) {
+      // Parent is DEFINITELY viable.
+      parent->is_viable = true;
+
+      // Extract trajectory from parent to this node.
+      auto& traj_from_parent = parent->trajs_to_children.at(current_node);
+
+      // Maybe update parent's best home child to be the current node.
+      // If so, also update its viability and cost to home.
+      // NOTE: if parent's cost to home is infinite, we are definitely its best
+      // (and only) option as best home child.
+      bool new_best_home_child = std::isinf(parent->cost_to_home);
+      const double our_cost_from_parent = Cost(traj_from_parent);
+
+      if (!new_best_home_child) {
+        if (parent->cost_to_home >
+            current_node->cost_to_home + our_cost_from_parent)
+          new_best_home_child = true;
+      }
+
+      if (new_best_home_child) {
+        parent->best_home_child = current_node;
+        parent->cost_to_home =
+            current_node->cost_to_home + our_cost_from_parent;
+
+        // Push child onto the queue.
+        queue.push_back(parent);
+      }
+    }
+  }
+}
+
+// Update cost to goal and best goal child recursively.
+// NOTE: this will never get into an infinite loop because eventually
+// every node will know its best option and reject further updates.
+template <typename S, typename E, typename D, typename SD, typename B,
+          typename SB>
+void GraphDynamicPlanner<S, E, D, SD, B, SB>::UpdateAncestorsCostToGoal(
+    const typename Node::Ptr& node) const {
   // Run breadth-first search.
   // Initialize a queue with 'node' inside.
   std::list<typename Node::Ptr> queue = {node};
@@ -652,29 +779,35 @@ void GraphDynamicPlanner<S, E, D, SD, B, SB>::UpdateDescendants(
     const typename Node::Ptr current_node = queue.front();
     queue.pop_front();
 
-    // Skip this one if it's the start node.
-    if (current_node == start) continue;
+    // Loop over all parents and add to queue if this node is their
+    // NEW best goal child.
+    for (auto& parent : current_node->parents) {
+      // Parent is DEFINITELY viable.
+      parent->is_viable = true;
 
-    for (auto& child_traj_pair : current_node->trajs_to_children) {
-      auto& child = child_traj_pair.first;
-      auto& traj_to_child = child_traj_pair.second;
+      // Extract trajectory from parent to this node.
+      auto& traj_from_parent = parent->trajs_to_children.at(current_node);
 
-      // Push child onto the queue.
-      queue.push_back(child);
+      // Maybe update parent's best goal child to be the current node.
+      // If so, also update its viability and cost to goal.
+      // NOTE: if parent's cost to goal is infinite, we are definitely its best
+      // (and only) option as best goal child.
+      bool new_best_goal_child = std::isinf(parent->cost_to_goal);
+      const double our_cost_from_parent = Cost(traj_from_parent);
 
-      // Update trajectory to child.
-      // NOTE! This could be removed since trajectory timing is adjusted
-      //       again upon concatenation and extraction.
-      traj_to_child.ResetFirstTime(current_node->time);
+      if (!new_best_goal_child) {
+        if (parent->cost_to_goal >
+            current_node->cost_to_goal + our_cost_from_parent)
+          new_best_goal_child = true;
+      }
 
-      // Maybe update child's best parent to be the current node.
-      // If so, also update time and cost to come.
-      if (child->best_parent != nullptr ||
-          child->best_parent->cost_to_come > current_node->cost_to_come) {
-        child->best_parent = current_node;
+      if (new_best_goal_child) {
+        parent->best_goal_child = current_node;
+        parent->cost_to_goal =
+            current_node->cost_to_goal + our_cost_from_parent;
 
-        child->time = current_node->time + traj_to_child.Duration();
-        child->cost_to_come = current_node->cost_to_come + Cost(traj_to_child);
+        // Push child onto the queue.
+        queue.push_back(parent);
       }
     }
   }
