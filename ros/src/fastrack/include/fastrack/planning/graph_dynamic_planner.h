@@ -84,6 +84,43 @@ static bool CheckTrajectoryEndpoints(const Trajectory<S>& traj, const S& start,
   return true;
 }
 
+// Colormap class. Keeps track of earliest and latest time stamps and provides
+// a functor for mapping time to color.
+class Colormap {
+ public:
+  ~Colormap() {}
+  Colormap() : t_min_(0.0), t_max_(0.0) {}
+
+  // Map a time to a ROS ColorRGBA.
+  std_msgs::ColorRGBA operator()(double t) const {
+    std_msgs::ColorRGBA color;
+    color.a = 1.0;
+
+    if (t < t_min_ || t > t_max_) {
+      ROS_ERROR("Colormap: time is out of bounds.");
+      color.r = 0.5;
+      color.g = 0.5;
+      color.b = 0.5;
+    } else {
+      color.r = 0.5;
+      color.g = (t - t_min_) / std::max(constants::kEpsilon, (t_max_ - t_min_));
+      color.b = 1.0 - color.g;
+    }
+
+    return color;
+  }
+
+  // Update t_min and t_max.
+  void UpdateTimes(double t) {
+    t_min_ = std::min(t_min_, t);
+    t_max_ = std::max(t_max_, t);
+  }
+
+ private:
+  // Min/max timestamps.
+  double t_min_, t_max_;
+};  //\class Colormap
+
 }  //\namespace
 
 using dynamics::Dynamics;
@@ -99,6 +136,7 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
 
   // Load parameters.
   virtual bool LoadParameters(const ros::NodeHandle& n);
+  virtual bool RegisterCallbacks(const ros::NodeHandle& n);
 
   // Plan a trajectory from the given start to goal states starting
   // at the given time.
@@ -109,6 +147,9 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
   // (but not necessarily recursively feasible).
   virtual Trajectory<S> SubPlan(const S& start, const S& goal,
                                 double start_time = 0.0) const = 0;
+
+  // Visualize the graph.
+  void Visualize() const;
 
   // Cost functional. Defaults to time, but can be overridden.
   virtual double Cost(const Trajectory<S>& traj) const {
@@ -218,6 +259,13 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
   mutable std::vector<typename Node::Ptr> traj_nodes_;
   mutable std::vector<double> traj_node_times_;
   mutable size_t explore_node_idx_;
+
+  // Publisher and topic for visualization. Also fixed frame name and colormap.
+  ros::Publisher vis_pub_;
+  std::string vis_topic_;
+  std::string fixed_frame_;
+
+  Colormap colormap_;
 };  //\class GraphDynamicPlanner
 
 // ----------------------------- IMPLEMENTATION ----------------------------- //
@@ -277,6 +325,9 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::Plan(
 
     home_set_.reset(new SearchableSet<Node, S>(home_node));
     start_node = home_node;
+
+    // Update colormap.
+    colormap_.UpdateTimes(home_node->time);
   }
 
   // Generate trajectory. This trajectory will originate from the start node and
@@ -335,6 +386,9 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
       sample_node->best_home_child = nullptr;
       sample_node->parents = {neighboring_parent};
       sample_node->trajs_to_children = {};
+
+      // Update colormap.
+      colormap_.UpdateTimes(sample_node->time);
 
       // Update parent.
       neighboring_parent->trajs_to_children.emplace(sample_node, sub_plan);
@@ -594,7 +648,8 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory()
     } else {
       auto iter = std::min_element(
           nodes_to_visit_.begin(), nodes_to_visit_.end(),
-          [this](const typename Node::Ptr& node1, const typename Node::Ptr& node2) {
+          [this](const typename Node::Ptr& node1,
+                 const typename Node::Ptr& node2) {
             return Heuristic(node1->state) < Heuristic(node2->state);
           });
       auto optimistic_new_node = *iter;
@@ -679,7 +734,76 @@ bool GraphDynamicPlanner<S, E, D, SD, B, SB>::LoadParameters(
   if (!nl.getParam("num_neighbors", k)) return false;
   num_neighbors_ = static_cast<size_t>(k);
 
+  // Visualization parameters.
+  if (!nl.getParam("vis/graph_topic", vis_topic_)) return false;
+  if (!nl.getParam("frame/fixed", fixed_frame_)) return false;
+
   return true;
+}
+
+// Register callbacks.
+template <typename S, typename E, typename D, typename SD, typename B,
+          typename SB>
+bool GraphDynamicPlanner<S, E, D, SD, B, SB>::RegisterCallbacks(
+    const ros::NodeHandle& n) {
+  if (!Planner<S, E, D, SD, B, SB>::RegisterCallbacks(n)) return false;
+
+  ros::NodeHandle nl(n);
+  vis_pub_ =
+      nl.advertise<visualization_msgs::Marker>(vis_topic_.c_str(), 1, false);
+
+  return true;
+}
+
+// Visualize the graph.
+template <typename S, typename E, typename D, typename SD, typename B,
+          typename SB>
+void GraphDynamicPlanner<S, E, D, SD, B, SB>::Visualize() const {
+  if (vis_pub_.getNumSubscribers() == 0) {
+    ROS_WARN_THROTTLE(1.0, "%s: I'm lonely. Please subscribe.",
+                      this->name_.c_str());
+    return;
+  }
+
+  if (!home_set) {
+    ROS_ERROR_THROTTLE(1.0, "%s: Tried to visualize without a home set.",
+                       this->name_.c_str());
+    return;
+  }
+
+  // Set up spheres marker. This will be used to mark all nodes in the graph.
+  visualization_msgs::Marker spheres;
+  spheres.ns = "spheres";
+  spheres.header.frame_id = fixed_frame_;
+  spheres.header.stamp = ros::Time::now();
+  spheres.id = 0;
+  spheres.type = visualization_msgs::Marker::SPHERE_LIST;
+  spheres.action = visualization_msgs::Marker::ADD;
+  spheres.scale.x = 0.2;
+  spheres.scale.y = 0.2;
+  spheres.scale.z = 0.2;
+
+  // Set up line list marker. This will be used to mark all edges in the graph.
+  visualization_msgs::Marker lines;
+  lines.ns = "lines";
+  lines.header.frame_id = fixed_frame_;
+  lines.header.stamp = ros::Time::now();
+  lines.id = 0;
+  lines.type = visualization_msgs::Marker::LINE_LIST;
+  lines.action = visualization_msgs::Marker::ADD;
+  lines.scale.x = 0.1;
+
+  // Walk the graph via breadth-first search.
+  std::unordered_set<typename Node::Ptr> visited_nodes;
+  std::list<typename Node::Ptr> nodes_to_expand({home_set_->InitialNode()});
+
+  while (!nodes_to_expand.empty()) {
+    const auto node = current_node = nodes_to_expand.front();
+    nodes_to_expand.pop_front();
+
+    // Add node.
+    // TODO!
+  }
 }
 
 // Update cost to come, best parent, time, and all traj_to_child times
@@ -725,6 +849,9 @@ void GraphDynamicPlanner<S, E, D, SD, B, SB>::UpdateDescendants(
         child->best_parent = current_node;
         child->time = current_node->time + traj_to_child.Duration();
         child->cost_to_come = current_node->cost_to_come + our_cost_to_child;
+
+        // Update colormap.
+        colormap_.UpdateTimes(child->time);
 
         // Push child onto the queue.
         queue.push_back(child);
