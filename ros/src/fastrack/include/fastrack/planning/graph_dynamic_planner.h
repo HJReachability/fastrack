@@ -115,6 +115,16 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
     return traj.Duration();
   }
 
+  // Heuristic function. Defaults to distance between state and goal.
+  virtual double Heuristic(const S& state) const {
+    if (!goal_node_) {
+      ROS_ERROR("%s: Goal node was null.", this->name_.c_str());
+      return constants::kInfinity;
+    }
+
+    return (state.ToVector() - goal_node_->state.ToVector()).norm();
+  }
+
   // Node in implicit planning graph, templated on state type.
   // NOTE! To avoid memory leaks, Nodes are constructed using a static
   // factory method that returns a shared pointer.
@@ -202,8 +212,12 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
   // These correspond to the most recently output trajectory and are used
   // for quickly identifying query start states on the graph.
   // NOTE: these times are absolute ROS times, not relative to 0.0.
+  // NOTE: we also store the index of the node we selected for exploration,
+  // since
+  // we want to make sure we always get there if we replan.
   mutable std::vector<typename Node::Ptr> traj_nodes_;
   mutable std::vector<double> traj_node_times_;
+  mutable size_t explore_node_idx_;
 };  //\class GraphDynamicPlanner
 
 // ----------------------------- IMPLEMENTATION ----------------------------- //
@@ -340,7 +354,7 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
 
     // (3) Connect to one of the k nearest goal states if possible.
     std::vector<typename Node::Ptr> neighboring_goals =
-      (outbound) ? std::vector<typename Node::Ptr>({goal_node_})
+        (outbound) ? std::vector<typename Node::Ptr>({goal_node_})
                    : home_set_->KnnSearch(sample, num_neighbors_);
 
     typename Node::Ptr child = nullptr;
@@ -487,10 +501,10 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory()
   // method.
   if (traj_nodes_.empty()) {
     start_node = home_set_->InitialNode();
+    explore_node_idx_ = 0;
   } else {
-    const auto iter =
-        std::lower_bound(traj_node_times_.begin(), traj_node_times_.end(),
-                         first_traj_time);
+    const auto iter = std::lower_bound(traj_node_times_.begin(),
+                                       traj_node_times_.end(), first_traj_time);
     if (iter == traj_node_times_.end()) {
       throw std::runtime_error("Invalid start time: too late.");
     }
@@ -499,8 +513,9 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory()
       throw std::runtime_error("Invalid start time: too early.");
     }
 
-    const size_t hi = std::distance(traj_node_times_.begin(), iter);
+    size_t hi = std::distance(traj_node_times_.begin(), iter);
     const size_t lo = hi - 1;
+    hi = std::max(hi, explore_node_idx_);
 
     // Remove all nodes up to and including previous node from nodes to visit,
     // and also be sure to mark them as visited.
@@ -515,17 +530,29 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory()
     }
 
     // Extract nodes and times.
-    const auto& previous_node = traj_nodes_[lo];
+    //    const auto& previous_node = traj_nodes_[lo];
     start_node = traj_nodes_[hi];
     first_traj_time = traj_node_times_[lo];
 
     // Extract trajectory from previous node to start node and ensure
     // that it begins at the right time.
-    Trajectory<S> traj_to_start_node(
-        previous_node->trajs_to_children.at(start_node));
-    traj_to_start_node.ResetFirstTime(first_traj_time);
-    trajs.push_back(traj_to_start_node);
-    nodes.push_back(previous_node);
+    // Trajectory<S> traj_to_start_node(
+    //     previous_node->trajs_to_children.at(start_node));
+    //    traj_to_start_node.ResetFirstTime(first_traj_time);
+    // trajs.push_back(traj_to_start_node);
+    // nodes.push_back(previous_node);
+    for (size_t ii = lo; ii < hi; ii++) {
+      const auto& node = traj_nodes_[ii];
+      const auto& next_node = traj_nodes_[ii + 1];
+      const auto& traj = node->trajs_to_children.at(next_node);
+      trajs.push_back(traj);
+      nodes.push_back(node);
+    }
+
+    // Update 'explore_node_idx_' to account for the nodes we've removed from
+    // 'traj_nodes_'.
+    explore_node_idx_ =
+        std::max(0, static_cast<int>(explore_node_idx_) - static_cast<int>(lo));
   }
 
   // If we are connected to the goal (i.e. we have a best goal child),
@@ -540,11 +567,11 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory()
   } else {
     // We're going home.
     // (1) Follow best home child till we get home.
-    // (2) Pick a random node from 'nodes_to_visit_'.
+    // (2) Pick a optimistic node from 'nodes_to_visit_'.
     // (3) Backtrack from that node all the way home via best parent.
     // (4) From that node, follow best home child all the way home.
     // (5) Stitch these three sub-trajectories together in the right order:
-    //     { start_node -> home -> random new node -> home }.
+    //     { start_node -> home -> optimistic new node -> home }.
 
     // (1) Follow best home child till we get home.
     nodes.push_back(start_node);
@@ -554,9 +581,8 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory()
       nodes.push_back(node->best_home_child);
     }
 
-    // (2) Pick a random node from 'nodes_to_visit_'.
-    // NOTE: we're storing these in a hash table, therefore the first element
-    // will be a uniform random draw from the set (if the hash is a good one).
+    // (2) Pick a optimistic node from 'nodes_to_visit_'.
+    // Choose the one with best heuristic value.
     if (nodes_to_visit_.empty()) {
       // We've explored the entire space and there is no way to the goal.
       // So, just return home and give up.
@@ -566,14 +592,18 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory()
                this->name_.c_str());
       ROS_WARN("%s: Returning home.", this->name_.c_str());
     } else {
-      auto iter = nodes_to_visit_.begin();
-      auto random_new_node = *iter;
+      auto iter = std::min_element(
+          nodes_to_visit_.begin(), nodes_to_visit_.end(),
+          [this](const typename Node::Ptr& node1, const typename Node::Ptr& node2) {
+            return Heuristic(node1->state) < Heuristic(node2->state);
+          });
+      auto optimistic_new_node = *iter;
       nodes_to_visit_.erase(iter);
 
       // (3) Backtrack from that node all the way home via best parent.
       std::list<typename Node::Ptr> backward_nodes;
       std::list<Trajectory<S>> backward_trajs;
-      for (auto node = random_new_node; node->cost_to_come > 0.0;
+      for (auto node = optimistic_new_node; node->cost_to_come > 0.0;
            node = node->best_parent) {
         backward_trajs.push_front(
             node->best_parent->trajs_to_children.at(node));
@@ -584,22 +614,21 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory()
       trajs.insert(trajs.end(), backward_trajs.begin(), backward_trajs.end());
       nodes.insert(nodes.end(), backward_nodes.begin(), backward_nodes.end());
 
+      // Only update 'explore_node_idx_' if we've reached it.
+      if (explore_node_idx_ == 0) explore_node_idx_ = nodes.size() - 1;
+
       // (4) From that node, follow best home child all the way home.
-      for (auto node = random_new_node; node->cost_to_home > 0.0;
+      for (auto node = optimistic_new_node; node->cost_to_home > 0.0;
            node = node->best_home_child) {
         trajs.push_back(node->trajs_to_children.at(node->best_home_child));
         nodes.push_back(node->best_home_child);
       }
 
       // (5) Stitch these three sub-trajectories together in the right order:
-      //     { start_node -> home -> random new node -> home }.
+      //     { start_node -> home -> optimistic new node -> home }.
       // Already done. Oh man.
     }
   }
-
-  std::cout << "Nodes: " << std::endl;
-  for (const auto& n : nodes)
-    std::cout << n->state.ToVector().transpose() << std::endl;
 
   // Reinitialize traj nodes/times with previous node/time. Start node/time
   // will be added later.
