@@ -86,7 +86,7 @@ class PlanarDubinsDynamics3D
         v_(v) {
     // Make sure interval is symmetric.
     constexpr double kSmallNumber = 1e-8;
-    if (std::abs(control_bound_->Max() + control_bound_->Min() > kSmallNumber))
+    if (std::abs(control_bound_->Max() + control_bound_->Min()) > kSmallNumber)
       throw std::runtime_error("Non-symmetric control bound.");
   }
 
