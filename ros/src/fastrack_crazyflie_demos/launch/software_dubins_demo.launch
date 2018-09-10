@@ -29,6 +29,7 @@
   <arg name="goal_vis_topic" default="/vis/goal" />
   <arg name="known_env_vis_topic" default="/vis/known_env" />
   <arg name="true_env_vis_topic" default="/vis/true_env" />
+  <arg name="graph_vis_topic" default="/vis/graph" />
 
   <!-- Dummy topics that should not get published on or subscribed to. -->
   <arg name="junk_sensor_topic" default="/junk/sensor" />
@@ -135,6 +136,7 @@
     <arg name="sensor_sub_topic" value="$(arg sensor_topic)" />
     <arg name="updated_env_topic" value="$(arg updated_env_topic)" />
     <arg name="vis_topic" value="$(arg known_env_vis_topic)" />
+    <arg name="vis_graph_topic" value="$(arg graph_vis_topic)" />
     <arg name="replan_srv" value="$(arg replan_srv)" />
     <arg name="bound_srv" value="$(arg bound_srv)" />
     <arg name="dynamics_srv" value="$(arg planner_dynamics_srv)" />
