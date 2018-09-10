@@ -265,7 +265,7 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
   std::string vis_topic_;
   std::string fixed_frame_;
 
-  Colormap colormap_;
+  mutable Colormap colormap_;
 };  //\class GraphDynamicPlanner
 
 // ----------------------------- IMPLEMENTATION ----------------------------- //
@@ -334,6 +334,9 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::Plan(
   // either terminate within the goal set OR at the start_node and pass through
   // the home node.
   const Trajectory<S> traj = RecursivePlan(initial_call_time, true);
+
+  // Visualize the new graph.
+  Visualize();
 
   // NOTE! Don't need to sleep until max runtime is exceeded because we're going
   // to include the trajectory segment the planner is already on.
@@ -735,7 +738,7 @@ bool GraphDynamicPlanner<S, E, D, SD, B, SB>::LoadParameters(
   num_neighbors_ = static_cast<size_t>(k);
 
   // Visualization parameters.
-  if (!nl.getParam("vis/graph_topic", vis_topic_)) return false;
+  if (!nl.getParam("vis/graph", vis_topic_)) return false;
   if (!nl.getParam("frame/fixed", fixed_frame_)) return false;
 
   return true;
@@ -765,7 +768,7 @@ void GraphDynamicPlanner<S, E, D, SD, B, SB>::Visualize() const {
     return;
   }
 
-  if (!home_set) {
+  if (!home_set_) {
     ROS_ERROR_THROTTLE(1.0, "%s: Tried to visualize without a home set.",
                        this->name_.c_str());
     return;
@@ -798,12 +801,46 @@ void GraphDynamicPlanner<S, E, D, SD, B, SB>::Visualize() const {
   std::list<typename Node::Ptr> nodes_to_expand({home_set_->InitialNode()});
 
   while (!nodes_to_expand.empty()) {
-    const auto node = current_node = nodes_to_expand.front();
+    const auto current_node = nodes_to_expand.front();
     nodes_to_expand.pop_front();
 
-    // Add node.
-    // TODO!
+    // Add to visited list.
+    visited_nodes.emplace(current_node);
+
+    // Add to sphere marker.
+    geometry_msgs::Point current_position;
+    current_position.x = current_node->state.X();
+    current_position.y = current_node->state.Y();
+    current_position.z = current_node->state.Z();
+
+    const auto current_color = colormap_(current_node->time);
+    spheres.points.push_back(current_position);
+    spheres.colors.push_back(current_color);
+
+    // Expand this node.
+    for (const auto& child_traj_pair : current_node->trajs_to_children) {
+      const auto& child = child_traj_pair.first;
+
+      // Add to queue if unvisited.
+      if (visited_nodes.count(child)) nodes_to_expand.push_back(child);
+
+      // Publish lines only.
+      geometry_msgs::Point child_position;
+      child_position.x = child->state.X();
+      child_position.y = child->state.Y();
+      child_position.z = child->state.Z();
+
+      const auto child_color = colormap_(child->time);
+      lines.points.push_back(current_position);
+      lines.points.push_back(child_position);
+      lines.colors.push_back(current_color);
+      lines.colors.push_back(child_color);
+    }
   }
+
+  // Publish.
+  vis_pub_.publish(spheres);
+  vis_pub_.publish(lines);
 }
 
 // Update cost to come, best parent, time, and all traj_to_child times
