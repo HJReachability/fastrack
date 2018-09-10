@@ -44,7 +44,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef FASTRACK_VALUE_ANALYTICAL_KINEMATIC_BOX_QUADROTOR_DECOUPLED_6D_H
-#define FASTRACK_VALUE_ANLAYTICAL_KINEMATIC_BOX_QUADROTOR_DECOUPLED_6D_H
+#define FASTRACK_VALUE_ANALYTICAL_KINEMATIC_BOX_QUADROTOR_DECOUPLED_6D_H
 
 #include <fastrack/bound/box.h>
 #include <fastrack/control/quadrotor_control.h>
