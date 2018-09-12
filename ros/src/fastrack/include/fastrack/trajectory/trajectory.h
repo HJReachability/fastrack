@@ -87,6 +87,10 @@ public:
   inline double FirstTime() const { return times_.front(); }
   inline double LastTime() const { return times_.back(); }
 
+  // Const accessors.
+  const std::vector<S>& States() const { return states_; }
+  const std::vector<double>& Times() const { return times_; }
+  
   // Interpolate at a particular time.
   S Interpolate(double t) const;
 
