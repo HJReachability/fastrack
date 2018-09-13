@@ -30,7 +30,7 @@
   <arg name="env_lower_y" default="10.0" />
   <arg name="env_lower_z" default="0.0" />
 
-  <arg name="env_num_obstacles" default="0" />
+  <arg name="env_num_random_obstacles" default="0" />
   <arg name="env_min_radius" default="0.5" />
   <arg name="env_max_radius" default="1.0" />
 
@@ -63,7 +63,7 @@
     <param name="env/lower/y" value="$(arg env_lower_y)" />
     <param name="env/lower/z" value="$(arg env_lower_z)" />
 
-    <param name="env/num_obstacles" value="$(arg env_num_obstacles)" />
+    <param name="env/num_random_obstacles" value="$(arg env_num_random_obstacles)" />
     <param name="env/min_radius" value="$(arg env_min_radius)" />
     <param name="env/max_radius" value="$(arg env_max_radius)" />
     <param name="env/seed" value="$(arg seed)" />
