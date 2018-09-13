@@ -58,6 +58,8 @@ Visualization Manager:
       Frame Timeout: 10000
       Frames:
         All Enabled: false
+        planner:
+          Value: true
         tracker:
           Value: true
         tracker/base_link:
@@ -71,6 +73,8 @@ Visualization Manager:
       Show Names: false
       Tree:
         world:
+          planner:
+            {}
           tracker:
             tracker/base_link:
               {}
@@ -89,7 +93,8 @@ Visualization Manager:
       Marker Topic: /vis/known_env
       Name: Known Map
       Namespaces:
-        {}
+        cube: true
+        sensors: true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -97,7 +102,7 @@ Visualization Manager:
       Marker Topic: /vis/bound
       Name: Tracking Bound
       Namespaces:
-        {}
+        bound: true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -105,7 +110,8 @@ Visualization Manager:
       Marker Topic: /vis/traj
       Name: Trajectory
       Namespaces:
-        {}
+        lines: true
+        spheres: true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -149,6 +155,7 @@ Visualization Manager:
       Value: false
       Visibility:
         "": true
+        Goal: true
         Grid: true
         Known Map: false
         RobotModel: false
@@ -164,7 +171,16 @@ Visualization Manager:
       Marker Topic: /vis/goal
       Name: Goal
       Namespaces:
-        {}
+        sphere: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /vis/graph
+      Name: Graph
+      Namespaces:
+        lines: true
+        spheres: true
       Queue Size: 100
       Value: true
   Enabled: true
@@ -192,25 +208,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 21.7164001
+      Distance: 26.9637794
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
-      Focal Shape Fixed Size: true
+        X: -0.154605538
+        Y: -0.378417939
+        Z: -1
+      Focal Shape Fixed Size: false
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.574796975
-      Target Frame: world
+      Pitch: 0.755397081
+      Target Frame: planner
       Value: ThirdPersonFollower (rviz)
-      Yaw: 6.21859503
+      Yaw: 1.45538533
     Saved: ~
 Window Geometry:
   Camera:

@@ -151,11 +151,12 @@ bool BallsInBox::IsValid(const Vector3d& position, const Cylinder& bound,
     // Find z coordinate on cylinder closest to the sphere.
     // Handle cases separately depending on whether sphere center is above
     // cylinder center.
-    const double closest_z = (p(2) >= position(2)) ?
-      std::max(std::min(position(2) + bound.z, p(2)),
-               std::max(position(2) - bound.z, p(2) - r)) :
-      std::min(std::max(position(2) - bound.z, p(2)),
-               std::min(position(2) + bound.z, p(2) + r));
+    const double closest_z =
+        (p(2) >= position(2))
+            ? std::max(std::min(position(2) + bound.z, p(2)),
+                       std::max(position(2) - bound.z, p(2) - r))
+            : std::min(std::max(position(2) - bound.z, p(2)),
+                       std::min(position(2) + bound.z, p(2) + r));
 
     // Compute radius of sphere at this z coordinate.
     const double dz = p(2) - closest_z;
@@ -325,10 +326,32 @@ bool BallsInBox::LoadParameters(const ros::NodeHandle& n) {
 
   ros::NodeHandle nl(n);
 
-  // Number/size of obstacles.
+  // Pre-specified obstacles.
+  std::vector<double> obstacle_xs, obstacle_ys, obstacle_zs, obstacle_rs;
+  if (nl.getParam("env/obstacle/xs", obstacle_xs) &&
+      nl.getParam("env/obstacle/ys", obstacle_ys) &&
+      nl.getParam("env/obstacle/zs", obstacle_zs) &&
+      nl.getParam("env/obstacle/rs", obstacle_rs)) {
+    if (obstacle_xs.size() != obstacle_ys.size() ||
+        obstacle_zs.size() != obstacle_rs.size() ||
+        obstacle_ys.size() != obstacle_zs.size()) {
+      ROS_WARN("%s: Pre-specified obstacles are malformed.", name_.c_str());
+    } else {
+      for (size_t ii = 0; ii < obstacle_xs.size(); ii++) {
+        centers_.emplace_back(
+            Vector3d(obstacle_xs[ii], obstacle_ys[ii], obstacle_zs[ii]));
+        radii_.push_back(obstacle_rs[ii]);
+      }
+    }
+  } else {
+    // No pre-specified obstacles.
+    ROS_INFO("%s: No pre-specified obstacles.", name_.c_str());
+  }
+
+  // Number/size of random obstacles.
   int num;
   double min_radius, max_radius;
-  if (!nl.getParam("env/num_obstacles", num)) return false;
+  if (!nl.getParam("env/num_random_obstacles", num)) return false;
   if (!nl.getParam("env/min_radius", min_radius)) return false;
   if (!nl.getParam("env/max_radius", max_radius)) return false;
 
