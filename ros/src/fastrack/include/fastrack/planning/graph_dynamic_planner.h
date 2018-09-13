@@ -132,7 +132,7 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
   virtual ~GraphDynamicPlanner() {}
 
  protected:
-  explicit GraphDynamicPlanner() : Planner<S, E, D, SD, B, SB>() {}
+  explicit GraphDynamicPlanner() : Planner<S, E, D, SD, B, SB>(), rng_(rd_()) {}
 
   // Load parameters.
   virtual bool LoadParameters(const ros::NodeHandle& n);
@@ -238,6 +238,12 @@ class GraphDynamicPlanner : public Planner<S, E, D, SD, B, SB> {
   // Number of neighbors and radius to use for nearest neighbor searches.
   size_t num_neighbors_;
   double search_radius_;
+
+  // Epsilon greedy exploration parameter. This is the probability of sampling
+  // a random (viable!) state to visit.
+  double epsilon_greedy_;
+  mutable std::random_device rd_;
+  mutable std::default_random_engine rng_;
 
   // Unordered set storing nodes that we have not yet visited.
   mutable std::unordered_set<typename Node::Ptr> nodes_to_visit_;
@@ -593,11 +599,6 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory()
 
     // Extract trajectory from previous node to start node and ensure
     // that it begins at the right time.
-    // Trajectory<S> traj_to_start_node(
-    //     previous_node->trajs_to_children.at(start_node));
-    //    traj_to_start_node.ResetFirstTime(first_traj_time);
-    // trajs.push_back(traj_to_start_node);
-    // nodes.push_back(previous_node);
     for (size_t ii = lo; ii < hi; ii++) {
       const auto& node = traj_nodes_[ii];
       const auto& next_node = traj_nodes_[ii + 1];
@@ -649,19 +650,25 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory()
                this->name_.c_str());
       ROS_WARN("%s: Returning home.", this->name_.c_str());
     } else {
-      auto iter = std::min_element(
-          nodes_to_visit_.begin(), nodes_to_visit_.end(),
-          [this](const typename Node::Ptr& node1,
-                 const typename Node::Ptr& node2) {
-            return Heuristic(node1->state) < Heuristic(node2->state);
-          });
-      auto optimistic_new_node = *iter;
+      // Take a uniform random draw from [0, 1] and if it is below
+      // 'epsilon_greedy_' choose a random element. Otherwise choose at random.
+      std::uniform_real_distribution<double> unif(0.0, 1.0);
+      auto iter =
+          (unif(rng_) < epsilon_greedy_)
+              ? nodes_to_visit_.begin()
+              : std::min_element(nodes_to_visit_.begin(), nodes_to_visit_.end(),
+                                 [this](const typename Node::Ptr& node1,
+                                        const typename Node::Ptr& node2) {
+                                   return Heuristic(node1->state) <
+                                          Heuristic(node2->state);
+                                 });
+      auto new_node_to_visit = *iter;
       nodes_to_visit_.erase(iter);
 
       // (3) Backtrack from that node all the way home via best parent.
       std::list<typename Node::Ptr> backward_nodes;
       std::list<Trajectory<S>> backward_trajs;
-      for (auto node = optimistic_new_node; node->cost_to_come > 0.0;
+      for (auto node = new_node_to_visit; node->cost_to_come > 0.0;
            node = node->best_parent) {
         backward_trajs.push_front(
             node->best_parent->trajs_to_children.at(node));
@@ -676,7 +683,7 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::ExtractTrajectory()
       if (explore_node_idx_ == 0) explore_node_idx_ = nodes.size() - 1;
 
       // (4) From that node, follow best home child all the way home.
-      for (auto node = optimistic_new_node; node->cost_to_home > 0.0;
+      for (auto node = new_node_to_visit; node->cost_to_home > 0.0;
            node = node->best_home_child) {
         trajs.push_back(node->trajs_to_children.at(node->best_home_child));
         nodes.push_back(node->best_home_child);
@@ -740,6 +747,9 @@ bool GraphDynamicPlanner<S, E, D, SD, B, SB>::LoadParameters(
   // Visualization parameters.
   if (!nl.getParam("vis/graph", vis_topic_)) return false;
   if (!nl.getParam("frame/fixed", fixed_frame_)) return false;
+
+  // Epsilon for epsilon-greedy exploration.
+  if (!nl.getParam("epsilon_greedy", epsilon_greedy_)) return false;
 
   return true;
 }

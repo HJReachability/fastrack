@@ -22,6 +22,10 @@
   <arg name="search_radius" default="100.0" />
   <arg name="num_neighbors" default="5" />
 
+  <!-- Epsilon in epsilon-greedy exploration. This is the probability of
+       choosing a random viable node rather than an optimistic heuristic. -->
+  <arg name="epsilon_greedy" default="0.5" />
+
   <!-- State space bounds [x, y, theta].
        NOTE! These should agree with the upper and lower environment bounds. -->
   <arg name="state_upper" default="[10.0, 10.0, 3.1416]" />
@@ -58,6 +62,7 @@
     <param name="max_runtime" value="$(arg max_runtime)" />
     <param name="search_radius" value="$(arg search_radius)" />
     <param name="num_neighbors" value="$(arg num_neighbors)" />
+    <param name="epsilon_greedy" value="$(arg epsilon_greedy)" />
 
     <param name="frame/fixed" value="$(arg fixed_frame)" />
 
