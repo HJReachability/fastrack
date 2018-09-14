@@ -396,6 +396,8 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
       sample_node->parents = {neighboring_parent};
       sample_node->trajs_to_children = {};
 
+      home_set_->Insert(sample_node);
+
       // Update colormap.
       colormap_.UpdateTimes(sample_node->time);
 
@@ -786,7 +788,7 @@ void GraphDynamicPlanner<S, E, D, SD, B, SB>::Visualize() const {
 
   // Set up spheres marker. This will be used to mark non-viable nodes.
   visualization_msgs::Marker spheres;
-  spheres.ns = "spheres";
+  spheres.ns = "non_viable_nodes";
   spheres.header.frame_id = fixed_frame_;
   spheres.header.stamp = ros::Time::now();
   spheres.id = 0;
@@ -798,7 +800,7 @@ void GraphDynamicPlanner<S, E, D, SD, B, SB>::Visualize() const {
 
   // Set up cubes marker. This will be used to mark viable nodes.
   visualization_msgs::Marker cubes;
-  cubes.ns = "cubes";
+  cubes.ns = "viable_nodes";
   cubes.header.frame_id = fixed_frame_;
   cubes.header.stamp = ros::Time::now();
   cubes.id = 0;
@@ -810,7 +812,7 @@ void GraphDynamicPlanner<S, E, D, SD, B, SB>::Visualize() const {
 
   // Set up line list marker. This will be used to mark all edges in the graph.
   visualization_msgs::Marker lines;
-  lines.ns = "lines";
+  lines.ns = "edges";
   lines.header.frame_id = fixed_frame_;
   lines.header.stamp = ros::Time::now();
   lines.id = 0;
@@ -849,7 +851,7 @@ void GraphDynamicPlanner<S, E, D, SD, B, SB>::Visualize() const {
       const auto& child = child_traj_pair.first;
 
       // Add to queue if unvisited.
-      if (visited_nodes.count(child)) nodes_to_expand.push_back(child);
+      if (!visited_nodes.count(child)) nodes_to_expand.push_back(child);
 
       // Publish lines only.
       geometry_msgs::Point child_position;
