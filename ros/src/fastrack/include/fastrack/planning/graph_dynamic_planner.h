@@ -531,11 +531,7 @@ Trajectory<S> GraphDynamicPlanner<S, E, D, SD, B, SB>::RecursivePlan(
   }
 
   ROS_INFO("%s: Found a viable loop.", this->name_.c_str());
-  const auto traj = ExtractTrajectory();
-
-  std::cout << "Traj initial time - now: "
-            << traj.FirstTime() - ros::Time::now().toSec() << std::endl;
-  return traj;
+  return ExtractTrajectory();
 }
 
 // Extract a trajectory including the given start time, which either
@@ -820,6 +816,10 @@ void GraphDynamicPlanner<S, E, D, SD, B, SB>::Visualize() const {
   lines.action = visualization_msgs::Marker::ADD;
   lines.scale.x = 0.1;
 
+  // Randomly downsample the graph.
+  constexpr double kProbabilitySkip = 0.0;
+  std::uniform_real_distribution<double> unif(0.0, 1.0);
+
   // Walk the graph via breadth-first search.
   std::unordered_set<typename Node::Ptr> visited_nodes;
   std::list<typename Node::Ptr> nodes_to_expand({home_set_->InitialNode()});
@@ -831,19 +831,27 @@ void GraphDynamicPlanner<S, E, D, SD, B, SB>::Visualize() const {
     // Add to visited list.
     visited_nodes.emplace(current_node);
 
+    // Randomly don't visualize this node.
+    const bool skip = unif(rng_) < kProbabilitySkip;
+
     // Add to sphere marker.
     geometry_msgs::Point current_position;
     current_position.x = current_node->state.X();
     current_position.y = current_node->state.Y();
     current_position.z = current_node->state.Z();
 
+    constexpr double kTranslucentAlpha = 0.2;
     auto current_color = colormap_(current_node->time);
-    auto& node_marker = (current_node->is_viable) ? cubes : spheres;
-    node_marker.points.push_back(current_position);
-    node_marker.colors.push_back(current_color);
+    if (!current_node->is_viable)
+      current_color.a = kTranslucentAlpha;
+
+    if (!skip) {
+      auto& node_marker = (current_node->is_viable) ? cubes : spheres;
+      node_marker.points.push_back(current_position);
+      node_marker.colors.push_back(current_color);
+    }
 
     // Lower alpha value for color in order to make lines show up translucent.
-    constexpr double kTranslucentAlpha = 0.1;
     current_color.a = kTranslucentAlpha;
 
     // Expand this node.
@@ -853,18 +861,20 @@ void GraphDynamicPlanner<S, E, D, SD, B, SB>::Visualize() const {
       // Add to queue if unvisited.
       if (!visited_nodes.count(child)) nodes_to_expand.push_back(child);
 
-      // Publish lines only.
-      geometry_msgs::Point child_position;
-      child_position.x = child->state.X();
-      child_position.y = child->state.Y();
-      child_position.z = child->state.Z();
+      // Update lines marker only.
+      if (!skip) {
+        geometry_msgs::Point child_position;
+        child_position.x = child->state.X();
+        child_position.y = child->state.Y();
+        child_position.z = child->state.Z();
 
-      auto child_color = colormap_(child->time);
-      child_color.a = kTranslucentAlpha;
-      lines.points.push_back(current_position);
-      lines.points.push_back(child_position);
-      lines.colors.push_back(current_color);
-      lines.colors.push_back(child_color);
+        auto child_color = colormap_(child->time);
+        child_color.a = kTranslucentAlpha;
+        lines.points.push_back(current_position);
+        lines.points.push_back(child_position);
+        lines.colors.push_back(current_color);
+        lines.colors.push_back(child_color);
+      }
     }
   }
 

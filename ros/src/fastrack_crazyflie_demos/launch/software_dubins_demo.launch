@@ -46,8 +46,8 @@
   <arg name="planner_frame" default="planner" />
 
   <!-- Goal point. -->
-  <arg name="goal_x" default="8.0" />
-  <arg name="goal_y" default="8.0" />
+  <arg name="goal_x" default="7.0" />
+  <arg name="goal_y" default="0.0" />
   <arg name="goal_yaw" default="0.0" />
 
   <!-- Simulator params. -->
@@ -86,26 +86,25 @@
 
   <!-- Environment parameters and state space bounds. -->
   <arg name="free_space_threshold" default="0.05" />
-  <arg name="env_max" default="10.0" />
-  <arg name="env_upper_x" default="$(arg env_max)" />
-  <arg name="env_upper_y" default="$(arg env_max)" />
-  <arg name="env_upper_z" default="$(arg env_max)" />
-  <arg name="env_lower_x" default="-$(arg env_max)" />
-  <arg name="env_lower_y" default="-$(arg env_max)" />
+  <arg name="env_upper_x" default="8.0" />
+  <arg name="env_upper_y" default="5.0" />
+  <arg name="env_upper_z" default="10.0" />
+  <arg name="env_lower_x" default="-1.0" />
+  <arg name="env_lower_y" default="-5.0" />
   <arg name="env_lower_z" default="0.0" />
   <arg name="env_num_random_obstacles" default="0" />
   <arg name="env_min_radius" default="0.5" />
   <arg name="env_max_radius" default="1.0" />
   <arg name="seed" default="0" />
-  <arg name="env_obstacle_xs" default="[ 1.0,  1.5,  2.0,  2.5,  3.0,  3.5,  4.0]" />
-  <arg name="env_obstacle_ys" default="[-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0]" />
-  <arg name="env_obstacle_zs" default="[ 1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0]" />
-  <arg name="env_obstacle_rs" default="[ 1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0]" />
+  <arg name="env_obstacle_xs" default="[ 3.0,  3.0,  3.5,  3.5,  4.0,  4.0,  4.5,  4.5,  5.0,  5.0,  5.0]" />
+  <arg name="env_obstacle_ys" default="[-1.2,  1.2, -1.2,  1.2, -1.2,  1.2, -1.2,  1.2, -1.2,  1.2,  0.0]" />
+  <arg name="env_obstacle_zs" default="[ 1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0]" />
+  <arg name="env_obstacle_rs" default="[ 1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0]" />
 
   <!-- Planner state space bounds. -->
   <arg name="theta_max" default="3.1416" />
-  <arg name="state_upper" default="[$(arg env_max), $(arg env_max), $(arg theta_max)]" />
-  <arg name="state_lower" default="[-$(arg env_max), -$(arg env_max), -$(arg theta_max)]" />
+  <arg name="state_upper" default="[10.0,  5.0,  $(arg theta_max)]" />
+  <arg name="state_lower" default="[-1.0, -5.0, -$(arg theta_max)]" />
 
   <!-- Sensor range. -->
   <arg name="sensor_range" default="2.0" />
@@ -117,7 +116,7 @@
   <node pkg="rosbag"
 	      type="record"
 	      name="recorder"
-	      args="-a -o $(fastrack_crazyflie_demos)/bagfiles/sw_demo_recording.bag"
+	      args="-a -o $(find fastrack_crazyflie_demos)/bagfiles/sw_demo_recording.bag"
 	      if="$(arg record)">
   </node>
 
