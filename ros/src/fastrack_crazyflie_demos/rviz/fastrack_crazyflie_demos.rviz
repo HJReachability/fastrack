@@ -94,6 +94,7 @@ Visualization Manager:
       Name: Known Map
       Namespaces:
         cube: true
+        obstacles: true
         sensors: true
       Queue Size: 100
       Value: true
@@ -179,8 +180,8 @@ Visualization Manager:
       Marker Topic: /vis/graph
       Name: Graph
       Namespaces:
-        lines: true
-        spheres: true
+        edges: true
+        non_viable_nodes: true
       Queue Size: 100
       Value: true
   Enabled: true
@@ -208,25 +209,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 26.9637794
+      Distance: 21.7164001
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.154605538
-        Y: -0.378417939
-        Z: -1
-      Focal Shape Fixed Size: false
+        X: 0
+        Y: 0
+        Z: 0
+      Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.755397081
-      Target Frame: planner
+      Pitch: 1.54979634
+      Target Frame: world
       Value: ThirdPersonFollower (rviz)
-      Yaw: 1.45538533
+      Yaw: 2.83859086
     Saved: ~
 Window Geometry:
   Camera:

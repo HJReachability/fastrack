@@ -89,6 +89,7 @@ class KdtreeMap : private Uncopyable {
   const std::vector<std::pair<VectorKd, V>>& Registry() const {
     return registry_;
   }
+  size_t Size() const { return registry_.size(); }
 
  private:
   // A Flann kdtree. Searches in this index return indices, which are then

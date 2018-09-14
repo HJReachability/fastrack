@@ -101,8 +101,8 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
     // Get nearest neighbors.
     // NOTE: using KnnSearch instead of RadiusSearch because it seems to
     // be more precise.
-    constexpr size_t kOneNearestNeighbor = 1;
-    const auto neighbors = kdtree.KnnSearch(p, kOneNearestNeighbor);
+    constexpr size_t kNumNearestNeighbors = 10;
+    const auto neighbors = kdtree.KnnSearch(p, kNumNearestNeighbors);
 
     // Check for overlaps.
     const Vector3d bound_vector(bound.x, bound.y, bound.z);
@@ -152,8 +152,8 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
     // Get nearest neighbors.
     // NOTE: using KnnSearch instead of RadiusSearch because it seems to
     // be more precise.
-    constexpr size_t kOneNearestNeighbor = 1;
-    const auto neighbors = kdtree.KnnSearch(p, kOneNearestNeighbor);
+    constexpr size_t kNumNearestNeighbors = 10;
+    const auto neighbors = kdtree.KnnSearch(p, kNumNearestNeighbors);
 
     // Check for overlaps.
     for (const auto& entry : neighbors) {
@@ -194,8 +194,8 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
     // Get nearest neighbors.
     // NOTE: using KnnSearch instead of RadiusSearch because it seems to
     // be more precise.
-    constexpr size_t kOneNearestNeighbor = 1;
-    const auto neighbors = kdtree.KnnSearch(p, kOneNearestNeighbor);
+    constexpr size_t kNumNearestNeighbors = 10;
+    const auto neighbors = kdtree.KnnSearch(p, kNumNearestNeighbors);
 
     // Check for overlaps.
     for (const auto& entry : neighbors) {
