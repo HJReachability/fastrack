@@ -24,7 +24,7 @@
 
   <!-- Epsilon in epsilon-greedy exploration. This is the probability of
        choosing a random viable node rather than an optimistic heuristic. -->
-  <arg name="epsilon_greedy" default="0.5" />
+  <arg name="epsilon_greedy" default="0.1" />
 
   <!-- State space bounds [x, y, theta].
        NOTE! These should agree with the upper and lower environment bounds. -->
