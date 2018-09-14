@@ -784,7 +784,7 @@ void GraphDynamicPlanner<S, E, D, SD, B, SB>::Visualize() const {
     return;
   }
 
-  // Set up spheres marker. This will be used to mark all nodes in the graph.
+  // Set up spheres marker. This will be used to mark non-viable nodes.
   visualization_msgs::Marker spheres;
   spheres.ns = "spheres";
   spheres.header.frame_id = fixed_frame_;
@@ -795,6 +795,18 @@ void GraphDynamicPlanner<S, E, D, SD, B, SB>::Visualize() const {
   spheres.scale.x = 0.2;
   spheres.scale.y = 0.2;
   spheres.scale.z = 0.2;
+
+  // Set up cubes marker. This will be used to mark viable nodes.
+  visualization_msgs::Marker cubes;
+  cubes.ns = "cubes";
+  cubes.header.frame_id = fixed_frame_;
+  cubes.header.stamp = ros::Time::now();
+  cubes.id = 0;
+  cubes.type = visualization_msgs::Marker::CUBE_LIST;
+  cubes.action = visualization_msgs::Marker::ADD;
+  cubes.scale.x = 0.2;
+  cubes.scale.y = 0.2;
+  cubes.scale.z = 0.2;
 
   // Set up line list marker. This will be used to mark all edges in the graph.
   visualization_msgs::Marker lines;
@@ -823,9 +835,14 @@ void GraphDynamicPlanner<S, E, D, SD, B, SB>::Visualize() const {
     current_position.y = current_node->state.Y();
     current_position.z = current_node->state.Z();
 
-    const auto current_color = colormap_(current_node->time);
-    spheres.points.push_back(current_position);
-    spheres.colors.push_back(current_color);
+    auto current_color = colormap_(current_node->time);
+    auto& node_marker = (current_node->is_viable) ? cubes : spheres;
+    node_marker.points.push_back(current_position);
+    node_marker.colors.push_back(current_color);
+
+    // Lower alpha value for color in order to make lines show up translucent.
+    constexpr double kTranslucentAlpha = 0.1;
+    current_color.a = kTranslucentAlpha;
 
     // Expand this node.
     for (const auto& child_traj_pair : current_node->trajs_to_children) {
@@ -840,7 +857,8 @@ void GraphDynamicPlanner<S, E, D, SD, B, SB>::Visualize() const {
       child_position.y = child->state.Y();
       child_position.z = child->state.Z();
 
-      const auto child_color = colormap_(child->time);
+      auto child_color = colormap_(child->time);
+      child_color.a = kTranslucentAlpha;
       lines.points.push_back(current_position);
       lines.points.push_back(child_position);
       lines.colors.push_back(current_color);
@@ -850,6 +868,7 @@ void GraphDynamicPlanner<S, E, D, SD, B, SB>::Visualize() const {
 
   // Publish.
   vis_pub_.publish(spheres);
+  vis_pub_.publish(cubes);
   vis_pub_.publish(lines);
 }
 
