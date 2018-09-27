@@ -41,7 +41,6 @@ fi
 # Commit the "changes", i.e. the new version.
 # The delta will show diffs between new and old versions.
 git add doc
-#git status
 git commit -am "[ci skip] Deploy to GitHub Pages: ${SHA}"
 echo "Committed changes."
 
