@@ -73,13 +73,7 @@ class BallsInBoxOccupancyMap
       const Vector3d& p,
       double time = std::numeric_limits<double>::quiet_NaN()) const;
   double OccupancyProbability(
-      const Vector3d& p, const Box& bound,
-      double time = std::numeric_limits<double>::quiet_NaN()) const;
-  double OccupancyProbability(
-      const Vector3d& p, const Sphere& bound,
-      double time = std::numeric_limits<double>::quiet_NaN()) const;
-  double OccupancyProbability(
-      const Vector3d& p, const Cylinder& bound,
+      const Vector3d& p, const TrackingBound& bound,
       double time = std::numeric_limits<double>::quiet_NaN()) const;
 
   // Generate a sensor measurement.

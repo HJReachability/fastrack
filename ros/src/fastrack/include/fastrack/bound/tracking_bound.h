@@ -36,8 +36,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base struct for tracking error bound. All tracking error bounds must be
-// convertible to a ROS service response of the appropriate type (SR).
+// Base struct for tracking error bound.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -52,28 +51,28 @@
 namespace fastrack {
 namespace bound {
 
-template<typename SR>
 struct TrackingBound {
-  virtual ~TrackingBound() {}
-
   // Initialize from vector.
   virtual bool Initialize(const std::vector<double>& params) = 0;
 
-  // Convert from service response type SR.
-  virtual void FromRos(const SR& res) = 0;
+  // Returns true if this tracking error bound (at the given position) overlaps
+  // with different shapes.
+  virtual bool OverlapsSphere(const Vector3d& p, const Vector3d& center,
+                              double radius) const = 0;
+  virtual bool OverlapsBox(const Vector3d& p, const Vector3d& lower,
+                           const Vector3d& upper) const = 0;
 
-  // Convert to service response type SR.
-  virtual SR ToRos() const = 0;
+  // Returns true if this tracking error bound (at the given position) is
+  // contained within a box.
+  virtual bool ContainedWithinBox(const Vector3d& p, const Vector3d& lower,
+                                  const Vector3d& upper) const = 0;
 
   // Visualize.
-  virtual void Visualize(
-    const ros::Publisher& pub, const std::string& frame) const = 0;
+  virtual void Visualize(const ros::Publisher& pub,
+                         const std::string& frame) const = 0;
+};  //\struct TrackingBound
 
-protected:
-  explicit TrackingBound() {}
-}; //\struct Box
-
-} //\namespace bound
-} //\namespace fastrack
+}  //\namespace bound
+}  //\namespace fastrack
 
 #endif

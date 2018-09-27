@@ -48,9 +48,8 @@ namespace environment {
 
 // Derived classes must provide a collision checker which returns true if
 // and only if the provided position is a valid collision-free configuration.
-// Provide a separate collision check for each type of tracking error bound.
 // Ignores 'time' since this is a time-invariant environment.
-bool BallsInBox::IsValid(const Vector3d& position, const Box& bound,
+bool BallsInBox::IsValid(const Vector3d& position, const TrackingBound& bound,
                          double time) const {
   if (!initialized_) {
     ROS_WARN("%s: Tried to collision check an uninitialized BallsInBox.",
@@ -58,113 +57,19 @@ bool BallsInBox::IsValid(const Vector3d& position, const Box& bound,
     return false;
   }
 
-  if (position(0) < lower_(0) + bound.x || position(0) > upper_(0) - bound.x ||
-      position(1) < lower_(1) + bound.y || position(1) > upper_(1) - bound.y ||
-      position(2) < lower_(2) + bound.z || position(2) > upper_(2) - bound.z)
-    return false;
+  // Check that this position is within the outer environment boundaries.
+  if (!bound.ContainedWithinBox(position, lower_, upper_)) return false;
 
   // Check against each obstacle.
   // NOTE! Just using a linear search here for simplicity.
-  if (centers_.size() > 100)
+  if (centers_.size() > 100) {
     ROS_WARN_THROTTLE(1.0,
                       "%s: Caution! Linear search may be slowing you down.",
                       name_.c_str());
-
-  const Vector3d bound_vector(bound.x, bound.y, bound.z);
-  for (size_t ii = 0; ii < centers_.size(); ii++) {
-    const Vector3d& p = centers_[ii];
-
-    // Find closest point in the tracking bound to the obstacle center.
-    Vector3d closest_point;
-    for (size_t jj = 0; jj < 3; jj++) {
-      closest_point(jj) =
-          std::min(position(jj) + bound_vector(jj),
-                   std::max(position(jj) - bound_vector(jj), p(jj)));
-    }
-
-    // Check distance to closest point.
-    if ((closest_point - p).norm() <= radii_[ii]) return false;
   }
-
-  return true;
-}
-
-bool BallsInBox::IsValid(const Vector3d& position, const Sphere& bound,
-                         double time) const {
-  if (!initialized_) {
-    ROS_WARN("%s: Tried to collision check an uninitialized BallsInBox.",
-             name_.c_str());
-    return false;
-  }
-
-  // Collision check against environment edge.
-  if (position(0) < lower_(0) + bound.r || position(0) > upper_(0) - bound.r ||
-      position(1) < lower_(1) + bound.r || position(1) > upper_(1) - bound.r ||
-      position(2) < lower_(2) + bound.r || position(2) > upper_(2) - bound.r)
-    return false;
-
-  // Check against each obstacle.
-  // NOTE! Just using a linear search here for simplicity.
-  if (centers_.size() > 100)
-    ROS_WARN_THROTTLE(1.0,
-                      "%s: Caution! Linear search may be slowing you down.",
-                      name_.c_str());
 
   for (size_t ii = 0; ii < centers_.size(); ii++) {
-    const Vector3d& p = centers_[ii];
-    if ((position - p).norm() <= radii_[ii] + bound.r) return false;
-  }
-
-  return true;
-}
-
-bool BallsInBox::IsValid(const Vector3d& position, const Cylinder& bound,
-                         double time) const {
-  if (!initialized_) {
-    ROS_WARN("%s: Tried to collision check an uninitialized BallsInBox.",
-             name_.c_str());
-    return false;
-  }
-
-  // Collision check against environment edge.
-  if (position(0) < lower_(0) + bound.r || position(0) > upper_(0) - bound.r ||
-      position(1) < lower_(1) + bound.r || position(1) > upper_(1) - bound.r ||
-      position(2) < lower_(2) + bound.z || position(2) > upper_(2) - bound.z)
-    return false;
-
-  // Check against each obstacle.
-  // NOTE! Just using a linear search here for simplicity.
-  if (centers_.size() > 100)
-    ROS_WARN_THROTTLE(1.0,
-                      "%s: Caution! Linear search may be slowing you down.",
-                      name_.c_str());
-
-  for (size_t ii = 0; ii < centers_.size(); ii++) {
-    const Vector3d& p = centers_[ii];
-    const double& r = radii_[ii];
-
-    // Check if we could not possibly collide with this sphere because it's
-    // too far away in z.
-    if (p(2) - r > position(2) + bound.z || p(2) + r < position(2) - bound.z)
-      continue;
-
-    // Find z coordinate on cylinder closest to the sphere.
-    // Handle cases separately depending on whether sphere center is above
-    // cylinder center.
-    const double closest_z =
-        (p(2) >= position(2))
-            ? std::max(std::min(position(2) + bound.z, p(2)),
-                       std::max(position(2) - bound.z, p(2) - r))
-            : std::min(std::max(position(2) - bound.z, p(2)),
-                       std::min(position(2) + bound.z, p(2) + r));
-
-    // Compute radius of sphere at this z coordinate.
-    const double dz = p(2) - closest_z;
-    const double effective_r = std::sqrt(r * r - dz * dz);
-
-    // Compute differences in x/y.
-    if ((position.head<2>() - p.head<2>()).norm() <= effective_r + bound.r)
-      return false;
+    if (bound.OverlapsSphere(position, centers_[ii], radii_[ii])) return false;
   }
 
   return true;

@@ -48,8 +48,9 @@
 #define FASTRACK_ENVIRONMENT_ENVIRONMENT_H
 
 #include <fastrack/bound/box.h>
-#include <fastrack/bound/sphere.h>
 #include <fastrack/bound/cylinder.h>
+#include <fastrack/bound/sphere.h>
+#include <fastrack/bound/tracking_bound.h>
 #include <fastrack/utils/types.h>
 
 #include <ros/ros.h>
@@ -62,6 +63,7 @@ namespace environment {
 using bound::Box;
 using bound::Sphere;
 using bound::Cylinder;
+using bound::TrackingBound;
 
 template <typename M, typename P>
 class Environment {
@@ -73,20 +75,13 @@ class Environment {
 
   // Derived classes must provide a collision checker which returns true if
   // and only if the provided position is a valid collision-free configuration.
-  // Provide a separate collision check for each type of tracking error bound.
   virtual bool IsValid(
-      const Vector3d& position, const Box& bound,
-      double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
-  virtual bool IsValid(
-      const Vector3d& position, const Sphere& bound,
-      double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
-  virtual bool IsValid(
-      const Vector3d& position, const Cylinder& bound,
+      const Vector3d& position, const TrackingBound& bound,
       double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
 
   // Utility for checking multiple positions.
-  template <typename B>
-  bool AreValid(const std::vector<Vector3d>& positions, const B& bound,
+  bool AreValid(const std::vector<Vector3d>& positions,
+                const TrackingBound& bound,
                 double time = std::numeric_limits<double>::quiet_NaN()) const {
     // Return Boolean AND of all IsValid calls.
     for (const auto& p : positions) {

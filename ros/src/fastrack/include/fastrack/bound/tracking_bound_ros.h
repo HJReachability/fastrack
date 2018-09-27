@@ -36,69 +36,52 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// BallsInBox is derived from the Environment base class. This class models
-// obstacles as spheres to provide a simple demo.
+// Base struct for tracking error bound with required ROS service conversions
+// (to/from ROS service response of the appropriate type (SR)).
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef FASTRACK_ENVIRONMENT_BALLS_IN_BOX_H
-#define FASTRACK_ENVIRONMENT_BALLS_IN_BOX_H
+#ifndef FASTRACK_BOUND_TRACKING_BOUND_ROS_H
+#define FASTRACK_BOUND_TRACKING_BOUND_ROS_H
 
-#include <fastrack/environment/environment.h>
-#include <fastrack/sensor/sphere_sensor_params.h>
-#include <fastrack_msgs/SensedSpheres.h>
+#include <fastrack/utils/types.h>
+#include <fastrack/bound/tracking_bound.h>
 
-#include <geometry_msgs/Point.h>
-#include <geometry_msgs/Vector3.h>
 #include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
 
 namespace fastrack {
-namespace environment {
+namespace bound {
 
-using sensor::SphereSensorParams;
-using bound::TrackingBound;
+template <typename SR>
+struct TrackingBoundRos : public TrackingBound {
+  // Initialize from vector.
+  virtual bool Initialize(const std::vector<double>& params) = 0;
 
-class BallsInBox
-    : public Environment<fastrack_msgs::SensedSpheres, SphereSensorParams> {
- public:
-  ~BallsInBox() {}
-  explicit BallsInBox()
-      : Environment<fastrack_msgs::SensedSpheres, SphereSensorParams>() {}
+  // Convert from service response type SR.
+  virtual void FromRos(const SR& res) = 0;
 
-  // Derived classes must provide a collision checker which returns true if
-  // and only if the provided position is a valid collision-free configuration.
-  // Ignores 'time' since this is a time-invariant environment.
-  bool IsValid(const Vector3d &position, const TrackingBound &bound,
-               double time = std::numeric_limits<double>::quiet_NaN()) const;
+  // Convert to service response type SR.
+  virtual SR ToRos() const = 0;
 
-  // Generate a sensor measurement.
-  fastrack_msgs::SensedSpheres SimulateSensor(
-      const SphereSensorParams &params) const;
+  // Returns true if this tracking error bound (at the given position) overlaps
+  // with different shapes.
+  virtual bool OverlapsSphere(const Vector3d& p, const Vector3d& center,
+                              double radius) const = 0;
+  virtual bool OverlapsBox(const Vector3d& p, const Vector3d& lower,
+                           const Vector3d& upper) const = 0;
 
-  // Derived classes must have some sort of visualization through RViz.
-  void Visualize() const;
+  // Returns true if this tracking error bound (at the given position) is
+  // contained within a box.
+  virtual bool ContainedWithinBox(const Vector3d& p, const Vector3d& lower,
+                                  const Vector3d& upper) const = 0;
 
- private:
-  // Load parameters. This may be overridden by derived classes if needed
-  // (they should still call this one via Environment::LoadParameters).
-  bool LoadParameters(const ros::NodeHandle &n);
+  // Visualize.
+  virtual void Visualize(const ros::Publisher& pub,
+                         const std::string& frame) const = 0;
+};  //\struct TrackingBoundRos
 
-  // Update this environment with the information contained in the given
-  // sensor measurement.
-  // NOTE! This function needs to publish on `updated_topic_`.
-  void SensorCallback(const fastrack_msgs::SensedSpheres::ConstPtr &msg);
-
-  // Generate random obstacles.
-  void GenerateObstacles(size_t num, double min_radius, double max_radius,
-                         unsigned int seed = 0);
-
-  // Obstacle centers and radii.
-  std::vector<Vector3d> centers_;
-  std::vector<double> radii_;
-};  //\class Environment
-
-}  //\namespace environment
+}  //\namespace bound
 }  //\namespace fastrack
 
 #endif

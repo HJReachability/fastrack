@@ -44,7 +44,7 @@
 #ifndef FASTRACK_BOUND_CYLINDER_H
 #define FASTRACK_BOUND_CYLINDER_H
 
-#include <fastrack/bound/tracking_bound.h>
+#include <fastrack/bound/tracking_bound_ros.h>
 #include <fastrack/utils/types.h>
 
 #include <fastrack_srvs/TrackingBoundCylinder.h>
@@ -54,7 +54,7 @@ namespace fastrack {
 namespace bound {
 
 struct Cylinder
-    : public TrackingBound<fastrack_srvs::TrackingBoundCylinder::Response> {
+    : public TrackingBoundRos<fastrack_srvs::TrackingBoundCylinder::Response> {
   // Radius.
   double r;
 
@@ -86,6 +86,48 @@ struct Cylinder
     return res;
   }
 
+  // Returns true if this tracking error bound (at the given position) overlaps
+  // with different shapes.
+  bool OverlapsSphere(const Vector3d& p, const Vector3d& center,
+                      double radius) const {
+    // Catch no overlap in z.
+    if (p(2) + z < center(2) - radius || p(2) - z > center(2) + radius)
+      return false;
+
+    // Find z coordinate on cylinder closest to the sphere.
+    const double closest_z = std::max(p(2) - z, std::min(p(2) + z, center(2)));
+
+    // Compute radius of sphere at this z coordinate.
+    const double dz = center(2) - closest_z;
+    const double effective_r = std::sqrt(radius * radius - dz * dz);
+
+    return (p.head<2>() - center.head<2>()).squaredNorm() <=
+           (effective_r + r) * (effective_r + r);
+  }
+
+  bool OverlapsBox(const Vector3d& p, const Vector3d& lower,
+                   const Vector3d& upper) const {
+    // Catch no overlap in z.
+    if (p(2) < lower(2) - z || p(2) > lower(2) + z) return false;
+
+    // Overlapping in z, so check x/y.
+    const double closest_x = std::min(upper(0), std::max(p(0), lower(0)));
+    const double closest_y = std::min(upper(1), std::max(p(1), lower(1)));
+    const double dx = closest_x - p(0);
+    const double dy = closest_y - p(1);
+
+    return dx * dx + dy * dy <= r;
+  }
+
+  // Returns true if this tracking error bound (at the given position) is
+  // contained within a box.
+  bool ContainedWithinBox(const Vector3d& p, const Vector3d& lower,
+                          const Vector3d& upper) const {
+    return p(0) >= lower(0) + r && p(0) <= upper(0) - r &&
+           p(1) >= lower(1) + r && p(1) <= upper(1) - r &&
+           p(2) >= lower(2) + z && p(2) <= upper(2) - z;
+  }
+
   // Visualize.
   void Visualize(const ros::Publisher& pub, const std::string& frame) const {
     visualization_msgs::Marker m;
@@ -106,9 +148,9 @@ struct Cylinder
     pub.publish(m);
   }
 
-}; //\struct Cylinder
+};  //\struct Cylinder
 
-} //\namespace bound
-} //\namespace fastrack
+}  //\namespace bound
+}  //\namespace fastrack
 
 #endif
