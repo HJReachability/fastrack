@@ -73,17 +73,7 @@ class OccupancyMap : public Environment<M, P> {
 
   // Collision check is a threshold test on occupancy probability integrated
   // over the bound.
-  bool IsValid(const Vector3d& position, const Box& bound,
-               double time = std::numeric_limits<double>::quiet_NaN()) const {
-    return this->initialized_ &&
-           OccupancyProbability(position, bound, time) < free_space_threshold_;
-  }
-  bool IsValid(const Vector3d& position, const Sphere& bound,
-               double time = std::numeric_limits<double>::quiet_NaN()) const {
-    return this->initialized_ &&
-           OccupancyProbability(position, bound, time) < free_space_threshold_;
-  }
-  bool IsValid(const Vector3d& position, const Cylinder& bound,
+  bool IsValid(const Vector3d& position, const TrackingBound& bound,
                double time = std::numeric_limits<double>::quiet_NaN()) const {
     return this->initialized_ &&
            OccupancyProbability(position, bound, time) < free_space_threshold_;
@@ -95,13 +85,7 @@ class OccupancyMap : public Environment<M, P> {
       const Vector3d& position,
       double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
   virtual double OccupancyProbability(
-      const Vector3d& position, const Box& bound,
-      double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
-  virtual double OccupancyProbability(
-      const Vector3d& position, const Sphere& bound,
-      double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
-  virtual double OccupancyProbability(
-      const Vector3d& position, const Cylinder& bound,
+      const Vector3d& position, const TrackingBound& bound,
       double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
 
   // Generate a sensor measurement.

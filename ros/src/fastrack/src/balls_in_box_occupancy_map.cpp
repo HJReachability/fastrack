@@ -78,10 +78,10 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
 }
 
 // Occupancy probability for a box tracking error bound centered at the given
-// point. Occupancy is set to occupied if ANY of the box is occupied. Next,
-// if ANY of the box is unknown the result is unknown. Otherwise, free.
+// point. Occupancy is set to occupied if ANY of the bound is occupied. Next,
+// if ANY of the bound is unknown the result is unknown. Otherwise, free.
 double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
-                                                    const Box& bound,
+                                                    const TrackingBound& bound,
                                                     double time) const {
   if (!initialized_) {
     ROS_WARN("%s: Tried to collision check without initializing.",
@@ -90,110 +90,15 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
   }
 
   // Check box limits.
-  if (p(0) < lower_(0) + bound.x || p(0) > upper_(0) - bound.x ||
-      p(1) < lower_(1) + bound.y || p(1) > upper_(1) - bound.y ||
-      p(2) < lower_(2) + bound.z || p(2) > upper_(2) - bound.z)
-    return kOccupiedProbability;
+  if (!bound.ContainedWithinBox(p, lower_, upper_)) return kOccupiedProbability;
 
   // Helper function to check if any sphere in the given KdtreeMap overlaps
   // the given Box.
   auto overlaps = [&p, &bound](const KdtreeMap<3, double>& kdtree) {
-    // Get nearest neighbors.
+    // Get k-nearest neighbors as a heuristic.
     // NOTE: using KnnSearch instead of RadiusSearch because it seems to
-    // be more precise.
-    constexpr size_t kNumNearestNeighbors = 10;
-    const auto neighbors = kdtree.KnnSearch(p, kNumNearestNeighbors);
-
-    // Check for overlaps.
-    const Vector3d bound_vector(bound.x, bound.y, bound.z);
-    for (const auto& entry : neighbors) {
-      // Find closest point to neighbor within bound.
-      Vector3d closest_point;
-      for (size_t ii = 0; ii < 3; ii++) {
-        closest_point(ii) =
-            std::min(p(ii) + bound_vector(ii),
-                     std::max(p(ii) - bound_vector(ii), entry.first(ii)));
-      }
-
-      // Is closest point within radius.
-      if ((closest_point - entry.first).norm() <= entry.second) return true;
-    }
-
-    return false;
-  };  //\overlaps
-
-  // Check if this point is inside any obstacles.
-  if (overlaps(obstacles_)) return kOccupiedProbability;
-
-  // Check if this point contains any unknown space.
-  if (!overlaps(sensor_fovs_)) return kUnknownProbability;
-
-  return kFreeProbability;
-}
-
-double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
-                                                    const Sphere& bound,
-                                                    double time) const {
-  if (!initialized_) {
-    ROS_WARN("%s: Tried to collision check without initializing.",
-             name_.c_str());
-    return kOccupiedProbability;
-  }
-
-  // Check environment limits.
-  if (p(0) < lower_(0) + bound.r || p(0) > upper_(0) - bound.r ||
-      p(1) < lower_(1) + bound.r || p(1) > upper_(1) - bound.r ||
-      p(2) < lower_(2) + bound.r || p(2) > upper_(2) - bound.r)
-    return kOccupiedProbability;
-
-  // Helper function to check if any sphere in the given KdtreeMap overlaps
-  // the given Sphere.
-  auto overlaps = [&p, &bound](const KdtreeMap<3, double>& kdtree) {
-    // Get nearest neighbors.
-    // NOTE: using KnnSearch instead of RadiusSearch because it seems to
-    // be more precise.
-    constexpr size_t kNumNearestNeighbors = 10;
-    const auto neighbors = kdtree.KnnSearch(p, kNumNearestNeighbors);
-
-    // Check for overlaps.
-    for (const auto& entry : neighbors) {
-      if ((p - entry.first).norm() <= entry.second + bound.r) return true;
-    }
-
-    return false;
-  };  //\overlaps
-
-  // Check if this point is inside any obstacles.
-  if (overlaps(obstacles_)) return kOccupiedProbability;
-
-  // Check if this point contains any unknown space.
-  if (!overlaps(sensor_fovs_)) return kUnknownProbability;
-
-  return kFreeProbability;
-}
-
-double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
-                                                    const Cylinder& bound,
-                                                    double time) const {
-  if (!initialized_) {
-    ROS_WARN("%s: Tried to collision check without initializing.",
-             name_.c_str());
-    return kOccupiedProbability;
-  }
-
-  // Check environment limits.
-  if (p(0) < lower_(0) + bound.r || p(0) > upper_(0) - bound.r ||
-      p(1) < lower_(1) + bound.r || p(1) > upper_(1) - bound.r ||
-      p(2) < lower_(2) + bound.z || p(2) > upper_(2) - bound.z)
-    return kOccupiedProbability;
-
-  // Helper function to check if any sphere in the given KdtreeMap overlaps
-  // the given Cylinder.
-  auto overlaps = [&p, &bound](const KdtreeMap<3, double>& kdtree,
-                               double largest_radius) {
-    // Get nearest neighbors.
-    // NOTE: using KnnSearch instead of RadiusSearch because it seems to
-    // be more precise.
+    // be more precise. When the Kdtree is huge it may make more sense to
+    // radius search, or it may not matter.
     constexpr size_t kNumNearestNeighbors = 10;
     const auto neighbors = kdtree.KnnSearch(p, kNumNearestNeighbors);
 
@@ -201,42 +106,17 @@ double BallsInBoxOccupancyMap::OccupancyProbability(const Vector3d& p,
     for (const auto& entry : neighbors) {
       const Vector3d& center = entry.first;
       const double& radius = entry.second;
-
-      // Check if we could not possibly collide with this neighbor sphere
-      // because it's too far away in z.
-      if (center(2) - radius > p(2) + bound.z ||
-          center(2) + radius < p(2) - bound.z)
-        continue;
-
-      // Find z coordinate on cylinder closest to the neighbor sphere.
-      // Handle cases separately depending on whether sphere center is above
-      // cylinder center.
-      const double closest_z =
-          (center(2) >= p(2))
-              ? std::max(std::min(p(2) + bound.z, center(2)),
-                         std::max(p(2) - bound.z, center(2) - radius))
-              : std::min(std::max(p(2) - bound.z, center(2)),
-                         std::min(p(2) + bound.z, center(2) + radius));
-
-      // Compute radius of sphere at this z coordinate.
-      const double dz = center(2) - closest_z;
-      const double effective_r = std::sqrt(radius * radius - dz * dz);
-
-      // Compute differences in x/y.
-      if ((p.head<2>() - center.head<2>()).norm() <= effective_r + bound.r)
-        return true;
+      if (bound.OverlapsSphere(p, center, radius)) return true;
     }
 
     return false;
   };  //\overlaps
 
   // Check if this point is inside any obstacles.
-  if (overlaps(obstacles_, largest_obstacle_radius_))
-    return kOccupiedProbability;
+  if (overlaps(obstacles_)) return kOccupiedProbability;
 
   // Check if this point contains any unknown space.
-  if (!overlaps(sensor_fovs_, largest_sensor_radius_))
-    return kUnknownProbability;
+  if (!overlaps(sensor_fovs_)) return kUnknownProbability;
 
   return kFreeProbability;
 }

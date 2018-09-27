@@ -43,7 +43,7 @@
 #ifndef FASTRACK_BOUND_SPHERE_H
 #define FASTRACK_BOUND_SPHERE_H
 
-#include <fastrack/bound/tracking_bound.h>
+#include <fastrack/bound/tracking_bound_ros.h>
 #include <fastrack/utils/types.h>
 
 #include <fastrack_srvs/TrackingBoundSphere.h>
@@ -53,7 +53,7 @@ namespace fastrack {
 namespace bound {
 
 struct Sphere
-    : public TrackingBound<fastrack_srvs::TrackingBoundSphere::Response> {
+    : public TrackingBoundRos<fastrack_srvs::TrackingBoundSphere::Response> {
   // Radius.
   double r;
 
@@ -81,6 +81,30 @@ struct Sphere
     return res;
   }
 
+  // Returns true if this tracking error bound (at the given position) overlaps
+  // with different shapes.
+  bool OverlapsSphere(const Vector3d& p, const Vector3d& center,
+                      double radius) const {
+    return (p - center).squaredNorm() <= (radius + r) * (radius + r);
+  }
+
+  bool OverlapsBox(const Vector3d& p, const Vector3d& lower,
+                   const Vector3d& upper) const {
+    const Vector3d closest_point(std::min(upper(0), std::max(lower(0), p(0))),
+                                 std::min(upper(1), std::max(lower(1), p(1))),
+                                 std::min(upper(2), std::max(lower(2), p(2))));
+    return (closest_point - p).squaredNorm() <= r * r;
+  }
+
+  // Returns true if this tracking error bound (at the given position) is
+  // contained within a box.
+  bool ContainedWithinBox(const Vector3d& p, const Vector3d& lower,
+                          const Vector3d& upper) const {
+    return p(0) >= lower(0) + r && p(0) <= upper(0) - r &&
+           p(1) >= lower(1) + r && p(1) <= upper(1) - r &&
+           p(2) >= lower(2) + r && p(2) <= upper(2) - r;
+  }
+
   // Visualize.
   void Visualize(const ros::Publisher& pub, const std::string& frame) const {
     visualization_msgs::Marker m;
@@ -101,9 +125,9 @@ struct Sphere
     pub.publish(m);
   }
 
-}; //\struct Sphere
+};  //\struct Sphere
 
-} //\namespace bound
-} //\namespace fastrack
+}  //\namespace bound
+}  //\namespace fastrack
 
 #endif
