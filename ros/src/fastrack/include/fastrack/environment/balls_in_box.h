@@ -57,23 +57,24 @@ namespace fastrack {
 namespace environment {
 
 using sensor::SphereSensorParams;
+using bound::TrackingBound;
 
 class BallsInBox
     : public Environment<fastrack_msgs::SensedSpheres, SphereSensorParams> {
  public:
   ~BallsInBox() {}
-  explicit BallsInBox() : Environment() {}
+  explicit BallsInBox()
+      : Environment<fastrack_msgs::SensedSpheres, SphereSensorParams>() {}
 
   // Derived classes must provide a collision checker which returns true if
   // and only if the provided position is a valid collision-free configuration.
-  // Provide a separate collision check for each type of tracking error bound.
   // Ignores 'time' since this is a time-invariant environment.
-  bool IsValid(const Vector3d& position, const Box& bound,
+  bool IsValid(const Vector3d &position, const TrackingBound &bound,
                double time = std::numeric_limits<double>::quiet_NaN()) const;
 
   // Generate a sensor measurement.
   fastrack_msgs::SensedSpheres SimulateSensor(
-      const SphereSensorParams& params) const;
+      const SphereSensorParams &params) const;
 
   // Derived classes must have some sort of visualization through RViz.
   void Visualize() const;
@@ -81,12 +82,12 @@ class BallsInBox
  private:
   // Load parameters. This may be overridden by derived classes if needed
   // (they should still call this one via Environment::LoadParameters).
-  bool LoadParameters(const ros::NodeHandle& n);
+  bool LoadParameters(const ros::NodeHandle &n);
 
   // Update this environment with the information contained in the given
   // sensor measurement.
   // NOTE! This function needs to publish on `updated_topic_`.
-  void SensorCallback(const fastrack_msgs::SensedSpheres::ConstPtr& msg);
+  void SensorCallback(const fastrack_msgs::SensedSpheres::ConstPtr &msg);
 
   // Generate random obstacles.
   void GenerateObstacles(size_t num, double min_radius, double max_radius,

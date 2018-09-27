@@ -59,17 +59,17 @@ using control::QuadrotorControl;
 using control::QuadrotorControlBoundBox;
 using state::PositionVelocity;
 
+template <typename CB>
 class QuadrotorDecoupled6D
-    : public Dynamics<PositionVelocity, QuadrotorControl, Empty> {
-public:
+  : public Dynamics<PositionVelocity, QuadrotorControl, CB, Empty> {
+ public:
   ~QuadrotorDecoupled6D() {}
   explicit QuadrotorDecoupled6D()
-      : Dynamics<PositionVelocity, QuadrotorControl, Empty>() {}
-  explicit QuadrotorDecoupled6D(const QuadrotorControl &u_lower,
-                                const QuadrotorControl &u_upper)
-      : Dynamics<PositionVelocity, QuadrotorControl, Empty>(
-            std::unique_ptr<ControlBound<QuadrotorControl>>(
-                new QuadrotorControlBoundBox(u_lower, u_upper))) {}
+    : Dynamics<PositionVelocity, QuadrotorControl, CB, Empty>() {}
+  explicit QuadrotorDecoupled6D(const CB& bound)
+    : Dynamics<PositionVelocity, QuadrotorControl, CB, Empty>(bound) {}
+  explicit QuadrotorDecoupled6D(const std::vector<double>& params)
+    : Dynamics<PositionVelocity, QuadrotorControl, CB, Empty>(params) {}
 
   // Derived classes must be able to give the time derivative of state
   // as a function of current state and control.
@@ -92,11 +92,10 @@ public:
   // the gradient of the value function at the specified state.
   // In this case (linear dynamics), the state is irrelevant given the
   // gradient of the value function at that state.
-  inline QuadrotorControl
-  OptimalControl(const PositionVelocity &x,
-                 const PositionVelocity &value_gradient) const {
+  inline QuadrotorControl OptimalControl(
+      const PositionVelocity &x, const PositionVelocity &value_gradient) const {
     // Check initialization.
-    if (!initialized_)
+    if (!this->control_bound_)
       throw std::runtime_error(
           "QuadrotorDecoupled6D: uninitialized call to OptimalControl.");
 
@@ -109,7 +108,7 @@ public:
     negative_grad.thrust = -value_gradient.Vz();
 
     // Project onto control bound and make sure to zero out yaw_rate.
-    QuadrotorControl c = control_bound_->ProjectToSurface(negative_grad);
+    QuadrotorControl c = this->control_bound_->ProjectToSurface(negative_grad);
     c.yaw_rate = 0.0;
 
     return c;
@@ -126,9 +125,9 @@ public:
     throw std::runtime_error("QuadrotorDecoupled6D: FromRos is unimplemented.");
   }
 
-}; //\class QuadrotorDecoupled6D
+};  //\class QuadrotorDecoupled6D
 
-} // namespace dynamics
-} // namespace fastrack
+}  // namespace dynamics
+}  // namespace fastrack
 
 #endif

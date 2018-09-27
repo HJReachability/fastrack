@@ -50,15 +50,15 @@ namespace fastrack {
 namespace state {
 
 class PositionVelocity : public State {
-public:
+ public:
   ~PositionVelocity() {}
   explicit PositionVelocity()
       : position_(Vector3d::Zero()), velocity_(Vector3d::Zero()) {}
   explicit PositionVelocity(double x, double y, double z, double vx, double vy,
                             double vz);
-  explicit PositionVelocity(const Vector3d &position, const Vector3d &velocity);
-  explicit PositionVelocity(const fastrack_msgs::State &msg);
-  explicit PositionVelocity(const VectorXd &config);
+  explicit PositionVelocity(const Vector3d& position, const Vector3d& velocity);
+  explicit PositionVelocity(const fastrack_msgs::State& msg);
+  explicit PositionVelocity(const VectorXd& x);
 
   // Accessors.
   inline double X() const { return position_(0); }
@@ -80,18 +80,18 @@ public:
   }
 
   // Setters.
-  inline double &X() { return position_(0); }
-  inline double &Y() { return position_(1); }
-  inline double &Z() { return position_(2); }
-  inline double &Vx() { return velocity_(0); }
-  inline double &Vy() { return velocity_(1); }
-  inline double &Vz() { return velocity_(2); }
+  inline double& X() { return position_(0); }
+  inline double& Y() { return position_(1); }
+  inline double& Z() { return position_(2); }
+  inline double& Vx() { return velocity_(0); }
+  inline double& Vy() { return velocity_(1); }
+  inline double& Vz() { return velocity_(2); }
 
-  inline Vector3d &Position() { return position_; }
-  inline Vector3d &Velocity() { return velocity_; }
+  inline Vector3d& Position() { return position_; }
+  inline Vector3d& Velocity() { return velocity_; }
 
   // Set non-configuration dimensions to match the given config derivative.
-  void SetConfigurationDot(const VectorXd &configuration_dot);
+  void SetConfigurationDot(const VectorXd& configuration_dot);
 
   // What are the positions that the system occupies at the current state.
   // NOTE! For simplicity, this is a finite set. In future, this could
@@ -99,12 +99,12 @@ public:
   std::vector<Vector3d> OccupiedPositions() const;
 
   // Convert from/to VectorXd. Assume State is [x, y, z, vx, vy, vz]
-  void FromVector(const VectorXd &x);
+  void FromVector(const VectorXd& x);
   VectorXd ToVector() const;
 
   // Convert from/to ROS message. Assume State is [x, y, z, vx, vy, vz]
   // or configuration only.
-  void FromRos(const fastrack_msgs::State::ConstPtr &msg);
+  void FromRos(const fastrack_msgs::State::ConstPtr& msg);
   fastrack_msgs::State ToRos() const;
 
   // Dimension of the state and configuration spaces.
@@ -112,10 +112,12 @@ public:
   static constexpr size_t ConfigurationDimension() { return 3; }
 
   // Set/get bounds of the state/configuration space.
-  static void SetBounds(const PositionVelocity &lower,
-                        const PositionVelocity &upper);
-  static void SetBounds(const std::vector<double> &lower,
-                        const std::vector<double> &upper);
+  static void SetBounds(const PositionVelocity& lower,
+                        const PositionVelocity& upper);
+  static void SetBounds(const std::vector<double>& lower,
+                        const std::vector<double>& upper);
+  static const PositionVelocity& GetLower();
+  static const PositionVelocity& GetUpper();
   static VectorXd GetConfigurationLower();
   static VectorXd GetConfigurationUpper();
 
@@ -141,16 +143,16 @@ public:
   friend PositionVelocity operator/(PositionVelocity lhs, double s);
   friend PositionVelocity operator/(double s, PositionVelocity rhs);
 
-private:
+ private:
   Vector3d position_;
   Vector3d velocity_;
 
   // Static state space bounds for this state space.
   static PositionVelocity lower_;
   static PositionVelocity upper_;
-}; //\class PositionVelocity
+};  //\class PositionVelocity
 
-} // namespace state
-} // namespace fastrack
+}  // namespace state
+}  // namespace fastrack
 
 #endif

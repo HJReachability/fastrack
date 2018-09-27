@@ -75,7 +75,7 @@
   <arg name="lqr_x_dim" default="7" />
   <arg name="lqr_u_dim" default="4" />
 
-  <arg name="lqr_K_file" default="$(find crazyflie_lqr)/references/K_poor.txt" />
+  <arg name="lqr_K_file" default="$(find crazyflie_lqr)/references/K_manual.txt" />
   <arg name="lqr_u_ref_file" default="$(find crazyflie_lqr)/references/u_ref_hover.txt" />
 
   <!-- Environment parameters and state space bounds. -->
@@ -91,10 +91,15 @@
   <arg name="env_lower_x" default="-$(arg env_max)" />
   <arg name="env_lower_y" default="-$(arg env_max)" />
   <arg name="env_lower_z" default="0.0" />
-  <arg name="env_num_obstacles" default="20" />
+  <arg name="env_num_random_obstacles" default="20" />
   <arg name="env_min_radius" default="0.5" />
   <arg name="env_max_radius" default="1.0" />
   <arg name="seed" default="0" />
+
+  <arg name="env_obstacle_xs" default="[]" />
+  <arg name="env_obstacle_ys" default="[]" />
+  <arg name="env_obstacle_zs" default="[]" />
+  <arg name="env_obstacle_rs" default="[]" />
 
   <!-- Sensor range. -->
   <arg name="sensor_range" default="2.0" />
@@ -144,7 +149,7 @@
     <arg name="env_lower_x" value="$(arg env_lower_x)" />
     <arg name="env_lower_y" value="$(arg env_lower_y)" />
     <arg name="env_lower_z" value="$(arg env_lower_z)" />
-    <arg name="env_num_obstacles" value="0" />
+    <arg name="env_num_random_obstacles" value="$(arg env_num_random_obstacles)" />
     <arg name="env_min_radius" value="$(arg env_min_radius)" />
     <arg name="env_max_radius" value="$(arg env_max_radius)" />
     <arg name="seed" value="$(arg seed)" />
@@ -189,10 +194,14 @@
     <arg name="env_lower_x" value="$(arg env_lower_x)" />
     <arg name="env_lower_y" value="$(arg env_lower_y)" />
     <arg name="env_lower_z" value="$(arg env_lower_z)" />
-    <arg name="env_num_obstacles" value="$(arg env_num_obstacles)" />
+    <arg name="env_num_random_obstacles" value="$(arg env_num_random_obstacles)" />
     <arg name="env_min_radius" value="$(arg env_min_radius)" />
     <arg name="env_max_radius" value="$(arg env_max_radius)" />
     <arg name="seed" value="$(arg seed)" />
+    <arg name="env_obstacle_xs" value="$(arg env_obstacle_xs)" />
+    <arg name="env_obstacle_ys" value="$(arg env_obstacle_ys)" />
+    <arg name="env_obstacle_zs" value="$(arg env_obstacle_zs)" />
+    <arg name="env_obstacle_rs" value="$(arg env_obstacle_rs)" />
   </include>
 
   <!-- Control converter. -->
@@ -208,7 +217,7 @@
   </include>
 
   <!-- Reference converter. -->
-  <include file="$(find fastrack_crazyflie_demos)/launch/reference_converter.launch">
+  <include file="$(find fastrack_crazyflie_demos)/launch/position_velocity_reference_converter.launch">
     <arg name="fastrack_reference_topic" value="$(arg fastrack_reference_state_topic)" />
     <arg name="raw_reference_topic" value="$(arg reference_state_topic)" />
   </include>

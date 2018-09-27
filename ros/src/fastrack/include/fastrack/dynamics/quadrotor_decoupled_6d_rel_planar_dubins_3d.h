@@ -32,6 +32,7 @@
  *
  * Please contact the author(s) of this library if you have any questions.
  * Authors: David Fridovich-Keil   ( dfk@eecs.berkeley.edu )
+ *          Jaime F. Fisac         ( jfisac@eecs.berkeley.edu )
  */
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -45,7 +46,9 @@
 #define FASTRACK_DYNAMICS_QUADROTOR_DECOUPLED_6D_REL_PLANAR_DUBINS_3D_H
 
 #include <fastrack/control/quadrotor_control.h>
+#include <fastrack/control/quadrotor_control_bound_cylinder.h>
 #include <fastrack/dynamics/dynamics.h>
+#include <fastrack/dynamics/relative_dynamics.h>
 #include <fastrack/state/planar_dubins_3d.h>
 #include <fastrack/state/position_velocity.h>
 #include <fastrack/state/position_velocity_rel_planar_dubins_3d.h>
@@ -56,6 +59,7 @@ namespace fastrack {
 namespace dynamics {
 
 using control::QuadrotorControl;
+using control::QuadrotorControlBoundCylinder;
 using state::PlanarDubins3D;
 using state::PositionVelocity;
 using state::PositionVelocityRelPlanarDubins3D;
@@ -71,49 +75,18 @@ public:
 
   // Derived classes must be able to give the time derivative of relative state
   // as a function of current state and control of each system.
-  inline std::unique_ptr<RelativeState<PositionVelocity, PlanarDubins3D>>
-  Evaluate(const PositionVelocity &tracker_x, const QuadrotorControl &tracker_u,
-           const PlanarDubins3D &planner_x, const double &planner_u) const {
-    // Compute relative state.
-    const PositionVelocityRelPlanarDubins3D relative_x(tracker_x, planner_x);
-
-    // TODO(@jaime): Check these calculations.
-    // Relative distance derivative.
-    distance_dot =
-        relative_x.TangentVelocity() * std::cos(relative_x.Bearing()) +
-        relative_x.NormalVelocity() * std::sin(relative_x.Bearing());
-
-    // Relative bearing derivative.
-    bearing_dot =
-        -planner_u -
-        relative_x.TangentVelocity() * std::sin(relative_x.Bearing()) +
-        relative_x.NormalVelocity() * std::cos(relative_x.Bearing());
-
-    // Relative tangent and normal velocity derivatives.
-    // NOTE! Must rotate roll/pitch into planner frame.
-    const double c = std::cos(planner_x.Theta());
-    const double s = std::sin(planner_x.Theta());
-
-    tangent_velocity_dot = tracker_u.pitch * c - tracker_u.roll * s +
-                           planner_u * relative_x.TangentVelocity();
-    normal_velocity_dot = -tracker_u.pitch * s - tracker_u.roll * c -
-                          planner_u * relative_x.TangentVelocity();
-
-    return std::unique_ptr<PositionVelocityRelPlanarDubins3D>(
-        new PositionVelocityRelPlanarDubins3D() distance_dot, bearing_dot,
-        tangent_velocity_dot, normal_velocity_dot));
-  }
+  std::unique_ptr<RelativeState<PositionVelocity, PlanarDubins3D>>
+  Evaluate(const PositionVelocity& tracker_x, const QuadrotorControl& tracker_u,
+           const PlanarDubins3D& planner_x, const double& planner_u) const;
 
   // Derived classes must be able to compute an optimal control given
   // the gradient of the value function at the relative state specified
   // by the given system states, provided abstract control bounds.
-  inline QuadrotorControl OptimalControl(
-      const PositionVelocity &tracker_x, const PlanarDubins3D &planner_x,
-      const RelativeState<PositionVelocity, PlanarDubins3D> &value_gradient,
-      const QuadrotorControlBoundCylinder &tracker_u_bound,
-      const ScalarBoundInterval &planner_u_bound) const {
-    // TODO(@dfk, @jaime): figure this part out.
-  }
+  QuadrotorControl OptimalControl(
+      const PositionVelocity& tracker_x, const PlanarDubins3D& planner_x,
+      const RelativeState<PositionVelocity, PlanarDubins3D>& value_gradient,
+      const ControlBound<QuadrotorControl>& tracker_u_bound,
+      const ControlBound<double>& planner_u_bound) const;
 }; //\class QuadrotorDecoupledPlanarDubins
 
 } // namespace dynamics

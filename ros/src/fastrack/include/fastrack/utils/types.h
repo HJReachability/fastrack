@@ -64,19 +64,19 @@
 namespace fastrack {
 namespace constants {
 // Acceleration due to gravity.
-const double G = 9.81;
+static constexpr double G = 9.81;
 
 // Small number for use in approximate equality checking.
-const double kEpsilon = 1e-4;
+static constexpr double kEpsilon = 1e-4;
 
 // Double precision infinity.
-const double kInfinity = std::numeric_limits<double>::infinity();
+static constexpr double kInfinity = std::numeric_limits<double>::infinity();
 
 // Default speed of 1 m/s.
-const double kDefaultSpeed = 1.0;
+static constexpr double kDefaultSpeed = 1.0;
 
 // Default height (e.g. for planar state space models).
-const double kDefaultHeight = 1.0;
+static constexpr double kDefaultHeight = 1.0;
 } // namespace constants
 
 // Empty struct for setting unused/unimplemented template args.

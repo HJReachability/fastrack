@@ -105,10 +105,12 @@ private:
   inline bool TrackingBoundServer(
     typename SB::Request& req, typename SB::Response& res) {
     res = value_.TrackingBound().ToRos();
+    return true;
   }
   inline bool PlannerDynamicsServer(
      typename SP::Request& req, typename SP::Response& res) {
     res = value_.PlannerDynamics().ToRos();
+    return true;
   }
 
   // Timer callback. Compute the optimal control and publish.

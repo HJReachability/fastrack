@@ -37,7 +37,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Defines the Dynamics class. Templated on the state type and control type,
-// as well as the type of service response (SR) which encodes these dynamics.
+// control bound type (CB), as well as the type of service response (SR) which
+// encodes these dynamics.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -52,17 +53,16 @@
 namespace fastrack {
 namespace dynamics {
 
-using control::ControlBound;
-
-template <typename S, typename C, typename SR> class Dynamics {
-public:
+template <typename S, typename C, typename CB, typename SR>
+class Dynamics {
+ public:
   // Destructor.
   virtual ~Dynamics() {}
 
-  // Initialize with control bounds.
-  void Initialize(std::unique_ptr<ControlBound<C>> bound) {
-    control_bound_ = std::move(bound);
-    initialized_ = true;
+  // Initialize.
+  void Initialize(const CB &bound) { control_bound_.reset(new CB(bound)); }
+  virtual void Initialize(const std::vector<double> &params) {
+    control_bound_.reset(new CB(params));
   }
 
   // Derived classes must be able to give the time derivative of state
@@ -74,7 +74,12 @@ public:
   virtual C OptimalControl(const S &x, const S &value_gradient) const = 0;
 
   // Accessor for control bound.
-  const ControlBound<C> &GetControlBound() const { return *control_bound_; }
+  const CB &GetControlBound() const {
+    if (!control_bound_)
+      throw std::runtime_error("Dynamics was not initialized.");
+
+    return *control_bound_;
+  }
 
   // Convert to the appropriate service response type.
   virtual SR ToRos() const = 0;
@@ -82,19 +87,17 @@ public:
   // Convert from the appropriate service response type.
   virtual void FromRos(const SR &res) = 0;
 
-protected:
-  explicit Dynamics() : initialized_(false) {}
-  explicit Dynamics(std::unique_ptr<ControlBound<C>> bound)
-      : control_bound_(bound.release()), initialized_(true) {}
+ protected:
+  explicit Dynamics() {}
+  explicit Dynamics(const CB &bound) : control_bound_(new CB(bound)) {}
+  explicit Dynamics(const std::vector<double> &params)
+      : control_bound_(new CB(params)) {}
 
   // Control bound.
-  std::unique_ptr<const ControlBound<C>> control_bound_;
+  std::unique_ptr<CB> control_bound_;
+};  //\class Dynamics
 
-  // Initialization.
-  bool initialized_;
-}; //\class Dynamics
-
-} // namespace dynamics
-} // namespace fastrack
+}  // namespace dynamics
+}  // namespace fastrack
 
 #endif

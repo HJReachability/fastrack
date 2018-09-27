@@ -50,28 +50,49 @@ namespace fastrack {
 namespace control {
 
 class VectorBoundBox : public ControlBound<VectorXd> {
-public:
+ public:
   ~VectorBoundBox() {}
-  explicit VectorBoundBox(const VectorXd &min, const VectorXd &max)
-      : ControlBound(), min_(min), max_(max) {
+  explicit VectorBoundBox(const VectorXd& min, const VectorXd& max)
+      : min_(min), max_(max) {
     if (min_.size() != max_.size())
       throw std::runtime_error("Inconsistent bound dimensions.");
   }
 
+  // Assume 'params' is laid out such that the first half of the parameters
+  // form the 'min_' and the second form the 'max_'.
+  explicit VectorBoundBox(const std::vector<double>& params) {
+    if (!params.size() || params.size() & 1)
+      throw std::runtime_error("Incorrect number of parameters.");
+
+    const size_t dimension = params.size() >> 1;
+
+    min_.resize(dimension);
+    for (size_t ii = 0; ii < dimension; ii++) min_(ii) = params[ii];
+
+    max_.resize(dimension);
+    for (size_t ii = 0; ii < dimension; ii++) max_(ii) = params[dimension + ii];
+  }
+
   // Accessors.
-  inline const VectorXd &Min() const { return min_; }
-  inline const VectorXd &Max() const { return max_; }
+  inline const VectorXd& Min() const { return min_; }
+  inline const VectorXd& Max() const { return max_; }
+
+  // Custom definition of copy-assign operator.
+  VectorBoundBox& operator=(const VectorBoundBox& other) {
+    if (&other == this) return *this;
+
+    min_ = other.min_;
+    max_ = other.max_;
+    return *this;
+  }
 
   // Derived classes must be able to check whether a query is inside the bound.
-  inline bool Contains(const VectorXd &query) const {
-    if (min_.size() != query.size()) {
-      ROS_ERROR("VectorBoundBox: incorrect query dimension.");
-      return false;
-    }
+  inline bool Contains(const VectorXd& query) const {
+    if (min_.size() != query.size())
+      throw std::runtime_error("Incorrect query dimension.");
 
     for (size_t ii = 0; ii < min_.size(); ii++) {
-      if (min_(ii) > query(ii) || query(ii) > max_(ii))
-        return false;
+      if (min_(ii) > query(ii) || query(ii) > max_(ii)) return false;
     }
 
     return true;
@@ -79,14 +100,11 @@ public:
 
   // Derived classes must be able to compute the projection of a vector
   // (represented as the templated type) onto the surface of the bound.
-  // NOTE: We will treat this vector as emanating from the natural origin
-  // of the bound so that it constitutes a meaningful direction with respect
-  // to that origin.
-  inline VectorXd ProjectToSurface(const VectorXd &query) const {
-    if (min_.size() != query.size()) {
-      ROS_ERROR("VectorBoundBox: incorrect query dimension.");
-      return VectorXd::Zero(min_.size());
-    }
+  // NOTE: this is basically solving an LP with the bound as the feasible
+  // set and the query as the coefficients.
+  inline VectorXd ProjectToSurface(const VectorXd& query) const {
+    if (min_.size() != query.size())
+      throw std::runtime_error("Incorrect query dimension.");
 
     VectorXd projection(min_.size());
     for (size_t ii = 0; ii < min_.size(); ii++)
@@ -95,12 +113,12 @@ public:
     return projection;
   }
 
-private:
+ private:
   // Lower and upper bounds..
-  const VectorXd min_, max_;
-}; //\class ControlBound
+  VectorXd min_, max_;
+};  //\class ControlBound
 
-} // namespace control
-} // namespace fastrack
+}  // namespace control
+}  // namespace fastrack
 
 #endif

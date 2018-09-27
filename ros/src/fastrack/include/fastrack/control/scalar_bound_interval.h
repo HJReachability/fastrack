@@ -49,13 +49,32 @@ namespace fastrack {
 namespace control {
 
 class ScalarBoundInterval : public ControlBound<double> {
-public:
+ public:
   ~ScalarBoundInterval() {}
-  explicit ScalarBoundInterval(double min, double max)
-      : ControlBound(), min_(min), max_(max) {}
+  explicit ScalarBoundInterval(double min, double max) : min_(min), max_(max) {}
+
+  // Assume 'params' is [min, max].
+  explicit ScalarBoundInterval(const std::vector<double>& params)
+      : min_(params[0]), max_(params[1]) {
+    if (params.size() != 2)
+      throw std::runtime_error("Incorrect number of parameters.");
+  }
+
+  // Accessors.
+  double Min() const { return min_; }
+  double Max() const { return max_; }
+
+  // Custom definition of copy-assign operator.
+  ScalarBoundInterval& operator=(const ScalarBoundInterval& other) {
+    if (&other == this) return *this;
+
+    min_ = other.min_;
+    max_ = other.max_;
+    return *this;
+  }
 
   // Derived classes must be able to check whether a query is inside the bound.
-  inline bool Contains(const double &query) const {
+  inline bool Contains(const double& query) const {
     return min_ <= query && query <= max_;
   }
 
@@ -64,16 +83,16 @@ public:
   // NOTE: We will treat this vector as emanating from the natural origin
   // of the bound so that it constitutes a meaningful direction with respect
   // to that origin.
-  inline double ProjectToSurface(const double &query) const {
+  inline double ProjectToSurface(const double& query) const {
     return (query >= 0.0) ? max_ : min_;
   }
 
-private:
+ private:
   // Min and max interval values.
-  const double min_, max_;
-}; //\class ControlBound
+  double min_, max_;
+};  //\class ControlBound
 
-} // namespace control
-} // namespace fastrack
+}  // namespace control
+}  // namespace fastrack
 
 #endif

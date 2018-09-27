@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<launch>
+  <!-- Topics. -->
+  <arg name="ready_topic" default="/ready" />
+  <arg name="tracker_state_topic" default="/state/tracker" />
+  <arg name="planner_state_topic" default="/state/planner" />
+  <arg name="control_topic" default="/fastrack/control" />
+  <arg name="bound_topic" default="/vis/bound" />
+
+  <!-- Services. -->
+  <arg name="bound_srv" default="/bound" />
+  <arg name="planner_dynamics_srv" default="/planner_dynamics" />
+
+  <!-- Planner frame of reference. -->
+  <arg name="planner_frame" default="planner" />
+
+  <!-- Tracker time step. -->
+  <arg name="time_step" default="0.02" />
+
+  <!-- Matlab file. -->
+  <arg name="file_name" default="$(find fastrack)/matlab/value_function.mat" />
+
+  <!-- Tracker node. -->
+  <node name="tracker"
+        pkg="fastrack_crazyflie_demos"
+        type="matlab_quadrotor_decoupled_tracker_demo_node"
+        output="screen">
+    <param name="topic/ready" value="$(arg ready_topic)" />
+    <param name="topic/tracker_state" value="$(arg tracker_state_topic)" />
+    <param name="topic/planner_state" value="$(arg planner_state_topic)" />
+    <param name="topic/control" value="$(arg control_topic)" />
+    <param name="vis/bound" value="$(arg bound_topic)" />
+
+    <param name="srv/bound" value="$(arg bound_srv)" />
+    <param name="srv/planner_dynamics" value="$(arg planner_dynamics_srv)" />
+
+    <param name="frames/planner" value="$(arg planner_frame)" />
+    <param name="time_step" value="$(arg time_step)" />
+
+    <param name="file_name" value="$(arg file_name)" />
+  </node>
+</launch>
