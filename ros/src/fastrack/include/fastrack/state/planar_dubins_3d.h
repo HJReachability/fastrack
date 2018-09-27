@@ -36,7 +36,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Class for purely geometric (position + velocity) state.
+// Class for constant-speed Dubins car state.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -97,17 +97,18 @@ public:
   // be generalized to a collection of generic obstacles.
   std::vector<Vector3d> OccupiedPositions() const;
 
-  // Convert from/to VectorXd. Assume State is [x, y, z, vx, vy, vz]
+  // Convert from/to VectorXd. Assume State is [x, y, theta] or
+  // [x, y, theta, v].
   void FromVector(const VectorXd &x);
   VectorXd ToVector() const;
 
-  // Convert from/to ROS message. Assume State is [x, y, z, vx, vy, vz]
+  // Convert from/to ROS message. Assume State is [x, y, theta, v].
   // or configuration only.
   void FromRos(const fastrack_msgs::State::ConstPtr &msg);
   fastrack_msgs::State ToRos() const;
 
   // Dimension of the state and configuration spaces.
-  static constexpr size_t StateDimension() { return 6; }
+  static constexpr size_t StateDimension() { return 3; }
   static constexpr size_t ConfigurationDimension() { return 3; }
 
   // Set/get bounds of the state/configuration space.
@@ -115,6 +116,8 @@ public:
                         const PlanarDubins3D &upper);
   static void SetBounds(const std::vector<double> &lower,
                         const std::vector<double> &upper);
+  static const PlanarDubins3D& GetLower();
+  static const PlanarDubins3D& GetUpper();
   static VectorXd GetConfigurationLower();
   static VectorXd GetConfigurationUpper();
 

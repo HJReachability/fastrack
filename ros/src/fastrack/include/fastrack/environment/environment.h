@@ -39,7 +39,7 @@
 // Base class for all environment models, providing separate collision check
 // functions for each type of tracking error bound. All environments are
 // boxes in 3D space. Environment is templated on the specific type of sensor
-// message (M) which may be generated from or incpororated into a derived class,
+// message (M) which may be generated from or incorporated into a derived class,
 // and sensor parameters (P) which may be used to generate sensor readings.
 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -48,6 +48,9 @@
 #define FASTRACK_ENVIRONMENT_ENVIRONMENT_H
 
 #include <fastrack/bound/box.h>
+#include <fastrack/bound/cylinder.h>
+#include <fastrack/bound/sphere.h>
+#include <fastrack/bound/tracking_bound.h>
 #include <fastrack/utils/types.h>
 
 #include <ros/ros.h>
@@ -58,6 +61,9 @@ namespace fastrack {
 namespace environment {
 
 using bound::Box;
+using bound::Sphere;
+using bound::Cylinder;
+using bound::TrackingBound;
 
 template <typename M, typename P>
 class Environment {
@@ -69,14 +75,21 @@ class Environment {
 
   // Derived classes must provide a collision checker which returns true if
   // and only if the provided position is a valid collision-free configuration.
-  // Provide a separate collision check for each type of tracking error bound.
   virtual bool IsValid(
-      const Vector3d& position, const Box& bound,
+      const Vector3d& position, const TrackingBound& bound,
       double time = std::numeric_limits<double>::quiet_NaN()) const = 0;
 
   // Utility for checking multiple positions.
-  bool AreValid(const std::vector<Vector3d>& positions, const Box& bound,
-                double time = std::numeric_limits<double>::quiet_NaN()) const;
+  bool AreValid(const std::vector<Vector3d>& positions,
+                const TrackingBound& bound,
+                double time = std::numeric_limits<double>::quiet_NaN()) const {
+    // Return Boolean AND of all IsValid calls.
+    for (const auto& p : positions) {
+      if (!IsValid(p, bound, time)) return false;
+    }
+
+    return true;
+  }
 
   // Generate a sensor measurement.
   virtual M SimulateSensor(const P& params) const = 0;
@@ -185,18 +198,6 @@ bool Environment<M, P>::RegisterCallbacks(const ros::NodeHandle& n) {
 
   updated_pub_ =
       nl.advertise<std_msgs::Empty>(updated_topic_.c_str(), 1, false);
-
-  return true;
-}
-
-// Provide auxiliary validity checkers for sets of positions.
-template <typename M, typename P>
-bool Environment<M, P>::AreValid(const std::vector<Vector3d>& positions,
-                                 const Box& bound, double time) const {
-  // Return Boolean AND of all IsValid calls.
-  for (const auto& p : positions) {
-    if (!IsValid(p, bound, time)) return false;
-  }
 
   return true;
 }

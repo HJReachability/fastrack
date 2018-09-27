@@ -54,17 +54,36 @@ namespace fastrack {
 namespace control {
 
 class QuadrotorControlBoundCylinder : public ControlBound<QuadrotorControl> {
-public:
+ public:
   ~QuadrotorControlBoundCylinder() {}
   explicit QuadrotorControlBoundCylinder(double radius,
-                                         double ScalarBoundInterval &yaw_rate,
-                                         double ScalarBoundInterval &thrust)
-      : pitch_roll_radius_(radius), yaw_rate_interval_(yaw_rate),
+                                         const ScalarBoundInterval& yaw_rate,
+                                         const ScalarBoundInterval& thrust)
+      : pitch_roll_radius_(radius),
+        yaw_rate_interval_(yaw_rate),
         thrust_interval_(thrust) {}
+
+  // Assume 'params' is laid out as follows:
+  // [radius, min yaw rate, min thrust, max yaw rate, max thrust]
+  explicit QuadrotorControlBoundCylinder(const std::vector<double>& params)
+      : pitch_roll_radius_(params[0]),
+        yaw_rate_interval_(params[1], params[3]),
+        thrust_interval_(params[2], params[4]) {}
+
+  // Custom definition of copy-assign operator.
+  QuadrotorControlBoundCylinder& operator=(
+      const QuadrotorControlBoundCylinder& other) {
+    if (&other == this) return *this;
+
+    pitch_roll_radius_ = other.pitch_roll_radius_;
+    yaw_rate_interval_ = other.yaw_rate_interval_;
+    thrust_interval_ = other.thrust_interval_;
+    return *this;
+  }
 
   // Derived classes must be able to check whether a query is inside the
   // bound.
-  inline bool Contains(const QuadrotorControl &query) const {
+  inline bool Contains(const QuadrotorControl& query) const {
     return std::hypot(query.pitch, query.roll) < pitch_roll_radius_ &&
            yaw_rate_interval_.Contains(query.yaw_rate) &&
            thrust_interval_.Contains(query.thrust);
@@ -72,30 +91,31 @@ public:
 
   // Derived classes must be able to compute the projection of a vector
   // (represented as the templated type) onto the surface of the bound.
-  // NOTE: We will treat this vector as emanating from the natural origin
-  // of the bound so that it constitutes a meaningful direction with respect
-  // to that origin.
-  inline QuadrotorControl
-  ProjectToSurface(const QuadrotorControl &query) const {
+  // NOTE: this is basically solving an LP with the bound as the feasible
+  // set and the query as the coefficients.
+  inline QuadrotorControl ProjectToSurface(
+      const QuadrotorControl& query) const {
     // Compute scaling to project (pitch, roll) onto the cylinder.
+    constexpr double kSmallNumber = 1e-8;
     const double scaling =
-        pitch_roll_radius_ / std::hypot(query.pitch, query.roll);
+        pitch_roll_radius_ /
+        std::max(kSmallNumber, std::hypot(query.pitch, query.roll));
 
     return QuadrotorControl(scaling * query.pitch, scaling * query.roll,
                             yaw_rate_interval_.ProjectToSurface(query.yaw_rate),
                             thrust_interval_.ProjectToSurface(query.thrust));
   }
 
-private:
+ private:
   // Radius in (pitch, roll) dimensions.
-  const double pitch_roll_radius_;
+  double pitch_roll_radius_;
 
   // Intervals in yaw_rate and thrust.
-  const ScalarBoundInterval yaw_rate_interval_;
-  const ScalarBoundInterval thrust_interval_;
-}; //\class ControlBound
+  ScalarBoundInterval yaw_rate_interval_;
+  ScalarBoundInterval thrust_interval_;
+};  //\class ControlBound
 
-} // namespace control
-} // namespace fastrack
+}  // namespace control
+}  // namespace fastrack
 
 #endif

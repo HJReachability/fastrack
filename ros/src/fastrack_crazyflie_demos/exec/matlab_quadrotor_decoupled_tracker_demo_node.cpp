@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, The Regents of the University of California (Regents).
+ * Copyright (c) 2018, The Regents of the University of California (Regents).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,22 +36,51 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Node running a ReferenceConverter for a Crazyflie demo.
+// Node running a Tracker based on the MatlabValueFunction class.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <fastrack_crazyflie_demos/reference_converter.h>
+#include <fastrack/bound/cylinder.h>
+#include <fastrack/control/quadrotor_control.h>
+#include <fastrack/dynamics/planar_dubins_dynamics_3d.h>
+#include <fastrack/dynamics/quadrotor_decoupled_6d.h>
+#include <fastrack/dynamics/quadrotor_decoupled_6d_rel_planar_dubins_3d.h>
+#include <fastrack/state/planar_dubins_3d.h>
+#include <fastrack/state/position_velocity.h>
+#include <fastrack/tracking/tracker.h>
+#include <fastrack/utils/types.h>
+#include <fastrack/value/matlab_value_function.h>
+
+#include <fastrack_srvs/PlanarDubinsPlannerDynamics.h>
+#include <fastrack_srvs/TrackingBoundCylinder.h>
 
 #include <ros/ros.h>
 
+namespace ft = fastrack::tracking;
+namespace fs = fastrack::state;
+namespace fb = fastrack::bound;
+namespace fc = fastrack::control;
+namespace fd = fastrack::dynamics;
+namespace fv = fastrack::value;
+
+using CustomValueFunction = fv::MatlabValueFunction<
+    fs::PositionVelocity, fc::QuadrotorControl,
+    fd::QuadrotorDecoupled6D<fc::QuadrotorControlBoundCylinder>,
+    fs::PlanarDubins3D, double, fd::PlanarDubinsDynamics3D,
+    fs::PositionVelocityRelPlanarDubins3D,
+    fd::QuadrotorDecoupled6DRelPlanarDubins3D, fb::Cylinder>;
+
 int main(int argc, char** argv) {
-  ros::init(argc, argv, "ReferenceConverterDemo");
+  ros::init(argc, argv, "TrackerDemo");
   ros::NodeHandle n("~");
 
-  fastrack::crazyflie::ReferenceConverter converter;
+  ft::Tracker<CustomValueFunction, fs::PositionVelocity, fc::QuadrotorControl,
+              fs::PlanarDubins3D, fastrack_srvs::TrackingBoundCylinder,
+              fastrack_srvs::PlanarDubinsPlannerDynamics>
+      tracker;
 
-  if (!converter.Initialize(n)) {
-    ROS_ERROR("%s: Failed to initialize reference converter.",
+  if (!tracker.Initialize(n)) {
+    ROS_ERROR("%s: Failed to initialize tracker.",
               ros::this_node::getName().c_str());
     return EXIT_FAILURE;
   }

@@ -54,6 +54,10 @@ template <typename TS, typename PS> class RelativeState {
 public:
   virtual ~RelativeState() {}
 
+  // Convert from/to VectorXd.
+  virtual void FromVector(const VectorXd& x) = 0;
+  virtual VectorXd ToVector() const = 0;
+
 protected:
   explicit RelativeState() {}
 }; //\class RelativeState

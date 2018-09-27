@@ -97,7 +97,7 @@ protected:
   // derived classes should still call thhis function.
   virtual void TimerCallback(const ros::TimerEvent& e);
 
-  // Create and publish a marker at goal state. 
+  // Create and publish a marker at goal state.
   virtual void VisualizeGoal() const ;
 
   // Callback for processing trajectory updates.
@@ -270,7 +270,7 @@ bool PlannerManager<S>::RegisterCallbacks(const ros::NodeHandle& n) {
 // classes with more specific replanning needs.
 template<typename S>
 void PlannerManager<S>::MaybeRequestTrajectory() {
-  // Publish marker at goal location. 
+  // Publish marker at goal location.
   VisualizeGoal();
 
   if (!ready_ || waiting_for_traj_) {
@@ -343,7 +343,7 @@ void PlannerManager<S>::TimerCallback(const ros::TimerEvent& e) {
   tf_broadcaster_.sendTransform(tf);
 }
 
-// Converts the goal state into a Rviz marker. 
+// Converts the goal state into a Rviz marker.
 template<typename S>
 void PlannerManager<S>::VisualizeGoal() const {
   // Set up sphere marker.

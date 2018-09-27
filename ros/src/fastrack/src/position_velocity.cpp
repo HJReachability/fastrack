@@ -74,18 +74,29 @@ PositionVelocity::PositionVelocity(const fastrack_msgs::State &msg)
     position_(0) = msg.x[0];
     position_(1) = msg.x[1];
     position_(2) = msg.x[2];
-  } else
-    ROS_ERROR("PositionVelocity: msg dimension is incorrect.");
+  } else {
+    ROS_ERROR_THROTTLE(1.0,
+                       "PositionVelocity: msg dimension is incorrect: %zu.",
+                       msg.x.size());
+  }
 }
-PositionVelocity::PositionVelocity(const VectorXd &config)
+PositionVelocity::PositionVelocity(const VectorXd &x)
     : State(), position_(Vector3d::Zero()), velocity_(Vector3d::Zero()) {
   // Check dimensions.
-  if (config.size() != ConfigurationDimension())
-    throw std::runtime_error("PositionVelocity: incorrect config dimension.");
-
-  position_(0) = config(0);
-  position_(1) = config(1);
-  position_(2) = config(2);
+  if (x.size() == ConfigurationDimension()) {
+    position_(0) = x(0);
+    position_(1) = x(1);
+    position_(2) = x(2);
+  } else if (x.size() == StateDimension()) {
+    position_(0) = x(0);
+    position_(1) = x(1);
+    position_(2) = x(2);
+    velocity_(0) = x(3);
+    velocity_(1) = x(4);
+    velocity_(2) = x(5);
+  } else {
+    throw std::runtime_error("PositionVelocity: incorrect input dimension.");
+  }
 }
 
 // Set non-configuration dimensions to match the given config derivative.
@@ -241,6 +252,10 @@ fastrack_msgs::State PositionVelocity::ToRos() const {
 
   return msg;
 }
+
+// Get bounds of state space.
+const PositionVelocity& PositionVelocity::GetLower() { return lower_; }
+const PositionVelocity& PositionVelocity::GetUpper() { return upper_; }
 
 // Get bounds of configuration space.
 VectorXd PositionVelocity::GetConfigurationLower() {

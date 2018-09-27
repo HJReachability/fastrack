@@ -37,7 +37,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Defines the relative dynamics between a 6D decoupled quadrotor model and a
-// 3D kinematic point model.
+// 3D kinematic point model. Templated on type of control bound for quadrotor.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -64,10 +64,11 @@ using state::PositionVelocity;
 using state::PositionVelocityRelPositionVelocity;
 using state::RelativeState;
 
+template <typename CB>
 class QuadrotorDecoupled6DRelKinematics
     : public RelativeDynamics<PositionVelocity, QuadrotorControl,
                               PositionVelocity, VectorXd> {
-public:
+ public:
   ~QuadrotorDecoupled6DRelKinematics() {}
   explicit QuadrotorDecoupled6DRelKinematics()
       : RelativeDynamics<PositionVelocity, QuadrotorControl, PositionVelocity,
@@ -76,14 +77,14 @@ public:
   // Derived classes must be able to give the time derivative of relative state
   // as a function of current state and control of each system.
   inline std::unique_ptr<RelativeState<PositionVelocity, PositionVelocity>>
-  Evaluate(const PositionVelocity &tracker_x, const QuadrotorControl &tracker_u,
-           const PositionVelocity &planner_x, const VectorXd &planner_u) const {
+  Evaluate(const PositionVelocity& tracker_x, const QuadrotorControl& tracker_u,
+           const PositionVelocity& planner_x, const VectorXd& planner_u) const {
     if (planner_u.size() != PositionVelocity::ConfigurationDimension())
       std::runtime_error("Bad planner control size.");
 
     // TODO(@jaime): confirm that this works. I set things up so things like
     // this should work.
-    const QuadrotorDecoupled6D quad_dynamics;
+    const QuadrotorDecoupled6D<CB> quad_dynamics;
     const Kinematics<PositionVelocity> quad_kinematics;
     return std::unique_ptr<PositionVelocityRelPositionVelocity>(
         new PositionVelocityRelPositionVelocity(
@@ -95,16 +96,16 @@ public:
   // the gradient of the value function at the relative state specified
   // by the given system states, provided abstract control bounds.
   inline QuadrotorControl OptimalControl(
-      const PositionVelocity &tracker_x, const PositionVelocity &planner_x,
-      const RelativeState<PositionVelocity, PositionVelocity> &value_gradient,
-      const ControlBound<QuadrotorControl> &tracker_u_bound,
-      const ControlBound<VectorXd> &planner_u_bound) const {
+      const PositionVelocity& tracker_x, const PositionVelocity& planner_x,
+      const RelativeState<PositionVelocity, PositionVelocity>& value_gradient,
+      const ControlBound<QuadrotorControl>& tracker_u_bound,
+      const ControlBound<VectorXd>& planner_u_bound) const {
     // Get internal state of value gradient and map tracker control (negative)
     // coefficients to QuadrotorControl, so we get a negative gradient.
-    const auto &cast = static_cast<const PositionVelocityRelPositionVelocity &>(
+    const auto& cast = static_cast<const PositionVelocityRelPositionVelocity& >(
         value_gradient);
 
-    const auto &grad = cast.State();
+    const auto& grad = cast.State();
     QuadrotorControl negative_grad;
     negative_grad.yaw_rate = 0.0;
     negative_grad.pitch = -grad.Vx();

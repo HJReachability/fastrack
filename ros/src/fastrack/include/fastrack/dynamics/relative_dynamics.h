@@ -53,6 +53,7 @@ namespace fastrack {
 namespace dynamics {
 
 using state::RelativeState;
+using control::ControlBound;
 
 template <typename TS, typename TC, typename PS, typename PC>
 class RelativeDynamics {

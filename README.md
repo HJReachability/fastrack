@@ -51,3 +51,8 @@ A few tips, tricks, and customs that you'll find throughout our code:
 * We use the `const` specifier whenever possible.
 * We try to include optional guard statements with meaningful debug messages wherever possible. These may be toggled on/off with the `ENABLE_DEBUG_MESSAGES` cmake option.
 * Whenever it makes sense, we write unit tests for self-contained functionality and integration tests for dependent functions and classes. These are stored in the `test/` directory.
+
+## Why so many templates?
+Many of the important classes in `fastrack` are heavily templated. This may seem like an ugly way to write generic classes, and in some cases it is; however the logic behind it is that templating on the relevant types removes the need to use so many explicit pointers. For example, if a `Planner` operates on the `QuadrotorDecoupled6D` dynamics then it can actually store those dynamics as a member variable rather than as a `std::unique_ptr<Dynamics>` or something like that.
+
+Inheritance is still used to specify interfaces, and in some cases provide (overridable) base class functionality. In some cases, parts of interfaces are specified only implicitly through templating, e.g. a line `S::Dimension()` will not compile if template type `S` does not provide a static function `Dimension()`.

@@ -63,21 +63,38 @@ using state::RelativeState;
 template <typename TS, typename TC, typename TD, typename PS, typename PC,
           typename PD, typename B>
 class ValueFunction : private Uncopyable {
-public:
+ public:
   virtual ~ValueFunction() {}
 
   // Initialize from a ROS NodeHandle.
-  virtual bool Initialize(const ros::NodeHandle &n) = 0;
+  inline bool Initialize(const ros::NodeHandle& n) {
+    name_ = ros::names::append(n.getNamespace(), "ValueFunction");
+
+    if (!LoadParameters(n)) {
+      ROS_ERROR("%s: Failed to load parameters.", name_.c_str());
+      return false;
+    }
+
+    if (!RegisterCallbacks(n)) {
+      ROS_ERROR("%s: Failed to register callbacks.", name_.c_str());
+      return false;
+    }
+
+    initialized_ = true;
+    return true;
+  }
 
   // Value and gradient at particular relative states.
-  virtual double Value(const TS &tracker_x, const PS &planner_x) const = 0;
-  virtual std::unique_ptr<RelativeState<TS, PS>>
-  Gradient(const TS &tracker_x, const PS &planner_x) const = 0;
+  virtual double Value(const TS& tracker_x, const PS& planner_x) const = 0;
+  virtual std::unique_ptr<RelativeState<TS, PS>> Gradient(
+      const TS& tracker_x, const PS& planner_x) const = 0;
 
   // Get the optimal control given the tracker state and planner state.
-  inline TC OptimalControl(const TS &tracker_x, const PS &planner_x) const {
+  inline TC OptimalControl(const TS& tracker_x, const PS& planner_x) const {
     if (!initialized_)
       throw std::runtime_error("Uninitialized call to OptimalControl.");
+
+    //    std::cout << "Value is: " << Value(tracker_x, planner_x) << std::endl;
 
     return relative_dynamics_->OptimalControl(
         tracker_x, planner_x, *Gradient(tracker_x, planner_x),
@@ -86,10 +103,10 @@ public:
   }
 
   // Accessors.
-  inline const B &TrackingBound() const { return bound_; }
-  inline const TD &TrackerDynamics() const { return tracker_dynamics_; }
-  inline const PD &PlannerDynamics() const { return planner_dynamics_; }
-  inline const RelativeDynamics<TS, TC, PS, PC> &GetRelativeDynamics() const {
+  inline const B& TrackingBound() const { return bound_; }
+  inline const TD& TrackerDynamics() const { return tracker_dynamics_; }
+  inline const PD& PlannerDynamics() const { return planner_dynamics_; }
+  inline const RelativeDynamics<TS, TC, PS, PC>& GetRelativeDynamics() const {
     if (!initialized_)
       throw std::runtime_error("Uninitialized call to GetRelativeDynamics.");
 
@@ -100,14 +117,14 @@ public:
   // This is a number between 0 and 1, where 1 means the final control signal
   // should be exactly the optimal control signal computed by this
   // value function.
-  virtual double Priority(const TS &tracker_x, const PS &planner_x) const = 0;
+  virtual double Priority(const TS& tracker_x, const PS& planner_x) const = 0;
 
-protected:
+ protected:
   explicit ValueFunction() : initialized_(false) {}
 
-  // Load parameters and register callbacks.
-  virtual bool LoadParameters(const ros::NodeHandle &n) = 0;
-  virtual bool RegisterCallbacks(const ros::NodeHandle &n) = 0;
+  // Load parameters and register callbacks. May be overridden.
+  virtual bool LoadParameters(const ros::NodeHandle& n) { return true; }
+  virtual bool RegisterCallbacks(const ros::NodeHandle& n) { return true; }
 
   // Member variables to be instantiated by derived classes after
   // reading the necessary parameters from the ROS parameter server.
@@ -123,9 +140,9 @@ protected:
   // Naming and initialization.
   std::string name_;
   bool initialized_;
-}; //\class ValueFunction
+};  //\class ValueFunction
 
-} // namespace value
-} // namespace fastrack
+}  // namespace value
+}  // namespace fastrack
 
 #endif

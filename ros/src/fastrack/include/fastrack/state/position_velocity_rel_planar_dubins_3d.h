@@ -32,6 +32,7 @@
  *
  * Please contact the author(s) of this library if you have any questions.
  * Authors: David Fridovich-Keil   ( dfk@eecs.berkeley.edu )
+ *          Jaime F. Fisac         ( jfisac@eecs.berkeley.edu )
  */
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -61,22 +62,51 @@ public:
 
   // NOTE! We do NOT provide a default constructor. Objects from this
   // class SHOULD be initialized from the two corresponding states.
-  explicit PositionVelocityRelPlanarDubins3D(const PositionVelocity &tracker_x,
-                                             const PlanarDubins3D &planner_x)
+  explicit PositionVelocityRelPlanarDubins3D(const PositionVelocity& tracker_x,
+                                             const PlanarDubins3D& planner_x)
       : distance_(std::hypot(tracker_x.X() - planner_x.X(),
                              tracker_x.Y() - planner_x.Y())),
         bearing_(std::atan2(tracker_x.Y() - planner_x.Y(),
                             tracker_x.X() - planner_x.X())),
         tangent_velocity_(std::cos(planner_x.Theta()) * tracker_x.Vx() +
-                          std::sin(planner_x.Theta()) * planner_x.Vy()),
+                          std::sin(planner_x.Theta()) * tracker_x.Vy()),
         normal_velocity_(-std::sin(planner_x.Theta()) * tracker_x.Vx() +
-                         std::cos(planner_x.Theta()) * planner_x.Vy()) {}
+                          std::cos(planner_x.Theta()) * tracker_x.Vy()) {}
+
+  // Construct from VectorXd.
+  explicit PositionVelocityRelPlanarDubins3D(const VectorXd& x)
+    : RelativeState<PositionVelocity, PlanarDubins3D>() {
+    FromVector(x);
+  }
 
   // Construct directly.
   explicit PositionVelocityRelPlanarDubins3D(double distance, double bearing,
                                              double tangent_v, double normal_v)
       : distance_(distance), bearing_(bearing), tangent_velocity_(tangent_v),
         normal_velocity_(normal_v) {}
+
+  // Convert from/to VectorXd.
+  // Assume vector is laid out as follows:
+  // [distance, bearing, tangent velocity, normal velocity]
+  void FromVector(const VectorXd& x) {
+    if (x.size() != StateDimension())
+      throw std::runtime_error("Vector was of incorrect dimension.");
+
+    distance_ = x(0);
+    bearing_ = x(1);
+    tangent_velocity_ = x(2);
+    normal_velocity_ = x(3);
+  }
+
+  VectorXd ToVector() const {
+    VectorXd vec(4);
+    vec(0) = distance_;
+    vec(1) = bearing_;
+    vec(2) = tangent_velocity_;
+    vec(3) = normal_velocity_;
+
+    return vec;
+  }
 
   // Dimension of the state space.
   static constexpr size_t StateDimension() { return 4; }
@@ -89,18 +119,18 @@ public:
 
 private:
   // Relative (x, y) distance.
-  const double distance_;
+  double distance_;
 
   // Relative bearing in the (x, y) plane.
-  const double bearing_;
+  double bearing_;
 
-  // PositionVelocity's relative velocity along PlanarDubins3D's heading.
+  // PositionVelocity's absolute velocity along PlanarDubins3D's heading.
   // (in Frenet frame).
-  const double tangent_velocity_;
+  double tangent_velocity_;
 
-  // PositionVelocity's relative velocity normal to PlanarDubins3D's heading.
+  // PositionVelocity's absolute velocity normal to PlanarDubins3D's heading.
   // (in Frenet frame).
-  const double normal_velocity_;
+  double normal_velocity_;
 }; //\class PositionVelocityRelPlanarDubins3D
 
 } // namespace state

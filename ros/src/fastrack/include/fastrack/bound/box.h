@@ -44,7 +44,7 @@
 #ifndef FASTRACK_BOUND_BOX_H
 #define FASTRACK_BOUND_BOX_H
 
-#include <fastrack/bound/tracking_bound.h>
+#include <fastrack/bound/tracking_bound_ros.h>
 #include <fastrack/utils/types.h>
 
 #include <fastrack_srvs/TrackingBoundBox.h>
@@ -53,34 +53,72 @@
 namespace fastrack {
 namespace bound {
 
-struct Box : public TrackingBound<fastrack_srvs::TrackingBoundBox::Response> {
+struct Box
+    : public TrackingBoundRos<fastrack_srvs::TrackingBoundBox::Response> {
   // Size in each dimension.
   double x;
   double y;
   double z;
 
-  // Constructors and destructor.
-  ~Box() {}
-  explicit Box()
-    : TrackingBound() {}
-  explicit Box(double xsize, double ysize, double zsize)
-    : TrackingBound(),
-      x(xsize), y(ysize), z(zsize) {}
+  // Initialize from vector.
+  bool Initialize(const std::vector<double>& params) {
+    if (params.size() != 3) {
+      ROS_ERROR("Box: params were incorrect size.");
+      return false;
+    }
+
+    x = params[0];
+    y = params[1];
+    z = params[2];
+    return true;
+  }
 
   // Convert from service response type SR.
   inline void FromRos(const fastrack_srvs::TrackingBoundBox::Response& res) {
-    x = res.x; y = res.y; z = res.z;
+    x = res.x;
+    y = res.y;
+    z = res.z;
   }
 
   // Convert to service response.
   inline fastrack_srvs::TrackingBoundBox::Response ToRos() const {
     fastrack_srvs::TrackingBoundBox::Response res;
-    res.x = x; res.y = y; res.z = z;
+    res.x = x;
+    res.y = y;
+    res.z = z;
     return res;
   }
 
+  // Returns true if this tracking error bound (at the given position) overlaps
+  // with different shapes.
+  bool OverlapsSphere(const Vector3d& p, const Vector3d& center,
+                      double radius) const {
+    const Vector3d closest_point(
+        std::min(p(0) + x, std::max(p(0) - x, center(0))),
+        std::min(p(1) + y, std::max(p(1) - y, center(1))),
+        std::min(p(2) + z, std::max(p(2) - z, center(2))));
+    return (closest_point - center).squaredNorm() <= radius * radius;
+  }
+
+  bool OverlapsBox(const Vector3d& p, const Vector3d& lower,
+                   const Vector3d& upper) const {
+    return !(p(0) + x < lower(0) || p(0) - x > upper(0) ||
+             p(1) + y < lower(1) || p(1) - y > upper(1) ||
+             p(2) + z < lower(2) || p(2) - z > upper(2));
+  }
+
+  // Returns true if this tracking error bound (at the given position) is
+  // contained within a box.
+  bool ContainedWithinBox(const Vector3d& p, const Vector3d& lower,
+                          const Vector3d& upper) const {
+    return p(0) >= lower(0) + x && p(0) <= upper(0) - x &&
+           p(1) >= lower(1) + y && p(1) <= upper(1) - y &&
+           p(2) >= lower(2) + z && p(2) <= upper(2) - z;
+  }
+
   // Visualize.
-  inline void Visualize(const ros::Publisher& pub, const std::string& frame) const {
+  inline void Visualize(const ros::Publisher& pub,
+                        const std::string& frame) const {
     visualization_msgs::Marker m;
     m.ns = "bound";
     m.header.frame_id = frame;
@@ -99,9 +137,9 @@ struct Box : public TrackingBound<fastrack_srvs::TrackingBoundBox::Response> {
     pub.publish(m);
   }
 
-}; //\struct Box
+};  //\struct Box
 
-} //\namespace bound
-} //\namespace fastrack
+}  //\namespace bound
+}  //\namespace fastrack
 
 #endif
