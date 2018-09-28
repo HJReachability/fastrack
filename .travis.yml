@@ -7,7 +7,7 @@ env:
     - CATKIN_OPTIONS=$CI_SOURCE_PATH/catkin.options
     - ROS_PARALLEL_JOBS='-j4 -l4'
     - PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages:/usr/local/lib/python2.7/dist-packages
-    - secure: "uw/OEKKu06D+8Z+6/SaUgs3YdXzIbyYenNrQcfWpLPPhxZRgLaqcOYL7lP0tB9vFNZjPmW4UdBwuivlIO+wpWKApG1JT0ML22//hBO7UyqHaZnPf4Ad39m8Qk2h47vifMCZbeyVvW1Gw1kRfcbW0TrFt4niUvuVyILLllJMTf6MH9qUrsPHBclj368J9zjRWQrdUH2xKO4rCGUExeeGX7dGNd9k4Q6k8owt7u4FEbvzI6yGeFs+2VywdkxplOUjCPXSZ7x/NIR/wMpvu8cUF9/ZttmLJ3rRa6LnvTZFF4i4ag7WC1bnoVF/SBXM/aNc5uj1JL2ngk45AcVQ6l5GgVWeXvVgoCUs2DAE2QO8ERfk5r5YyEnz+1Lm2t4OYOz/qNm81gFz7C2KZqb92ZmGoIWXIitNO9idkAJiMvXz1sSjY3nbk9B89Y15/Zs21ns1f6sTNW/l83B9j39dHWazmef0bmRufYuLey75ZEaj1w85rz4F7cFRXE0i6ztwYYLFTHOSzcgF4cNctXaolEI3JBoUZz7nhW54ef6anZfmoBbtsHbIFAvFRWkbSKOyDSlhu2VJu/XFsN7cWlfQASMT3U8wQAE+SAbfzBaSH6aLcA53/8QHZYH6LrZkRkuvr4yLNMda4sSmkyeFmVL50gguKZZwVLNmTRagLfnycr9VR8Ps="
+    - secure: "MmrmQNIN8MZ3Wyo6QZ+sUCbiWAg5EvBq4eiD4VLJilcOwVoTycuBZjouQWF+eDwH3DKv1Oaocs5jhCWAYXqaEq07e9U/N5T10EZ95lIp5cq/3fVw/lRWmTnnCR4tCgiDvvF41h9w2mOw0lGlEKdfaCEY1hgUWjXtZhY076zS5J/ePiYwyPT1/CK6rVP5CRjtpJMli0zpsPONEc7ANMyKuGo6AH5nbOMsshOY4fnKkBj2BThSB4v5riQ3jRJtNfiwGfzLGMGvPGaR4FOUl5clSv1Jvms9rsdFtaAbm6Rs39WvZlu7/1TM9+m1Jfe5B9NZKPvdW1QkE8NZj9mv0H5syqAycwKpEgewLurX6Mdg0pnpCcPJ4qA7km6hQgqGSIpsMXrndIgpayWEffvHjU/1I0o29KkX0i8jOD7twbdOaydW2RpguMGrG9pHvawGYpSJT7pG73+74L0n9EQRUqulupX7qlKTldi6CcUJoCgvbmaNGa4/FsZ8M9QElxaePCntXgeQpzfo6c+bN3uSXcqqHv1Q1HIEDBqCoSHvWV5WYHAVLsAs5xSqB9RXe4O1FuVopehu27gY7PaxPYeB1ORUdlFHus1DetyhJkB2AG8ocp7wbWgPiHjIe22ZJwNTtHsKAzmS3vVVn5KV0akx0+3mGaRpvtVxvMnzzMsLRw/81vs="
 
 language: cpp
 
@@ -77,7 +77,7 @@ install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir crazyflie_clean && cd crazyflie_clean; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then git clone https://github.com/HJReachability/crazyflie_clean; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd crazyflie_clean/ros; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then catkin_make && source ./devel/setup.bash; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then catkin_make -j4 && source ./devel/setup.bash; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd ../../..; fi
 
 script:
