@@ -81,4 +81,13 @@ install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd ../../..; fi
 
 script:
+  - cd ros
+  - catkin_make -j4
+  - catkin_make run_tests
+
+after_success:
+  - cd ..
+  - git checkout master
+  - rm -rf doc
+  - rosdoc_lite ros/src/fastrack
   - bash ./deploy.sh
