@@ -88,7 +88,7 @@ after_success:
   - git checkout master
   - rm -rf doc
   - rosdoc_lite ros/src/fastrack
-  - rm -rf eigen && rm -rf ompl && rm -rf rosdoc_lite && rm -rf crazyflie_clean
+  - rm -rf eigen && rm -rf ompl && rm -rf crazyflie_clean && sudo rm -rf rosdoc_lite
   #  - ./deploy.sh
 
 deploy:
