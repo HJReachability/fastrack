@@ -7,7 +7,7 @@ env:
     - CATKIN_OPTIONS=$CI_SOURCE_PATH/catkin.options
     - ROS_PARALLEL_JOBS='-j4 -l4'
     - PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages:/usr/local/lib/python2.7/dist-packages
-    - secure: "MmrmQNIN8MZ3Wyo6QZ+sUCbiWAg5EvBq4eiD4VLJilcOwVoTycuBZjouQWF+eDwH3DKv1Oaocs5jhCWAYXqaEq07e9U/N5T10EZ95lIp5cq/3fVw/lRWmTnnCR4tCgiDvvF41h9w2mOw0lGlEKdfaCEY1hgUWjXtZhY076zS5J/ePiYwyPT1/CK6rVP5CRjtpJMli0zpsPONEc7ANMyKuGo6AH5nbOMsshOY4fnKkBj2BThSB4v5riQ3jRJtNfiwGfzLGMGvPGaR4FOUl5clSv1Jvms9rsdFtaAbm6Rs39WvZlu7/1TM9+m1Jfe5B9NZKPvdW1QkE8NZj9mv0H5syqAycwKpEgewLurX6Mdg0pnpCcPJ4qA7km6hQgqGSIpsMXrndIgpayWEffvHjU/1I0o29KkX0i8jOD7twbdOaydW2RpguMGrG9pHvawGYpSJT7pG73+74L0n9EQRUqulupX7qlKTldi6CcUJoCgvbmaNGa4/FsZ8M9QElxaePCntXgeQpzfo6c+bN3uSXcqqHv1Q1HIEDBqCoSHvWV5WYHAVLsAs5xSqB9RXe4O1FuVopehu27gY7PaxPYeB1ORUdlFHus1DetyhJkB2AG8ocp7wbWgPiHjIe22ZJwNTtHsKAzmS3vVVn5KV0akx0+3mGaRpvtVxvMnzzMsLRw/81vs="
+    - secure: "QfI2ypxv8wpVzZsp7Eqq3CGcMBVM8JLaJus27dT8h4FGtvgRCC3InZ5JGEiweL5bkYyYJCFMHkxMJj4AAZQRubO6GH9bXetPJxUff4rqItfxSGqklKTAAG1J7wwUloI7lI+8gow3seYriiIS/eqrZ7nEZ1bFWYwqdUB/Xl0YjRE7uvTp0D3LVBVWj0XTjmG7MXLLMrjFZvmDABMtB2w4z+KFc01UBz/qnmbpdKaDax15JHAXwHx9zZSyTqJMjsVS1NQQpgVnnFZSx9gGo9bzKj0ewRyos2nGg45cFXMgS1Vnmrr4sOi0Jg83jyCNnzZB+J0EJ4P5x3FllNpCBPrRQC0SB7KvP7f5p2yXf2eU04Pe0mT0/sneIUdRaWiuLIB9S1ah5eZYJNTJ+KSH1Qna1ZY54FsWbehsUUG5YyPdRm0woqwihpFvEDObaTpubYUvyecEHsJJrFsLCR2H8Qyw0C5tTVC3xDrmeeE+d7Ofz+NBL5qNPxzoZsn9z3jVTPzf7z9QxD3Rttm5u/W6HEj4azqSZqcrGrTeaEYDFYPCY8JZJrSQ+mYmwCVbySrASmxpn5JQ+1s2Slp5z56CcMFfA9fLUWr6sCk+p3rNCBi0/GkW2WeegfZd9lha7y6Y4J4Vq+bBlA+sK7ZkOQDsbbNEHEjiF/NL/R5Ma05zeZCD2vU="
 
 language: cpp
 
@@ -40,9 +40,7 @@ before_install:
   - ssh-add github_deploy_key
 
 install:
-  - echo $TRAVIS_OS_NAME
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install --yes build-essential
-    doxygen graphviz libgflags-dev libgoogle-glog-dev mercurial cmake libatlas-base-dev libmatio-dev libflann-dev libusb-1.0-0 libusb-1.0-0-dev; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install --yes build-essential doxygen graphviz libgflags-dev libgoogle-glog-dev mercurial cmake libatlas-base-dev libmatio-dev libflann-dev libusb-1.0-0 libusb-1.0-0-dev; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo pip install kitchen; fi
 
 #before_script:
