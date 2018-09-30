@@ -1,4 +1,0 @@
-<map id="fastrack::planning::OmplKinematicPlanner&lt; P, S, E, B, SB &gt;" name="fastrack::planning::OmplKinematicPlanner&lt; P, S, E, B, SB &gt;">
-<area shape="rect" id="node2" href="$classfastrack_1_1planning_1_1KinematicPlanner.html" title="fastrack::planning\l::KinematicPlanner\&lt;\l S, E, B, SB \&gt;" alt="" coords="307,12,447,68"/>
-<area shape="rect" id="node3" href="$classfastrack_1_1planning_1_1Planner.html" title="fastrack::planning\l::Planner\&lt; S, E, Kinematics\l\&lt; S \&gt;, fastrack_srvs::KinematicPlanner\lDynamics, B, SB \&gt;" alt="" coords="6,5,258,75"/>
-</map>
