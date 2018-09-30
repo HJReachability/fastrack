@@ -1,0 +1,51 @@
+*.aux
+*.blg
+*.log
+*.gz
+~*
+*.mat
+!ros/src/fastrack/matlab/*.mat
+
+*.asv
+*.m~
+
+# Emacs stuff.
+.clang_complete
+cscope*
+
+# ROS stuff.
+*.catkin_workspace
+
+ros/build
+ros/devel
+ros/src/CMakeLists.txt
+
+# Deploy stuff.
+deploy_key
+deploy_key.pub
+
+# Compiled python files.
+*.pyc
+
+# Swap files
+*.swp
+*.swo
+*~
+
+# Glog log files
+*.log*
+*.INFO
+
+# OSX dir files
+.DS_store
+
+# Compiled object files
+*.slo
+*.lo
+*.o
+
+# Compiled dynamic and static libraries
+*.so
+*.dylib
+*.la
+*.a

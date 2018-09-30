@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<launch>
+  <!-- Control topics. -->
+  <arg name="fastrack_control_topic" default="/control/fastrack" />
+  <arg name="converted_control_topic" default="/control/prioritized" />
+
+  <!-- Control converter node. -->
+  <node name="control_converter"
+        pkg="fastrack_crazyflie_demos"
+        type="control_converter_demo_node"
+        output="screen">
+    <param name="topic/fastrack_control" value="$(arg fastrack_control_topic)" />
+    <param name="topic/converted_control" value="$(arg converted_control_topic)" />
+  </node>
+</launch>

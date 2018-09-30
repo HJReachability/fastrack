@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package>
+  <name>crazyflie_demo</name>
+  <version>0.0.1</version>
+  <description>Examples on how to use the crazyflie package (teleoperation, rviz integration)</description>
+
+  <maintainer email="whoenig@usc.edu">Wolfgang Hoenig</maintainer>
+
+  <license>MIT</license>
+
+  <url type="website">http://ros.org/wiki/crazyflie</url>
+  <url type="bugtracker">https://github.com/whoenig/crazyflie_ros/issues</url>
+
+  <author email="whoenig@usc.edu">Wolfgang Hoenig</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+</package>

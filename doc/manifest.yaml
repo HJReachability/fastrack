@@ -1,0 +1,21 @@
+actions: []
+authors: David Fridovich-Keil <dfk@eecs.berkeley.edu>
+brief: ''
+bugtracker: ''
+depends:
+- catkin
+- roscpp
+- std_msgs
+- fastrack_srvs
+- geometry_msgs
+- tf2_ros
+- visualization_msgs
+- fastrack_msgs
+description: The fastrack package
+license: BSD
+maintainers: David Fridovich-Keil <dfk@eecs.berkeley.edu>
+msgs: []
+package_type: package
+repo_url: ''
+srvs: []
+url: ''

@@ -1,0 +1,17 @@
+<map id="kinematic_planner.h" name="kinematic_planner.h">
+<area shape="rect" id="node2" href="$planner_8h.html" title="fastrack/planning/planner.h" alt="" coords="1075,80,1253,107"/>
+<area shape="rect" id="node41" href="$kinematics_8h.html" title="fastrack/dynamics/kinematics.h" alt="" coords="3091,163,3297,189"/>
+<area shape="rect" id="node3" href="$environment_8h.html" title="fastrack/environment\l/environment.h" alt="" coords="1635,155,1779,197"/>
+<area shape="rect" id="node6" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="2173,525,2317,552"/>
+<area shape="rect" id="node32" href="$trajectory_8h.html" title="fastrack/trajectory\l/trajectory.h" alt="" coords="413,337,539,378"/>
+<area shape="rect" id="node4" href="$box_8h.html" title="fastrack/bound/box.h" alt="" coords="2307,253,2451,280"/>
+<area shape="rect" id="node20" href="$tracking__bound_8h.html" title="fastrack/bound/tracking\l_bound.h" alt="" coords="1211,427,1369,469"/>
+<area shape="rect" id="node25" href="$cylinder_8h.html" title="fastrack/bound/cylinder.h" alt="" coords="1444,253,1612,280"/>
+<area shape="rect" id="node28" href="$sphere_8h.html" title="fastrack/bound/sphere.h" alt="" coords="1700,253,1863,280"/>
+<area shape="rect" id="node5" href="$tracking__bound__ros_8h.html" title="fastrack/bound/tracking\l_bound_ros.h" alt="" coords="1566,337,1724,378"/>
+<area shape="rect" id="node33" href="$state_8h.html" title="fastrack/state/state.h" alt="" coords="632,435,779,461"/>
+<area shape="rect" id="node42" href="$vector__bound__box_8h.html" title="fastrack/control/vector\l_bound_box.h" alt="" coords="3091,246,3243,287"/>
+<area shape="rect" id="node45" href="$dynamics_8h.html" title="fastrack/dynamics/dynamics.h" alt="" coords="2816,344,3015,371"/>
+<area shape="rect" id="node43" href="$control__bound_8h.html" title="fastrack/control/control\l_bound.h" alt="" coords="2996,427,3149,469"/>
+<area shape="rect" id="node44" href="$scalar__bound__interval_8h.html" title="fastrack/control/scalar\l_bound_interval.h" alt="" coords="3041,337,3191,378"/>
+</map>

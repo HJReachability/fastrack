@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package>
+  <name>crazyflie_utils</name>
+  <version>0.0.0</version>
+  <description>The crazyflie_utils package</description>
+
+  <author email="dfk@eecs.berkeley.edu">David Fridovich-Keil</author>
+  <maintainer email="dfk@eecs.berkeley.edu">David Fridovich-Keil</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roscpp</build_depend>
+  <run_depend>roscpp</run_depend>
+</package>

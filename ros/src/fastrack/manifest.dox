@@ -1,0 +1,30 @@
+/*
+\mainpage
+\htmlinclude manifest.html
+
+\b fastrack implements the <a
+href="https://arxiv.org/abs/1703.07373">FaSTrack</a> (Fast and Safe Tracking)
+paradigm for real-time, safe trajectory planning and tracking.
+
+\section codeapi Code API
+
+\b Please note that this package depends upon separate packages containing
+messages and services (<a
+href="https://github.com/HJReachability/fastrack/tree/master/ros/src/fastrack_msgs">fastrack_msgs</a>
+and <a
+href="https://github.com/HJReachability/fastrack/tree/master/ros/src/fastrack_srvs">fastrack_srvs</a>,
+respectively).
+
+<!--
+Provide links to specific auto-generated API documentation within your
+package that is of particular interest to a reader. Doxygen will
+document pretty much every part of your code, so do your best here to
+point the reader to the actual API.
+
+If your codebase is fairly large or has different sets of APIs, you
+should use the doxygen 'group' tag to keep these APIs together. For
+example, the roscpp documentation has 'libros' group.
+-->
+
+
+*/

@@ -1,0 +1,10 @@
+<launch>
+  <arg name="reference_topic" default="/ref" />
+
+  <node name="move_server"
+        pkg="crazyflie_examples"
+        type="move_server_node.py"
+        output="screen">
+    <param name="topics/ref" value="$(arg reference_topic)" />
+  </node>
+</launch>

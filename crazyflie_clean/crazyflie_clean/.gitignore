@@ -1,0 +1,72 @@
+# Data, build, binary directories
+ros/build
+ros/devel
+ros/src/CMakeLists.txt
+
+*.catkin_workspace
+
+# Latex build files.
+*.aux
+*.bbl
+*.out
+*.log
+*.bcf
+*.run.xml
+*.blg
+
+# Bagfiles
+bagfiles/
+
+# Saved maps
+*/saved_maps/
+
+# Figures
+figures/
+images/
+
+# Timing data.
+data/
+
+# Simulation
+simulation/
+
+# Profiling
+profiling/
+
+# Swap files
+*.swp
+*.swo
+*~
+
+# Glog log files
+*.log*
+*.INFO
+
+# OSX dir files
+.DS_store
+
+# Compiled object files
+*.slo
+*.lo
+*.o
+
+# Compiled dynamic and static libraries
+*.so
+*.dylib
+*.la
+*.a
+
+# Video files
+*.mp4
+*.MOV
+*.mov
+
+# CSV files
+*.csv
+
+# Python stuff.
+*.pyc
+
+# PDFs.
+*.pdf
+!HSL_Crazyflie_Documentation.pdf

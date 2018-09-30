@@ -1,0 +1,7 @@
+# Range and position (x/y/z) of sensor. This sensor has spherical field of view
+# (FOV) and returns a list of all (spherical) obstacles that intersect that FOV.
+float64 range
+geometry_msgs/Vector3 position
+---
+# Spheres sensed.
+fastrack_msgs/SensedSpheres obstacles

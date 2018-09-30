@@ -1,0 +1,11 @@
+<map id="quadrotor_decoupled_6d.h" name="quadrotor_decoupled_6d.h">
+<area shape="rect" id="node2" href="$quadrotor__control_8h.html" title="fastrack/control/quadrotor\l_control.h" alt="" coords="812,171,983,213"/>
+<area shape="rect" id="node18" href="$quadrotor__control__bound__box_8h.html" title="fastrack/control/quadrotor\l_control_bound_box.h" alt="" coords="689,81,860,122"/>
+<area shape="rect" id="node21" href="$dynamics_8h.html" title="fastrack/dynamics/dynamics.h" alt="" coords="311,179,509,205"/>
+<area shape="rect" id="node22" href="$position__velocity_8h.html" title="fastrack/state/position\l_velocity.h" alt="" coords="945,81,1095,122"/>
+<area shape="rect" id="node3" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="593,352,737,379"/>
+<area shape="rect" id="node19" href="$control__bound_8h.html" title="fastrack/control/control\l_bound.h" alt="" coords="501,262,655,303"/>
+<area shape="rect" id="node20" href="$scalar__bound__interval_8h.html" title="fastrack/control/scalar\l_bound_interval.h" alt="" coords="586,171,736,213"/>
+<area shape="rect" id="node23" href="$planar__dubins__3d_8h.html" title="fastrack/state/planar\l_dubins_3d.h" alt="" coords="1057,171,1197,213"/>
+<area shape="rect" id="node24" href="$state_8h.html" title="fastrack/state/state.h" alt="" coords="1003,269,1149,296"/>
+</map>

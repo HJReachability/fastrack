@@ -1,0 +1,4 @@
+<map id="fastrack::environment::BallsInBoxOccupancyMap" name="fastrack::environment::BallsInBoxOccupancyMap">
+<area shape="rect" id="node2" href="$classfastrack_1_1environment_1_1OccupancyMap.html" title="fastrack::environment\l::OccupancyMap\&lt; fastrack\l_msgs::SensedSpheres, SphereSensor\lParams \&gt;" alt="" coords="304,5,555,75"/>
+<area shape="rect" id="node3" href="$classfastrack_1_1environment_1_1Environment.html" title="fastrack::environment\l::Environment\&lt; fastrack\l_msgs::SensedSpheres, SphereSensor\lParams \&gt;" alt="" coords="5,5,256,75"/>
+</map>

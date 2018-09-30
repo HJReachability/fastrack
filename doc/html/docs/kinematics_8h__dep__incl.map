@@ -1,0 +1,7 @@
+<map id="kinematics.h" name="kinematics.h">
+<area shape="rect" id="node2" href="$quadrotor__decoupled__6d__rel__kinematics_8h.html" title="quadrotor_decoupled\l_6d_rel_kinematics.h" alt="" coords="37,81,181,122"/>
+<area shape="rect" id="node3" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8h.html" title="analytical_kinematic\l_box_quadrotor_decoupled_6d.h" alt="" coords="5,171,213,213"/>
+<area shape="rect" id="node5" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="257,88,396,115"/>
+<area shape="rect" id="node4" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8cpp.html" title="analytical_kinematic\l_box_quadrotor_decoupled\l_6d.cpp" alt="" coords="21,261,197,317"/>
+<area shape="rect" id="node6" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="240,179,413,205"/>
+</map>

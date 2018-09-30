@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+
+<launch>
+  <!-- Topics. -->
+  <arg name="ready_topic" default="/ready" />
+  <arg name="tracker_state_topic" default="/state/tracker" />
+  <arg name="planner_state_topic" default="/state/planner" />
+  <arg name="control_topic" default="/fastrack/control" />
+  <arg name="bound_topic" default="/vis/bound" />
+
+  <!-- Services. -->
+  <arg name="bound_srv" default="/bound" />
+  <arg name="planner_dynamics_srv" default="/planner_dynamics" />
+
+  <!-- Planner frame of reference. -->
+  <arg name="planner_frame" default="planner" />
+
+  <!-- Tracker time step. -->
+  <arg name="time_step" default="0.02" />
+
+  <!-- Control, planning, and disturbance bounds. -->
+  <arg name="tracker_upper_pitch" default="0.1" />
+  <arg name="tracker_upper_roll" default="0.1" />
+  <arg name="tracker_upper_thrust" default="11.81" />
+  <arg name="tracker_lower_thrust" default="7.81" />
+
+  <arg name="planner_vx" default="0.5" />
+  <arg name="planner_vy" default="0.5" />
+  <arg name="planner_vz" default="0.5" />
+
+  <arg name="disturbance_vx" default="0.1" />
+  <arg name="disturbance_vy" default="0.1" />
+  <arg name="disturbance_vz" default="0.1" />
+  <arg name="disturbance_ax" default="0.01" />
+  <arg name="disturbance_ay" default="0.01" />
+  <arg name="disturbance_az" default="0.01" />
+
+  <!-- Velocity expansion, i.e. at what speed should we enter the set. -->
+  <arg name="expansion_vx" default="0.1" />
+  <arg name="expansion_vy" default="0.1" />
+  <arg name="expansion_vz" default="0.1" />
+
+  <!-- Tracker node. -->
+  <node name="tracker"
+        pkg="fastrack_crazyflie_demos"
+        type="analytical_quadrotor_decoupled_tracker_demo_node"
+        output="screen">
+    <param name="topic/ready" value="$(arg ready_topic)" />
+    <param name="topic/tracker_state" value="$(arg tracker_state_topic)" />
+    <param name="topic/planner_state" value="$(arg planner_state_topic)" />
+    <param name="topic/control" value="$(arg control_topic)" />
+    <param name="vis/bound" value="$(arg bound_topic)" />
+
+    <param name="srv/bound" value="$(arg bound_srv)" />
+    <param name="srv/planner_dynamics" value="$(arg planner_dynamics_srv)" />
+
+    <param name="frames/planner" value="$(arg planner_frame)" />
+    <param name="time_step" value="$(arg time_step)" />
+
+    <param name="tracker/upper/pitch" value="$(arg tracker_upper_pitch)" />
+    <param name="tracker/upper/roll" value="$(arg tracker_upper_roll)" />
+    <param name="tracker/upper/thrust" value="$(arg tracker_upper_thrust)" />
+    <param name="tracker/lower/thrust" value="$(arg tracker_lower_thrust)" />
+
+    <param name="planner/vx" value="$(arg planner_vx)" />
+    <param name="planner/vy" value="$(arg planner_vy)" />
+    <param name="planner/vz" value="$(arg planner_vz)" />
+
+    <param name="disturbance/velocity/x" value="$(arg disturbance_vx)" />
+    <param name="disturbance/velocity/y" value="$(arg disturbance_vy)" />
+    <param name="disturbance/velocity/z" value="$(arg disturbance_vz)" />
+    <param name="disturbance/acceleration/x" value="$(arg disturbance_ax)" />
+    <param name="disturbance/acceleration/y" value="$(arg disturbance_ay)" />
+    <param name="disturbance/acceleration/z" value="$(arg disturbance_az)" />
+
+    <param name="expansion/velocity/x" value="$(arg expansion_vx)" />
+    <param name="expansion/velocity/y" value="$(arg expansion_vy)" />
+    <param name="expansion/velocity/z" value="$(arg expansion_vz)" />
+  </node>
+</launch>

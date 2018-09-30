@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<launch>
+  <!-- Topics. -->
+  <arg name="ready_topic" default="/ready" />
+  <arg name="traj_topic" default="/traj" />
+  <arg name="replan_request_topic" default="/replan" />
+  <arg name="updated_env_topic" default="/updated_env" />
+  <arg name="ref_topic" default="/ref" />
+  <arg name="traj_vis" default="/vis/traj" />
+  <arg name="goal_vis" default="/vis/goal" />
+
+  <!-- Frames of reference. -->
+  <arg name="fixed_frame" default="world" />
+  <arg name="planner_frame" default="planner" />
+
+  <!-- Time step for interpolating trajectory. -->
+  <arg name="time_step" default="0.02" />
+
+  <!-- Planner runtime, start, and goal. -->
+  <arg name="planner_runtime" default="0.5" />
+  <arg name="start" default="[0.0, 0.0, 0.0]" />
+  <arg name="goal" default="[1.0, 1.0, 1.0]" />
+
+  <!-- Planner manager node.  -->
+  <node name="planner_manager"
+        pkg="fastrack_crazyflie_demos"
+        type="position_velocity_planner_manager_demo_node"
+        output="screen">
+    <param name="topic/ready" value="$(arg ready_topic)" />
+    <param name="topic/traj" value="$(arg traj_topic)" />
+    <param name="topic/ref" value="$(arg ref_topic)" />
+    <param name="topic/replan_request" value="$(arg replan_request_topic)" />
+    <param name="topic/updated_env" value="$(arg updated_env_topic)" />
+    <param name="vis/traj" value="$(arg traj_vis)" />
+    <param name="vis/goal" value="$(arg goal_vis)" />
+
+    <param name="frame/fixed" value="$(arg fixed_frame)" />
+    <param name="frame/planner" value="$(arg planner_frame)" />
+
+    <param name="time_step" value="$(arg time_step)" />
+
+    <param name="planner_runtime" value="$(arg planner_runtime)" />
+    <rosparam param="start" subst_value="True">$(arg start)</rosparam>
+    <rosparam param="goal" subst_value="True">$(arg goal)</rosparam>
+  </node>
+</launch>

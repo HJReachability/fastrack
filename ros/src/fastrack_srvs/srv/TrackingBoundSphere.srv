@@ -1,0 +1,3 @@
+---
+# Maximum tracking error radius (m).
+float64 r

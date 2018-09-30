@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+
+<launch>
+  <!-- Topics. -->
+  <arg name="sensor_pub_topic" default="/sensor" />
+  <arg name="sensor_sub_topic" default="/junk/sensor" />
+  <arg name="sensor_vis_topic" default="/vis/sensor" />
+  <arg name="updated_env_topic" default="/updated_env" />
+  <arg name="env_vis_topic" default="/vis/true_env" />
+
+  <!-- Frames. -->
+  <arg name="fixed_frame" default="world" />
+  <arg name="sensor_frame" default="sensor" />
+
+  <!-- Time step for generating new sensor readings. -->
+  <arg name="time_step" default="0.1" />
+
+  <!-- Sensor range. -->
+  <arg name="range" default="2.0" />
+
+  <!-- Environment parameters.
+       NOTE! These need to agree with configuration space bounds. -->
+  <arg name="env_upper_x" default="10.0" />
+  <arg name="env_upper_y" default="10.0" />
+  <arg name="env_upper_z" default="10.0" />
+  <arg name="env_lower_x" default="10.0" />
+  <arg name="env_lower_y" default="10.0" />
+  <arg name="env_lower_z" default="0.0" />
+
+  <arg name="env_num_random_obstacles" default="0" />
+  <arg name="env_min_radius" default="0.5" />
+  <arg name="env_max_radius" default="1.0" />
+  <arg name="seed" default="0" />
+
+  <arg name="env_obstacle_xs" default="[]" />
+  <arg name="env_obstacle_ys" default="[]" />
+  <arg name="env_obstacle_zs" default="[]" />
+  <arg name="env_obstacle_rs" default="[]" />
+
+  <!-- Sphere sensor node. -->
+  <node name="sensor"
+        pkg="fastrack_crazyflie_demos"
+        type="sphere_sensor_demo_node"
+        output="screen">
+    <param name="topic/sensor_sub" value="$(arg sensor_sub_topic)" />
+    <param name="topic/sensor_pub" value="$(arg sensor_pub_topic)" />
+    <param name="vis/sensor" value="$(arg sensor_vis_topic)" />
+    <param name="vis/env" value="$(arg env_vis_topic)" />
+    <param name="topic/updated_env" value="$(arg updated_env_topic)" />
+    <param name="frame/fixed" value="$(arg fixed_frame)" />
+    <param name="frame/sensor" value="$(arg sensor_frame)" />
+    <param name="time_step" value="$(arg time_step)" />
+    <param name="range" value="$(arg range)" />
+
+    <param name="env/upper/x" value="$(arg env_upper_x)" />
+    <param name="env/upper/y" value="$(arg env_upper_y)" />
+    <param name="env/upper/z" value="$(arg env_upper_z)" />
+    <param name="env/lower/x" value="$(arg env_lower_x)" />
+    <param name="env/lower/y" value="$(arg env_lower_y)" />
+    <param name="env/lower/z" value="$(arg env_lower_z)" />
+
+    <param name="env/num_random_obstacles" value="$(arg env_num_random_obstacles)" />
+    <param name="env/min_radius" value="$(arg env_min_radius)" />
+    <param name="env/max_radius" value="$(arg env_max_radius)" />
+    <param name="env/seed" value="$(arg seed)" />
+
+    <rosparam param="env/obstacle/xs" subst_value="True">$(arg env_obstacle_xs)</rosparam>
+    <rosparam param="env/obstacle/ys" subst_value="True">$(arg env_obstacle_ys)</rosparam>
+    <rosparam param="env/obstacle/zs" subst_value="True">$(arg env_obstacle_zs)</rosparam>
+    <rosparam param="env/obstacle/rs" subst_value="True">$(arg env_obstacle_rs)</rosparam>
+  </node>
+</launch>
