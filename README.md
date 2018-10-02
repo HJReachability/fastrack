@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/HJReachability/fastrack.svg?branch=master)](https://travis-ci.org/HJReachability/fastrack)
 [![License](https://img.shields.io/badge/license-BSD-blue.svg)](LICENSE)
 
-[FaSTrack](https://hjreachability.github.io/fastrack/) (Fast and Safe Tracking): fast planning methods with slower, reachability-based safety guarantees for online safe trajectory planning. Auto-generated documentation may be found [here](https://hjreachability.github.io/fastrack/doc/html).
+[FaSTrack](https://hjreachability.github.io/fastrack/) (Fast and Safe Tracking): fast planning methods with slower, reachability-based safety guarantees for online safe trajectory planning. Auto-generated documentation may be found [here](https://hjreachability.github.io/fastrack/doc/html). **fastrack** is primarily developed by [David Fridovich-Keil](https://people.eecs.berkeley.edu/~dfk/), a PhD student in the [Hybrid Systems Lab](http://hybrid.eecs.berkeley.edu) and [Berkeley AI Research](https://bair.berkeley.edu).
 
 ## Repository organization
 All code in this repository is written in the Robot Operating System (ROS) framework, and as such is broken up into atomic packages that implement specific functionality. The `ros/` directory is the root workspace, and individual packages live inside the `ros/src/` directory.
@@ -40,6 +40,11 @@ To run unit tests, type:
 ```
 catkin_make run_tests
 ```
+
+## Citing this work
+If you find this repository or the ideas implemented within it useful for your own work, please do check out the following papers and cite the appropriate ones:
+* Original FaSTrack paper, [Herbert 2017](https://ieeexplore.ieee.org/abstract/document/8263867)
+* Planning, Fast and Slow, [Fridovich-Keil 2018](https://arxiv.org/pdf/1710.04731.pdf)
 
 ## C++ reference materials
 We attempt to adhere to the philosophy put forward in the [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html). Our code is written _for the reader, not the writer_. We write comments liberally and use inheritance whenever it makes sense.
