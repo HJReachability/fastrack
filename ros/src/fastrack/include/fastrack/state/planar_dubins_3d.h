@@ -104,7 +104,7 @@ public:
 
   // Convert from/to ROS message. Assume State is [x, y, theta, v].
   // or configuration only.
-  void FromRos(const fastrack_msgs::State::ConstPtr &msg);
+  void FromRos(const fastrack_msgs::State& msg);
   fastrack_msgs::State ToRos() const;
 
   // Dimension of the state and configuration spaces.
