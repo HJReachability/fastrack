@@ -104,7 +104,10 @@ class PositionVelocity : public State {
 
   // Convert from/to ROS message. Assume State is [x, y, z, vx, vy, vz]
   // or configuration only.
-  void FromRos(const fastrack_msgs::State::ConstPtr& msg);
+  void FromRos(const fastrack_msgs::State::ConstPtr& msg) {
+    FromRos(*msg);
+  }
+  void FromRos(const fastrack_msgs::State& msg);
   fastrack_msgs::State ToRos() const;
 
   // Dimension of the state and configuration spaces.
