@@ -222,20 +222,20 @@ VectorXd PositionVelocity::ToVector() const {
 
 // Convert from ROS message. Assume State is [x, y, z, vx, vy, vz] or
 // configuration only.
-void PositionVelocity::FromRos(const fastrack_msgs::State::ConstPtr &msg) {
-  if (msg->x.size() == 6) {
+void PositionVelocity::FromRos(const fastrack_msgs::State& msg) {
+  if (msg.x.size() == 6) {
     // Message contains full state.
-    position_(0) = msg->x[0];
-    position_(1) = msg->x[1];
-    position_(2) = msg->x[2];
-    velocity_(0) = msg->x[3];
-    velocity_(1) = msg->x[4];
-    velocity_(2) = msg->x[5];
-  } else if (msg->x.size() == 3) {
+    position_(0) = msg.x[0];
+    position_(1) = msg.x[1];
+    position_(2) = msg.x[2];
+    velocity_(0) = msg.x[3];
+    velocity_(1) = msg.x[4];
+    velocity_(2) = msg.x[5];
+  } else if (msg.x.size() == 3) {
     // Message contains configuration only.
-    position_(0) = msg->x[0];
-    position_(1) = msg->x[1];
-    position_(2) = msg->x[2];
+    position_(0) = msg.x[0];
+    position_(1) = msg.x[1];
+    position_(2) = msg.x[2];
   } else
     ROS_ERROR("PositionVelocity: msg is neither state nor configuration.");
 }
