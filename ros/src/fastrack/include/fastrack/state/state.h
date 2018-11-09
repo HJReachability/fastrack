@@ -74,7 +74,7 @@ public:
   virtual VectorXd ToVector() const = 0;
 
   // Convert from/to ROS message.
-  void FromRos(const fastrack_msgs::State::ConstPtr& msg) { FromRos(*msg); }
+  void FromRosPtr(const fastrack_msgs::State::ConstPtr& msg) { FromRos(*msg); }
   virtual void FromRos(const fastrack_msgs::State& msg) = 0;
   virtual fastrack_msgs::State ToRos() const = 0;
 

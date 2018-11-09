@@ -93,11 +93,11 @@ private:
 
   // Callback to update tracker/planner state.
   inline void TrackerStateCallback(const fastrack_msgs::State::ConstPtr& msg) {
-    tracker_x_.FromRos(msg);
+    tracker_x_.FromRosPtr(msg);
     received_tracker_x_ = true;
   }
   inline void PlannerStateCallback(const fastrack_msgs::State::ConstPtr& msg) {
-    planner_x_.FromRos(msg);
+    planner_x_.FromRosPtr(msg);
     received_planner_x_ = true;
   }
 
