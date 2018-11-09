@@ -195,22 +195,22 @@ VectorXd PlanarDubins3D::ToVector() const {
 
 // Convert from ROS message. Assume State is [x, y, theta], [x, y, theta, v], or
 // configuration only.
-void PlanarDubins3D::FromRos(const fastrack_msgs::State::ConstPtr& msg) {
-  if (msg->x.size() == 3) {
+void PlanarDubins3D::FromRos(const fastrack_msgs::State& msg) {
+  if (msg.x.size() == 3) {
     // Message contains state, but not v.
-    x_ = msg->x[0];
-    y_ = msg->x[1];
-    theta_ = msg->x[2];
-  } else if (msg->x.size() == 4) {
+    x_ = msg.x[0];
+    y_ = msg.x[1];
+    theta_ = msg.x[2];
+  } else if (msg.x.size() == 4) {
     // Message contains state and v.
-    x_ = msg->x[0];
-    y_ = msg->x[1];
-    theta_ = msg->x[2];
-    v_ = msg->x[3];
-  } else if (msg->x.size() == 3) {
+    x_ = msg.x[0];
+    y_ = msg.x[1];
+    theta_ = msg.x[2];
+    v_ = msg.x[3];
+  } else if (msg.x.size() == 3) {
     // Message contains configuration only.
-    x_ = msg->x[0];
-    y_ = msg->x[1];
+    x_ = msg.x[0];
+    y_ = msg.x[1];
   } else
     throw std::runtime_error(
         "PlanarDubins3D: msg is neither state nor configuration.");
