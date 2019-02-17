@@ -237,7 +237,7 @@
 <div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;                  start_time, <span class="keyword">true</span>, initial_call_time);</div>
 <div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;</div>
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;  <span class="comment">// Wait around if we finish early.</span></div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">double</span> elapsed_time = (ros::Time::now() - initial_call_time).toSec();</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">double</span> elapsed_time = (ros::Time::now().toSec() - initial_call_time.toSec());</div>
 <div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;  <span class="keywordflow">if</span> (elapsed_time &lt; max_runtime_)</div>
 <div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;    ros::Duration(max_runtime_ - elapsed_time).sleep();</div>
 <div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;</div>
@@ -256,7 +256,7 @@
 <div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;              <span class="keywordtype">bool</span> outbound,</div>
 <div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;              <span class="keyword">const</span> ros::Time&amp; initial_call_time)<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;  <span class="comment">// Loop until we run out of time.</span></div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;  <span class="keywordflow">while</span> ((ros::Time::now() - initial_call_time).toSec() &lt; max_runtime_) {</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;  <span class="keywordflow">while</span> ((ros::Time::now().toSec() - initial_call_time.toSec()) &lt; max_runtime_) {</div>
 <div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;    <span class="comment">// (1) Sample a new point.</span></div>
 <div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    <span class="keyword">const</span> S sample = S::Sample(lower, upper);</div>
 <div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;</div>
