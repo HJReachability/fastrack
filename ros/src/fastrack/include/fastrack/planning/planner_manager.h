@@ -123,7 +123,7 @@ protected:
   // Generate a new trajectory request when environment has been updated.
   inline void UpdatedEnvironmentCallback(const std_msgs::Empty::ConstPtr& msg) {
     serviced_updated_env_ = false;
-    MaybeRequestTrajectory();
+    //MaybeRequestTrajectory();
   }
 
   // Current trajectory.
@@ -310,14 +310,14 @@ void PlannerManager<S>::TimerCallback(const ros::TimerEvent& e) {
     return;
 
   if (traj_.Size() == 0) {
-    MaybeRequestTrajectory();
+    //MaybeRequestTrajectory();
     return;
   } else if (waiting_for_traj_) {
     ROS_WARN_THROTTLE(1.0, "%s: Waiting for trajectory.", name_.c_str());
   } else if (!serviced_updated_env_) {
     ROS_INFO_THROTTLE(1.0, "%s: Servicing old updated environment callback.",
                       name_.c_str());
-    MaybeRequestTrajectory();
+    //MaybeRequestTrajectory();
   }
 
   // Interpolate the current trajectory.
