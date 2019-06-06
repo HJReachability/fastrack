@@ -73,6 +73,25 @@ bool MatlabFileReader::ReadScalar(const std::string& field_name,
   return true;
 }
 
+// Read string. Returns bool indicating success.
+bool MatlabFileReader::ReadString(const std::string& field_name,
+                                  std::string* value) {
+  if (!IsOpen()) return false;
+
+  // Make sure 'value' is non-null.
+  if (!value) return false;
+
+  // Extract this variable and check type.
+  matvar_t* variable = Mat_VarRead(mat_fp_, field_name.c_str());
+  if (!variable || variable->data_type != MAT_T_STRING) return false;
+
+  value->assign(static_cast<char*>(variable->data));
+
+  // Free variable.
+  Mat_VarFree(variable);
+  return true;
+}
+
 // Read scalar. Returns bool indicating success.
 bool MatlabFileReader::ReadScalar(const std::string& field_name,
                                   size_t* value) {

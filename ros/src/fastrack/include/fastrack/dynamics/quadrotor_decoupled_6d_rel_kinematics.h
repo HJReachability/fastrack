@@ -80,7 +80,7 @@ class QuadrotorDecoupled6DRelKinematics
   Evaluate(const PositionVelocity& tracker_x, const QuadrotorControl& tracker_u,
            const PositionVelocity& planner_x, const VectorXd& planner_u) const {
     if (planner_u.size() != PositionVelocity::ConfigurationDimension())
-      std::runtime_error("Bad planner control size.");
+      throw std::runtime_error("Bad planner control size.");
 
     // TODO(@jaime): confirm that this works. I set things up so things like
     // this should work.

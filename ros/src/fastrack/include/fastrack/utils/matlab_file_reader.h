@@ -76,6 +76,9 @@ class MatlabFileReader : private Uncopyable {
   // Is this reader open?
   bool IsOpen() { return mat_fp_; }
 
+  // Read string. Returns bool indicating success.
+  bool ReadString(const std::string& field_name, std::string* value);
+
   // Read scalar. Returns bool indicating success.
   bool ReadScalar(const std::string& field_name, double* value);
   bool ReadScalar(const std::string& field_name, size_t* value);
