@@ -83,7 +83,7 @@ bool MatlabFileReader::ReadString(const std::string& field_name,
 
   // Extract this variable and check type.
   matvar_t* variable = Mat_VarRead(mat_fp_, field_name.c_str());
-  if (!variable || variable->data_type != MAT_T_STRING) return false;
+  if (!variable) return false; // || variable->data_type != MAT_T_UTF8) return false;
 
   value->assign(static_cast<char*>(variable->data));
 
