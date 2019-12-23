@@ -36,8 +36,11 @@
 
   <arg name="seed" default="0" />
 
+  <!-- Node name. -->
+  <arg name="node_name" default="planner" />
+
   <!-- OMPL kinematic planner node.  -->
-  <node name="planner"
+  <node name="$(arg node_name)"
         pkg="fastrack_crazyflie_demos"
         type="ompl_kinematic_planner_demo_node"
         output="screen">

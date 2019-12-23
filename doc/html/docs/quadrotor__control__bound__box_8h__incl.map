@@ -1,6 +1,6 @@
 <map id="quadrotor_control_bound_box.h" name="quadrotor_control_bound_box.h">
-<area shape="rect" id="node2" href="$control__bound_8h.html" title="fastrack/control/control\l_bound.h" alt="" coords="612,187,765,229"/>
-<area shape="rect" id="node17" href="$quadrotor__control_8h.html" title="fastrack/control/quadrotor\l_control.h" alt="" coords="887,97,1057,138"/>
-<area shape="rect" id="node19" href="$scalar__bound__interval_8h.html" title="fastrack/control/scalar\l_bound_interval.h" alt="" coords="711,97,861,138"/>
-<area shape="rect" id="node3" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="617,277,761,304"/>
+<area shape="rect" id="node2" href="$control__bound_8h.html" title="fastrack/control/control\l_bound.h" alt="" coords="649,184,818,225"/>
+<area shape="rect" id="node17" href="$quadrotor__control_8h.html" title="fastrack/control/quadrotor\l_control.h" alt="" coords="941,95,1129,136"/>
+<area shape="rect" id="node19" href="$scalar__bound__interval_8h.html" title="fastrack/control/scalar\l_bound_interval.h" alt="" coords="753,95,916,136"/>
+<area shape="rect" id="node3" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="656,273,811,300"/>
 </map>

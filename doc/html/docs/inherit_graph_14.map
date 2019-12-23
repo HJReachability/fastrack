@@ -1,6 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classfastrack_1_1environment_1_1Environment.html" title="fastrack::environment\l::Environment\&lt; fastrack\l_msgs::SensedSpheres, SphereSensor\lParams \&gt;" alt="" coords="5,30,256,101"/>
-<area shape="rect" id="node2" href="$classfastrack_1_1environment_1_1BallsInBox.html" title="fastrack::environment\l::BallsInBox" alt="" coords="355,5,503,46"/>
-<area shape="rect" id="node3" href="$classfastrack_1_1environment_1_1OccupancyMap.html" title="fastrack::environment\l::OccupancyMap\&lt; fastrack\l_msgs::SensedSpheres, SphereSensor\lParams \&gt;" alt="" coords="304,70,555,141"/>
-<area shape="rect" id="node4" href="$classfastrack_1_1environment_1_1BallsInBoxOccupancyMap.html" title="fastrack::environment\l::BallsInBoxOccupancyMap" alt="" coords="603,85,787,126"/>
+<area shape="rect" id="node1" href="$classfastrack_1_1environment_1_1Environment.html" title="fastrack::environment\l::Environment\&lt; fastrack\l_msgs::SensedSpheres, SphereSensor\lParams \&gt;" alt="" coords="5,31,277,101"/>
+<area shape="rect" id="node2" href="$classfastrack_1_1environment_1_1BallsInBox.html" title="fastrack::environment\l::BallsInBox" alt="" coords="380,5,543,47"/>
+<area shape="rect" id="node3" href="$classfastrack_1_1environment_1_1OccupancyMap.html" title="fastrack::environment\l::OccupancyMap\&lt; fastrack\l_msgs::SensedSpheres, SphereSensor\lParams \&gt;" alt="" coords="325,71,597,141"/>
+<area shape="rect" id="node4" href="$classfastrack_1_1environment_1_1BallsInBoxOccupancyMap.html" title="fastrack::environment\l::BallsInBoxOccupancyMap" alt="" coords="645,85,837,127"/>
 </map>

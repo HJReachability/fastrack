@@ -1,8 +1,8 @@
 <map id="vector_bound_box.h" name="vector_bound_box.h">
-<area shape="rect" id="node2" href="$kinematics_8h.html" title="kinematics.h" alt="" coords="172,80,268,107"/>
-<area shape="rect" id="node3" href="$quadrotor__decoupled__6d__rel__kinematics_8h.html" title="quadrotor_decoupled\l_6d_rel_kinematics.h" alt="" coords="37,155,181,197"/>
-<area shape="rect" id="node4" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8h.html" title="analytical_kinematic\l_box_quadrotor_decoupled_6d.h" alt="" coords="5,246,213,287"/>
-<area shape="rect" id="node6" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="257,163,396,189"/>
-<area shape="rect" id="node5" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8cpp.html" title="analytical_kinematic\l_box_quadrotor_decoupled\l_6d.cpp" alt="" coords="21,336,197,392"/>
-<area shape="rect" id="node7" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="240,253,413,280"/>
+<area shape="rect" id="node2" href="$kinematics_8h.html" title="kinematics.h" alt="" coords="187,80,289,107"/>
+<area shape="rect" id="node3" href="$quadrotor__decoupled__6d__rel__kinematics_8h.html" title="quadrotor_decoupled\l_6d_rel_kinematics.h" alt="" coords="41,155,200,196"/>
+<area shape="rect" id="node4" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8h.html" title="analytical_kinematic\l_box_quadrotor_decoupled_6d.h" alt="" coords="5,244,236,285"/>
+<area shape="rect" id="node6" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="277,162,428,189"/>
+<area shape="rect" id="node5" href="$analytical__kinematic__box__quadrotor__decoupled__6d_8cpp.html" title="analytical_kinematic\l_box_quadrotor_decoupled\l_6d.cpp" alt="" coords="23,333,218,389"/>
+<area shape="rect" id="node7" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="261,251,450,278"/>
 </map>

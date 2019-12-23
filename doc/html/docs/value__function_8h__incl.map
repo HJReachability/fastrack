@@ -1,8 +1,8 @@
 <map id="value_function.h" name="value_function.h">
-<area shape="rect" id="node2" href="$dynamics_8h.html" title="fastrack/dynamics/dynamics.h" alt="" coords="243,88,441,115"/>
-<area shape="rect" id="node4" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="535,261,679,288"/>
-<area shape="rect" id="node18" href="$relative__dynamics_8h.html" title="fastrack/dynamics/relative\l_dynamics.h" alt="" coords="475,81,649,122"/>
-<area shape="rect" id="node19" href="$relative__state_8h.html" title="fastrack/state/relative\l_state.h" alt="" coords="589,171,736,213"/>
-<area shape="rect" id="node20" href="$uncopyable_8h.html" title="fastrack/utils/uncopyable.h" alt="" coords="812,88,991,115"/>
-<area shape="rect" id="node3" href="$control__bound_8h.html" title="fastrack/control/control\l_bound.h" alt="" coords="359,171,512,213"/>
+<area shape="rect" id="node2" href="$dynamics_8h.html" title="fastrack/dynamics/dynamics.h" alt="" coords="256,87,471,114"/>
+<area shape="rect" id="node4" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="567,259,722,285"/>
+<area shape="rect" id="node18" href="$relative__dynamics_8h.html" title="fastrack/dynamics/relative\l_dynamics.h" alt="" coords="505,80,694,121"/>
+<area shape="rect" id="node19" href="$relative__state_8h.html" title="fastrack/state/relative\l_state.h" alt="" coords="624,169,785,211"/>
+<area shape="rect" id="node20" href="$uncopyable_8h.html" title="fastrack/utils/uncopyable.h" alt="" coords="861,87,1053,114"/>
+<area shape="rect" id="node3" href="$control__bound_8h.html" title="fastrack/control/control\l_bound.h" alt="" coords="379,169,548,211"/>
 </map>

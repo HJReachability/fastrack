@@ -1,4 +1,4 @@
 <map id="fastrack::value::AnalyticalKinematicBoxQuadrotorDecoupled6D" name="fastrack::value::AnalyticalKinematicBoxQuadrotorDecoupled6D">
-<area shape="rect" id="node2" href="$classfastrack_1_1value_1_1ValueFunction.html" title="fastrack::value::ValueFunction\l\&lt; PositionVelocity, QuadrotorControl,\l QuadrotorDecoupled6D\&lt; QuadrotorControlBound\lBox \&gt;, PositionVelocity, VectorXd, Kinematics\l\&lt; PositionVelocity \&gt;, Box \&gt;" alt="" coords="201,5,511,91"/>
-<area shape="rect" id="node3" href="$classfastrack_1_1Uncopyable.html" title="fastrack::Uncopyable" alt="" coords="5,35,152,61"/>
+<area shape="rect" id="node2" href="$classfastrack_1_1value_1_1ValueFunction.html" title="fastrack::value::ValueFunction\l\&lt; PositionVelocity, QuadrotorControl,\l QuadrotorDecoupled6D\&lt; QuadrotorControlBound\lBox \&gt;, PositionVelocity, VectorXd, Kinematics\l\&lt; PositionVelocity \&gt;, Box \&gt;" alt="" coords="209,5,553,91"/>
+<area shape="rect" id="node3" href="$classfastrack_1_1Uncopyable.html" title="fastrack::Uncopyable" alt="" coords="5,35,161,61"/>
 </map>

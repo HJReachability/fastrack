@@ -1,4 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classfastrack_1_1planning_1_1Planner.html" title="fastrack::planning\l::Planner\&lt; S, E, D,\l SD, B, SB \&gt;" alt="" coords="6,4,141,60"/>
-<area shape="rect" id="node2" href="$classfastrack_1_1planning_1_1GraphDynamicPlanner.html" title="fastrack::planning\l::GraphDynamicPlanner\l\&lt; S, E, D, SD, B, SB \&gt;" alt="" coords="190,4,351,60"/>
+<area shape="rect" id="node1" href="$classfastrack_1_1planning_1_1Planner.html" title="fastrack::planning\l::Planner\&lt; S, E, D,\l SD, B, SB \&gt;" alt="" coords="5,5,145,61"/>
+<area shape="rect" id="node2" href="$classfastrack_1_1planning_1_1GraphDynamicPlanner.html" title="fastrack::planning\l::GraphDynamicPlanner\l\&lt; S, E, D, SD, B, SB \&gt;" alt="" coords="193,5,367,61"/>
 </map>

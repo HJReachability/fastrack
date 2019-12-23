@@ -1,10 +1,10 @@
 <map id="matlab_value_function.h" name="matlab_value_function.h">
-<area shape="rect" id="node2" href="$dynamics_8h.html" title="fastrack/dynamics/dynamics.h" alt="" coords="39,179,237,205"/>
-<area shape="rect" id="node4" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="393,352,537,379"/>
-<area shape="rect" id="node18" href="$relative__dynamics_8h.html" title="fastrack/dynamics/relative\l_dynamics.h" alt="" coords="263,171,437,213"/>
-<area shape="rect" id="node19" href="$relative__state_8h.html" title="fastrack/state/relative\l_state.h" alt="" coords="391,262,539,303"/>
-<area shape="rect" id="node20" href="$matlab__file__reader_8h.html" title="fastrack/utils/matlab\l_file_reader.h" alt="" coords="831,81,971,122"/>
-<area shape="rect" id="node25" href="$value__function_8h.html" title="fastrack/value/value\l_function.h" alt="" coords="513,81,652,122"/>
-<area shape="rect" id="node3" href="$control__bound_8h.html" title="fastrack/control/control\l_bound.h" alt="" coords="161,262,315,303"/>
-<area shape="rect" id="node21" href="$uncopyable_8h.html" title="fastrack/utils/uncopyable.h" alt="" coords="615,179,793,205"/>
+<area shape="rect" id="node2" href="$dynamics_8h.html" title="fastrack/dynamics/dynamics.h" alt="" coords="55,177,269,203"/>
+<area shape="rect" id="node4" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="430,348,585,375"/>
+<area shape="rect" id="node18" href="$relative__dynamics_8h.html" title="fastrack/dynamics/relative\l_dynamics.h" alt="" coords="294,169,483,211"/>
+<area shape="rect" id="node19" href="$relative__state_8h.html" title="fastrack/state/relative\l_state.h" alt="" coords="427,259,588,300"/>
+<area shape="rect" id="node20" href="$matlab__file__reader_8h.html" title="fastrack/utils/matlab\l_file_reader.h" alt="" coords="889,80,1041,121"/>
+<area shape="rect" id="node25" href="$value__function_8h.html" title="fastrack/value/value\l_function.h" alt="" coords="558,80,707,121"/>
+<area shape="rect" id="node3" href="$control__bound_8h.html" title="fastrack/control/control\l_bound.h" alt="" coords="181,259,351,300"/>
+<area shape="rect" id="node21" href="$uncopyable_8h.html" title="fastrack/utils/uncopyable.h" alt="" coords="659,177,851,203"/>
 </map>

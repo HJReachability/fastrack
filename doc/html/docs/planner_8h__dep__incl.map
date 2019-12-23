@@ -1,6 +1,6 @@
 <map id="planner.h" name="planner.h">
-<area shape="rect" id="node2" href="$graph__dynamic__planner_8h.html" title="graph_dynamic_planner.h" alt="" coords="5,80,176,107"/>
-<area shape="rect" id="node4" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="207,80,345,107"/>
-<area shape="rect" id="node3" href="$planar__dubins__planner_8h.html" title="planar_dubins_planner.h" alt="" coords="7,155,169,181"/>
-<area shape="rect" id="node5" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="193,155,367,181"/>
+<area shape="rect" id="node2" href="$graph__dynamic__planner_8h.html" title="graph_dynamic_planner.h" alt="" coords="5,80,192,107"/>
+<area shape="rect" id="node4" href="$kinematic__planner_8h.html" title="kinematic_planner.h" alt="" coords="223,80,374,107"/>
+<area shape="rect" id="node3" href="$planar__dubins__planner_8h.html" title="planar_dubins_planner.h" alt="" coords="6,155,183,181"/>
+<area shape="rect" id="node5" href="$ompl__kinematic__planner_8h.html" title="ompl_kinematic_planner.h" alt="" coords="208,155,397,181"/>
 </map>

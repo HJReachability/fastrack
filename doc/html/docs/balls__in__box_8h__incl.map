@@ -1,11 +1,11 @@
 <map id="balls_in_box.h" name="balls_in_box.h">
-<area shape="rect" id="node2" href="$environment_8h.html" title="fastrack/environment\l/environment.h" alt="" coords="1543,81,1687,122"/>
-<area shape="rect" id="node31" href="$sphere__sensor__params_8h.html" title="fastrack/sensor/sphere\l_sensor_params.h" alt="" coords="1961,337,2115,378"/>
-<area shape="rect" id="node3" href="$box_8h.html" title="fastrack/bound/box.h" alt="" coords="320,171,464,197"/>
-<area shape="rect" id="node5" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="813,435,957,461"/>
-<area shape="rect" id="node19" href="$tracking__bound_8h.html" title="fastrack/bound/tracking\l_bound.h" alt="" coords="1555,337,1713,378"/>
-<area shape="rect" id="node24" href="$cylinder_8h.html" title="fastrack/bound/cylinder.h" alt="" coords="801,171,969,197"/>
-<area shape="rect" id="node27" href="$sphere_8h.html" title="fastrack/bound/sphere.h" alt="" coords="1271,171,1433,197"/>
-<area shape="rect" id="node4" href="$tracking__bound__ros_8h.html" title="fastrack/bound/tracking\l_bound_ros.h" alt="" coords="806,246,964,287"/>
-<area shape="rect" id="node32" href="$uncopyable_8h.html" title="fastrack/utils/uncopyable.h" alt="" coords="1964,435,2143,461"/>
+<area shape="rect" id="node2" href="$environment_8h.html" title="fastrack/environment\l/environment.h" alt="" coords="1611,80,1770,121"/>
+<area shape="rect" id="node31" href="$sphere__sensor__params_8h.html" title="fastrack/sensor/sphere\l_sensor_params.h" alt="" coords="2043,333,2211,375"/>
+<area shape="rect" id="node3" href="$box_8h.html" title="fastrack/bound/box.h" alt="" coords="329,169,485,196"/>
+<area shape="rect" id="node5" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="847,430,1001,457"/>
+<area shape="rect" id="node19" href="$tracking__bound_8h.html" title="fastrack/bound/tracking\l_bound.h" alt="" coords="1619,333,1791,375"/>
+<area shape="rect" id="node24" href="$cylinder_8h.html" title="fastrack/bound/cylinder.h" alt="" coords="833,169,1015,196"/>
+<area shape="rect" id="node27" href="$sphere_8h.html" title="fastrack/bound/sphere.h" alt="" coords="1325,169,1502,196"/>
+<area shape="rect" id="node4" href="$tracking__bound__ros_8h.html" title="fastrack/bound/tracking\l_bound_ros.h" alt="" coords="838,244,1010,285"/>
+<area shape="rect" id="node32" href="$uncopyable_8h.html" title="fastrack/utils/uncopyable.h" alt="" coords="2051,430,2243,457"/>
 </map>

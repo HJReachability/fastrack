@@ -1,7 +1,7 @@
 <map id="kinematics.h" name="kinematics.h">
-<area shape="rect" id="node2" href="$vector__bound__box_8h.html" title="fastrack/control/vector\l_bound_box.h" alt="" coords="737,81,889,122"/>
-<area shape="rect" id="node19" href="$dynamics_8h.html" title="fastrack/dynamics/dynamics.h" alt="" coords="913,179,1112,205"/>
-<area shape="rect" id="node3" href="$control__bound_8h.html" title="fastrack/control/control\l_bound.h" alt="" coords="692,262,845,303"/>
-<area shape="rect" id="node18" href="$scalar__bound__interval_8h.html" title="fastrack/control/scalar\l_bound_interval.h" alt="" coords="738,171,888,213"/>
-<area shape="rect" id="node4" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="651,352,795,379"/>
+<area shape="rect" id="node2" href="$vector__bound__box_8h.html" title="fastrack/control/vector\l_bound_box.h" alt="" coords="779,80,945,121"/>
+<area shape="rect" id="node19" href="$dynamics_8h.html" title="fastrack/dynamics/dynamics.h" alt="" coords="968,177,1183,203"/>
+<area shape="rect" id="node3" href="$control__bound_8h.html" title="fastrack/control/control\l_bound.h" alt="" coords="731,259,900,300"/>
+<area shape="rect" id="node18" href="$scalar__bound__interval_8h.html" title="fastrack/control/scalar\l_bound_interval.h" alt="" coords="781,169,943,211"/>
+<area shape="rect" id="node4" href="$types_8h.html" title="fastrack/utils/types.h" alt="" coords="689,348,843,375"/>
 </map>

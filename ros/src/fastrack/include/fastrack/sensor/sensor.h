@@ -193,6 +193,7 @@ void Sensor<E, M, P>::TimerCallback(const ros::TimerEvent& e) {
   sensor_pub_.publish(env_.SimulateSensor(params_));
 
   // Visualize.
+  env_.Visualize();
   Visualize();
 }
 
