@@ -129,7 +129,7 @@ class PositionVelocity : public State {
 
   // Samples within a box of the given position, intersected with the state
   // space bounds.
-  PositionVelocity SampleCloseTo(const Vector3d& pos, double d);
+  static PositionVelocity SampleCloseTo(const Vector3d& pos, double d);
 
   // Compound assignment operators.
   PositionVelocity& operator+=(const PositionVelocity& rhs);
