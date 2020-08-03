@@ -154,6 +154,25 @@ PositionVelocity PositionVelocity::Sample() {
   return PositionVelocity(x, y, z, vx, vy, vz);
 }
 
+// Samples within a box of the given position, intersected with the state space
+// bounds.
+PositionVelocity PositionVelocity::SampleCloseTo(const Vector3d &pos,
+                                                 double d) {
+  std::uniform_real_distribution<double> x_dist(
+      std::max(lower_.position_.x(), pos.x() - d),
+      std::min(upper_.position_.x(), pos.x() + d));
+  std::uniform_real_distribution<double> y_dist(
+      std::max(lower_.position_.y(), pos.y() - d),
+      std::min(upper_.position_.y(), pos.y() + d));
+  std::uniform_real_distribution<double> z_dist(
+      std::max(lower_.position_.z(), pos.z() - d),
+      std::min(upper_.position_.z(), pos.z() + d));
+
+  // HACK! Set velocity to zero since that's what we want most of the time.
+  return PositionVelocity(x_dist(rng_), y_dist(rng_), z_dist(rng_), 0.0, 0.0,
+                          0.0);
+}
+
 // For a given configuration, what are the corresponding positions in
 // position space that the system occupies.
 // NOTE! For simplicity, this is a finite set. In future, this could
@@ -222,7 +241,7 @@ VectorXd PositionVelocity::ToVector() const {
 
 // Convert from ROS message. Assume State is [x, y, z, vx, vy, vz] or
 // configuration only.
-void PositionVelocity::FromRos(const fastrack_msgs::State& msg) {
+void PositionVelocity::FromRos(const fastrack_msgs::State &msg) {
   if (msg.x.size() == 6) {
     // Message contains full state.
     position_(0) = msg.x[0];
@@ -254,8 +273,8 @@ fastrack_msgs::State PositionVelocity::ToRos() const {
 }
 
 // Get bounds of state space.
-const PositionVelocity& PositionVelocity::GetLower() { return lower_; }
-const PositionVelocity& PositionVelocity::GetUpper() { return upper_; }
+const PositionVelocity &PositionVelocity::GetLower() { return lower_; }
+const PositionVelocity &PositionVelocity::GetUpper() { return upper_; }
 
 // Get bounds of configuration space.
 VectorXd PositionVelocity::GetConfigurationLower() {
@@ -321,5 +340,5 @@ PositionVelocity operator/(double s, PositionVelocity rhs) {
   return rhs;
 }
 
-} // namespace state
-} // namespace fastrack
+}  // namespace state
+}  // namespace fastrack
